@@ -1,0 +1,226 @@
+solid Square Intake
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 7.2 2.2 4.5
+vertex 7.5 2.5 4.5
+vertex 7.2 3.8 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 7.5 2.5 4.5
+vertex 7.2 2.2 4.5
+vertex 8.8 2.2 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 7.5 2.5 4.5
+vertex 8.8 2.2 4.5
+vertex 8.5 2.5 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 8.5 2.5 4.5
+vertex 8.8 2.2 4.5
+vertex 8.5 3.5 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 7.2 3.8 4.5
+vertex 7.5 3.5 4.5
+vertex 8.8 3.8 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 7.5 3.5 4.5
+vertex 7.2 3.8 4.5
+vertex 7.5 2.5 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 8.8 3.8 4.5
+vertex 7.5 3.5 4.5
+vertex 8.5 3.5 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 8.8 3.8 4.5
+vertex 8.5 3.5 4.5
+vertex 8.8 2.2 4.5
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 7.2 3.8 1.0
+vertex 7.5 3.5 0.999999999999999
+vertex 7.2 2.2 1.0
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 7.5 3.5 0.999999999999999
+vertex 7.2 3.8 1.0
+vertex 8.8 3.8 1.0
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 7.5 3.5 0.999999999999999
+vertex 8.8 3.8 1.0
+vertex 8.5 3.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 8.5 3.5 0.999999999999999
+vertex 8.8 3.8 1.0
+vertex 8.5 2.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 7.2 2.2 1.0
+vertex 7.5 2.5 0.999999999999999
+vertex 8.8 2.2 1.0
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 7.5 2.5 0.999999999999999
+vertex 7.2 2.2 1.0
+vertex 7.5 3.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 8.8 2.2 1.0
+vertex 7.5 2.5 0.999999999999999
+vertex 8.5 2.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 -0.0 -1.0
+outer loop
+vertex 8.8 2.2 1.0
+vertex 8.5 2.5 0.999999999999999
+vertex 8.8 3.8 1.0
+endloop
+endfacet
+facet normal 0.0 -1.0 0.0
+outer loop
+vertex 8.8 2.2 4.5
+vertex 7.2 2.2 1.0
+vertex 8.8 2.2 1.0
+endloop
+endfacet
+facet normal 0.0 -1.0 0.0
+outer loop
+vertex 7.2 2.2 1.0
+vertex 8.8 2.2 4.5
+vertex 7.2 2.2 4.5
+endloop
+endfacet
+facet normal 1.0 -0.0 0.0
+outer loop
+vertex 8.8 3.8 1.0
+vertex 8.8 2.2 4.5
+vertex 8.8 2.2 1.0
+endloop
+endfacet
+facet normal 1.0 -0.0 0.0
+outer loop
+vertex 8.8 2.2 4.5
+vertex 8.8 3.8 1.0
+vertex 8.8 3.8 4.5
+endloop
+endfacet
+facet normal 0.0 1.0 0.0
+outer loop
+vertex 7.2 3.8 4.5
+vertex 8.8 3.8 1.0
+vertex 7.2 3.8 1.0
+endloop
+endfacet
+facet normal 0.0 1.0 0.0
+outer loop
+vertex 8.8 3.8 1.0
+vertex 7.2 3.8 4.5
+vertex 8.8 3.8 4.5
+endloop
+endfacet
+facet normal -1.0 -0.0 -0.0
+outer loop
+vertex 7.2 3.8 4.5
+vertex 7.2 2.2 1.0
+vertex 7.2 2.2 4.5
+endloop
+endfacet
+facet normal -1.0 -0.0 -0.0
+outer loop
+vertex 7.2 2.2 1.0
+vertex 7.2 3.8 4.5
+vertex 7.2 3.8 1.0
+endloop
+endfacet
+facet normal 1.0 0.0 0.0
+outer loop
+vertex 7.5 3.5 0.999999999999999
+vertex 7.5 2.5 4.5
+vertex 7.5 2.5 0.999999999999999
+endloop
+endfacet
+facet normal 1.0 0.0 0.0
+outer loop
+vertex 7.5 2.5 4.5
+vertex 7.5 3.5 0.999999999999999
+vertex 7.5 3.5 4.5
+endloop
+endfacet
+facet normal -0.0 1.0 -0.0
+outer loop
+vertex 7.5 2.5 4.5
+vertex 8.5 2.5 0.999999999999999
+vertex 7.5 2.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 1.0 -0.0
+outer loop
+vertex 8.5 2.5 0.999999999999999
+vertex 7.5 2.5 4.5
+vertex 8.5 2.5 4.5
+endloop
+endfacet
+facet normal -1.0 0.0 -0.0
+outer loop
+vertex 8.5 3.5 4.5
+vertex 8.5 2.5 0.999999999999999
+vertex 8.5 2.5 4.5
+endloop
+endfacet
+facet normal -1.0 0.0 -0.0
+outer loop
+vertex 8.5 2.5 0.999999999999999
+vertex 8.5 3.5 4.5
+vertex 8.5 3.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 -1.0 -0.0
+outer loop
+vertex 8.5 3.5 4.5
+vertex 7.5 3.5 0.999999999999999
+vertex 8.5 3.5 0.999999999999999
+endloop
+endfacet
+facet normal -0.0 -1.0 -0.0
+outer loop
+vertex 7.5 3.5 0.999999999999999
+vertex 8.5 3.5 4.5
+vertex 7.5 3.5 4.5
+endloop
+endfacet
+endsolid Square Intake

@@ -1,0 +1,156 @@
+solid weir
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 3.3 2.78513805440103 2.0
+vertex 3.0 4.0 2.0
+vertex 3.0 2.78513805440103 2.0
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 3.0 4.0 2.0
+vertex 3.3 2.78513805440103 2.0
+vertex 3.3 4.0 2.0
+endloop
+endfacet
+facet normal 1.0 -1.6510878727759e-016 8.30654214786595e-017
+outer loop
+vertex 3.3 4.0 0.0
+vertex 3.3 0.0 2.0
+vertex 3.3 0.0 0.0
+endloop
+endfacet
+facet normal 1.0 -1.6510878727759e-016 8.30654214786595e-017
+outer loop
+vertex 3.3 0.0 2.0
+vertex 3.3 4.0 0.0
+vertex 3.3 1.21 1.52
+endloop
+endfacet
+facet normal 1.0 -1.6510878727759e-016 8.30654214786595e-017
+outer loop
+vertex 3.3 1.21 1.52
+vertex 3.3 4.0 0.0
+vertex 3.3 2.78513805440103 1.52
+endloop
+endfacet
+facet normal 1.0 -1.6510878727759e-016 8.30654214786595e-017
+outer loop
+vertex 3.3 2.78513805440103 1.52
+vertex 3.3 4.0 0.0
+vertex 3.3 2.78513805440103 2.0
+endloop
+endfacet
+facet normal 1.0 -1.6510878727759e-016 8.30654214786595e-017
+outer loop
+vertex 3.3 2.78513805440103 2.0
+vertex 3.3 4.0 0.0
+vertex 3.3 4.0 2.0
+endloop
+endfacet
+facet normal 1.0 -1.6510878727759e-016 8.30654214786595e-017
+outer loop
+vertex 3.3 1.21 2.0
+vertex 3.3 0.0 2.0
+vertex 3.3 1.21 1.52
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 3.0 4.0 2.0
+vertex 3.0 2.78513805440103 1.52
+vertex 3.0 2.78513805440103 2.0
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 3.0 1.21 2.0
+vertex 3.0 0.0 0.0
+vertex 3.0 0.0 2.0
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 3.0 0.0 0.0
+vertex 3.0 1.21 2.0
+vertex 3.0 1.21 1.52
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 3.0 0.0 0.0
+vertex 3.0 1.21 1.52
+vertex 3.0 4.0 0.0
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 3.0 4.0 0.0
+vertex 3.0 1.21 1.52
+vertex 3.0 2.78513805440103 1.52
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 3.0 4.0 0.0
+vertex 3.0 2.78513805440103 1.52
+vertex 3.0 4.0 2.0
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 3.3 0.0 2.0
+vertex 3.0 1.21 2.0
+vertex 3.0 0.0 2.0
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 3.0 1.21 2.0
+vertex 3.3 0.0 2.0
+vertex 3.3 1.21 2.0
+endloop
+endfacet
+facet normal 0.0 0.0 1.0
+outer loop
+vertex 3.3 1.21 1.52
+vertex 3.0 2.78513805440103 1.52
+vertex 3.0 1.21 1.52
+endloop
+endfacet
+facet normal 0.0 0.0 1.0
+outer loop
+vertex 3.0 2.78513805440103 1.52
+vertex 3.3 1.21 1.52
+vertex 3.3 2.78513805440103 1.52
+endloop
+endfacet
+facet normal 0.0 1.0 0.0
+outer loop
+vertex 3.0 1.21 2.0
+vertex 3.3 1.21 1.52
+vertex 3.0 1.21 1.52
+endloop
+endfacet
+facet normal 0.0 1.0 0.0
+outer loop
+vertex 3.3 1.21 1.52
+vertex 3.0 1.21 2.0
+vertex 3.3 1.21 2.0
+endloop
+endfacet
+facet normal 0.0 -1.0 -0.0
+outer loop
+vertex 3.3 2.78513805440103 2.0
+vertex 3.0 2.78513805440103 1.52
+vertex 3.3 2.78513805440103 1.52
+endloop
+endfacet
+facet normal 0.0 -1.0 -0.0
+outer loop
+vertex 3.0 2.78513805440103 1.52
+vertex 3.3 2.78513805440103 2.0
+vertex 3.0 2.78513805440103 2.0
+endloop
+endfacet
+endsolid weir

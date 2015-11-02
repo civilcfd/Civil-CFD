@@ -1,0 +1,352 @@
+solid Diag_duct_flow3d
+facet normal 0.0 0.257662650560332 -0.966234939601247
+outer loop
+vertex 3.0 3.0 2.02704205765991
+vertex 0.0 0.0 1.22704205765991
+vertex 0.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal 0.0 0.257662650560332 -0.966234939601247
+outer loop
+vertex 0.0 0.0 1.22704205765991
+vertex 3.0 3.0 2.02704205765991
+vertex 3.0 0.0 1.22704205765991
+endloop
+endfacet
+facet normal -0.0 -0.257662650560332 0.966234939601246
+outer loop
+vertex 3.0 0.0 0.05
+vertex 0.0 3.0 0.85
+vertex 0.0 0.0 0.05
+endloop
+endfacet
+facet normal -0.0 -0.257662650560332 0.966234939601246
+outer loop
+vertex 0.0 3.0 0.85
+vertex 3.0 0.0 0.05
+vertex 3.0 3.0 0.85
+endloop
+endfacet
+facet normal 0.0 0.0 -1.0
+outer loop
+vertex 3.0 5.2 2.02704205765991
+vertex 0.0 3.0 2.02704205765991
+vertex 0.0 5.2 2.02704205765991
+endloop
+endfacet
+facet normal 0.0 0.0 -1.0
+outer loop
+vertex 0.0 3.0 2.02704205765991
+vertex 3.0 5.2 2.02704205765991
+vertex 3.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal 0.0 0.0 1.0
+outer loop
+vertex 3.0 3.0 3.42704205765991
+vertex 0.0 5.2 3.42704205765991
+vertex 0.0 3.0 3.42704205765991
+endloop
+endfacet
+facet normal 0.0 0.0 1.0
+outer loop
+vertex 0.0 5.2 3.42704205765991
+vertex 3.0 3.0 3.42704205765991
+vertex 3.0 5.2 3.42704205765991
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 5.2 3.42704205765991
+vertex 0.0 3.0 2.02704205765991
+vertex 0.0 3.0 3.42704205765991
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 3.0 2.02704205765991
+vertex 0.0 5.2 3.42704205765991
+vertex 0.0 5.2 2.02704205765991
+endloop
+endfacet
+facet normal -0.0 1.0 0.0
+outer loop
+vertex 0.0 5.2 3.42704205765991
+vertex 3.0 5.2 2.02704205765991
+vertex 0.0 5.2 2.02704205765991
+endloop
+endfacet
+facet normal -0.0 1.0 0.0
+outer loop
+vertex 3.0 5.2 2.02704205765991
+vertex 0.0 5.2 3.42704205765991
+vertex 3.0 5.2 3.42704205765991
+endloop
+endfacet
+facet normal 1.0 0.0 0.0
+outer loop
+vertex 3.0 5.2 2.02704205765991
+vertex 3.0 3.0 3.42704205765991
+vertex 3.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal 1.0 0.0 0.0
+outer loop
+vertex 3.0 3.0 3.42704205765991
+vertex 3.0 5.2 2.02704205765991
+vertex 3.0 5.2 3.42704205765991
+endloop
+endfacet
+facet normal -0.0 -1.0 -0.0
+outer loop
+vertex 3.0 3.0 3.42704205765991
+vertex 0.0 3.0 2.02704205765991
+vertex 3.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal -0.0 -1.0 -0.0
+outer loop
+vertex 0.0 3.0 2.02704205765991
+vertex 3.0 3.0 3.42704205765991
+vertex 0.0 3.0 3.42704205765991
+endloop
+endfacet
+facet normal 0.0 -0.257662650560332 0.966234939601246
+outer loop
+vertex 3.0 -0.348547717842323 2.53409599956863
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 0.0 -0.348547717842323 2.53409599956863
+endloop
+endfacet
+facet normal 0.0 -0.257662650560332 0.966234939601246
+outer loop
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 3.0 -0.348547717842323 2.53409599956863
+vertex 3.0 2.65145228215768 3.33409599956862
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 0.0 0.0 1.22704205765991
+vertex 0.0 -0.348547717842323 2.53409599956863
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 0.0 1.22704205765991
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 0.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal -0.0 0.966234939601247 0.257662650560332
+outer loop
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 3.0 3.0 2.02704205765991
+vertex 0.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal -0.0 0.966234939601247 0.257662650560332
+outer loop
+vertex 3.0 3.0 2.02704205765991
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 3.0 2.65145228215768 3.33409599956862
+endloop
+endfacet
+facet normal 1.0 0.0 0.0
+outer loop
+vertex 3.0 0.0 1.22704205765991
+vertex 3.0 2.65145228215768 3.33409599956862
+vertex 3.0 -0.348547717842323 2.53409599956863
+endloop
+endfacet
+facet normal 1.0 0.0 0.0
+outer loop
+vertex 3.0 2.65145228215768 3.33409599956862
+vertex 3.0 0.0 1.22704205765991
+vertex 3.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal -0.0 -0.966234939601247 -0.257662650560332
+outer loop
+vertex 3.0 -0.348547717842323 2.53409599956863
+vertex 0.0 0.0 1.22704205765991
+vertex 3.0 0.0 1.22704205765991
+endloop
+endfacet
+facet normal -0.0 -0.966234939601247 -0.257662650560332
+outer loop
+vertex 0.0 0.0 1.22704205765991
+vertex 3.0 -0.348547717842323 2.53409599956863
+vertex 0.0 -0.348547717842323 2.53409599956863
+endloop
+endfacet
+facet normal 1.0 -0.0 -0.0
+outer loop
+vertex 3.0 3.0 3.42704205765991
+vertex 3.0 2.65145228215768 3.33409599956862
+vertex 3.0 3.0 2.02704205765991
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 3.0 2.02704205765991
+vertex 0.0 2.65145228215768 3.33409599956862
+vertex 0.0 3.0 3.42704205765991
+endloop
+endfacet
+facet normal -0.0 -0.257662650560336 0.966234939601245
+outer loop
+vertex 3.0 2.65145228215768 3.33409599956862
+vertex 0.0 3.0 3.42704205765991
+vertex 0.0 2.65145228215768 3.33409599956862
+endloop
+endfacet
+facet normal -0.0 -0.257662650560336 0.966234939601245
+outer loop
+vertex 0.0 3.0 3.42704205765991
+vertex 3.0 2.65145228215768 3.33409599956862
+vertex 3.0 3.0 3.42704205765991
+endloop
+endfacet
+facet normal 0.0 -1.0 0.0
+outer loop
+vertex 3.0 0.0 0.05
+vertex 0.0 0.0 -0.57
+vertex 3.0 0.0 -0.57
+endloop
+endfacet
+facet normal 0.0 -1.0 0.0
+outer loop
+vertex 0.0 0.0 -0.57
+vertex 3.0 0.0 0.05
+vertex 0.0 0.0 0.05
+endloop
+endfacet
+facet normal 1.0 -0.0 -0.0
+outer loop
+vertex 3.0 3.0 -0.57
+vertex 3.0 0.0 0.05
+vertex 3.0 0.0 -0.57
+endloop
+endfacet
+facet normal 1.0 -0.0 -0.0
+outer loop
+vertex 3.0 0.0 0.05
+vertex 3.0 3.0 -0.57
+vertex 3.0 3.0 0.85
+endloop
+endfacet
+facet normal 0.0 0.0 -1.0
+outer loop
+vertex 3.0 3.0 -0.57
+vertex 0.0 0.0 -0.57
+vertex 0.0 3.0 -0.57
+endloop
+endfacet
+facet normal 0.0 0.0 -1.0
+outer loop
+vertex 0.0 0.0 -0.57
+vertex 3.0 3.0 -0.57
+vertex 3.0 0.0 -0.57
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 3.0 0.85
+vertex 0.0 0.0 -0.57
+vertex 0.0 0.0 0.05
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 0.0 -0.57
+vertex 0.0 3.0 0.85
+vertex 0.0 3.0 -0.57
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 3.0 3.0 0.85
+vertex 0.0 5.2 0.85
+vertex 0.0 3.0 0.85
+endloop
+endfacet
+facet normal -0.0 -0.0 1.0
+outer loop
+vertex 0.0 5.2 0.85
+vertex 3.0 3.0 0.85
+vertex 3.0 5.2 0.85
+endloop
+endfacet
+facet normal 0.0 -1.0 0.0
+outer loop
+vertex 3.0 3.0 0.85
+vertex 0.0 3.0 -0.57
+vertex 3.0 3.0 -0.57
+endloop
+endfacet
+facet normal 0.0 -1.0 0.0
+outer loop
+vertex 0.0 3.0 -0.57
+vertex 3.0 3.0 0.85
+vertex 0.0 3.0 0.85
+endloop
+endfacet
+facet normal -0.0 1.0 -0.0
+outer loop
+vertex 0.0 5.2 0.85
+vertex 3.0 5.2 -0.57
+vertex 0.0 5.2 -0.57
+endloop
+endfacet
+facet normal -0.0 1.0 -0.0
+outer loop
+vertex 3.0 5.2 -0.57
+vertex 0.0 5.2 0.85
+vertex 3.0 5.2 0.85
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 5.2 0.85
+vertex 0.0 3.0 -0.57
+vertex 0.0 3.0 0.85
+endloop
+endfacet
+facet normal -1.0 0.0 0.0
+outer loop
+vertex 0.0 3.0 -0.57
+vertex 0.0 5.2 0.85
+vertex 0.0 5.2 -0.57
+endloop
+endfacet
+facet normal 0.0 -4.10176942916058e-017 -1.0
+outer loop
+vertex 3.0 5.2 -0.57
+vertex 0.0 3.0 -0.57
+vertex 0.0 5.2 -0.57
+endloop
+endfacet
+facet normal 0.0 -4.10176942916058e-017 -1.0
+outer loop
+vertex 0.0 3.0 -0.57
+vertex 3.0 5.2 -0.57
+vertex 3.0 3.0 -0.57
+endloop
+endfacet
+facet normal 1.0 -0.0 -0.0
+outer loop
+vertex 3.0 5.2 -0.57
+vertex 3.0 3.0 0.85
+vertex 3.0 3.0 -0.57
+endloop
+endfacet
+facet normal 1.0 -0.0 -0.0
+outer loop
+vertex 3.0 3.0 0.85
+vertex 3.0 5.2 -0.57
+vertex 3.0 5.2 0.85
+endloop
+endfacet
+endsolid Diag_duct_flow3d

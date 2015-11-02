@@ -1,0 +1,12 @@
+# Mesh source file
+cells 5 5 5
+del 0.2 0.2 0.2
+inside 1 1 1
+origin 0.0 0.0 0.0
+wall_east slip
+wall_west slip
+wall_top continuous
+wall_bottom slip
+wall_north slip
+wall_south slip
+end
