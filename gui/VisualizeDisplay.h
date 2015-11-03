@@ -27,6 +27,8 @@
 #include <vtkContourFilter.h>
 #include <vtkArrowSource.h>
 #include <vtkGlyph3D.h>
+#include <vtkScalarBarActor.h>
+#include <vtkScalarBarWidget.h>
 #include <QString>
 #include <QFile>
 
@@ -61,7 +63,7 @@ private:
   vtkSmartPointer<vtkActor> vectActor;
   vtkSmartPointer<vtkStructuredPointsReader> volReader;
   vtkSmartPointer<vtkGeometryFilter> volGeometryFilter;
-
+	vtkSmartPointer<vtkScalarBarActor> legend;
 //  vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper;
   vtkSmartPointer<vtkSmartVolumeMapper> volMapper;
 

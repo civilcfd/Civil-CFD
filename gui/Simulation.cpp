@@ -115,6 +115,14 @@ int Simulation::save() {
 }
 
 int Simulation::load() {
+
+
+  clearSpecialBoundaries();
+  track_empty();
+  std::free(solver->mesh);
+  std::free(solver);
+  solver = solver_init_empty();  
+  
   QFile file("casefile");
   if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     qDebug() << "could not open casefile";
@@ -145,12 +153,16 @@ int Simulation::load() {
     ready=0;
     return false;
   }
+  
+  
+  strcpy(solver->ic[0].param,"end");
   if(read_initial(solver, "initials")) {
     qDebug() << "could not read initials";
     ready=0;
     return false;
   }
 
+	track_empty();
   track_read();
 
   loadSTL(stlFilename);
@@ -525,6 +537,19 @@ void Simulation::removeSpecialBoundary(int wall) {
 
     sb_nitem = sb_nitem->next;
   }
+
+}
+
+void Simulation::clearSpecialBoundaries() {
+	int i;
+	
+	for(i = 0; i<6; i++) {
+		resetSpecialBoundary(i);
+		while(sb_item != NULL) {
+			removeSpecialBoundary(i);
+			resetSpecialBoundary(i);
+		}
+	}
 
 }
 

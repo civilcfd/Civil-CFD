@@ -112,6 +112,7 @@ public:
   void resetSpecialBoundary(int wall);
 
   void removeSpecialBoundary(int wall);
+	void clearSpecialBoundaries();
 
   void editSpecialBoundary(QString type, long int extent_a_1, long int extent_a_2, long int extent_b_1, long int extent_b_2, double value, double turbulence); 
 

@@ -103,6 +103,8 @@ void MainWindow::on_origin_valueChanged() {
 }
 
 void MainWindow::buildTimesteps() {
+  ui.timesteps->clear();  
+  
   sim.trackRewind();
 
   while(sim.getTrackNext() >= 0) {

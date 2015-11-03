@@ -23,14 +23,17 @@ libsolver3d:
 
 mesh3d: clean libmesh3d mesh3d.o
 	$(CC) mesh3d.o -Wall $(LIBS) -o ../../bin/$@
+	test -d ../../bin/gui.app/Contents/MacOS && cp ../../bin/$@ ../../bin/gui.app/Contents/MacOS
 
 vofsolver: clean libmesh3d libsolver3d vofsolver.o
 	$(CC) vofsolver.o -Wall $(LIBS) -o ../../bin/$@
 
 solver3d: clean libmesh3d libsolver3d solver3d.o
 	$(CC) solver3d.o -Wall $(LIBS) -o ../../bin/$@
+	test -d ../../bin/gui.app/Contents/MacOS && cp ../../bin/$@ ../../bin/gui.app/Contents/MacOS
 
 clean:
 	-rm -f *.o
 	-rm -f mesh3d
 	-rm -f vofsolver
+	-rm -f solver3d

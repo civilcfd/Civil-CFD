@@ -26,6 +26,7 @@
 #include <vtkTextProperty.h>
 #include <vtkTextActor.h>
 #include <vtkCamera.h>
+#include <vtkScalarBarActor.h>
 
 class MeshDisplay {
 
@@ -45,10 +46,17 @@ public:
   void AddVolume(vtkSmartPointer<vtkVolume> &volume);
   void RemoveVolume(vtkSmartPointer<vtkVolume> &volume);
 
+  void AddScalarBar(vtkSmartPointer<vtkScalarBarActor> &new_actor);
+  void RemoveScalarBar(vtkSmartPointer<vtkScalarBarActor> &new_actor);
+  
+  //vtkSmartPointer<vtkRenderWindowInteractor> &GetInteractor() { return renderWindowInteractor; }
+  
   void HideMesh();
   void ShowMesh();
 
+
 private:
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
   vtkSmartPointer<vtkStructuredGrid> structuredGrid;
   vtkSmartPointer<vtkPoints> points;
   vtkSmartPointer<vtkRenderer> renderer;
@@ -56,7 +64,6 @@ private:
   vtkSmartPointer<vtkDataSetMapper> mapper;
   vtkSmartPointer<vtkStructuredGridGeometryFilter> outlineFilter;
   vtkSmartPointer<vtkActor> actor;
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
   vtkSmartPointer<vtkAxesActor> axes;
   vtkSmartPointer<vtkTransform> transform;
 

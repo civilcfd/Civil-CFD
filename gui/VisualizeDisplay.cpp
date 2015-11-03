@@ -104,6 +104,7 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
   reader->SetFileName(vtkFile.toStdString().c_str());
   reader->Update();
 
+	geometryFilter = NULL;
   geometryFilter =
     vtkSmartPointer<vtkGeometryFilter>::New();
   //geometryFilter->SetInputConnection(reader->GetOutputPort());
@@ -142,16 +143,27 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
 
   RemoveActor(VTKactor);
 
+	VTKmapper = NULL;
+	VTKactor = NULL;
   VTKmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   VTKactor = vtkSmartPointer<vtkActor>::New();
  
   VTKmapper->SetInputConnection(geometryFilter->GetOutputPort());
   //VTKmapper->SetLookupTable(lut);
-  VTKmapper->SetScalarRange(geometryFilter->GetOutput()->GetScalarRange());
+  //VTKmapper->UseLookupTableScalarRangeOff();
+  VTKmapper->SetScalarRange(reader->GetOutput()->GetScalarRange());
 
   VTKactor->SetMapper(VTKmapper);
 
   AddActor(VTKactor);
+
+	RemoveScalarBar(legend);
+	legend = NULL;
+	legend = vtkSmartPointer<vtkScalarBarActor>::New();
+	legend->SetLookupTable(VTKmapper->GetLookupTable());
+	legend->SetWidth(0.1);
+	legend->GetLabelTextProperty()->SetFontSize(9);
+	AddScalarBar(legend);
 
 }
 

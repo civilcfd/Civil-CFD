@@ -72,6 +72,14 @@ void MeshDisplay::AddActor(vtkSmartPointer<vtkActor> &new_actor) {
   renderer->AddActor(new_actor);
 }
 
+void MeshDisplay::AddScalarBar(vtkSmartPointer<vtkScalarBarActor> &new_actor) {
+  renderer->AddActor2D(new_actor);
+}
+
+void MeshDisplay::RemoveScalarBar(vtkSmartPointer<vtkScalarBarActor> &new_actor) {
+  renderer->RemoveActor2D(new_actor);
+}
+
 void MeshDisplay::RemoveActor(vtkSmartPointer<vtkActor> &new_actor) {
   renderer->RemoveActor(new_actor);
 }

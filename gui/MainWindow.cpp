@@ -170,7 +170,7 @@ void MainWindow::on_New_clicked() {
     return;
   }
 
-  path = QFileDialog::getExistingDirectory(this, tr("Choose Project Directory"), QCoreApplication::applicationDirPath());
+  path = QFileDialog::getExistingDirectory(this, tr("Choose Project Directory"), QDir::homePath());
 
   if(path.isEmpty()) {
     qDebug() << "no path chosen";
@@ -205,7 +205,7 @@ void MainWindow::on_New_clicked() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-   QString path = QFileDialog::getExistingDirectory(this, tr("Choose Project Directory"), QCoreApplication::applicationDirPath());
+   QString path = QFileDialog::getExistingDirectory(this, tr("Choose Project Directory"), QDir::homePath());
 
   if(path.isEmpty()) {
     qDebug() << "no path chosen";
