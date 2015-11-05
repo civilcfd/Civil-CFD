@@ -20,6 +20,8 @@ extern "C" {
 #include "track.h"
 }
 
+bool removeDir(const QString & dirName);
+
 class Simulation {
 
 public:
@@ -125,6 +127,7 @@ public:
   QString getTrackT();
   void trackRewind();
   QString getTrackN(QString str);
+  bool deleteTrack(QString t);
 
 private:
   struct solver_data *solver; 

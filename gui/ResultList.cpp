@@ -17,3 +17,21 @@ void MainWindow::buildResultList() {
 
 }
 
+void MainWindow::on_SelectAll_clicked() {
+	ui.ResultList->selectAll();
+}
+
+void MainWindow::on_Clear_clicked() {
+	ui.ResultList->clearSelection();
+}
+
+
+void MainWindow::on_Delete_clicked() {
+	
+	foreach(QListWidgetItem *item, ui.ResultList->selectedItems()) {
+		if(sim.deleteTrack(item->text()))
+			delete item;
+	}
+	
+  buildTimesteps();
+}

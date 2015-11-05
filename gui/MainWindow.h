@@ -60,7 +60,10 @@ private slots:
   void on_water20C_clicked();
   void on_defaultLength_clicked();
   void on_calcRough_clicked();
-
+  void on_SelectAll_clicked();
+  void on_Clear_clicked();
+  void on_Delete_clicked();
+  
 private:
   bool saveNotify();
   void editBoundary(QTreeWidgetItem *item);

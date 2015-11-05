@@ -538,3 +538,5 @@ void MainWindow::on_calcRough_clicked() {
     }
   }
 }
+
+

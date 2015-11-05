@@ -665,14 +665,58 @@ void Simulation::trackRewind() {
 }
 
 QString Simulation::getTrackN(QString value) {
-  int n=0;
+	int n;
   track_rewind();
 
   while(value != getTrackT()) {
     if(getTrackNext() < 0) return QString::number(-1);
-    n++;
   }
 
+	n = track_get_n();
   track_rewind();
   return QString::number(n);
 }
+
+bool removeDir(const QString & dirName)
+{
+    bool result = true;
+    QDir dir(dirName);
+
+    if (dir.exists(dirName)) {
+        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
+            if (info.isDir()) {
+                result = removeDir(info.absoluteFilePath());
+            }
+            else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = dir.rmdir(dirName);
+    }
+    return result;
+}
+
+bool Simulation::deleteTrack(QString t) {
+	int n = getTrackN(t).toInt();
+	if(n == -1) return false;
+	
+	if(track_delete(n)) {
+		track_write();
+		removeDir(getPath() + "/" + t);
+		
+		QDir dir(getPath() + "/vtk");
+		dir.setNameFilters(QStringList() << "*_" + QString::number(n) + ".vtk");
+		dir.setFilter(QDir::Files);
+		foreach(QString dirFile, dir.entryList())
+		{
+    	dir.remove(dirFile);
+		}
+		return true;
+	}
+	else return false;
+}
+

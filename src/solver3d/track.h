@@ -21,6 +21,7 @@ struct track_data {
 
 int track_add(double t);
 int track_add_n(double t, int n);
+int track_get_n();
 int track_write();
 int track_read();
 int track_delete(int n);

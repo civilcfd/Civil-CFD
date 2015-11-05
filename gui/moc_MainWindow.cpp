@@ -22,7 +22,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      36,   14, // methods
+      39,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -66,6 +66,9 @@ static const uint qt_meta_data_MainWindow[] = {
      949,   38,   38,   38, 0x08,
      971,   38,   38,   38, 0x08,
      998,   38,   38,   38, 0x08,
+    1021,   38,   38,   38, 0x08,
+    1044,   38,   38,   38, 0x08,
+    1063,   38,   38,   38, 0x08,
 
        0        // eod
 };
@@ -97,7 +100,8 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_blockObstacles_toggled()\0"
     "on_showMesh_toggled()\0on_earthGravity_clicked()\0"
     "on_water20C_clicked()\0on_defaultLength_clicked()\0"
-    "on_calcRough_clicked()\0"
+    "on_calcRough_clicked()\0on_SelectAll_clicked()\0"
+    "on_Clear_clicked()\0on_Delete_clicked()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -142,6 +146,9 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 33: _t->on_water20C_clicked(); break;
         case 34: _t->on_defaultLength_clicked(); break;
         case 35: _t->on_calcRough_clicked(); break;
+        case 36: _t->on_SelectAll_clicked(); break;
+        case 37: _t->on_Clear_clicked(); break;
+        case 38: _t->on_Delete_clicked(); break;
         default: ;
         }
     }
@@ -179,9 +186,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 36)
+        if (_id < 39)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 36;
+        _id -= 39;
     }
     return _id;
 }

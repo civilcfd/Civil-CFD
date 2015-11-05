@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -418,7 +418,11 @@
            </spacer>
           </item>
           <item row="11" column="2" rowspan="6">
-           <widget class="QListWidget" name="ResultList"/>
+           <widget class="QListWidget" name="ResultList">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::MultiSelection</enum>
+            </property>
+           </widget>
           </item>
           <item row="17" column="2">
            <spacer name="verticalSpacer_4">

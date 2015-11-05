@@ -466,6 +466,7 @@ public:
 
         ResultList = new QListWidget(Information);
         ResultList->setObjectName(QString::fromUtf8("ResultList"));
+        ResultList->setSelectionMode(QAbstractItemView::MultiSelection);
 
         gridLayout->addWidget(ResultList, 11, 2, 6, 1);
 
@@ -1137,7 +1138,7 @@ public:
         fillPoints->verticalHeader()->setVisible(false);
         fillPoints->verticalHeader()->setHighlightSections(false);
 
-        gridLayout_13->addWidget(fillPoints, 7, 2, 1, 3);
+        gridLayout_13->addWidget(fillPoints, 8, 3, 1, 5);
 
 
         gridLayout_14->addLayout(gridLayout_13, 0, 0, 1, 1);
@@ -1453,7 +1454,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 874, 20));
+        menubar->setGeometry(QRect(0, 0, 874, 22));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         MainWindow->setMenuBar(menubar);
@@ -1471,7 +1472,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(5);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

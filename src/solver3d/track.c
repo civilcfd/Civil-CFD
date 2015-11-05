@@ -37,6 +37,11 @@ double track_t() {
   else return -1;
 }
 
+int track_get_n() {
+  if(p_track !=NULL) return p_track->n;
+  else return -1;
+}
+
 int track_add(double t) {
   struct track_data *node, *x;
   
