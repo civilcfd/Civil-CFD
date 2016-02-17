@@ -292,31 +292,31 @@ int intersect_area_fractions(struct mesh_data *mesh,
 						/* there is another special case where three adjacent sides have a total of 4 intersections, 
 						and the side in the middle of the three sides has 2 intersections.  in this case, we can just
 						delete the 2 intersections in the middle and make it a 2 intersection case */
-						if(x!=5 && flg==4) {
-							for(x = 0; x<3; x++) {
-								if(intersect[x] == intersect[x+1] &&
-									 x_af[s][intersect[x]] > 0 &&
-									 x_af[s][intersect[x+1]] < 0) {
-									switch(x) {
-									case 0:
-										intersect[0] = intersect[2];
-										intersect[1] = intersect[3];
-										flg=2;
-										x=5;
-										break;
-									case 1:
-										intersect[1] = intersect[3];
-										flg=2;
-										x=5;
-										break;
-									case 2:
-										flg=2;
-										x=5;
-										break;
-									}
-								}
-							}
-						}
+	          if(x!=5 && flg==4) {
+              for(x = 0; x<3; x++) {
+                if(intersect[x] == intersect[x+1] &&
+                    x_af[s][intersect[x]] > 0 &&
+                    x_af[s][intersect[x+1]] < 0) {
+                  switch(x) {
+                  case 0:
+                    intersect[0] = intersect[2];
+                    intersect[1] = intersect[3];
+                    flg=2;
+                    x=5;
+                    break;
+                  case 1:
+                    intersect[1] = intersect[3];
+                    flg=2;
+                    x=5;
+                    break;
+                  case 2:
+                    flg=2;
+                    x=5;
+                    break;
+                  }
+                }
+              }
+            }
 						
 						
             if(x!=5) {
