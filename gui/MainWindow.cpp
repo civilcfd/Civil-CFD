@@ -121,7 +121,7 @@ void MainWindow::on_MeshUndo_clicked() {
 }
 
 void MainWindow::on_MeshUpdate_clicked() {
-  meshUpdate();
+  update();
 }
 
 void MainWindow::on_kEpsilon_toggled() {

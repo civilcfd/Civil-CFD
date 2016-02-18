@@ -65,6 +65,8 @@ void MainWindow::boundariesUpdate() {
 void MainWindow::editBoundary(QTreeWidgetItem *item) {
   int wb;
 
+  if(item == NULL) return;
+
   if(item->childCount() > 0)
     return;
   

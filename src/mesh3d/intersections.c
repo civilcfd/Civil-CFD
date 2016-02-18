@@ -75,8 +75,7 @@ int intersect_area_fractions(struct mesh_data *mesh,
   for(i=0; i < mesh->imax; i++) {
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {
-      
-      
+
       for(a=0; a<4; a++) {
       	for(s=0; s<3; s++) {
 							x_af[s][a] = 0; 
@@ -311,7 +310,39 @@ int intersect_area_fractions(struct mesh_data *mesh,
 								 intersect[1] = intersect[2];
 								 flg = 2;
 							}*/
+							
+							
+							/* there is another special case where three adjacent sides have a total of 4 intersections, 
+							and the side in the middle of the three sides has 2 intersections.  in this case, we can just
+							delete the 2 intersections in the middle and make it a 2 intersection case */
 
+							if(x!=5 && flg==4) {
+								for(x = 0; x<3; x++) {
+									if(intersect[x] == intersect[x+1] &&
+											x_af[s][intersect[x]] > 0 &&
+											x_af[s][intersect[x+1]] < 0) {
+										switch(x) {
+										case 0:
+											intersect[0] = intersect[2];
+											intersect[1] = intersect[3];
+											flg=2;
+											x=5;
+											break;
+										case 1:
+											intersect[1] = intersect[3];
+											flg=2;
+											x=5;
+											break;
+										case 2:
+											flg=2;
+											x=5;
+											break;
+										}
+										break;
+									}
+								}
+							}
+							
 							if(x!=5) {
 								printf("error: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
 								abort = 1;
@@ -408,6 +439,7 @@ int intersect_area_fractions(struct mesh_data *mesh,
 	}
 	
 	return(abort);
+
 }
 
 #define SAME_CLOCKNESS  1
