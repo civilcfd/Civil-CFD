@@ -75,17 +75,16 @@ int intersect_area_fractions(struct mesh_data *mesh,
   for(i=0; i < mesh->imax; i++) {
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {
-
-      for(a=0; a<4; a++) {
-      	for(s=0; s<3; s++) {
-							x_af[s][a] = 0; 
-							intersect[a] = 0;
-				}
-			}
       
 #pragma omp flush(abort)
       	if(!abort) {
-				
+
+					for(a=0; a<4; a++) {
+						for(s=0; s<3; s++) {
+									x_af[s][a] = 0; 
+									intersect[a] = 0;
+						}
+					}				
 					origin[0] = mesh->origin[0] + mesh->delx * i;
 					origin[1] = mesh->origin[1] + mesh->dely * j;
 					origin[2] = mesh->origin[2] + mesh->delz * k;
@@ -139,6 +138,8 @@ int intersect_area_fractions(struct mesh_data *mesh,
 
 								}*/
 
+
+
 								/* check for intersection using the moller_trubore
 								 * algorithm (google for information)
 								 * standard graphics algorithm to find intersection of triangle
@@ -163,7 +164,8 @@ int intersect_area_fractions(struct mesh_data *mesh,
 									if(f > -1.0 * emf && f < (1+emf)) {
 										if(f<emf) f = emf;
 										if(f>1-emf) f = 1-emf;
-										x_af[s][a] = f * facing * -1;
+										x_af[s][a] = f * facing * -1;								
+										
 									}
 							
 								}
@@ -314,12 +316,44 @@ int intersect_area_fractions(struct mesh_data *mesh,
 							
 							/* there is another special case where three adjacent sides have a total of 4 intersections, 
 							and the side in the middle of the three sides has 2 intersections.  in this case, we can just
-							delete the 2 intersections in the middle and make it a 2 intersection case */
+							delete the 2 intersections in the middle and make it a 2 intersection case 
+							note multiple intersections on the same side are not recorded and the code reflects that */
 
-							if(x!=5 && flg==4) {
+							if(x!=5 && flg==3) {
+							
+								if(x_af[s][intersect[1]] > 0 && x_af[s][intersect[2]] < 0 && \
+								   intersect[1] == 1 && intersect[2] == 3) {
+								
+										intersect[0] = intersect[1];
+										intersect[1] = intersect[2];
+										flg = 2;
+										x = 5;
+								}
+								else if(x_af[s][intersect[0]] < 0 && x_af[s][intersect[2]] > 0 && \
+												intersect[0] == 0 && intersect[2] == 2) {
+												
+										intersect[1] = intersect[2];
+										flg=2;
+										x=5;
+								}
+								else if(x_af[s][intersect[0]] < 0 && x_af[s][intersect[2]] > 0 && \
+												intersect[0] == 1 && intersect[2] == 3) {
+										
+										intersect[1] = intersect[2];
+										flg=2;
+										x=5;
+								}
+								else if(x_af[s][intersect[0]] > 0 && x_af[s][intersect[1]] < 0 && \
+												intersect[0] == 0 && intersect[1] == 2) {
+										
+										flg=2;
+										x=5;
+								}
+							}
+							
+							/*
 								for(x = 0; x<3; x++) {
-									if(intersect[x] == intersect[x+1] &&
-											x_af[s][intersect[x]] > 0 &&
+									if( x_af[s][intersect[x]] > 0 &&
 											x_af[s][intersect[x+1]] < 0) {
 										switch(x) {
 										case 0:
@@ -340,11 +374,14 @@ int intersect_area_fractions(struct mesh_data *mesh,
 										}
 										break;
 									}
-								}
-							}
+								}*/
+							
 							
 							if(x!=5) {
 								printf("error: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
+								for(x=0; x<flg; x++) {
+									printf("intersect[%ld]=%d; x_af=%lf\n",x,intersect[x],x_af[s][intersect[x]]);
+								}
 								abort = 1;
 								#pragma omp flush (abort)
 
