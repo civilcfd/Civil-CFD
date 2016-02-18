@@ -5,6 +5,8 @@
  */
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
+
 
 #include "intersections.h"
 #include "stl.h"
@@ -54,6 +56,8 @@ int intersect_area_fractions(struct mesh_data *mesh,
 
   double f;
   int f0, f1;
+  
+  int abort = 0;
 
 	#ifndef __MINGW32__
   const double emf = 0.000001;
@@ -61,323 +65,349 @@ int intersect_area_fractions(struct mesh_data *mesh,
 	const double emf = 0.0001;
 	#endif
   
+  
+#pragma omp parallel for shared (mesh) private(i, j, k, n, x, a, s, facing, flg, pt_int, \
+								 origin, r_o, v_1, v_2, v_3, x_af, intersect, o_n, \
+								 sgn_n, i_n, f, f0, f1) collapse(3)
   /* iterate through the mesh
    * we double calculate each line segment.  this could be optimized out
    * in the future, but would require more storage. */
   for(i=0; i < mesh->imax; i++) {
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {
-        
-        origin[0] = mesh->origin[0] + mesh->delx * i;
-        origin[1] = mesh->origin[1] + mesh->dely * j;
-        origin[2] = mesh->origin[2] + mesh->delz * k;
+      
+      
+      for(a=0; a<4; a++) {
+      	for(s=0; s<3; s++) {
+							x_af[s][a] = 0; 
+							intersect[a] = 0;
+				}
+			}
+      
+#pragma omp flush(abort)
+      	if(!abort) {
+				
+					origin[0] = mesh->origin[0] + mesh->delx * i;
+					origin[1] = mesh->origin[1] + mesh->dely * j;
+					origin[2] = mesh->origin[2] + mesh->delz * k;
 
-        /* need to populate ae, an and at, in that order */
-        for(n=0; n < stl->facets; n++) {
-          
-          
+					/* need to populate ae, an and at, in that order */
+					for(n=0; n < stl->facets; n++) {
+					
+					
 
-          /* iterate over each side in this order: ae, an, at */
-          for(s=0; s<3; s++) {
+						/* iterate over each side in this order: ae, an, at */
+						for(s=0; s<3; s++) {
 
-            for(a=0; a<4; a++) {
-              /* r_o vector is the relative origin for this
-               * line segment. */ 
-              r_o[0] = origin[0] + mesh->delx * o_af[s][a][0];
-              r_o[1] = origin[1] + mesh->dely * o_af[s][a][1];
-              r_o[2] = origin[2] + mesh->delz * o_af[s][a][2];
+							for(a=0; a<4; a++) {
+								/* r_o vector is the relative origin for this
+								 * line segment. */ 
+								r_o[0] = origin[0] + mesh->delx * o_af[s][a][0];
+								r_o[1] = origin[1] + mesh->dely * o_af[s][a][1];
+								r_o[2] = origin[2] + mesh->delz * o_af[s][a][2];
 
-              /* o_n is the normal vector for this line segment */
-              o_n[0] = o_af[s][a+1][0] - o_af[s][a][0];
-              o_n[1] = o_af[s][a+1][1] - o_af[s][a][1];
-              o_n[2] = o_af[s][a+1][2] - o_af[s][a][2];
+								/* o_n is the normal vector for this line segment */
+								o_n[0] = o_af[s][a+1][0] - o_af[s][a][0];
+								o_n[1] = o_af[s][a+1][1] - o_af[s][a][1];
+								o_n[2] = o_af[s][a+1][2] - o_af[s][a][2];
 
-              /* sgn_n is the sign of the vector.  this is important
-               * as the calculations change for a different sign */
-              sgn_n = o_n[0] + o_n[1] + o_n[2];
-              /* i_n is the axis of the normal vector */
-              i_n = fabs(o_n[0]) * 0 + fabs(o_n[1]) * 1 + fabs(o_n[2]) * 2;
+								/* sgn_n is the sign of the vector.  this is important
+								 * as the calculations change for a different sign */
+								sgn_n = o_n[0] + o_n[1] + o_n[2];
+								/* i_n is the axis of the normal vector */
+								i_n = fabs(o_n[0]) * 0 + fabs(o_n[1]) * 1 + fabs(o_n[2]) * 2;
 
-              if(fabs(sgn_n)>1 || i_n > 2) { 
-                printf("error: normal vector not orthoganol\n");
-                return(1);
-              }
-              
-              for(x=0; x<3; x++) {
-                v_1[x] = stl->v_1[n][x];
-                v_2[x] = stl->v_2[n][x];
-                v_3[x] = stl->v_3[n][x];
-              }
-              /*
-              if(i==7 && j==1 && k==3 && a==2 && s==0) {
-                printf("7 1 3: a==2, r_o %lf %lf %lf o_n %lf %lf %lf\n",
-                       r_o[0], r_o[1], r_o[2], o_n[0], o_n[1], o_n[2]);
+								if(fabs(sgn_n)>1 || i_n > 2) { 
+									printf("error: normal vector not orthoganol\n");
+									abort = 1;
+									#pragma omp flush (abort)
+									continue;
+								}
+							
+								for(x=0; x<3; x++) {
+									v_1[x] = stl->v_1[n][x];
+									v_2[x] = stl->v_2[n][x];
+									v_3[x] = stl->v_3[n][x];
+								}
+								/*
+								if(i==7 && j==1 && k==3 && a==2 && s==0) {
+									printf("7 1 3: a==2, r_o %lf %lf %lf o_n %lf %lf %lf\n",
+												 r_o[0], r_o[1], r_o[2], o_n[0], o_n[1], o_n[2]);
 
-                printf("7 1 3: v_1 %lf %lf %lf\n",v_1[0], v_1[1], v_1[2]);
-                printf("7 1 3: v_1 %lf %lf %lf\n",v_2[0], v_2[1], v_2[2]);
-                printf("7 1 3: v_1 %lf %lf %lf\n",v_3[0], v_3[1], v_3[2]);
+									printf("7 1 3: v_1 %lf %lf %lf\n",v_1[0], v_1[1], v_1[2]);
+									printf("7 1 3: v_1 %lf %lf %lf\n",v_2[0], v_2[1], v_2[2]);
+									printf("7 1 3: v_1 %lf %lf %lf\n",v_3[0], v_3[1], v_3[2]);
 
-              }*/
+								}*/
 
-              /* check for intersection using the moller_trubore
-               * algorithm (google for information)
-               * standard graphics algorithm to find intersection of triangle
-               * and line segment
-               *
-               * inputs are  { r_o, o_n: origin and vector of line segment
-               *             { stl->v_x: 3 points, in order, for the triangle
-               * outputs are { facing  : true if triangle normal dot product with
-               *                         o_n is negative
-               *               pt_int  : cartesian coordinate of intersecting point */
-              if((facing = moller_trumbore(r_o, o_n, v_1, 
-                       v_2, v_3, pt_int)) != 0)  {
-                
-                /*if(i==7 && j ==1 && (k ==3 || k == 0)) 
+								/* check for intersection using the moller_trubore
+								 * algorithm (google for information)
+								 * standard graphics algorithm to find intersection of triangle
+								 * and line segment
+								 *
+								 * inputs are  { r_o, o_n: origin and vector of line segment
+								 *             { stl->v_x: 3 points, in order, for the triangle
+								 * outputs are { facing  : true if triangle normal dot product with
+								 *                         o_n is negative
+								 *               pt_int  : cartesian coordinate of intersecting point */
+								if((facing = moller_trumbore(r_o, o_n, v_1, 
+												 v_2, v_3, pt_int)) != 0)  {
+								
+									/*if(i==7 && j ==1 && (k ==3 || k == 0)) 
 
-                  printf("Raw intersection %ld %ld %ld: %.20lf r_o %.10lf i_n %d s %d a %d\n", i,j,k,
-                  pt_int[i_n], r_o[i_n], i_n, s, a);*/
+										printf("Raw intersection %ld %ld %ld: %.20lf r_o %.10lf i_n %d s %d a %d\n", i,j,k,
+										pt_int[i_n], r_o[i_n], i_n, s, a);*/
 
-                f = (pt_int[i_n] - r_o[i_n])
-                    / del[i_n];
-                f *= sgn_n;
-                if(f > -1.0 * emf && f < (1+emf)) {
-                  if(f<emf) f = emf;
-                  if(f>1-emf) f = 1-emf;
-                  x_af[s][a] = f * facing * -1;
-                }
-              
-              }
-            }
+									f = (pt_int[i_n] - r_o[i_n])
+											/ del[i_n];
+									f *= sgn_n;
+									if(f > -1.0 * emf && f < (1+emf)) {
+										if(f<emf) f = emf;
+										if(f>1-emf) f = 1-emf;
+										x_af[s][a] = f * facing * -1;
+									}
+							
+								}
+							}
 
-          } 
-        
-        }
+						} 
+				
+					}
 
-        for(s=0; s<3; s++) {
+					for(s=0; s<3; s++) {
 
-#ifdef DEBUG
-          for(a=0; a<4; a++) {
-            if(x_af[s][a] !=0) 
-              printf("Intersection at %ld %ld %ld, face %d, side %d, fractional position %lf\n",
-                     i, j, k, s, a, x_af[s][a]);
-          }
-#endif
-          /* now calculate ae/an/at */
-          /* first check for multiple intersections */
+	#ifdef DEBUG
+						for(a=0; a<4; a++) {
+							if(x_af[s][a] !=0) 
+								printf("Intersection at %ld %ld %ld, face %d, side %d, fractional position %lf\n",
+											 i, j, k, s, a, x_af[s][a]);
+						}
+	#endif
+						/* now calculate ae/an/at */
+						/* first check for multiple intersections */
 
-          f = 0;
-          flg = 0;
-          for(a=0; a<4; a++) {
-            if(x_af[s][a] != 0) {
-              
-              intersect[flg] = a;
-              flg++;
-            }
+						f = 0;
+						flg = 0;
+						for(a=0; a<4; a++) {
+							if(x_af[s][a] != 0) {
+							
+								intersect[flg] = a;
+								flg++;
+							}
 
-          }
-          if(flg == 1) {
-            printf("warning: single intersection in cell: %ld %ld %ld\n", i,j,k);
-            printf("single intersections are ignored\n");
-            f = 1;
-          }
-          if(flg >2 ) {
-            /* first check if these intersections are at a shared vertex */
-            /* make correction to this special case if necessary 
-             * the correction is to use the next vertex in the series. 
-             * the area is then calculated using the adjacent intersection case
-             * consider changing to the opposite intersection case! */
-            x = 0;
-            while (x<flg)
-            {
+						}
+						if(flg == 1) {
+							printf("warning: single intersection in cell: %ld %ld %ld\n", i,j,k);
+							printf("single intersections are ignored\n");
+							f = 1;
+						}
+						if(flg >2 ) {
+							/* first check if these intersections are at a shared vertex */
+							/* make correction to this special case if necessary 
+							 * the correction is to use the next vertex in the series. 
+							 * the area is then calculated using the adjacent intersection case
+							 * consider changing to the opposite intersection case! */
+							x = 0;
+							while (x<flg)
+							{
 
-              if(fabs(x_af[s][intersect[x]]) <= emf && 
-                 fabs(x_af[s][intersect[(x-1 < 0 ? flg-1 : x-1)]]) >= 1-emf) {
-                if(x+1 < flg) {
-                  /* intersect[0] = intersect[x];
-                  intersect[1] = intersect[x+1]; */
-                  f0 = intersect[x];
-                  f1 = intersect[x+1];
+								if(fabs(x_af[s][intersect[x]]) <= emf && 
+									 fabs(x_af[s][intersect[(x-1 < 0 ? flg-1 : x-1)]]) >= 1-emf) {
+									if(x+1 < flg) {
+										/* intersect[0] = intersect[x];
+										intersect[1] = intersect[x+1]; */
+										f0 = intersect[x];
+										f1 = intersect[x+1];
 
-                  /* in some cases the above code can create mismatched
-                   * sides.  we need a check and correction */
-                  if(x_af[s][f0] * x_af[s][f1] > 0) {
-                    switch(x) {
-                    case 0:
-                      intersect[0] = intersect[1];
-                      intersect[1] = intersect[2];
-                      break;
-                    case 1:
-                      intersect[0] = intersect[0];
-                      intersect[1] = intersect[2];
-                      break;
-                    case 2:
-                      intersect[0] = intersect[1];
-                      intersect[1] = intersect[3];
-                      break; 
-                    }
-                  }
-                  /* no correction required */
-                  else {
-                    intersect[0] = f0;
-                    intersect[1] = f1;
-                  }
+										/* in some cases the above code can create mismatched
+										 * sides.  we need a check and correction */
+										if(x_af[s][f0] * x_af[s][f1] > 0) {
+											switch(x) {
+											case 0:
+												intersect[0] = intersect[1];
+												intersect[1] = intersect[2];
+												break;
+											case 1:
+												intersect[0] = intersect[0];
+												intersect[1] = intersect[2];
+												break;
+											case 2:
+												intersect[0] = intersect[1];
+												intersect[1] = intersect[3];
+												break; 
+											}
+										}
+										/* no correction required */
+										else {
+											intersect[0] = f0;
+											intersect[1] = f1;
+										}
 
-                  flg=2;
-                  x=5;
-                  break;
-                }
-                else if(x-2 > -1) {
-                  f0 = intersect[x-2];
-                  f1 = intersect[x];
-                  
-                  /* again, correct for mismatching if necessary */
-                  if(x_af[s][f0] * x_af[s][f1] > 0) {
-                    switch(x) {
-                    case 2:
-                      intersect[0] = intersect[0]; /* for readability */
-                      intersect[1] = intersect[1];
-                      break;
-                    case 3:
-                      printf("error: cannot correct mismatch in cell %ld %ld %ld.  exiting.\n", i, j, k);
-                      return(1);
-                      break;
-                    }
-                  }
-                  else {
-                    intersect[0] = f0;
-                    intersect[1] = f1;
-                  }
-                  flg=2;
-                  x=5;
-                  break;
-                }
-              }
-              x++;
-            }
-            /* second, another special case exists where one intersection is 
-             * at the end of the side (i.e. fractional position is 1-emf or
-             * emf ).  in this case, we should ignore this edge */
-            if(x!=5) {
-              x = 0;
-              while (x<flg)
-              {
-                if(fabs(x_af[s][intersect[x]]) >= (1 - emf) ||
-                   fabs(x_af[s][intersect[x]]) <= emf) {
-                  switch(x) {
-                  case 0:
-                    intersect[x]   = intersect[x+1];
-                    intersect[x+1] = intersect[x+2];
-                    break;
-                  case 1:
-                    intersect[x]   = intersect[x+1];
-                    break;
-                  }
-                  flg=2;
-                  x=5;
-                  break;
-                }
-								/* else
-								**	printf("fabs: %e %d\n",fabs(x_af[s][intersect[x]]),  fabs(x_af[s][intersect[x]]) >= (1 - emf) );
-								**/
-                x++;
-              }
-            }
-            /*if(flg >2  &&
-               (x_af[s][intersect[1]]-x_af[s][intersect[0]] <= -1 + 2.0 * emf || 
-                x_af[s][intersect[1]]-x_af[s][intersect[0]] >= 1 - 2.0 * emf)) {
-               * special case of line crossing two opposing vertices *
-               intersect[1] = intersect[2];
-               flg = 2;
-            }*/
+										flg=2;
+										x=5;
+										break;
+									}
+									else if(x-2 > -1) {
+										f0 = intersect[x-2];
+										f1 = intersect[x];
+									
+										/* again, correct for mismatching if necessary */
+										if(x_af[s][f0] * x_af[s][f1] > 0) {
+											switch(x) {
+											case 2:
+												intersect[0] = intersect[0]; /* for readability */
+												intersect[1] = intersect[1];
+												break;
+											case 3:
+												printf("error: cannot correct mismatch in cell %ld %ld %ld.  exiting.\n", i, j, k);
+												abort = 1;
+												#pragma omp flush (abort)
+												break;
+											}
+										}
+										else {
+											intersect[0] = f0;
+											intersect[1] = f1;
+										}
+										flg=2;
+										x=5;
+										break;
+									}
+								}
+								x++;
+							}
+							/* second, another special case exists where one intersection is 
+							 * at the end of the side (i.e. fractional position is 1-emf or
+							 * emf ).  in this case, we should ignore this edge */
+							if(x!=5) {
+								x = 0;
+								while (x<flg)
+								{
+									if(fabs(x_af[s][intersect[x]]) >= (1 - emf) ||
+										 fabs(x_af[s][intersect[x]]) <= emf) {
+										switch(x) {
+										case 0:
+											intersect[x]   = intersect[x+1];
+											intersect[x+1] = intersect[x+2];
+											break;
+										case 1:
+											intersect[x]   = intersect[x+1];
+											break;
+										}
+										flg=2;
+										x=5;
+										break;
+									}
+									/* else
+									**	printf("fabs: %e %d\n",fabs(x_af[s][intersect[x]]),  fabs(x_af[s][intersect[x]]) >= (1 - emf) );
+									**/
+									x++;
+								}
+							}
+							/*if(flg >2  &&
+								 (x_af[s][intersect[1]]-x_af[s][intersect[0]] <= -1 + 2.0 * emf || 
+									x_af[s][intersect[1]]-x_af[s][intersect[0]] >= 1 - 2.0 * emf)) {
+								 * special case of line crossing two opposing vertices *
+								 intersect[1] = intersect[2];
+								 flg = 2;
+							}*/
 
-            if(x!=5) {
-              printf("error: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
-              return(1);
-            }
-          }
+							if(x!=5) {
+								printf("error: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
+								abort = 1;
+								#pragma omp flush (abort)
 
-          
-          /* this is the adjacent intersection case */
-          if((intersect[1] - intersect[0]) == 1 && flg==2) {
-            f = ((1- fabs(x_af[s][intersect[0]])) * fabs(x_af[s][intersect[1]]))/2;
-            printf("%ld %ld %ld: f %lf intersect[0] %d intersect[1] %d\n", i, j, k, 
-                    f, intersect[0], intersect[1]);
-            if(x_af[s][intersect[0]] <= emf && x_af[s][intersect[1]] > 0)
-              f = 1-f;
-            if(f > emf && f < 1-emf &&
-               x_af[s][intersect[0]] * x_af[s][intersect[1]] > 0) {
-              printf("error: triangle orientation mismatch in cell %ld %ld %ld\n", i,j,k);
-              return(1);
-            }
+							}
+						}
 
-          }
-          /* in this case, the intersections are on two opposing sides */
-          else if((intersect[1] - intersect[0])  == 2 && flg==2) {
-            f = (fabs(x_af[s][intersect[0]]) + (1-fabs(x_af[s][intersect[1]])))/2;
-            if(x_af[s][intersect[0]] > 0 && x_af[s][intersect[1]] < 0)
-              f = 1 - f; 
-            
-            else if(!(x_af[s][intersect[0]] < 0 && x_af[s][intersect[1]] > 0)) {
-              printf("error: direction mismatch in cel: %ld %ld %ld\n", i, j, k);
-              return(1);
-            }
+					
+						/* this is the adjacent intersection case */
+						if((intersect[1] - intersect[0]) == 1 && flg==2) {
+							f = ((1- fabs(x_af[s][intersect[0]])) * fabs(x_af[s][intersect[1]]))/2;
+							printf("%ld %ld %ld: f %lf intersect[0] %d intersect[1] %d\n", i, j, k, 
+											f, intersect[0], intersect[1]);
+							if(x_af[s][intersect[0]] <= emf && x_af[s][intersect[1]] > 0)
+								f = 1-f;
+							if(f > emf && f < 1-emf &&
+								 x_af[s][intersect[0]] * x_af[s][intersect[1]] > 0) {
+								printf("error: triangle orientation mismatch in cell %ld %ld %ld\n", i,j,k);
+								abort = 1;
+								#pragma omp flush (abort)
+							}
 
-            if(!((intersect[0] == 0 && intersect[1] == 2) ||
-                 (intersect[0] == 1 && intersect[1] == 3))) { 
-              printf("error: intersection point mismatch in cell: %ld %ld %ld\n", i, j, k);
-              printf("intersection points are: %d %d\n", intersect[0], intersect[1]);
-              return(1);
-            }
+						}
+						/* in this case, the intersections are on two opposing sides */
+						else if((intersect[1] - intersect[0])  == 2 && flg==2) {
+							f = (fabs(x_af[s][intersect[0]]) + (1-fabs(x_af[s][intersect[1]])))/2;
+							if(x_af[s][intersect[0]] > 0 && x_af[s][intersect[1]] < 0)
+								f = 1 - f; 
+						
+							else if(!(x_af[s][intersect[0]] < 0 && x_af[s][intersect[1]] > 0)) {
+								printf("error: direction mismatch in cel: %ld %ld %ld\n", i, j, k);
+								abort = 1;
+								#pragma omp flush (abort)
+							}
 
-          }
-          /* again, adjacent intersection, but the intersections are side
-           * 3 and side 0 */
-          else if((intersect[1] - intersect[0]) == 3 && flg==2) {
-            f = (fabs(x_af[s][intersect[0]]) * (1-fabs(x_af[s][intersect[1]])))/2;
-            printf("%ld %ld %ld: f %lf intersect[0] %d intersect[1] %d\n", i, j, k, 
-                    f, intersect[0], intersect[1]);
-            if(x_af[s][intersect[0]] > 0 && x_af[s][intersect[1]] <= emf) 
-              f = 1-f;
-            if(f > emf && f < 1-emf && 
-               x_af[s][intersect[0]] * x_af[s][intersect[1]] > 0) {
-              printf("error: triangle orientation mismatch in cell %ld %ld %ld\n", i,j,k);
-              return(1);
-            }
+							if(!((intersect[0] == 0 && intersect[1] == 2) ||
+									 (intersect[0] == 1 && intersect[1] == 3))) { 
+								printf("error: intersection point mismatch in cell: %ld %ld %ld\n", i, j, k);
+								printf("intersection points are: %d %d\n", intersect[0], intersect[1]);
+								abort = 1;
+								#pragma omp flush (abort)
+							}
 
-          }
-        
-          switch (s) {
-          case 0:
-            mesh->ae[mesh_index(mesh, i, j, k)] = f;
-            break;
-          case 1:
-            mesh->an[mesh_index(mesh, i, j, k)] = f;
-            break;
-          case 2:
-            mesh->at[mesh_index(mesh, i, j, k)] = f;
-            break;
-          }
+						}
+						/* again, adjacent intersection, but the intersections are side
+						 * 3 and side 0 */
+						else if((intersect[1] - intersect[0]) == 3 && flg==2) {
+							f = (fabs(x_af[s][intersect[0]]) * (1-fabs(x_af[s][intersect[1]])))/2;
+							printf("%ld %ld %ld: f %lf intersect[0] %d intersect[1] %d\n", i, j, k, 
+											f, intersect[0], intersect[1]);
+							if(x_af[s][intersect[0]] > 0 && x_af[s][intersect[1]] <= emf) 
+								f = 1-f;
+							if(f > emf && f < 1-emf && 
+								 x_af[s][intersect[0]] * x_af[s][intersect[1]] > 0) {
+								printf("error: triangle orientation mismatch in cell %ld %ld %ld\n", i,j,k);
+								abort = 1;
+								#pragma omp flush (abort)
 
-  #ifdef DEBUG
-          if(f > 0 && f < 1) {
-            printf("Area fraction in cell: %ld %ld %ld equals %lf | side: %d\n",
-                   i,j,k,f,s);
-            printf("Intersect[0] Intersect[1] flg: %d %d %d\n",intersect[0],intersect[1],flg);
-          }
-  #endif
+							}
 
-          /* now clear the intersections once they have been used to
-           * calculate ae/an/at */
-          for(a=0; a<4; a++) {
-            x_af[s][a] = 0; 
-            intersect[a] = 0;
-          }
-        }
-      }
-    }
-  }
+						}
+				
+						switch (s) {
+						case 0:
+							mesh->ae[mesh_index(mesh, i, j, k)] = f;
+							break;
+						case 1:
+							mesh->an[mesh_index(mesh, i, j, k)] = f;
+							break;
+						case 2:
+							mesh->at[mesh_index(mesh, i, j, k)] = f;
+							break;
+						}
 
-  return(0);
+		#ifdef DEBUG
+						if(f > 0 && f < 1) {
+							printf("Area fraction in cell: %ld %ld %ld equals %lf | side: %d\n",
+										 i,j,k,f,s);
+							printf("Intersect[0] Intersect[1] flg: %d %d %d\n",intersect[0],intersect[1],flg);
+						}
+		#endif
+
+						/* now clear the intersections once they have been used to
+						 * calculate ae/an/at */
+						for(a=0; a<4; a++) {
+							x_af[s][a] = 0; 
+							intersect[a] = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return(abort);
 }
 
 #define SAME_CLOCKNESS  1

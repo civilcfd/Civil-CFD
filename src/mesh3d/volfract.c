@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 
 #include "stl.h"
 #include "mesh.h"
@@ -52,40 +53,40 @@ int volume_fractions(struct mesh_data *mesh,
    *
    * i find a simple mesh with 1 million cells takes approx 10 mins with this
    * code on 2012 gamer hardware */
-
-  for(i=0; i < mesh->imax; i++) {
-    for(j=0; j < mesh->jmax; j++) {
-      for(k=0; k < mesh->kmax; k++) {
-        
-        if((flg = tet_fraction(mesh, stl, i, j, k))==2) {
-          if(!line_pent_fraction(mesh, stl, i, j, k))
-            if(!face_hex_fraction(mesh, stl, i, j, k))
-              if(!vertex_pent_fraction(mesh, stl, i, j, k))
-                if(!vertex_hex_fraction(mesh, stl, i, j, k))
+#pragma omp parallel for shared (mesh) private(i,j,k,flg) 
+	for(i=0; i < mesh->imax; i++) {
+		for(j=0; j < mesh->jmax; j++) {
+			for(k=0; k < mesh->kmax; k++) {
+			
+				if((flg = tet_fraction(mesh, stl, i, j, k))==2) {
+					if(!line_pent_fraction(mesh, stl, i, j, k))
+						if(!face_hex_fraction(mesh, stl, i, j, k))
+							if(!vertex_pent_fraction(mesh, stl, i, j, k))
+								if(!vertex_hex_fraction(mesh, stl, i, j, k))
 									if(!vertex_qhull_fraction(mesh, stl, i, j, k)) 
 									{
 										printf("warning: volume_fractions found intersections but no suitable primitives to calculate volume in cell %ld %ld %ld\n",i,j,k);
 										flg=0;
 									}
 
-        /* TODO:
-         * Code should include area fraction corrections for some of the
-         * primitives.  For example, line_pent_fraction can correct
-         * the area fractions, which will be incorrectly approximated
-         * in "intersections.c" 
-         *
-         * It may make sense to calculate area fractions for all primitives
-         * and use it as a debug error check against intersections.c
-         * */
+				/* TODO:
+				 * Code should include area fraction corrections for some of the
+				 * primitives.  For example, line_pent_fraction can correct
+				 * the area fractions, which will be incorrectly approximated
+				 * in "intersections.c" 
+				 *
+				 * It may make sense to calculate area fractions for all primitives
+				 * and use it as a debug error check against intersections.c
+				 * */
 
-        }
-        if(flg == 0) {
-          mesh->fv[mesh_index(mesh, i, j, k)] = 0;
-        }
+				}
+				if(flg == 0) {
+					mesh->fv[mesh_index(mesh, i, j, k)] = 0;
+				}
 
-      }
-    }
-  }
+			}
+		}
+	}
 
   return 0;
 }
@@ -114,6 +115,7 @@ int vertex_qhull_fraction(struct mesh_data *mesh, struct stl_data *stl, long int
 
   const double del[3] = { mesh->delx, mesh->dely, mesh->delz };
 	
+
 	#ifndef __MINGW32__
   const double emf = 0.000001;
 	#else
@@ -179,11 +181,13 @@ int vertex_qhull_fraction(struct mesh_data *mesh, struct stl_data *stl, long int
 							for(x=0; x<3; x++) {
 								if((pt_int[x] - origin[x]) > (v_list[v][x] - emf) && (pt_int[x]-origin[x]) < (v_list[v][x] + emf)) {
 									flg++;
+
 								}
 							}
 							if (flg<3) flg=0;
 							else break;
 							
+
 						}
 						
 						if(flg < 3) { /* non-duplicate entry.  Add to list */
@@ -195,6 +199,7 @@ int vertex_qhull_fraction(struct mesh_data *mesh, struct stl_data *stl, long int
 							if(v_index >= 32) {
 								printf("error: impossibly high number of intersections at cell %ld %ld %ld.  Skipping", i, j, k);
 								return 0;
+
 							}
 						}
 
@@ -208,6 +213,7 @@ int vertex_qhull_fraction(struct mesh_data *mesh, struct stl_data *stl, long int
 	
 	if(v_vertices == v_index) {
 		printf("warning: vertices outside the mesh without intersections at cell %ld %ld %ld.", i, j, k);
+
 	}
 	
 	f = qhull_volume(v_list, v_index);
