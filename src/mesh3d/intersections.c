@@ -411,9 +411,10 @@ int intersect_area_fractions(struct mesh_data *mesh,
 								f = 1 - f; 
 						
 							else if(!(x_af[s][intersect[0]] < 0 && x_af[s][intersect[1]] > 0)) {
-								printf("error: direction mismatch in cel: %ld %ld %ld\n", i, j, k);
-								abort = 1;
-								#pragma omp flush (abort)
+								printf("warning: direction mismatch in cell: %ld %ld %ld\n", i, j, k);
+								/* abort = 1;
+								#pragma omp flush (abort) */
+								f = 0;
 							}
 
 							if(!((intersect[0] == 0 && intersect[1] == 2) ||
@@ -457,7 +458,7 @@ int intersect_area_fractions(struct mesh_data *mesh,
 
 		#ifdef DEBUG
 						if(f > 0 && f < 1) {
-							printf("Area fraction in cell: %ld %ld %ld equals %lf | side: %d\n",
+							printf("Area fraction in cell: %ld %ld %ld equals %lf | face: %d\n",
 										 i,j,k,f,s);
 							printf("Intersect[0] Intersect[1] flg: %d %d %d\n",intersect[0],intersect[1],flg);
 						}

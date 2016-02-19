@@ -8,6 +8,7 @@
 #include "volfract.h"
 #include "vtk.h"
 #include "csv.h"
+#include "markcells.h"
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +43,11 @@ int main(int argc, char *argv[])
   if(read_stl(stl, argv[2])==1) return 1;  
 
   if(!stl_check(stl)) return 1;
+  
+  printf("Marking cells with no intersections\n");
+  
+  if(markcells_initialize(mesh,stl)==1) return 1;
+  exit(0);
 
   printf("Calculating area fractions\n");
 
