@@ -93,7 +93,7 @@ int markcells_initialize(struct mesh_data *mesh,
 }
 
 int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
-	double a, b, c, d, e, f, det, s, t, sqrDistance;
+	double a, b, c, d, e, f, det, s, t, sqrDistance, tmp0, tmp1, numer, denom, invdet;
 	double BB[3], E0[3], E1[3], DD[3];
 
 	/* rewrite triangle in normal form */
@@ -130,34 +130,7 @@ int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 
 	/* % Terible tree of conditionals to determine in which region of the diagram
 	% shown above the projection of the point into the triangle-plane lies. */
-	 /*if (s+t) <= det
-		if s < 0
-			if t < 0
-				%region4
-				if (d < 0)
-					t = 0;
-					if (-d >= a)
-						s = 1;
-						sqrDistance = a + 2*d + f;
-					else
-						s = -d/a;
-						sqrDistance = d*s + f;
-					end
-				else
-					s = 0;
-					if (e >= 0)
-						t = 0;
-						sqrDistance = f;
-					else
-						if (-e >= c)
-							t = 1;
-							sqrDistance = c + 2*e + f;
-						else
-							t = -e/c;
-							sqrDistance = e*t + f;
-						end
-					end
-				end %of region 4 */
+
 	if( s + t ) <= det {
 		if(s<0) {
 			if(t<0) { /*region 4*/
@@ -185,134 +158,132 @@ int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 						}
 					}
 				} /* end of region 4 */
-			else
-				% region 3
+		 	} else { /* region 3 */
 				s = 0;
-				if e >= 0
+				if(e >= 0) {
 					t = 0;
-					sqrDistance = f;
-				else
-					if -e >= c
+					sqrDistance =f;
+				} else {
+					if( -1.0 * e >= c ) {
 						t = 1;
-						sqrDistance = c + 2*e +f;
-					else
-						t = -e/c;
-						sqrDistance = e*t + f;
-					end
-				end
-			end %of region 3 
-		else
-			if t < 0
-				% region 5
+						sqrDistance = c + 2*e + f;
+					} else {
+						t = -1.0 * e / c;
+						sqrDistance = e * t + f;
+					}
+				}
+			} /* end of region 3 */	 
+		} else {
+			if(t < 0) { /* region 5 */
 				t = 0;
-				if d >= 0
+				if(d >= 0) {
 					s = 0;
 					sqrDistance = f;
-				else
-					if -d >= a
+				} else {
+					if(-1.0 * d >= a) {
 						s = 1;
-						sqrDistance = a + 2*d + f;% GF 20101013 fixed typo d*s ->2*d
-					else
-						s = -d/a;
-						sqrDistance = d*s + f;
-					end
-				end
-			else
-				% region 0
+						sqrDistance = a + 2*d + f; 
+					} else {
+						s = -1.0 * d / a;
+						sqrDistance = d * s + f;
+					}
+				} /* end region 5 */
+			} else { /* region 0 */
 				invDet = 1/det;
 				s = s*invDet;
 				t = t*invDet;
-				sqrDistance = s*(a*s + b*t + 2*d) ...
-										+ t*(b*s + c*t + 2*e) + f;
-			end
-		end
-	else
-		if s < 0
-			% region 2
+				sqrDistance = s*(a*s + b*t + 2*d) \
+										+ t*(b*s + c*t + 2*e) + f;				
+			}
+		}
+	} else {
+		if(s < 0) {  /* region 2 */ 
 			tmp0 = b + d;
-			tmp1 = c + e;
-			if tmp1 > tmp0 % minimum on edge s+t=1
+			tmp1 = c + d;
+			if(tmp1 > tmp0) {
 				numer = tmp1 - tmp0;
 				denom = a - 2*b + c;
-				if numer >= denom
+				if(numer >= denom) {
 					s = 1;
 					t = 0;
-					sqrDistance = a + 2*d + f; % GF 20101014 fixed typo 2*b -> 2*d
-				else
-					s = numer/denom;
-					t = 1-s;
-					sqrDistance = s*(a*s + b*t + 2*d) ...
-											+ t*(b*s + c*t + 2*e) + f;
-				end
-			else          % minimum on edge s=0
+					sqrDistance = a + 2*d + f;
+				} else {
+					s = numer / denom;
+					t = 1 - s;
+					sqrDistance = s * (a*s + b*t + 2*d) \
+											+ t * (b*s + c*t + 2*e) + f;
+				}
+			} else {
 				s = 0;
-				if tmp1 <= 0
+				if(tmp1 <= 0) {
 					t = 1;
 					sqrDistance = c + 2*e + f;
-				else
-					if e >= 0
-						t = 0;
+				} else {
+					if(e >= 0) {
+						t=0;
 						sqrDistance = f;
-					else
-						t = -e/c;
-						sqrDistance = e*t + f;
-					end
-				end
-			end %of region 2
-		else
-			if t < 0
-				%region6 
+					} else {
+						t = -1.0 * e / c;
+						sqrDistance = e * t + f;
+					}
+				}
+			} /* end of region 2*/
+		} else {
+			if(t < 0) {
+				/* region 6 */
 				tmp0 = b + e;
 				tmp1 = a + d;
-				if (tmp1 > tmp0)
+				if(tmp1 > tmp 0) {
 					numer = tmp1 - tmp0;
-					denom = a-2*b+c;
-					if (numer >= denom)
+					denom = a - 2*b + c;
+					if(numer >= denom) {
 						t = 1;
 						s = 0;
 						sqrDistance = c + 2*e + f;
-					else
-						t = numer/denom;
+					} else {
+						t = numer / denom;
 						s = 1 - t;
-						sqrDistance = s*(a*s + b*t + 2*d) ...
-												+ t*(b*s + c*t + 2*e) + f;
-					end
-				else  
+						sqrDistance = s * (a*s + b*t + 2*d) \
+											  + t * (b*s + c*t + 2*e) + f;
+					}
+				} else {
 					t = 0;
-					if (tmp1 <= 0)
-							s = 1;
-							sqrDistance = a + 2*d + f;
-					else
-						if (d >= 0)
-								s = 0;
-								sqrDistance = f;
-						else
-								s = -d/a;
-								sqrDistance = d*s + f;
-						end
-					end
-				end
-				%end region 6
-			else
-				% region 1
+					if(tmp1 <= 0) {
+						s = 1;
+						sqrDistance = a + 2*d + f;
+					} else {
+						if(d >= 0) {
+							s = 0;
+							sqrDistance = f;
+						} else {
+							s = -1.0 * d/a;
+							sqrDistance = d*s + f;
+						}
+					}
+				}/*end of region 6 */
+			} else { /* region 1 */
 				numer = c + e - b - d;
-				if numer <= 0
+				if(numer <= 0) {
 					s = 0;
 					t = 1;
 					sqrDistance = c + 2*e + f;
-				else
+				} else {
 					denom = a - 2*b + c;
-					if numer >= denom
+					if(numer >= denom) {
 						s = 1;
 						t = 0;
 						sqrDistance = a + 2*d + f;
-					else
-						s = numer/denom;
+					} else {
+						s = numer / denom;
 						t = 1-s;
-						sqrDistance = s*(a*s + b*t + 2*d) ...
-												+ t*(b*s + c*t + 2*e) + f;
-					end
-				end %of region 1
+						sqrDistance = s * (a*s + b*t + 2*d) \
+												+ t * (b*s + c*t + 2*e) + f;
+					}
+				} /*end of region 1 */
+			}
+		}
+	}
+/*			
 			end
 		end
 	end
@@ -320,16 +291,23 @@ int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 	% account for numerical round-off error
 	if (sqrDistance < 0)
 		sqrDistance = 0;
-	end
+	end */
+	
+	if(sqrDistance < 0) {
+		sqrDistance = 0;
+	}
+	
+	return(sqrt(sqrDistance)); 
+	
+	/*
 
 	dist = sqrt(sqrDistance);
 
 	if nargout>1
 		PP0 = B + s*E0 + t*E1;
-	end
-
-
+	end*/
 }
+
 
 
 
