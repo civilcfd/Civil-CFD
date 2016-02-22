@@ -3,6 +3,12 @@
 #ifndef _VECTOR_MACROS_H
 #define _VECTOR_MACROS_H
 
+#define vector_copy(a,b) \
+	(a)[0] = (b)[0]; \
+	(a)[1] = (b)[1]; \
+  (a)[2] = (b)[2];
+
+
 #define vector_add(a,b,c) \
   (a)[0] = (b)[0] + (c)[0]; \
   (a)[1] = (b)[1] + (c)[1]; \
