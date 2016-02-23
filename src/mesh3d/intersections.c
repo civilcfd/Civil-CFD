@@ -11,6 +11,7 @@
 #include "intersections.h"
 #include "stl.h"
 #include "mesh.h"
+#include "markcells.h"
 
 #include "vector_macros.h"
 
@@ -68,7 +69,7 @@ int intersect_area_fractions(struct mesh_data *mesh,
   
 #pragma omp parallel for shared (mesh) private(i, j, k, n, x, a, s, facing, flg, pt_int, \
 								 origin, r_o, v_1, v_2, v_3, x_af, intersect, o_n, \
-								 sgn_n, i_n, f, f0, f1) collapse(3)
+								 sgn_n, i_n, f, f0, f1) collapse(3) schedule(dynamic, 500)
   /* iterate through the mesh
    * we double calculate each line segment.  this could be optimized out
    * in the future, but would require more storage. */
@@ -78,6 +79,8 @@ int intersect_area_fractions(struct mesh_data *mesh,
       
 #pragma omp flush(abort)
       	if(!abort) {
+      	
+      	if(!markcells_check(mesh_index(mesh,i,j,k))) continue;
 
 					for(a=0; a<4; a++) {
 						for(s=0; s<3; s++) {
@@ -378,12 +381,13 @@ int intersect_area_fractions(struct mesh_data *mesh,
 							
 							
 							if(x!=5) {
-								printf("error: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
+								printf("warning: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
 								for(x=0; x<flg; x++) {
 									printf("intersect[%ld]=%d; x_af=%lf\n",x,intersect[x],x_af[s][intersect[x]]);
 								}
-								abort = 1;
-								#pragma omp flush (abort)
+								/* abort = 1;
+								#pragma omp flush (abort) */
+								f=0;
 
 							}
 						}

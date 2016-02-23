@@ -53,10 +53,12 @@ int volume_fractions(struct mesh_data *mesh,
    *
    * i find a simple mesh with 1 million cells takes approx 10 mins with this
    * code on 2012 gamer hardware */
-#pragma omp parallel for shared (mesh) private(i,j,k,flg) 
+#pragma omp parallel for shared (mesh) private(i,j,k,flg) schedule(dynamic, 300)
 	for(i=0; i < mesh->imax; i++) {
 		for(j=0; j < mesh->jmax; j++) {
 			for(k=0; k < mesh->kmax; k++) {
+			
+				if(!markcells_check(mesh_index(mesh,i,j,k))) continue;
 			
 				if((flg = tet_fraction(mesh, stl, i, j, k))==2) {
 					if(!line_pent_fraction(mesh, stl, i, j, k))

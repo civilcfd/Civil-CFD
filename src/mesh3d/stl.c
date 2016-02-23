@@ -60,7 +60,7 @@ int stl_check(struct stl_data *stl) {
 }
 
 int stl_set_value(struct stl_data *stl, int dims, 
-                   char (*args)[256], int state) {
+                   char (*args)[256], int state, double *limits) {
   
   /* states are as follows:
    * -1 = error
@@ -169,7 +169,12 @@ int stl_set_value(struct stl_data *stl, int dims,
     }
 
     state=0;
-    stl->facets++;
+    if((stl->v_1[facet][0] > limits[0] && stl->v_2[facet][0] > limits[0] && stl->v_3[facet][0] > limits[0]) ||
+       (stl->v_1[facet][1] > limits[1] && stl->v_2[facet][1] > limits[1] && stl->v_3[facet][1] > limits[1]) ||
+       (stl->v_1[facet][2] > limits[2] && stl->v_2[facet][2] > limits[2] && stl->v_3[facet][2] > limits[2])) {
+    } else {
+    	stl->facets++;
+    }
   } 
   
   return state;

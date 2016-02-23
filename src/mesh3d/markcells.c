@@ -17,6 +17,10 @@
 
 static int *marked_cells;
 
+int markcells_check(long int n) {
+	return(marked_cells[n]);
+}
+
 int markcells_initialize(struct mesh_data *mesh, 
                          struct stl_data *stl) {
 
@@ -47,7 +51,7 @@ int markcells_initialize(struct mesh_data *mesh,
 	}
 	
 #pragma omp parallel for shared (marked_cells, count) private(i, j, k, n, v_1, v_2, v_3, \
-							 dotp, norm, p, dist, v, s, x) collapse(3) 
+							 dotp, norm, p, dist, v, s, x) collapse(3) schedule(static)
   for(i=0; i < mesh->imax; i++) {
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {
@@ -64,12 +68,8 @@ int markcells_initialize(struct mesh_data *mesh,
 						p[0] = mesh->origin[0] + mesh->delx * i + mesh->delx/2;		
 						p[1] = mesh->origin[1] + mesh->dely * j + mesh->dely/2;		
 						p[2] = mesh->origin[2] + mesh->delz * k + mesh->delz/2;	
-						
-						vector_subtract(v, p, v_1);					
-						dotp = inner_product(v, norm);
-						dotp = dotp * -1.0;
-						vector_multiply(s, norm, dotp);
-						dist = vector_magnitude(s);
+
+						dist = markcells_dist_tri_point(p, v_1, v_2, v_3);
 						/* vector_add(v, s, p); */
 						
 						/* ok s is the vector from the point to the plane described by the triangle */
@@ -93,7 +93,7 @@ int markcells_initialize(struct mesh_data *mesh,
 }
 
 int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
-	double a, b, c, d, e, f, det, s, t, sqrDistance, tmp0, tmp1, numer, denom, invdet;
+	double a, b, c, d, e, f, det, s, t, sqrDistance, tmp0, tmp1, numer, denom, invDet;
 	double BB[3], E0[3], E1[3], DD[3];
 
 	/* rewrite triangle in normal form */
@@ -114,7 +114,7 @@ int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 	d = dot(E0,D);
 	e = dot(E1,D);
 	f = dot(D,D); */
-	DD = vector_subtract(BB, p);
+	vector_subtract(DD, BB, p);
 	a = inner_product(E0, E0);
 	b = inner_product(E0, E1);
 	c = inner_product(E1, E1);
@@ -125,13 +125,14 @@ int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 	/* det = a*c - b*b; % do we have to use abs here?
 	s   = b*e - c*d;
 	t   = b*d - a*e; */
+	det = a * c - b * b;
 	s = b * e - c * d;
 	t = b * d - a * e;
 
 	/* % Terible tree of conditionals to determine in which region of the diagram
 	% shown above the projection of the point into the triangle-plane lies. */
 
-	if( s + t ) <= det {
+	if(( s + t ) <= det) {
 		if(s<0) {
 			if(t<0) { /*region 4*/
 				if(d<0) {
@@ -233,7 +234,7 @@ int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 				/* region 6 */
 				tmp0 = b + e;
 				tmp1 = a + d;
-				if(tmp1 > tmp 0) {
+				if(tmp1 > tmp0) {
 					numer = tmp1 - tmp0;
 					denom = a - 2*b + c;
 					if(numer >= denom) {

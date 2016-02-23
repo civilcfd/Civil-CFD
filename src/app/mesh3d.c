@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 {
   struct mesh_data *mesh;
   struct stl_data *stl; 
+  double limits[3];
 
   printf("mesh3d: fractional area volume mesh generator\n");
 
@@ -40,14 +41,17 @@ int main(int argc, char *argv[])
 
   stl = stl_init_empty(); 
 
-  if(read_stl(stl, argv[2])==1) return 1;  
+	limits[0] = mesh->origin[0] + mesh->delx * (mesh->imax + 1) + 0.0001;
+	limits[1] = mesh->origin[1] + mesh->dely * (mesh->jmax + 1) + 0.0001;
+	limits[2] = mesh->origin[2] + mesh->delz * (mesh->kmax + 1) + 0.0001;
+  if(read_stl(stl, argv[2], limits)==1) return 1;  
 
   if(!stl_check(stl)) return 1;
   
   printf("Marking cells with no intersections\n");
   
   if(markcells_initialize(mesh,stl)==1) return 1;
-  exit(0);
+  /* exit(0); */
 
   printf("Calculating area fractions\n");
 

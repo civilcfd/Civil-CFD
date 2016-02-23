@@ -35,7 +35,7 @@ struct stl_data {
 struct stl_data *stl_init_empty();
 
 int stl_set_value(struct stl_data *stl, int dims, 
-                   char (*args)[256], int state);
+                   char (*args)[256], int state, double *limits);
 
 int stl_check(struct stl_data *stl);
 

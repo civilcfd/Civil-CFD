@@ -19,4 +19,8 @@
 int markcells_initialize(struct mesh_data *mesh, 
                          struct stl_data *stl);
 
+int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3);
+
+int markcells_check(long int n);
+
 #endif

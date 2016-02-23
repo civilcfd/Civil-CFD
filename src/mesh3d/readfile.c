@@ -119,7 +119,7 @@ int read_mesh(struct mesh_data *mesh, char *filename)
   return 0;
 }
 
-int read_stl(struct stl_data *stl, char *filename) {
+int read_stl(struct stl_data *stl, char *filename, double *limits) {
 
   FILE *fp;
 
@@ -169,7 +169,7 @@ int read_stl(struct stl_data *stl, char *filename) {
              args[0], args[1], args[2], args[3], args[4]);
     #endif
 
-    state = stl_set_value(stl, nargs, args, state); 
+    state = stl_set_value(stl, nargs, args, state, limits); 
   }
 
   fclose(fp);
