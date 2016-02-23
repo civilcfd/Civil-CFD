@@ -12,6 +12,7 @@
 #include "intersections.h"
 #include "volfract.h"
 #include "qh_interface.h"
+#include "markcells.h"
 
 #define vector_add(a,b,c) \
   (a)[0] = (b)[0] + (c)[0]; \
