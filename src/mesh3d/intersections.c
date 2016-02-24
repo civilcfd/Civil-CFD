@@ -69,7 +69,7 @@ int intersect_area_fractions(struct mesh_data *mesh,
   
 #pragma omp parallel for shared (mesh) private(i, j, k, n, x, a, s, facing, flg, pt_int, \
 								 origin, r_o, v_1, v_2, v_3, x_af, intersect, o_n, \
-								 sgn_n, i_n, f, f0, f1) collapse(3) schedule(dynamic, 500)
+								 sgn_n, i_n, f, f0, f1) collapse(3) schedule(dynamic, 100)
   /* iterate through the mesh
    * we double calculate each line segment.  this could be optimized out
    * in the future, but would require more storage. */
