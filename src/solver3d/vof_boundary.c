@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 #include "vtk.h"
 #include "vof.h"
@@ -213,7 +214,7 @@ int boundary_mass_inflow(struct solver_data *solver,
     break;
   }
   
-  
+
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {  
@@ -330,6 +331,7 @@ int boundary_mass_outflow(struct solver_data *solver,
   }
   
   
+
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {  
@@ -427,6 +429,8 @@ int boundary_fixed_velocity(struct solver_data *solver,
   
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
   
+  #pragma omp parallel for shared (solver, imin, jmin, kmin, imax, jmax, kmax, value, turbulence) \
+              private(i,j,k) collapse(3) schedule(static)
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {   
@@ -577,7 +581,9 @@ int vof_boundaries(struct solver_data *solver) {
   const int ndim[3][3] = { {  0,1,1 }, { 1,0,1 }, { 1,1,0 } };
   const int odim[3][3] = { {  1,0,0 }, { 0,1,0 }, { 0,0,1 } };
   double denom;
-
+  
+#pragma omp parallel for shared (solver, ndim, odim) private(i,j,k,l,m,n,o,p,q,x) \
+            collapse(3) schedule(dynamic, 100)
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
@@ -677,6 +683,8 @@ int vof_boundaries(struct solver_data *solver) {
   if(solver->p_flag != 0) return 0;      
         
   /* Free surface and sloped boundary conditions */
+  #pragma omp parallel for shared (solver, ndim, odim) private(i,j,k,l,m,n,bm,bmtot,nindex,nff,denom) \
+            collapse(3) schedule(dynamic, 100)
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
