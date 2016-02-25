@@ -800,6 +800,8 @@ int vof_boundaries(struct solver_data *solver) {
 
         nff = N_VOF(i,j,k);
         if(nff > 0 && nff < 8.0 && solver->p_flag==0) { /* code applies to free surface */
+ #pragma omp critical(free_surf_bdry) 
+ {
 
           switch(nff) {
           case west:
@@ -988,6 +990,7 @@ int vof_boundaries(struct solver_data *solver) {
                 V(i,j-1,k-1) = VOF(i,j,k) * V(i,j-1,k);
             } 
           } 
+} 
         }
       }
     }
