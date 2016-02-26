@@ -74,6 +74,7 @@ int vof_init_solver(struct solver_data *solver) {
   else
     solver->rdtexp = 10000000000;
   
+  if(vof_pressure_init(solver) == 1) return 1;
   
   return 0;
 }
@@ -742,6 +743,10 @@ int vof_velocity(struct solver_data *solver) {
 
   const double del[3] = { DELX, DELY, DELZ };
 
+#pragma omp parallel for shared (solver) \
+            private(i,j,k,vel,af,vis,Flux,Viscocity,Q_C,Q_W,H_vel,CD,upwind,sum_fv,delp, \
+                    delv,resi,nu,n,m,o,ro_p1,ro_m1,ro_mp1,ro_mm1,ro_nmm1) \
+            collapse(3) schedule(static)
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {

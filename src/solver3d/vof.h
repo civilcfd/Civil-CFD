@@ -27,5 +27,6 @@ int vof_output(struct solver_data *solver);
 int vof_setup_solver(struct solver_data *solver);
 int vof_kill_solver(struct solver_data *solver);
 int vof_pressure_test(struct solver_data *solver);
+int vof_pressure_init(struct solver_data *solver);
 
 #endif

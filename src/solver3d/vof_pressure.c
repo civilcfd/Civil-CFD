@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 #include "vtk.h"
 #include "vof.h"
@@ -19,6 +20,35 @@
 
 struct mesh_data *mesh_n; /* describes mesh at previous timestep for explicit calcs */
 
+static double *up, *um, *vp, *vm, *wp, *wm;
+
+int vof_pressure_init(struct solver_data *solver) {
+  long int size;
+
+  size = solver->mesh->imax * solver->mesh->jmax * solver->mesh->kmax;
+  
+  up = malloc(sizeof(double) * size);
+  um = malloc(sizeof(double) * size);
+  if(up == NULL || um == NULL) {
+    printf("error: memory could not be allocated in vof_pressure_init\n");
+    return(1);
+  }
+  
+  vp = malloc(sizeof(double) * size);
+  vm = malloc(sizeof(double) * size);
+  if(vp == NULL || vm == NULL) {
+    printf("error: memory could not be allocated in vof_pressure_init\n");
+    return(1);
+  }  
+  
+  wp = malloc(sizeof(double) * size);
+  wm = malloc(sizeof(double) * size);
+  if(wp == NULL || wm == NULL) {
+    printf("error: memory could not be allocated in vof_pressure_init\n");
+    return(1);
+  }
+  
+}
 
 /* iterate through the mesh and check for overpressurization.  relax it and report it to the user */
 int vof_pressure_test(struct solver_data *solver) {
@@ -28,6 +58,8 @@ int vof_pressure_test(struct solver_data *solver) {
   
 #define emf solver->emf
 
+#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,x,dp,dv,stabil_limit,ax,del,ux,gx,hydrostatic) \
+            collapse(3) schedule(dynamic, 100)
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
@@ -136,6 +168,8 @@ int vof_pressure(struct solver_data *solver) {
   
 #define emf solver->emf
 
+#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit,plmn,delp) \
+            collapse(3) schedule(dynamic, 100)*/
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
@@ -275,7 +309,9 @@ int vof_pressure(struct solver_data *solver) {
         sum_a = AE(i,j,k) + AE(i-1,j,k) + AN(i,j,k) + AN(i,j-1,k) + AT(i,j,k) + AT(i,j,k-1);
         
         P(i,j,k)=P(i,j,k)+delp;
-            
+
+#pragma omp critical(pressure)
+{
         if(AE(i,j,k) > emf && i < IMAX-1)
           U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
         if(AE(i-1,j,k) > emf && i > 0)
@@ -288,6 +324,21 @@ int vof_pressure(struct solver_data *solver) {
           W(i,j,k)=W(i,j,k) + solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k) */);
         if(AT(i,j,k-1) > emf && k > 0)
           W(i,j,k-1)=W(i,j,k-1) - solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k-1) */);
+}
+         
+ /*           
+        if(AE(i,j,k) > emf && i < IMAX-1)
+          up[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDX * delp / (solver->rho );
+        if(AE(i-1,j,k) > emf && i > 0)
+          um[mesh_index(solver->mesh,i-1,j,k)]=solver->delt * RDX * delp / (solver->rho );
+        if(AN(i,j,k) > emf && j < JMAX-1)
+          vp[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDY * delp / (solver->rho );
+        if(AN(i,j-1,k) > emf && j > 0)
+          vm[mesh_index(solver->mesh,i,j-1,k)]=solver->delt * RDY * delp / (solver->rho );
+        if(AT(i,j,k) > emf && k < KMAX-1)
+          wp[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDZ * delp / (solver->rho );
+        if(AT(i,j,k-1) > emf && k > 0)
+          wm[mesh_index(solver->mesh,i,j,k-1)]=solver->delt * RDZ * delp / (solver->rho ); */
 
         D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k))+
               RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k))+
@@ -297,6 +348,59 @@ int vof_pressure(struct solver_data *solver) {
       }
     }
   }
+
+/*
+#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit) \
+            collapse(3) schedule(dynamic, 100)
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {
+        ignore = none; 
+        
+        if(FV(i,j,k)<emf) continue;
+
+        if(VOF(i,j,k) < emf) continue;
+        
+        if(N_VOF(i,j,k) == none) continue;
+        
+        if(AE(i,j,k) > emf && i < IMAX-1)
+          U(i,j,k) += up[mesh_index(solver->mesh,i,j,k)];
+          
+        if(AN(i,j,k) > emf && j < JMAX-1)
+          V(i,j,k) += vp[mesh_index(solver->mesh,i,j,k)];
+          
+        if(AT(i,j,k) > emf && k < KMAX-1)
+          W(i,j,k) += wp[mesh_index(solver->mesh,i,j,k)];
+
+      }
+    } 
+  }
+
+#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit) \
+            collapse(3) schedule(dynamic, 100)
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {
+        ignore = none; 
+        
+        if(FV(i,j,k)<emf) continue;
+
+        if(VOF(i,j,k) < emf) continue;
+        
+        if(N_VOF(i,j,k) == none) continue;
+        
+        if(AE(i-1,j,k) > emf && i > 0)
+          U(i-1,j,k) -= um[mesh_index(solver->mesh,i-1,j,k)];
+
+        if(AN(i,j-1,k) > emf && j > 0)
+          V(i,j-1,k) -= vm[mesh_index(solver->mesh,i,j-1,k)];
+
+        if(AT(i,j,k-1) > emf && k > 0)
+          W(i,j,k-1) -= wm[mesh_index(solver->mesh,i,j,k-1)];
+
+      }
+    } 
+  }    */
 
   return solver->p_flag;
 #undef emf
