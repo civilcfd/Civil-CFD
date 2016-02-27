@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 #include "vtk.h"
 #include "vof.h"
@@ -203,6 +204,7 @@ int kE_special_boundaries(struct solver_data *solver) {
         case hgl:
         case mass_outflow:
         case fixed_velocity:
+        case mass_inflow:
           kE_boundary_fixed_k(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
@@ -219,7 +221,8 @@ int kE_set_internal(struct solver_data *solver, double k, double E) {
   double E_limit;
   
   E_limit = kE.C_mu * pow(k, 1.5) / kE.length;
-  
+
+#pragma omp parallel for shared(solver,k,E,E_limit) private(l,m,n)  
   for(l=0; l<IMAX; l++) {
     for(m=0; m<JMAX; m++) {
       for(n=0; n<KMAX; n++) {
@@ -244,7 +247,8 @@ int kE_set_internal(struct solver_data *solver, double k, double E) {
 
 int kE_copy(struct solver_data *solver) {
   long int l,m,n;
-  
+
+#pragma omp parallel for shared(solver) private(l,m,n)   
   for(l=0; l<IMAX; l++) {
     for(m=0; m<JMAX; m++) {
       for(n=0; n<KMAX; n++) {
@@ -275,6 +279,7 @@ int kE_boundaries(struct solver_data *solver) {
 
   const double del[3] = { DELX, DELY, DELZ };
 
+#pragma omp parallel for shared(solver) private(i,j,k)  
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
@@ -626,7 +631,7 @@ int kE_wall_shear(struct solver_data *solver) {
   long int i,j,k;
   double ws_u, ws_d, tau_u, tau_d, delv;
 
-
+#pragma omp parallel for shared(solver) private(i,j,k,ws_u,ws_d,tau_u,tau_d,delv)  
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
@@ -724,6 +729,10 @@ int kE_loop_explicit(struct solver_data *solver) {
   double dvdx, dudy, dudz, dwdx, dvdz, dwdy;
   long int i,j,k;
   
+#pragma omp parallel for shared(solver) private(i,j,k, \
+              delk, delE, Production, Diffusion_k, Diffusion_E, nu_t, nu_eff, E_limit, \
+              AEdkdx, ANdkdy, ATdkdz, AEdEdx, ANdEdy, ATdEdz, \
+              dvdx, dudy, dudz, dwdx, dvdz, dwdy)  
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {

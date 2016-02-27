@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h> 
+#include <omp.h>
  
 #include "vtk.h"
 #include "vof.h"
@@ -1149,7 +1150,8 @@ int vof_deltcal(struct solver_data *solver) {
     delt = solver->delt * 0.5;
     ret = 1;
     solver->con *= 0.95;
-  
+ 
+#pragma omp parallel for shared(solver) private(i,j,k)
     for(i=1; i<IMAX-1; i++) {
       for(j=1; j<JMAX-1; j++) {
         for(k=1; k<KMAX-1; k++) {
@@ -1240,7 +1242,7 @@ int vof_deltcal(struct solver_data *solver) {
 				
 				dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
 				if(AT(i,j,k) > solver->emf && !isnan(dt_U))
-					delt = min(delt, dt_U);			
+					delt = min(delt, dt_U);		
 				
 				/* 	
 				if(delt < 0.0001) {

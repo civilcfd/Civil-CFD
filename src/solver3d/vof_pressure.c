@@ -155,24 +155,45 @@ int vof_pressure_test(struct solver_data *solver) {
 int vof_pressure(struct solver_data *solver) {
   enum cell_boundaries ignore;
   
-  long int i,j,k,l,m,n;
+  long int i,j,k,l,m,n, imax, jmax, kmax, imin, jmin, kmin;
   double plmn, delp;
   
   double g, del, dp, dv;
   double ctos, rcsq;
   double sum_a, ax, ux, stabil_limit;
   
+  static int direction = -1;
+  
+  if(direction == -1) {
+    imin = 1;
+    jmin = 1;
+    kmin = 1;
+    imax = IMAX-1;
+    jmax = JMAX-1;
+    kmax = KMAX-1;
+    direction = 1;
+  } else {
+    imax = 0;
+    jmax = 0;
+    kmax = 0;
+    imin = IMAX-2;
+    jmin = JMAX-2;
+    kmin = KMAX-2;
+    direction = -1;
+  }  
+  
+  
   rcsq = 1 / pow(solver->csq, 2);
   
   solver->p_flag = 0;
   
 #define emf solver->emf
-
+/*
 #pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit,plmn,delp) \
             collapse(3) schedule(dynamic, 100)*/
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
+  for(i=imin; i*direction < imax*direction; i += direction) {
+    for(j=jmin; j*direction < jmax*direction; j += direction) {
+      for(k=kmin; k*direction < kmax*direction; k += direction) {
         ignore = none; 
         
         if(FV(i,j,k)<emf) continue;
@@ -309,9 +330,9 @@ int vof_pressure(struct solver_data *solver) {
         sum_a = AE(i,j,k) + AE(i-1,j,k) + AN(i,j,k) + AN(i,j-1,k) + AT(i,j,k) + AT(i,j,k-1);
         
         P(i,j,k)=P(i,j,k)+delp;
-
+/*
 #pragma omp critical(pressure)
-{
+{*/
         if(AE(i,j,k) > emf && i < IMAX-1)
           U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
         if(AE(i-1,j,k) > emf && i > 0)
@@ -324,8 +345,8 @@ int vof_pressure(struct solver_data *solver) {
           W(i,j,k)=W(i,j,k) + solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k) */);
         if(AT(i,j,k-1) > emf && k > 0)
           W(i,j,k-1)=W(i,j,k-1) - solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k-1) */);
-}
-         
+/*}
+*/         
  /*           
         if(AE(i,j,k) > emf && i < IMAX-1)
           up[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDX * delp / (solver->rho );
