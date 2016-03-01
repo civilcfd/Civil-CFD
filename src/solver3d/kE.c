@@ -318,6 +318,8 @@ int kE_boundaries(struct solver_data *solver) {
   
   /* set internal obstacle boundaries using law of the wall */
   /* this is done last to ensure that obstacles on edge of mesh get the correct treatment */
+#pragma omp parallel for shared(solver, del) private(i,j,k,im1, jm1, km1, l, m, n, \
+              d, u_t, wall_n, u_c, mag, tau, u_perp_n, u_perp_c, u_parr_c, u_parr, E_limit)  
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {

@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
   
   mesh_load_csv(solver->mesh, 0); 
   solver_initial_values(solver);
+  solver->petacal(solver);
 
   if(timestep != 0) {
     csv_read_U(solver->mesh,timestep);

@@ -77,6 +77,7 @@ int vof_init_solver(struct solver_data *solver) {
   
   if(vof_pressure_init(solver) == 1) return 1;
   
+  
   return 0;
 }
 
@@ -153,7 +154,10 @@ int vof_petacal(struct solver_data *solver) {
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
-
+/*
+       if(i==241 && j==48 && k==42) {
+          printf("break\n");
+        }  */
         /*# first consider all the loop exit conditions*/
         if(FV(i,j,k) == 0) {
           N_VOF(i,j,k) = 0;
@@ -250,7 +254,11 @@ int vof_petacal(struct solver_data *solver) {
                        vfzp=vfzp+VOF(l,m,k+1);
                      }
                  }
-
+/*
+       if(i==241 && j==48 && k==42) {
+          printf("break\n");
+        }  */
+        
                if (FV(i,j,k-1)==0.0 && solver->gz > nemf) iobs=2; 
                mobs=mobs+(iobs-1);
                if ((iobs!=2)&&(fzm>=emf))
@@ -305,7 +313,8 @@ int vof_petacal(struct solver_data *solver) {
                    if (N_VOF(i,j,k)==north) vf=vfyp;
                  }
                iobs=1;
-               
+
+              
                /*if(N_VOF(i,j,k) != bottom) {
                 printf("breakpoint\n");
                }*/
@@ -315,7 +324,8 @@ int vof_petacal(struct solver_data *solver) {
                /* check if it is not a free surface, but is bounded by an obstacle */
                /* essentially we have fluid in each direction that isn't an obstacle */
                infcr=8-mobs;
-               if ((inf==infcr)&&(infcr>1)) N_VOF(i,j,k)=0;
+               if ((inf==infcr)&&(infcr>1)) N_VOF(i,j,k)=0; 
+               
 
       }
     }
@@ -945,6 +955,7 @@ int vof_velocity(struct solver_data *solver) {
 
           sum_fv = (FV(i,j,k) + FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           delp   = (P(i,j,k)  -  P(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
+          if(FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < 0.000001) delp=0; /* ADDED 2/27/16 testing */
           resi   = (DN(i,j,k)  +  DN(i+odim[n][0],j+odim[n][1],k+odim[n][2])) / 2;
           switch(n) {
           case 0:

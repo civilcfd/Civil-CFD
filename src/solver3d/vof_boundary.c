@@ -92,36 +92,43 @@ int boundary_hgl(struct solver_data *solver,
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
   double height, partial, rho_v2;
   double normal[3] = {0, 0, 0};
+  long int coplanar[3] = {0, 0, 0};
   
   struct mesh_data *mesh = solver->mesh;
   
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
   
-  value += mesh->delz;
+  /* TODO: MUST FORCE VON-NEUMANN VELOCITY BOUNDARY, CURRENTLY IT IS USER SELECTABLE */
+  
+  /* value += mesh->delz; uncomment and everything is off-set by 1 cell vertically */
 
   switch(x) {
   case 0: /* west */
-    imax++;
+    /*imax++*/;
     normal[0] = 1;
+    coplanar[0] = 1;
     break;
   case 1: /* east */
-    imin--;
+    /*imin--*/;
     normal[0] = 1;
+    coplanar[0] = -1;
     break;
   case 2: /* south */
-    jmax++;
+    /*jmax++*/;
     normal[1] = 1;
+    coplanar[1] = 1;
     break;
   case 3: /* north */
-    jmin--;
+    /*jmin--*/;
     normal[1] = 1;
+    coplanar[1] = -1;
     break;
   case 4: /* bottom */
-    kmax++;
+    /*kmax++*/;
     normal[2] = 1;
     break;
   case 5: /* south */
-    kmin--;
+    /*kmin--*/;
     normal[2] = 1;
     break;
   }
@@ -164,6 +171,13 @@ int boundary_hgl(struct solver_data *solver,
         /* ADDED 01/03/2014 */
         else if(mesh->vof[mesh_index(mesh,i,j,k)] <= 0.0) 
           mesh->P[mesh_index(mesh,i,j,k)] = 0.0;
+        
+        /* ADDED 02/27/2016 *
+        if(FV(i,j,k) < 1.0 && FV(i,j,k) > 0.0) {
+          if(i + coplanar[0] < IMAX-1 && j + coplanar[0] < JMAX - 1) {
+            if(FV(i+coplanar[0],j+coplanar[0],k)
+            P(i,j,k) = (P(i,j,k) + P( 
+        }*/
 
      }
     }

@@ -48,6 +48,8 @@ int vof_pressure_init(struct solver_data *solver) {
     return(1);
   }
   
+  return 0;
+  
 }
 
 /* iterate through the mesh and check for overpressurization.  relax it and report it to the user */
@@ -150,6 +152,8 @@ int vof_pressure_test(struct solver_data *solver) {
       }
     }
   }
+  
+  return 0;
 }
 
 int vof_pressure(struct solver_data *solver) {
@@ -190,10 +194,14 @@ int vof_pressure(struct solver_data *solver) {
 #define emf solver->emf
 /*
 #pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit,plmn,delp) \
-            collapse(3) schedule(dynamic, 100)*/
+            collapse(3) schedule(dynamic, 100)*//*
   for(i=imin; i*direction < imax*direction; i += direction) {
     for(j=jmin; j*direction < jmax*direction; j += direction) {
-      for(k=kmin; k*direction < kmax*direction; k += direction) {
+      for(k=kmin; k*direction < kmax*direction; k += direction) {*/
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {      
+      
         ignore = none; 
         
         if(FV(i,j,k)<emf) continue;
@@ -248,6 +256,7 @@ int vof_pressure(struct solver_data *solver) {
             ax = AT(i,j,k-1); ux =  W(i,j,k-1);
             break;
           case none:
+          default: /* ADDED 2/29/16 */
             continue;
           }
          
@@ -304,15 +313,24 @@ int vof_pressure(struct solver_data *solver) {
         }
         else {
 
+       /* if(i==229 && j==48 && k==42) {
+          printf("break\n");
+        } */
           D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k)) +
               RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k)) +
               RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1)); 
           D(i,j,k) = D(i,j,k) / FV(i,j,k); 
           
           /* de-foaming */
-          if(VOF(i,j,k) < (1-emf))
-            D(i,j,k) = D(i,j,k) + min(100 * solver->epsi, 
-                                    0.1 * (1.0 - VOF(i,j,k)) / solver->delt);
+          if(VOF(i,j,k) < (1-emf)) {
+            /* don't de-foam next to boundaries */
+            if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
+                 FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
+                 FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {
+              D(i,j,k) = D(i,j,k) + 10 * (min(1000 * solver->epsi, 
+                                    0.1 * (1.0 - VOF(i,j,k)) / solver->delt)) / solver->rho;
+            }
+          }
           
           delp=-BETA(i,j,k)*D(i,j,k)*PETA(i,j,k);
           
@@ -326,7 +344,9 @@ int vof_pressure(struct solver_data *solver) {
 
         }
         ignore = none;
-        
+        if(solver->delt* RDX * delp / (solver->rho)>0.1 && j>40 && i>240) {
+          printf("break %ld %ld %ld\n",i,j,k);
+        }       
         sum_a = AE(i,j,k) + AE(i-1,j,k) + AN(i,j,k) + AN(i,j-1,k) + AT(i,j,k) + AT(i,j,k-1);
         
         P(i,j,k)=P(i,j,k)+delp;
