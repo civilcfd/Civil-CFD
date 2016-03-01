@@ -327,7 +327,7 @@ int vof_pressure(struct solver_data *solver) {
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
                  FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {
-              D(i,j,k) = D(i,j,k) + 10 * (min(1000 * solver->epsi, 
+              D(i,j,k) = D(i,j,k) + (min(1000 * solver->epsi, 
                                     0.1 * (1.0 - VOF(i,j,k)) / solver->delt)) / solver->rho;
             }
           }
