@@ -62,7 +62,7 @@ struct mesh_data *mesh_init_copy(struct mesh_data *mesh_source) {
     mesh->wb[i] = mesh_source->wb[i];
     mesh->sb[i] = mesh_source->sb[i];
     
-    if(i<3) mesh->baffle[i] = mesh_source->baffle[i];
+    if(i<3) mesh->baffles[i] = mesh_source->baffles[i];
   }
 
   mesh->ready = mesh_source->ready;
@@ -141,6 +141,7 @@ struct mesh_data *mesh_init_empty() {
   for(i = 0; i < 6; i++) {
     mesh->wb[i] = slip;
     mesh->sb[i] = NULL;
+    if(i<3) mesh->baffles[i] = NULL;
   }
 
   mesh->P = NULL; mesh->D = NULL;

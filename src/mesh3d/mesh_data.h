@@ -32,7 +32,7 @@ enum special_boundaries {
 
 enum baffle_type {
   flow = 0,
-  slip = 1,
+  barrier = 1,
   k = 2,
   weir = 3,
   swirl_angle = 4,

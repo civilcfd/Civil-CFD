@@ -347,7 +347,7 @@ int csv_write_vector_grid(char *filename, char *dataset_name, long int ni, long 
   fp = fopen(filename, "w");
 
   if(fp == NULL) {
-    printf("error: csv_write_scalar_grid cannot open %s to write\n", filename);
+    printf("error: csv_write_vector_grid cannot open %s to write\n", filename);
     return 1;
   }
 
@@ -358,7 +358,7 @@ int csv_write_vector_grid(char *filename, char *dataset_name, long int ni, long 
       for(k=0; k<nk; k++) {
         
         if(fabs(v0[i+ni * (j+ k*nj)]) > emf || fabs(v1[i+ni * (j+ k*nj)]) > emf ||  
-           fabs(v2[i+ni * (j+ k*nj)] > emf) )
+           fabs(v2[i+ni * (j+ k*nj)]) > emf )
           fprintf(fp, "%ld, %ld, %ld, %lf, %lf, %lf\n", i, j, k, 
                 v0[i + ni * (j + k * nj)], v1[i + ni * (j + k * nj)], 
                 v2[i + ni * (j + k * nj)]); 

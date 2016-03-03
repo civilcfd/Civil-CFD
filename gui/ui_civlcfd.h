@@ -154,6 +154,15 @@ public:
     QPushButton *RemoveSpecialBoundary;
     QVTKWidget *VTKBoundaries;
     QTreeWidget *BoundaryTree;
+    QWidget *Baffles;
+    QGridLayout *gridLayout_20;
+    QGridLayout *gridLayout_19;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *EditBaffle;
+    QPushButton *AddBaffle;
+    QPushButton *RemoveBaffle;
+    QVTKWidget *VTKBaffles;
+    QTreeWidget *BaffleTree;
     QWidget *InitialConditions;
     QGridLayout *gridLayout_14;
     QGridLayout *gridLayout_13;
@@ -225,26 +234,27 @@ public:
     QSpacerItem *verticalSpacer_20;
     QLabel *label_45;
     QLabel *label_42;
+    QRadioButton *zNormal;
     QFrame *line_8;
     QRadioButton *yNormal;
-    QRadioButton *zNormal;
     QLabel *originText;
     QRadioButton *contourP;
+    QPushButton *saveJPEG;
     QRadioButton *contourK;
+    QVTKWidget *vis;
     QLabel *label_40;
     QSpacerItem *verticalSpacer_18;
-    QPushButton *saveJPEG;
-    QSpacerItem *verticalSpacer_23;
-    QVTKWidget *vis;
     QListWidget *timesteps;
+    QSpacerItem *verticalSpacer_23;
     QCheckBox *showMesh;
     QCheckBox *showVectors;
     QCheckBox *blockObstacles;
+    QRadioButton *contourVorticity;
     QMenuBar *menubar;
     QMenu *menuFile;
     QStatusBar *statusbar;
-    QButtonGroup *buttonGroup_2;
     QButtonGroup *buttonGroup;
+    QButtonGroup *buttonGroup_2;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -681,8 +691,8 @@ public:
         widget->setObjectName(QString::fromUtf8("widget"));
         widget->setMinimumSize(QSize(500, 0));
         gridLayout_7 = new QGridLayout(widget);
-        gridLayout_7->setContentsMargins(0, 0, 0, 0);
         gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
+        gridLayout_7->setContentsMargins(0, 0, 0, 0);
         MeshUndo = new QPushButton(widget);
         MeshUndo->setObjectName(QString::fromUtf8("MeshUndo"));
         MeshUndo->setMaximumSize(QSize(130, 16777215));
@@ -949,6 +959,74 @@ public:
         gridLayout_8->addLayout(gridLayout_12, 0, 0, 1, 1);
 
         tabWidget->addTab(Boundaries, QString());
+        Baffles = new QWidget();
+        Baffles->setObjectName(QString::fromUtf8("Baffles"));
+        Baffles->setEnabled(false);
+        Baffles->setAutoFillBackground(false);
+        gridLayout_20 = new QGridLayout(Baffles);
+        gridLayout_20->setObjectName(QString::fromUtf8("gridLayout_20"));
+        gridLayout_20->setContentsMargins(12, -1, 12, 12);
+        gridLayout_19 = new QGridLayout();
+        gridLayout_19->setObjectName(QString::fromUtf8("gridLayout_19"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
+        EditBaffle = new QPushButton(Baffles);
+        EditBaffle->setObjectName(QString::fromUtf8("EditBaffle"));
+        EditBaffle->setMinimumSize(QSize(0, 0));
+        EditBaffle->setMaximumSize(QSize(125, 16777215));
+        EditBaffle->setIcon(icon9);
+        EditBaffle->setIconSize(QSize(22, 22));
+
+        horizontalLayout_2->addWidget(EditBaffle);
+
+        AddBaffle = new QPushButton(Baffles);
+        AddBaffle->setObjectName(QString::fromUtf8("AddBaffle"));
+        AddBaffle->setMaximumSize(QSize(180, 16777215));
+        AddBaffle->setIcon(icon10);
+        AddBaffle->setIconSize(QSize(22, 22));
+
+        horizontalLayout_2->addWidget(AddBaffle);
+
+        RemoveBaffle = new QPushButton(Baffles);
+        RemoveBaffle->setObjectName(QString::fromUtf8("RemoveBaffle"));
+        RemoveBaffle->setMaximumSize(QSize(190, 16777215));
+        RemoveBaffle->setIcon(icon11);
+        RemoveBaffle->setIconSize(QSize(22, 22));
+
+        horizontalLayout_2->addWidget(RemoveBaffle);
+
+
+        gridLayout_19->addLayout(horizontalLayout_2, 0, 0, 1, 1);
+
+        VTKBaffles = new QVTKWidget(Baffles);
+        VTKBaffles->setObjectName(QString::fromUtf8("VTKBaffles"));
+        sizePolicy.setHeightForWidth(VTKBaffles->sizePolicy().hasHeightForWidth());
+        VTKBaffles->setSizePolicy(sizePolicy);
+        VTKBaffles->setMinimumSize(QSize(400, 350));
+
+        gridLayout_19->addWidget(VTKBaffles, 2, 0, 1, 1);
+
+        BaffleTree = new QTreeWidget(Baffles);
+        QTreeWidgetItem *__qtreewidgetitem14 = new QTreeWidgetItem(BaffleTree);
+        __qtreewidgetitem14->setFlags(Qt::ItemIsDragEnabled|Qt::ItemIsEnabled);
+        __qtreewidgetitem14->setFont(0, font);
+        new QTreeWidgetItem(__qtreewidgetitem14);
+        new QTreeWidgetItem(__qtreewidgetitem14);
+        new QTreeWidgetItem(__qtreewidgetitem14);
+        BaffleTree->setObjectName(QString::fromUtf8("BaffleTree"));
+        sizePolicy.setHeightForWidth(BaffleTree->sizePolicy().hasHeightForWidth());
+        BaffleTree->setSizePolicy(sizePolicy);
+        BaffleTree->setMinimumSize(QSize(320, 0));
+        BaffleTree->setAlternatingRowColors(true);
+        BaffleTree->header()->setDefaultSectionSize(165);
+
+        gridLayout_19->addWidget(BaffleTree, 1, 0, 1, 1);
+
+
+        gridLayout_20->addLayout(gridLayout_19, 0, 0, 1, 1);
+
+        tabWidget->addTab(Baffles, QString());
         InitialConditions = new QWidget();
         InitialConditions->setObjectName(QString::fromUtf8("InitialConditions"));
         InitialConditions->setEnabled(false);
@@ -1274,7 +1352,7 @@ public:
 
         verticalSpacer_21 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout_17->addItem(verticalSpacer_21, 6, 3, 1, 1);
+        gridLayout_17->addItem(verticalSpacer_21, 7, 3, 1, 1);
 
         label_41 = new QLabel(Visualize);
         label_41->setObjectName(QString::fromUtf8("label_41"));
@@ -1293,7 +1371,7 @@ public:
         label_46->setFont(font);
         label_46->setAlignment(Qt::AlignCenter);
 
-        gridLayout_17->addWidget(label_46, 10, 2, 1, 2);
+        gridLayout_17->addWidget(label_46, 11, 2, 1, 2);
 
         origin = new QSlider(Visualize);
         origin->setObjectName(QString::fromUtf8("origin"));
@@ -1311,7 +1389,7 @@ public:
 
         verticalSpacer_22 = new QSpacerItem(20, 13, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout_17->addItem(verticalSpacer_22, 8, 1, 1, 1);
+        gridLayout_17->addItem(verticalSpacer_22, 9, 1, 1, 1);
 
         label_44 = new QLabel(Visualize);
         label_44->setObjectName(QString::fromUtf8("label_44"));
@@ -1348,12 +1426,18 @@ public:
 
         gridLayout_17->addWidget(label_42, 3, 0, 1, 1);
 
+        zNormal = new QRadioButton(Visualize);
+        buttonGroup->addButton(zNormal);
+        zNormal->setObjectName(QString::fromUtf8("zNormal"));
+
+        gridLayout_17->addWidget(zNormal, 1, 3, 1, 1, Qt::AlignHCenter);
+
         line_8 = new QFrame(Visualize);
         line_8->setObjectName(QString::fromUtf8("line_8"));
         line_8->setFrameShape(QFrame::HLine);
         line_8->setFrameShadow(QFrame::Sunken);
 
-        gridLayout_17->addWidget(line_8, 9, 0, 1, 5);
+        gridLayout_17->addWidget(line_8, 10, 0, 1, 5);
 
         yNormal = new QRadioButton(Visualize);
         buttonGroup->addButton(yNormal);
@@ -1361,12 +1445,6 @@ public:
         yNormal->setChecked(true);
 
         gridLayout_17->addWidget(yNormal, 1, 2, 1, 1, Qt::AlignHCenter);
-
-        zNormal = new QRadioButton(Visualize);
-        buttonGroup->addButton(zNormal);
-        zNormal->setObjectName(QString::fromUtf8("zNormal"));
-
-        gridLayout_17->addWidget(zNormal, 1, 3, 1, 1, Qt::AlignHCenter);
 
         originText = new QLabel(Visualize);
         originText->setObjectName(QString::fromUtf8("originText"));
@@ -1381,11 +1459,22 @@ public:
 
         gridLayout_17->addWidget(contourP, 5, 2, 1, 1, Qt::AlignHCenter);
 
+        saveJPEG = new QPushButton(Visualize);
+        saveJPEG->setObjectName(QString::fromUtf8("saveJPEG"));
+        saveJPEG->setIcon(icon);
+
+        gridLayout_17->addWidget(saveJPEG, 13, 0, 1, 1);
+
         contourK = new QRadioButton(Visualize);
         buttonGroup_2->addButton(contourK);
         contourK->setObjectName(QString::fromUtf8("contourK"));
 
         gridLayout_17->addWidget(contourK, 5, 3, 1, 1, Qt::AlignHCenter);
+
+        vis = new QVTKWidget(Visualize);
+        vis->setObjectName(QString::fromUtf8("vis"));
+
+        gridLayout_17->addWidget(vis, 13, 1, 2, 4);
 
         label_40 = new QLabel(Visualize);
         label_40->setObjectName(QString::fromUtf8("label_40"));
@@ -1394,26 +1483,11 @@ public:
         label_40->setMaximumSize(QSize(16777215, 15));
         label_40->setFont(font);
 
-        gridLayout_17->addWidget(label_40, 10, 0, 1, 1, Qt::AlignHCenter);
+        gridLayout_17->addWidget(label_40, 11, 0, 1, 1, Qt::AlignHCenter);
 
         verticalSpacer_18 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         gridLayout_17->addItem(verticalSpacer_18, 0, 2, 1, 1);
-
-        saveJPEG = new QPushButton(Visualize);
-        saveJPEG->setObjectName(QString::fromUtf8("saveJPEG"));
-        saveJPEG->setIcon(icon);
-
-        gridLayout_17->addWidget(saveJPEG, 12, 0, 1, 1);
-
-        verticalSpacer_23 = new QSpacerItem(20, 13, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout_17->addItem(verticalSpacer_23, 11, 2, 1, 1);
-
-        vis = new QVTKWidget(Visualize);
-        vis->setObjectName(QString::fromUtf8("vis"));
-
-        gridLayout_17->addWidget(vis, 12, 1, 2, 4);
 
         timesteps = new QListWidget(Visualize);
         timesteps->setObjectName(QString::fromUtf8("timesteps"));
@@ -1425,24 +1499,33 @@ public:
         timesteps->setMaximumSize(QSize(150, 1600000));
         timesteps->setLayoutMode(QListView::SinglePass);
 
-        gridLayout_17->addWidget(timesteps, 13, 0, 1, 1);
+        gridLayout_17->addWidget(timesteps, 14, 0, 1, 1);
+
+        verticalSpacer_23 = new QSpacerItem(20, 13, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_17->addItem(verticalSpacer_23, 12, 2, 1, 1);
 
         showMesh = new QCheckBox(Visualize);
         showMesh->setObjectName(QString::fromUtf8("showMesh"));
         showMesh->setChecked(true);
 
-        gridLayout_17->addWidget(showMesh, 7, 3, 1, 1, Qt::AlignHCenter);
+        gridLayout_17->addWidget(showMesh, 8, 3, 1, 1, Qt::AlignHCenter);
 
         showVectors = new QCheckBox(Visualize);
         showVectors->setObjectName(QString::fromUtf8("showVectors"));
 
-        gridLayout_17->addWidget(showVectors, 7, 1, 1, 1, Qt::AlignHCenter);
+        gridLayout_17->addWidget(showVectors, 8, 1, 1, 1, Qt::AlignHCenter);
 
         blockObstacles = new QCheckBox(Visualize);
         blockObstacles->setObjectName(QString::fromUtf8("blockObstacles"));
         blockObstacles->setChecked(true);
 
-        gridLayout_17->addWidget(blockObstacles, 7, 2, 1, 1, Qt::AlignHCenter);
+        gridLayout_17->addWidget(blockObstacles, 8, 2, 1, 1, Qt::AlignHCenter);
+
+        contourVorticity = new QRadioButton(Visualize);
+        contourVorticity->setObjectName(QString::fromUtf8("contourVorticity"));
+
+        gridLayout_17->addWidget(contourVorticity, 6, 2, 1, 1, Qt::AlignHCenter);
 
 
         gridLayout_18->addLayout(gridLayout_17, 0, 2, 1, 1);
@@ -1472,7 +1555,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(8);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1605,6 +1688,29 @@ public:
         BoundaryTree->setSortingEnabled(__sortingEnabled1);
 
         tabWidget->setTabText(tabWidget->indexOf(Boundaries), QApplication::translate("MainWindow", "Boundaries", 0, QApplication::UnicodeUTF8));
+        EditBaffle->setText(QApplication::translate("MainWindow", "Edit Baffle", 0, QApplication::UnicodeUTF8));
+        AddBaffle->setText(QApplication::translate("MainWindow", "Add Baffle", 0, QApplication::UnicodeUTF8));
+        RemoveBaffle->setText(QApplication::translate("MainWindow", "Remove Baffle", 0, QApplication::UnicodeUTF8));
+        QTreeWidgetItem *___qtreewidgetitem28 = BaffleTree->headerItem();
+        ___qtreewidgetitem28->setText(4, QApplication::translate("MainWindow", "Value", 0, QApplication::UnicodeUTF8));
+        ___qtreewidgetitem28->setText(3, QApplication::translate("MainWindow", "Position", 0, QApplication::UnicodeUTF8));
+        ___qtreewidgetitem28->setText(2, QApplication::translate("MainWindow", "Extents", 0, QApplication::UnicodeUTF8));
+        ___qtreewidgetitem28->setText(1, QApplication::translate("MainWindow", "Type", 0, QApplication::UnicodeUTF8));
+        ___qtreewidgetitem28->setText(0, QApplication::translate("MainWindow", "Parameter", 0, QApplication::UnicodeUTF8));
+
+        const bool __sortingEnabled2 = BaffleTree->isSortingEnabled();
+        BaffleTree->setSortingEnabled(false);
+        QTreeWidgetItem *___qtreewidgetitem29 = BaffleTree->topLevelItem(0);
+        ___qtreewidgetitem29->setText(0, QApplication::translate("MainWindow", "Axis", 0, QApplication::UnicodeUTF8));
+        QTreeWidgetItem *___qtreewidgetitem30 = ___qtreewidgetitem29->child(0);
+        ___qtreewidgetitem30->setText(0, QApplication::translate("MainWindow", "x", 0, QApplication::UnicodeUTF8));
+        QTreeWidgetItem *___qtreewidgetitem31 = ___qtreewidgetitem29->child(1);
+        ___qtreewidgetitem31->setText(0, QApplication::translate("MainWindow", "y", 0, QApplication::UnicodeUTF8));
+        QTreeWidgetItem *___qtreewidgetitem32 = ___qtreewidgetitem29->child(2);
+        ___qtreewidgetitem32->setText(0, QApplication::translate("MainWindow", "z", 0, QApplication::UnicodeUTF8));
+        BaffleTree->setSortingEnabled(__sortingEnabled2);
+
+        tabWidget->setTabText(tabWidget->indexOf(Baffles), QApplication::translate("MainWindow", "Baffles", 0, QApplication::UnicodeUTF8));
         label_26->setText(QApplication::translate("MainWindow", "Velocity", 0, QApplication::UnicodeUTF8));
         label_30->setText(QApplication::translate("MainWindow", "V (m/s)", 0, QApplication::UnicodeUTF8));
         label_29->setText(QApplication::translate("MainWindow", "U (m/s)", 0, QApplication::UnicodeUTF8));
@@ -1627,9 +1733,9 @@ public:
         QTableWidgetItem *___qtablewidgetitem2 = fillPoints->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "W", 0, QApplication::UnicodeUTF8));
 
-        const bool __sortingEnabled2 = fillPoints->isSortingEnabled();
+        const bool __sortingEnabled3 = fillPoints->isSortingEnabled();
         fillPoints->setSortingEnabled(false);
-        fillPoints->setSortingEnabled(__sortingEnabled2);
+        fillPoints->setSortingEnabled(__sortingEnabled3);
 
         tabWidget->setTabText(tabWidget->indexOf(InitialConditions), QApplication::translate("MainWindow", "Initial Conditions", 0, QApplication::UnicodeUTF8));
         endt->setPlainText(QApplication::translate("MainWindow", "100", 0, QApplication::UnicodeUTF8));
@@ -1654,16 +1760,17 @@ public:
         contourVOF->setText(QApplication::translate("MainWindow", "Fluid fraction", 0, QApplication::UnicodeUTF8));
         label_45->setText(QApplication::translate("MainWindow", "Contour", 0, QApplication::UnicodeUTF8));
         label_42->setText(QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
-        yNormal->setText(QApplication::translate("MainWindow", "Y-Normal", 0, QApplication::UnicodeUTF8));
         zNormal->setText(QApplication::translate("MainWindow", "Z-Normal", 0, QApplication::UnicodeUTF8));
+        yNormal->setText(QApplication::translate("MainWindow", "Y-Normal", 0, QApplication::UnicodeUTF8));
         originText->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
         contourP->setText(QApplication::translate("MainWindow", "Pressure", 0, QApplication::UnicodeUTF8));
+        saveJPEG->setText(QApplication::translate("MainWindow", "Save JPEG", 0, QApplication::UnicodeUTF8));
         contourK->setText(QApplication::translate("MainWindow", "Turbulence (k)", 0, QApplication::UnicodeUTF8));
         label_40->setText(QApplication::translate("MainWindow", "Timestep", 0, QApplication::UnicodeUTF8));
-        saveJPEG->setText(QApplication::translate("MainWindow", "Save JPEG", 0, QApplication::UnicodeUTF8));
         showMesh->setText(QApplication::translate("MainWindow", "Show Mesh", 0, QApplication::UnicodeUTF8));
         showVectors->setText(QApplication::translate("MainWindow", "Show Velocity Vectors", 0, QApplication::UnicodeUTF8));
         blockObstacles->setText(QApplication::translate("MainWindow", "Block Obstacles", 0, QApplication::UnicodeUTF8));
+        contourVorticity->setText(QApplication::translate("MainWindow", "z-Vorticity", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Visualize), QApplication::translate("MainWindow", "Visualize", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

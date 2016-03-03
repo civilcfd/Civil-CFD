@@ -28,7 +28,7 @@ int vof_baffles_output(struct solver_data *solver) {
     for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
         switch(baffle->type) {
         case flow:
-          printf("Flow baffle %d, axis %d position %ld, extent %lf %lf to %lf %lf: %.2lf L/s\n", \
+          printf("Flow baffle %d, axis %d position %ld, extent %ld %ld to %ld %ld: %.2lf L/s\n", \
                  count, x, baffle->pos, baffle->extent_a[0], baffle->extent_a[1], \
                  baffle->extent_b[0], baffle->extent_b[1], baffle->value * 1000);
           count++;
@@ -37,6 +37,7 @@ int vof_baffles_output(struct solver_data *solver) {
     }
   }
 
+  return 0;
 }
 
 int vof_baffles_write(struct solver_data *solver) {
@@ -112,7 +113,7 @@ int vof_baffles(struct solver_data *solver) {
                                      baffle->extent_b[0], baffle->extent_b[1], 
                                      &(baffle->value), baffle->pos);
           break;
-        case slip:
+        case barrier:
           baffle_slip(solver, x, baffle->extent_a[0], baffle->extent_a[1], 
                                      baffle->extent_b[0], baffle->extent_b[1], 
                                      baffle->value, baffle->pos);
@@ -136,7 +137,6 @@ int baffle_k(struct solver_data *solver,
 
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
   double delp;
-  double g;
   double sgn = 1.0;
   
   baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
@@ -252,13 +252,13 @@ int baffle_setup(struct solver_data *solver, int x, long int pos,
     *kmin = min_2;
     *kmax = min(KMAX-1,max_2);    
     break;
-  case 1
+  case 1:
     *imin = min_1;
     *imax = min(IMAX-2,max_1);
     *kmin = min_2;
     *kmax = min(KMAX-2,max_2);   
     break;    
-  case 2
+  case 2:
     *imin = min_1;
     *imax = min(IMAX-2,max_1);
     *jmin = min_2;

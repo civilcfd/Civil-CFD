@@ -22,7 +22,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      39,   14, // methods
+      40,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -60,15 +60,16 @@ static const uint qt_meta_data_MainWindow[] = {
      804,   38,   38,   38, 0x08,
      826,   38,   38,   38, 0x08,
      848,   38,   38,   38, 0x08,
-     873,   38,   38,   38, 0x08,
-     901,   38,   38,   38, 0x08,
-     923,   38,   38,   38, 0x08,
-     949,   38,   38,   38, 0x08,
-     971,   38,   38,   38, 0x08,
-     998,   38,   38,   38, 0x08,
-    1021,   38,   38,   38, 0x08,
-    1044,   38,   38,   38, 0x08,
-    1063,   38,   38,   38, 0x08,
+     878,   38,   38,   38, 0x08,
+     903,   38,   38,   38, 0x08,
+     931,   38,   38,   38, 0x08,
+     953,   38,   38,   38, 0x08,
+     979,   38,   38,   38, 0x08,
+    1001,   38,   38,   38, 0x08,
+    1028,   38,   38,   38, 0x08,
+    1051,   38,   38,   38, 0x08,
+    1074,   38,   38,   38, 0x08,
+    1093,   38,   38,   38, 0x08,
 
        0        // eod
 };
@@ -96,6 +97,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_xNormal_toggled()\0on_yNormal_toggled()\0"
     "on_zNormal_toggled()\0on_contourVOF_toggled()\0"
     "on_contourP_toggled()\0on_contourK_toggled()\0"
+    "on_contourVorticity_toggled()\0"
     "on_showVectors_toggled()\0"
     "on_blockObstacles_toggled()\0"
     "on_showMesh_toggled()\0on_earthGravity_clicked()\0"
@@ -139,16 +141,17 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 26: _t->on_contourVOF_toggled(); break;
         case 27: _t->on_contourP_toggled(); break;
         case 28: _t->on_contourK_toggled(); break;
-        case 29: _t->on_showVectors_toggled(); break;
-        case 30: _t->on_blockObstacles_toggled(); break;
-        case 31: _t->on_showMesh_toggled(); break;
-        case 32: _t->on_earthGravity_clicked(); break;
-        case 33: _t->on_water20C_clicked(); break;
-        case 34: _t->on_defaultLength_clicked(); break;
-        case 35: _t->on_calcRough_clicked(); break;
-        case 36: _t->on_SelectAll_clicked(); break;
-        case 37: _t->on_Clear_clicked(); break;
-        case 38: _t->on_Delete_clicked(); break;
+        case 29: _t->on_contourVorticity_toggled(); break;
+        case 30: _t->on_showVectors_toggled(); break;
+        case 31: _t->on_blockObstacles_toggled(); break;
+        case 32: _t->on_showMesh_toggled(); break;
+        case 33: _t->on_earthGravity_clicked(); break;
+        case 34: _t->on_water20C_clicked(); break;
+        case 35: _t->on_defaultLength_clicked(); break;
+        case 36: _t->on_calcRough_clicked(); break;
+        case 37: _t->on_SelectAll_clicked(); break;
+        case 38: _t->on_Clear_clicked(); break;
+        case 39: _t->on_Delete_clicked(); break;
         default: ;
         }
     }
@@ -186,9 +189,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 39)
+        if (_id < 40)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 39;
+        _id -= 40;
     }
     return _id;
 }

@@ -587,13 +587,13 @@ void Simulation::editBaffle(QString type, long int extent_a_1, long int extent_a
   
 
   if(type == "flow measurement") baffle->type = flow;
-  else if(type == "slip") baffle->type = slip;
+  else if(type == "barrier") baffle->type = barrier;
   else if(type == "headloss") baffle->type = k;
 
 }
 
 void Simulation::resetBaffle(int wall) {
-  baffle = solver->mesh->baffle[wall];
+  baffle = solver->mesh->baffles[wall];
 }
 
 bool Simulation::getNextBaffle(
@@ -639,10 +639,10 @@ void Simulation::nextBaffle() {
 void Simulation::removeBaffle(int wall) {
   struct baffle_data *nbaffle;
 
-  nbaffle = solver->mesh->baffle[wall];
+  nbaffle = solver->mesh->baffles[wall];
 
   if(nbaffle == baffle) {
-    solver->mesh->baffle[wall] = baffle->next;
+    solver->mesh->baffles[wall] = baffle->next;
     free(baffle);
     return;
   }

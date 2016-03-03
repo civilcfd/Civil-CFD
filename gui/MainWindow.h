@@ -53,6 +53,7 @@ private slots:
   void on_contourVOF_toggled();
   void on_contourP_toggled();
   void on_contourK_toggled();
+  void on_contourVorticity_toggled();
   void on_showVectors_toggled();
   void on_blockObstacles_toggled();
   void on_showMesh_toggled();

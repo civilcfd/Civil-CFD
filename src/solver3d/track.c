@@ -124,7 +124,6 @@ int track_write() {
 
 int track_read() {
   FILE *fp;
-  struct track_data *x, *del;
   int nargs;
   char text[256];
   char args[2][256];
