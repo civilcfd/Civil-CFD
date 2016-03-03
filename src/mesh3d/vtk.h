@@ -12,6 +12,7 @@ int vtk_write_fv(struct mesh_data *mesh, int timestep);
 int vtk_write_vof(struct mesh_data *mesh, int timestep);
 int vtk_write_P(struct mesh_data *mesh, int timestep);
 int vtk_write_U(struct mesh_data *mesh, int timestep);
+int vtk_write_vorticity(struct mesh_data *mesh, int timestep);
 int vtk_write_vector_grid(char *filename, char *dataset_name, 
                           long int ni, long int nj, long int nk,
                           double oi, double oj, double ok,

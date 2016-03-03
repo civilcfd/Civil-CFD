@@ -61,6 +61,8 @@ struct mesh_data *mesh_init_copy(struct mesh_data *mesh_source) {
   for(i = 0; i < 6; i++) {
     mesh->wb[i] = mesh_source->wb[i];
     mesh->sb[i] = mesh_source->sb[i];
+    
+    if(i<3) mesh->baffle[i] = mesh_source->baffle[i];
   }
 
   mesh->ready = mesh_source->ready;
@@ -90,6 +92,9 @@ int mesh_copy_data(struct mesh_data *mesh, struct mesh_data *mesh_source) {
   memcpy(mesh->u, mesh_source->u, size * sizeof(double));
   memcpy(mesh->v, mesh_source->v, size * sizeof(double));
   memcpy(mesh->w, mesh_source->w, size * sizeof(double));
+  memcpy(mesh->u_omega, mesh_source->u_omega, size * sizeof(double));
+  memcpy(mesh->v_omega, mesh_source->v_omega, size * sizeof(double));
+  memcpy(mesh->w_omega, mesh_source->w_omega, size * sizeof(double));
   
   memcpy(mesh->vof, mesh_source->vof, size * sizeof(double));
   memcpy(mesh->n_vof, mesh_source->n_vof, 
@@ -142,6 +147,10 @@ struct mesh_data *mesh_init_empty() {
   mesh->u = NULL;
   mesh->v = NULL;
   mesh->w = NULL;
+  mesh->u_omega = NULL;
+  mesh->v_omega = NULL;
+  mesh->w_omega = NULL;
+  
   mesh->vof = NULL;
   mesh->n_vof = NULL;
 
@@ -215,6 +224,9 @@ int mesh_set_array(struct mesh_data *mesh, char *param, double value,
   else if(strcmp(param, "u") == 0) p = mesh->u;
   else if(strcmp(param, "v") == 0) p = mesh->v;
   else if(strcmp(param, "w") == 0) p = mesh->w;
+  else if(strcmp(param, "u_omega") == 0) p = mesh->u_omega;
+  else if(strcmp(param, "v_omega") == 0) p = mesh->v_omega;
+  else if(strcmp(param, "w_omega") == 0) p = mesh->w_omega;
   else if(strcmp(param, "fv") == 0) p = mesh->fv;
   else if(strcmp(param, "ae") == 0) p = mesh->ae;
   else if(strcmp(param, "an") == 0) p = mesh->an;
@@ -639,6 +651,28 @@ int mesh_init_complete(struct mesh_data *mesh) {
     printf("error: memory could not be allocated for w in mesh_init_complete\n");
     return(1);
   }
+  
+  /* vorticity */
+  mesh->u_omega = malloc(sizeof(double) * size);
+  
+  if(mesh->u_omega == NULL) {
+    printf("error: memory could not be allocated for u_omega in mesh_init_complete\n");
+    return(1);
+  }
+  
+  mesh->v_omega = malloc(sizeof(double) * size);
+
+  if(mesh->v_omega == NULL) {
+    printf("error: memory could not be allocated for v_omega in mesh_init_complete\n");
+    return(1);
+  }
+
+  mesh->w_omega = malloc(sizeof(double) * size);
+
+  if(mesh->w_omega == NULL) {
+    printf("error: memory could not be allocated for w_omega in mesh_init_complete\n");
+    return(1);
+  }
  
   mesh->vof = malloc(sizeof(double) * size);
 
@@ -722,6 +756,9 @@ int mesh_free(struct mesh_data *mesh) {
   free(mesh->u);
   free(mesh->v);
   free(mesh->w);
+  free(mesh->u_omega);
+  free(mesh->v_omega);
+  free(mesh->w_omega);
 
   free(mesh->vof);
   free(mesh->n_vof);

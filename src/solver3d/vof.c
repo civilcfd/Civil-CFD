@@ -1271,7 +1271,9 @@ int vof_deltcal(struct solver_data *solver) {
 	delt = min(delt, 0.8 * dtvis);
    
   if(solver->delt_n != delt) {
+  #ifdef DEBUG
     printf("timestep adjusted from %lf to %lf\n",solver->delt_n,delt);
+  #endif
     solver->delt = delt;
     solver->betacal(solver);
     if(solver->petacal != NULL)
@@ -1338,7 +1340,14 @@ int vof_write(struct solver_data *solver) {
       csv_write_k(solver->mesh,solver->t);
       csv_write_E(solver->mesh,solver->t);
     }
-     
+    
+    vof_baffles_write(solver);
+    
+    vof_vorticity(solver);
+    
+    vtk_write_vorticity(solver->mesh,write_step);
+    csv_write_vorticity(solver->mesh,write_step);
+    
     write_flg = solver->t + solver->writet;
   }
 

@@ -65,6 +65,7 @@ struct solver_data {
   
   double vof_height; /* initial fluid level */
   double vof_delay;  /* delay to reach this height */
+  
 
   /*
    * COMMENTED OUT - INCLUDED IN THE MESH DEFINITION

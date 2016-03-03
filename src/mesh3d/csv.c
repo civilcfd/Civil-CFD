@@ -48,6 +48,29 @@ int csv_write_U(struct mesh_data *mesh, double timestep)
                         mesh->u, mesh->v, mesh->w);
 
 }
+int csv_write_vorticity(struct mesh_data *mesh, double timestep)
+{
+  char filename[256];
+  #ifndef __MINGW32__
+  mode_t process_mask = umask(0);
+  #endif
+  
+  sprintf(filename, "%4.3lf", timestep);
+
+  #ifdef __MINGW32__  
+  mkdir(filename);
+  #else
+  mkdir(filename, S_IRWXU | S_IRWXG | S_IRWXO);
+  umask(process_mask);
+  #endif
+  
+  sprintf(filename, "%4.3lf/vorticity.csv", timestep);
+
+  return csv_write_vector_grid(filename, "u-vorticity, v-vorticity, w-vorticity", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->u_omega, mesh->v_omega, mesh->w_omega);
+
+}
 int csv_read_P(struct mesh_data *mesh, double timestep)
 {
   char filename[256];

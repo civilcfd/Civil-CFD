@@ -62,6 +62,9 @@ void MainWindow::on_contourP_toggled() {
 void MainWindow::on_contourK_toggled() {
   visualizeRender();
 }
+void MainWindow::on_contourVorticity_toggled() {
+  visualizeRender();
+}
 void MainWindow::on_showVectors_toggled() {
   visualizeRender();
 }
@@ -131,8 +134,10 @@ void MainWindow::visualizeRender() {
       vtkFile.prepend("vof_");
     } else if(ui.contourP->isChecked()) {
       vtkFile.prepend("P_");
-    } else {
+    } else if(ui.contourK->isChecked()) {
       vtkFile.prepend("k_");
+    } else if(ui.contourVorticity->isChecked()) {
+      vtkFile.prepend("z_vorticity_");
     }
     vectFile.prepend("vtk/U_");
     volFile = "vtk/fv_0.vtk";

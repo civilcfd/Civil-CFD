@@ -61,6 +61,22 @@ int vtk_write_P(struct mesh_data *mesh, int timestep)
 
 }
 
+int vtk_write_vorticity(struct mesh_data *mesh, int timestep)
+{
+  char filename[256];
+  
+  /* only writes z-vorticity because why would you want to visualize any other vorticity */
+  /* the csv has all vorticities written */
+
+  sprintf(filename, "vtk/z_vorticity_%d.vtk", timestep);
+
+  return vtk_write_scalar_grid(filename, "z_vorticity", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
+                        mesh->delx, mesh->dely, mesh->delz, mesh->w_omega);
+
+}
+
 int vtk_write_vof(struct mesh_data *mesh, int timestep)
 {
   char filename[256];

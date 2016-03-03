@@ -39,6 +39,66 @@ int vof_baffles_output(struct solver_data *solver) {
 
 }
 
+int vof_baffles_write(struct solver_data *solver) {
+  FILE *fp;
+  struct baffle_data *baffle;
+  int x, count=0;
+  
+  if(solver->t < 0.000001) {
+    fp = fopen("baffles.csv", "w"); 
+    if(fp == NULL) {
+      printf("error: cannot open tracking file\n");
+      return(1);
+    }    
+    
+    for(x=0; x < 3; x++) {
+      for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
+          switch(baffle->type) {
+          case flow:
+            if(count > 0) {
+              fprintf(fp, ", ");
+            }
+            fprintf(fp, "%d", count);
+            count++;
+          break;
+        }
+      }
+    }
+    
+    if(count>0) fprintf(fp, "\n");
+    
+  } else {
+    fp = fopen("baffles.csv", "a"); 
+  }
+
+  if(fp == NULL) {
+    printf("error: cannot open tracking file\n");
+    return(1);
+  }
+
+  count = 0;
+  for(x=0; x < 3; x++) {
+    for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
+        switch(baffle->type) {
+        case flow:
+          if(count > 0) {
+            fprintf(fp, ", ");
+          }
+          fprintf(fp, "%.2lf", \
+                 baffle->value * 1000);
+          count++;
+        break;
+      }
+    }
+  }
+
+  if(count>0) fprintf(fp,"\n");
+  
+  fclose(fp);
+
+  return 0;
+}
+
 int vof_baffles(struct solver_data *solver) {
   int x;
   struct baffle_data *baffle;

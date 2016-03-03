@@ -8,6 +8,8 @@ int vof_baffles(struct solver_data *solver);
 
 int vof_baffles_output(struct solver_data *solver);
 
+int vof_baffles_write(struct solver_data *solver);
+
 int baffle_k(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double value, long int pos);

@@ -15,6 +15,7 @@ int csv_write_P(struct mesh_data *mesh, double timestep);
 int csv_read_P(struct mesh_data *mesh, double timestep);
 int csv_write_fv(struct mesh_data *mesh, double timestep);
 int csv_read_fv(struct mesh_data *mesh, double timestep);
+int csv_write_vorticity(struct mesh_data *mesh, double timestep);
 
 int csv_write_scalar_grid(char *filename, char *dataset_name, 
                           long int ni, long int nj, long int nk,
