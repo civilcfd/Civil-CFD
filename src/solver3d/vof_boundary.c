@@ -98,9 +98,7 @@ int boundary_hgl(struct solver_data *solver,
   struct mesh_data *mesh = solver->mesh;
   
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
-  
-  /* TODO: MUST FORCE VON-NEUMANN VELOCITY BOUNDARY, CURRENTLY IT IS USER SELECTABLE */
-  
+    
   /* value += mesh->delz; uncomment and everything is off-set by 1 cell vertically */
 
   switch(x) {
@@ -127,17 +125,26 @@ int boundary_hgl(struct solver_data *solver,
   case 4: /* bottom */
     /*kmax++*/;
     normal[2] = 1;
+    coplanar[2] = 1;
     break;
   case 5: /* south */
     /*kmin--*/;
     normal[2] = 1;
+    coplanar[2] = -1;
     break;
   }
  
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k = kmax-1; k > kmin-1; k--) {
-      
+        
+        if(FV(i,j,k) < 0.000001) continue;
+        
+        /* must set velocity to a Von Neumann boundary */
+        U(i,j,k) = U(i+normal[0]*coplanar[0], j+normal[1]*coplanar[1], k+normal[2]*coplanar[2]);
+        V(i,j,k) = V(i+normal[0]*coplanar[0], j+normal[1]*coplanar[1], k+normal[2]*coplanar[2]);
+        W(i,j,k) = W(i+normal[0]*coplanar[0], j+normal[1]*coplanar[1], k+normal[2]*coplanar[2]);
+        
         height = k * mesh->delz;
         if(value - height >= mesh->delz - solver->emf) {
           VOF(i,j,k) = 1.0;
@@ -451,25 +458,43 @@ int boundary_fixed_velocity(struct solver_data *solver,
       for(k=kmin; k <= kmax; k++) {   
         switch(x) {
         case 0:
-        /* TODO : THIS CODE NEEDS TO BE GENERALIZED FOR ALL WALLS */
           if(value > 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
+          U(i,j,k) = value;
+          V(i,j,k) = 0;
+          W(i,j,k) = 0;
+          break;
         case 1:
+          if(value < 0)
+            VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = value;
           V(i,j,k) = 0;
           W(i,j,k) = 0;
           break;
         case 2:
-        /* TODO : THIS CODE NEEDS TO BE GENERALIZED FOR ALL WALLS */
           if(value > 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
+          U(i,j,k) = 0;
+          V(i,j,k) = value;
+          W(i,j,k) = 0;
+          break; 
         case 3:
+          if(value < 0)
+            VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = 0;
           V(i,j,k) = value;
           W(i,j,k) = 0;
           break;    
         case 4:
+          if(value > 0)
+            VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
+          U(i,j,k) = 0;
+          V(i,j,k) = 0;
+          W(i,j,k) = value;
+          break;   
         case 5:
+          if(value < 0)
+            VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = 0;
           V(i,j,k) = 0;
           W(i,j,k) = value;
