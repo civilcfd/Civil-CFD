@@ -30,6 +30,15 @@ enum special_boundaries {
   mass_inflow = 3
 };
 
+enum baffle_type {
+  flow = 0,
+  slip = 1,
+  k = 2,
+  weir = 3,
+  swirl_angle = 4,
+  v_deviation = 5
+};
+
 struct sb_data {
   /* Describes special boundaries
    * These are fixed domain boundaries that exist on wall boundaries
@@ -48,6 +57,24 @@ struct sb_data {
   struct sb_data *next;
 };
 
+
+struct baffle_data {
+  /* Describes baffles
+   * These are fixed domain boundaries that exist inside the mesh
+   * used to measure flow, induce backpressure, or block flow
+   */
+
+  enum baffle_type type;
+
+  long int extent_a[2]; /* describes the extent in the two dimensions parallel to the
+                       * boundary plane */
+  long int extent_b[2]; /* describes the extent in the two dimensions parallel to the
+                       * boundary plane */                       
+  double value;       /* value dependent on type */
+  long int pos;
+  
+  struct baffle_data *next;
+};
 
 struct mesh_data {
   /* Describes a single mesh
@@ -73,6 +100,7 @@ struct mesh_data {
   enum wall_boundaries wb[6];
 
   struct sb_data *sb[6]; /* linked lists of special boundaries for each wall */
+  struct baffle_data *baffles[3]; /* linked lists of baffles for each axis */
   
   /* flag to indicate that the above properties are assigned
    * and mesh is ready for dynamic array allocation */

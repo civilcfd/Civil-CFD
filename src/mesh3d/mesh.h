@@ -16,6 +16,12 @@
 #define AT(i, j, k) mesh->at[mesh_index(mesh, i, j, k)]
 #endif
 
+int mesh_baffle_create(struct mesh_data *mesh, int axis, int type, double value, long int pos);
+
+int mesh_baffle_extent_a(struct mesh_data *mesh, int axis, long int extent_a_1, long int extent_a_2);
+
+int mesh_baffle_extent_b(struct mesh_data *mesh, int axis, long int extent_b_1, long int extent_b_2);
+
 int mesh_load_csv(struct mesh_data *mesh, int timestep);
 
 struct mesh_data *mesh_init_copy(struct mesh_data *mesh_source);

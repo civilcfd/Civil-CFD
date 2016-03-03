@@ -15,6 +15,7 @@
 #include "csv.h"
 #include "kE.h"
 #include "vof_boundary.h"
+#include "vof_baffles.h"
 
 #include "vof_macros.h"
 
@@ -1011,6 +1012,7 @@ int vof_boundaries(struct solver_data *solver) {
   }
 
   vof_vof_height_boundary(solver);
+  vof_baffles(solver);
   
   return 0;
 #undef emf

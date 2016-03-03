@@ -118,6 +118,7 @@ int Simulation::load() {
 
 
   clearSpecialBoundaries();
+  clearBaffles();
   track_empty();
   std::free(solver->mesh);
   std::free(solver);
@@ -548,6 +549,124 @@ void Simulation::clearSpecialBoundaries() {
 		while(sb_item != NULL) {
 			removeSpecialBoundary(i);
 			resetSpecialBoundary(i);
+		}
+	}
+
+}
+
+/* baffles */
+
+bool Simulation::addBaffle(int wall, 
+  QString type,
+  long int extent_a_1,
+  long int extent_a_2, long int extent_b_1,
+  long int extent_b_2, double value, long int pos) {
+
+  int n=0;
+  if(type == "flow measurement") n = 0;
+  else if(type == "slip") n = 1;
+  else if(type == "headloss") n = 2;
+
+  if(mesh_baffle_create(solver->mesh, wall, n, value, pos)==1)
+    return false;
+
+  mesh_baffle_extent_a(solver->mesh, wall, extent_a_1, extent_a_2);
+  mesh_baffle_extent_b(solver->mesh, wall, extent_b_1, extent_b_2);
+
+  return true;
+
+}
+
+void Simulation::editBaffle(QString type, long int extent_a_1, long int extent_a_2, long int extent_b_1, long int extent_b_2, double value, long int pos) {
+  baffle->extent_a[0] = extent_a_1;
+  baffle->extent_a[1] = extent_a_2;
+  baffle->extent_b[0] = extent_b_1;
+  baffle->extent_b[1] = extent_b_2;
+  baffle->value = value;
+  baffle->pos = pos;
+  
+
+  if(type == "flow measurement") baffle->type = flow;
+  else if(type == "slip") baffle->type = slip;
+  else if(type == "headloss") baffle->type = k;
+
+}
+
+void Simulation::resetBaffle(int wall) {
+  baffle = solver->mesh->baffle[wall];
+}
+
+bool Simulation::getNextBaffle(
+      QString &type,
+      long int (&extent_a)[2], long int (&extent_b)[2],
+      double &value, long int &pos) {
+
+  if(baffle == NULL) return false;
+
+  extent_a[0] = baffle->extent_a[0];
+  extent_a[1] = baffle->extent_a[1];
+  extent_b[0] = baffle->extent_b[0];
+  extent_b[1] = baffle->extent_b[1];
+  
+  value = baffle->value;
+  pos = baffle->pos;
+
+  type = "";
+  switch(baffle->type) {
+  case 0:
+    type = "flow measurement";
+    break;
+  case 1:
+    type = "slip";
+    break;
+  case 2:
+    type = "headloss";
+    break;
+  }
+
+  baffle = baffle->next;
+  
+  return true;
+}
+
+void Simulation::nextBaffle() {
+
+  if(baffle == NULL) return;
+
+  baffle = baffle->next;
+}
+
+void Simulation::removeBaffle(int wall) {
+  struct baffle_data *nbaffle;
+
+  nbaffle = solver->mesh->baffle[wall];
+
+  if(nbaffle == baffle) {
+    solver->mesh->baffle[wall] = baffle->next;
+    free(baffle);
+    return;
+  }
+  
+  while(nbaffle != NULL) {
+    if(nbaffle->next == baffle) {
+      nbaffle->next = baffle->next;
+      free(baffle);
+      return;
+    }
+
+    nbaffle = nbaffle->next;
+  }
+
+}
+
+void Simulation::clearBaffles() {
+	int i;
+	
+	for(i = 0; i<3; i++) {
+		resetBaffle(i);
+		while(baffle != NULL) {
+			removeBaffle(i);
+			resetBaffle(i);
 		}
 	}
 

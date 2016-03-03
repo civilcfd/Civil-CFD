@@ -12,11 +12,13 @@
 #include "mesh.h"
 
 const char *wall_names[] = { "west", "east", "south", "north", "bottom", "top" };
+const char *axis_names[] = { "x", "y", "z" };
 
 int write_mesh(struct mesh_data *mesh, char *filename) {
   FILE *fp;
   int i;
   struct sb_data *sb;
+  struct baffle_data *baffle;
   
   if(filename == NULL || mesh == NULL) {
     printf("error: passed null arguments to write_mesh\n");
@@ -50,7 +52,19 @@ int write_mesh(struct mesh_data *mesh, char *filename) {
       sb = sb->next;
     }
   }
+  
+  for(i=0; i<3; i++) {
+    baffle = mesh->baffles[3];
+    
+    while(baffle != NULL) {
+      fprintf(fp,"baffle_%s %d %lf %lf\n",axis_names[i],baffle->type,baffle->value,baffle->pos);
+      fprintf(fp,"baffle_extent_a_%s %ld %ld\n",wall_names[i],baffle->extent_a[0],baffle->extent_a[1]);
+      fprintf(fp,"baffle_extent_b_%s %ld %ld\n",wall_names[i],baffle->extent_b[0],baffle->extent_b[1]);
 
+      baffle = baffle->next;
+    }
+  }
+  
   fprintf(fp,"end\n");
   
   fclose(fp);

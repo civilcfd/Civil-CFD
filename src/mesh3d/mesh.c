@@ -286,10 +286,58 @@ int mesh_sb_extent_b(struct mesh_data *mesh, int wall, long int extent_b_1, long
   
   return 0;
 }
+int mesh_baffle_create(struct mesh_data *mesh, int axis, int type, double value, long int pos) {
+  struct baffle_data *item;
+  
+  item = malloc(sizeof(struct baffle_data));
+  if(item == NULL) {
+    printf("error: could not malloc in mesh_baffle_create\n");
+    return(1);
+  }
+  
+  item->extent_a[0] = 0;
+  item->extent_a[1] = 0;
+  item->extent_b[0] = 0;
+  item->extent_b[1] = 0;  
+  item->type        = type;
+  item->value       = value;
+  item->pos  =  pos;
+  
+  item->next = mesh->baffles[axis];
+  mesh->baffles[axis] = item;
+  
+  return 0;
+}
+
+int mesh_baffle_extent_a(struct mesh_data *mesh, int axis, long int extent_a_1, long int extent_a_2) {
+  
+  if(mesh->baffles[axis] == NULL) {
+    printf("error: attempting to set value on an empty special boundary\n");
+    return(1);
+  }
+  
+  mesh->baffles[axis]->extent_a[0] = extent_a_1;
+  mesh->baffles[axis]->extent_a[1] = extent_a_2;
+  
+  return 0;
+}
+
+int mesh_baffle_extent_b(struct mesh_data *mesh, int axis, long int extent_b_1, long int extent_b_2) {
+  
+  if(mesh->baffles[axis] == NULL) {
+    printf("error: attempting to set value on an empty special boundary\n");
+    return(1);
+  }
+  
+  mesh->baffles[axis]->extent_b[0] = extent_b_1;
+  mesh->baffles[axis]->extent_b[1] = extent_b_2;
+  
+  return 0;
+}
 
 int mesh_set_value(struct mesh_data *mesh, char *param, int dims, 
                    double *vector) {
-  int wall;
+  int wall, axis;
 
   #ifdef debug
     printf("mesh_set_value: %s, %d\n",param,dims);
@@ -417,6 +465,58 @@ int mesh_set_value(struct mesh_data *mesh, char *param, int dims,
     }
     
     mesh_sb_extent_b(mesh, wall, vector[0], vector[1]);
+  }
+  /* baffles */
+  else if (strncmp(param, "baffle_", 3)==0) {
+    if(dims != 3) {
+      printf("error in source file: baffle_* requires 3 arguments\n");
+      return(1);
+    }
+
+    if(strcmp(param, "baffle_x")==0) axis = 0;
+    else if(strcmp(param, "baffle_y")==0) axis = 1;
+    else if(strcmp(param, "baffle_z")==0) axis = 2;
+    else {
+      printf("error in source file: %s unrecognized baffle_* command\n",
+             param);
+      return(1);
+    }
+    
+    mesh_baffle_create(mesh, axis, vector[0], vector[1], vector[2]);
+  }
+  else if (strncmp(param, "baffle_extent_a_", 16)==0) {
+    if(dims != 2) {
+      printf("error in source file: baffle_extent_a_* requires 2 arguments\n");
+      return(1);
+    }
+
+    if(strcmp(param, "baffle_extent_a_x")==0) axis = 0;
+    else if(strcmp(param, "baffle_extent_a_y")==0) axis = 1;
+    else if(strcmp(param, "baffle_extent_a_z")==0) axis = 2;
+    else {
+      printf("error in source file: %s unrecognized baffleextent_a_* command\n",
+             param);
+      return(1);
+    }
+    
+    mesh_baffle_extent_a(mesh, axis, vector[0], vector[1]);
+  }
+  else if (strncmp(param, "baffle_extent_b_", 16)==0) {
+    if(dims != 2) {
+      printf("error in source file: baffleextent_b_* requires 2 arguments\n");
+      return(1);
+    }
+
+    if(strcmp(param, "baffle_extent_b_x")==0) axis = 0;
+    else if(strcmp(param, "baffle_extent_b_y")==0) axis = 1;
+    else if(strcmp(param, "baffle_extent_b_z")==0) axis = 2;
+    else {
+      printf("error in source file: %s unrecognized baffle_extent_b_* command\n",
+             param);
+      return(1);
+    }
+    
+    mesh_baffle_extent_b(mesh, axis, vector[0], vector[1]);
   }
   else if(strncmp(param, "end", 3)==0) {
     return(0);

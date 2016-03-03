@@ -116,9 +116,29 @@ public:
   void removeSpecialBoundary(int wall);
 	void clearSpecialBoundaries();
 
-  void editSpecialBoundary(QString type, long int extent_a_1, long int extent_a_2, long int extent_b_1, long int extent_b_2, double value, double turbulence); 
+  void editSpecialBoundary(QString type, long int extent_a_1, long int extent_a_2, long int extent_b_1, long int extent_b_2, double value, long int pos); 
 
+  bool addBaffle(int wall,
+    QString type,
+    long int extent_a_1, long int extent_a_2,
+    long int extent_b_1, long int extent_b_2,
+    double value, long int pos);
+ 
+  bool getNextBaffle(
+    QString &type,
+    long int (&extent_a)[2], 
+    long int (&extent_b)[2],
+    double &value, long int &pos);
+  void nextBaffle();
 
+  void resetBaffle(int wall);
+
+  void removeBaffle(int wall);
+	void clearBaffles();
+
+  void editBaffle(QString type, long int extent_a_1, long int extent_a_2, long int extent_b_1, long int extent_b_2, double value, long int pos); 
+  
+  
   QString getInitialScalar(QString param);
   void setInitial(QString param, QString s1="", QString s2="", QString s3="");
   int getInitialVector(QString param, double (&vector)[3]);
@@ -132,6 +152,7 @@ public:
 private:
   struct solver_data *solver; 
   struct sb_data *sb_item;
+  struct baffle_data *baffle;
 
   QFileInfo stlFile;
   QString name;
