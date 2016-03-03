@@ -1130,6 +1130,8 @@ int vof_output(struct solver_data *solver) {
   
   printf("max nu: %lf\n",solver->nu_max);
   
+  vof_baffles_output(solver);
+  
   return 0;
 }
 

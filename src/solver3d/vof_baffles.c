@@ -19,6 +19,26 @@
 
 #include "vof_macros.h"
 
+int vof_baffles_output(struct solver_data *solver) {
+  struct baffle_data *baffle;
+  int x;
+  int count = 0;
+  
+  for(x=0; x < 3; x++) {
+    for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
+        switch(baffle->type) {
+        case flow:
+          printf("Flow baffle %d, axis %d position %ld, extent %lf %lf to %lf %lf: %.2lf L/s\n", \
+                 count, x, baffle->pos, baffle->extent_a[0], baffle->extent_a[1], \
+                 baffle->extent_b[0], baffle->extent_b[1], baffle->value * 1000);
+          count++;
+        break;
+      }
+    }
+  }
+
+}
+
 int vof_baffles(struct solver_data *solver) {
   int x;
   struct baffle_data *baffle;
