@@ -11,8 +11,14 @@
 void MainWindow::buildResultList() {
   sim.trackRewind();
 
+  ui.t->addItem("0");
+  
+  bool ok;
+  
   while(sim.getTrackNext() >= 0) {
     ui.ResultList->addItem(sim.getTrackT());
+    if(sim.getTrackT().toDouble(&ok) > 0.00000001)
+      if(ok) ui.t->addItem(sim.getTrackT());
   }
 
 }

@@ -42,6 +42,14 @@ private slots:
   void on_BoundaryTree_itemActivated(QTreeWidgetItem *item, int column);
   void on_BoundaryTree_itemClicked(QTreeWidgetItem *item, int column);
   void on_RemoveSpecialBoundary_clicked();
+  
+  void on_EditBaffle_clicked();
+  void on_BaffleTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
+  void on_AddBaffle_clicked();
+  void on_BaffleTree_itemActivated(QTreeWidgetItem *item, int column);
+  void on_BaffleTree_itemClicked(QTreeWidgetItem *item, int column);
+  void on_RemoveBaffle_clicked();
+  
   void on_inside_x_textChanged();
   void on_inside_y_textChanged();
   void on_inside_z_textChanged();
@@ -68,11 +76,13 @@ private slots:
 private:
   bool saveNotify();
   void editBoundary(QTreeWidgetItem *item);
+  void editBaffle(QTreeWidgetItem *item);
   void disableAll();
   void enableAll();
   void toggle();
   void update();
   void boundariesUpdate();
+  void bafflesUpdate();
   void meshUpdate();
   void visualizeUpdate();
   void buildTimesteps();
@@ -89,6 +99,8 @@ private:
   BoundaryDialog *boundaryDialog;
   SBoundaryDialog *sBoundaryDialog;
   BoundaryDisplay *boundaryDisplay;
+  BaffleDialog *baffleDialog;
+  BoundaryDisplay *baffleDisplay;
   SolverDialog *solverDialog;
   QString appPath;
 };

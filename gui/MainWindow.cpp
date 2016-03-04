@@ -15,6 +15,7 @@ MainWindow::MainWindow() : QMainWindow() {
   meshDisplay = new MeshDisplay(10,10,10);
   geometryDisplay = new GeometryDisplay(10,10,10);
   boundaryDisplay = new BoundaryDisplay(10,10,10);
+  baffleDisplay = new BoundaryDisplay(10,10,10);
   visualizeDisplay = new VisualizeDisplay(10,10,10);
 
   appPath = QCoreApplication::applicationDirPath();
@@ -28,6 +29,8 @@ MainWindow::MainWindow() : QMainWindow() {
   ui.VTKGeometry->SetRenderWindow(geometryDisplay->getRenderWindow());
 
   ui.VTKBoundaries->SetRenderWindow(boundaryDisplay->getRenderWindow());  
+  
+  ui.VTKBaffles->SetRenderWindow(baffleDisplay->getRenderWindow());  
 
   ui.vis->SetRenderWindow(visualizeDisplay->getRenderWindow());
 }
@@ -318,7 +321,9 @@ void MainWindow::update() {
   ui.OutputSize->setPlainText(OutputSize);
   
   ui.ResultList->clear();
+  ui.t->clear();
   buildResultList();
+  
 
   /* Models Page */
   ui.gx->setPlainText(sim.getGx());

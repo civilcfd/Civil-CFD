@@ -5,12 +5,22 @@
 TEMPLATE = app
 TARGET =  ../bin/gui
 DEPENDPATH += .
-QMAKE_CXXFLAGS += -O0 -pthread
+QMAKE_CXXFLAGS += -O0 -pthread -fopenmp
+macx {
+QMAKE_CXX = clang-omp++
+QMAKE_LINK = clang-omp++
+QMAKE_LINK_SHLIB = clang-omp++
+}
+unix:!macx {
+QMAKE_CXX = g++
+QMAKE_LINK = g++
+QMAKE_LINK_SHLIB = g++
+}
 INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10
 LIBS += -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering
 CONFIG += debug
 
 # Input
-HEADERS += MainWindow.h Simulation.h MeshDisplay.h GeometryDisplay.h Render.h RenderDisplay.h Boundary.h BoundaryDisplay.h SolverDialog.h VisualizeDisplay.h 
+HEADERS += MainWindow.h Simulation.h MeshDisplay.h GeometryDisplay.h Render.h RenderDisplay.h Boundary.h BoundaryDisplay.h SolverDialog.h VisualizeDisplay.h Baffle.h
 FORMS += civlcfd.ui render.ui boundary.ui sboundary.ui solver.ui 
-SOURCES += main.cpp MainWindow.cpp Simulation.cpp MeshDisplay.cpp GeometryDisplay.cpp Render.cpp RenderDisplay.cpp MainWindow_Boundaries.cpp Boundary.cpp BoundaryDisplay.cpp Solver.cpp ResultList.cpp Visualize.cpp VisualizeDisplay.cpp 
+SOURCES += main.cpp MainWindow.cpp Simulation.cpp MeshDisplay.cpp GeometryDisplay.cpp Render.cpp RenderDisplay.cpp MainWindow_Boundaries.cpp Boundary.cpp BoundaryDisplay.cpp Solver.cpp ResultList.cpp Visualize.cpp VisualizeDisplay.cpp Baffle.cpp MainWindow_Baffles.cpp

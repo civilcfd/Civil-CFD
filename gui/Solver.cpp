@@ -8,6 +8,8 @@
 
 SolverDialog::SolverDialog(Simulation &sim, QString appPath) {
   QString cmd;
+  QString t;
+  bool ok;
 
   stopT = sim.getEndt().toDouble();
 
@@ -32,11 +34,18 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath) {
 
   cmd = appPath + "/solver3d";
 
+  t = ui.t->currentText();
+  if(t.toDouble(&ok) < 0.00001) t = "";
+  if(!ok) t="";
+  
+  if(t != "") cmd = cmd + " " + t;
+  
   if(!QFile::exists(cmd)) {
     ui.status->setText("Could not find executable: " + cmd);
     ui.Return->setEnabled(true);
   }
   else {
+    if(t != "") cmd = cmd + " " + t;
     process->start(cmd);
   }
 
