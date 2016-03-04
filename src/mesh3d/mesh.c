@@ -480,23 +480,6 @@ int mesh_set_value(struct mesh_data *mesh, char *param, int dims,
     mesh_sb_extent_b(mesh, wall, vector[0], vector[1]);
   }
   /* baffles */
-  else if (strncmp(param, "baffle_", 3)==0) {
-    if(dims != 3) {
-      printf("error in source file: baffle_* requires 3 arguments\n");
-      return(1);
-    }
-
-    if(strcmp(param, "baffle_x")==0) axis = 0;
-    else if(strcmp(param, "baffle_y")==0) axis = 1;
-    else if(strcmp(param, "baffle_z")==0) axis = 2;
-    else {
-      printf("error in source file: %s unrecognized baffle_* command\n",
-             param);
-      return(1);
-    }
-    
-    mesh_baffle_create(mesh, axis, vector[0], vector[1], vector[2]);
-  }
   else if (strncmp(param, "baffle_extent_a_", 16)==0) {
     if(dims != 2) {
       printf("error in source file: baffle_extent_a_* requires 2 arguments\n");
@@ -507,7 +490,7 @@ int mesh_set_value(struct mesh_data *mesh, char *param, int dims,
     else if(strcmp(param, "baffle_extent_a_y")==0) axis = 1;
     else if(strcmp(param, "baffle_extent_a_z")==0) axis = 2;
     else {
-      printf("error in source file: %s unrecognized baffleextent_a_* command\n",
+      printf("error in source file: %s unrecognized baffle_extent_a_* command\n",
              param);
       return(1);
     }
@@ -530,6 +513,23 @@ int mesh_set_value(struct mesh_data *mesh, char *param, int dims,
     }
     
     mesh_baffle_extent_b(mesh, axis, vector[0], vector[1]);
+  }
+  else if (strncmp(param, "baffle_", 6)==0) {
+    if(dims != 3) {
+      printf("error in source file: baffle_* requires 3 arguments\n");
+      return(1);
+    }
+
+    if(strcmp(param, "baffle_x")==0) axis = 0;
+    else if(strcmp(param, "baffle_y")==0) axis = 1;
+    else if(strcmp(param, "baffle_z")==0) axis = 2;
+    else {
+      printf("error in source file: %s unrecognized baffle_* command\n",
+             param);
+      return(1);
+    }
+    
+    mesh_baffle_create(mesh, axis, vector[0], vector[1], vector[2]);
   }
   else if(strncmp(param, "end", 3)==0) {
     return(0);

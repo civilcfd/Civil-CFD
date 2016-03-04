@@ -59,6 +59,8 @@ void MainWindow::boundariesUpdate() {
   
   boundaryDisplay->connectVTK("vtk/fv_0.vtk");
   ui.VTKBoundaries->update();
+  
+  boundaryDisplay->clearRectangle();
  
 }
 
@@ -91,7 +93,6 @@ void MainWindow::editBoundary(QTreeWidgetItem *item) {
     long int extent_a[2];
     long int extent_b[2];
     double value, turbulence;
-    bool numeric;
 
     if(item->parent() == NULL) text = "";
     else  text = item->parent()->text(0);
@@ -146,6 +147,12 @@ void MainWindow::on_AddSpecialBoundary_clicked() {
   int wall;
   QString text;
   QTreeWidgetItem *item = ui.BoundaryTree->currentItem();
+
+  if(item == NULL) {
+    QMessageBox::information(this,"Civil CFD",
+                             "Please select a wall from the list of special boundaries", QMessageBox::Ok, QMessageBox::Ok);
+    return;
+  }
 
   text = item->text(0);
   if((text != "West"   && text !="East"   &&
@@ -214,6 +221,11 @@ void MainWindow::on_BoundaryTree_itemActivated(QTreeWidgetItem *item, int column
   QString text;
   double a_1, a_2, a_3, b_1, b_2, b_3;
   int normal;
+
+  if(item==NULL) {
+    boundaryDisplay->clearRectangle();
+    return;
+  }
 
  // This code is for a wall boundary 
   if(ui.BoundaryTree->indexOfTopLevelItem(item->parent()) == 0) {
@@ -379,6 +391,7 @@ void MainWindow::on_BoundaryTree_itemActivated(QTreeWidgetItem *item, int column
 
         normal = 2;
       }
+      else return;
 
 
 			a_1 +=  + sim.getOrigin(0).toDouble();

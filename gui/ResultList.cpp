@@ -14,12 +14,16 @@ void MainWindow::buildResultList() {
   ui.t->addItem("0");
   
   bool ok;
+  QString t_last;
   
   while(sim.getTrackNext() >= 0) {
     ui.ResultList->addItem(sim.getTrackT());
     if(sim.getTrackT().toDouble(&ok) > 0.00000001)
-      if(ok) ui.t->addItem(sim.getTrackT());
+      if(ok) t_last = sim.getTrackT();
   }
+
+  if(t_last.toDouble(&ok) > 0.0000001)
+    if(ok) ui.t->addItem(t_last);
 
 }
 

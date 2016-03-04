@@ -6,9 +6,8 @@
 
 #include "SolverDialog.h"
 
-SolverDialog::SolverDialog(Simulation &sim, QString appPath) {
+SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   QString cmd;
-  QString t;
   bool ok;
 
   stopT = sim.getEndt().toDouble();
@@ -34,7 +33,6 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath) {
 
   cmd = appPath + "/solver3d";
 
-  t = ui.t->currentText();
   if(t.toDouble(&ok) < 0.00001) t = "";
   if(!ok) t="";
   

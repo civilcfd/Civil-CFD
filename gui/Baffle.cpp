@@ -64,7 +64,7 @@ void BaffleDialog::accept() {
 
   baffleText = ui.select->currentText();
   value = ui.value->toPlainText().toDouble(&ok_value);
-  pos = ui.turbulence->toPlainText().toLong(&ok_pos);
+  pos = ui.pos->toPlainText().toLong(&ok_pos);
   extent_a[0] = ui.extentA1->toPlainText().toLong(&ok_extent_a[0]);
   extent_a[1] = ui.extentA2->toPlainText().toLong(&ok_extent_a[1]);
   extent_b[0] = ui.extentB1->toPlainText().toLong(&ok_extent_b[0]);
@@ -84,7 +84,7 @@ double BaffleDialog::getValue() {
   return value;
 }
 
-double BaffleDialog::getPos() {
+long int BaffleDialog::getPos() {
   return pos;
 }
 

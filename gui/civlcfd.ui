@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>8</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -3099,7 +3099,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>

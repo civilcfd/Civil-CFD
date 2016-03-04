@@ -88,6 +88,7 @@ float an(struct solver_data *solver, long int i,long int j,long int k);
 float at(struct solver_data *solver, long int i,long int j,long int k);
 float fv(struct solver_data *solver, long int i,long int j,long int k);
 float peta(struct solver_data *solver, long int i,long int j,long int k);
+float debug_d(struct solver_data *solver, long int i,long int j,long int k);
 void track_cell(struct solver_data *solver, long int i,long int j,long int k);
 #endif
 

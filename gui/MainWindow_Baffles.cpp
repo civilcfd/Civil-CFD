@@ -11,7 +11,7 @@
 #include "MainWindow.h"
 
 void MainWindow::bafflesUpdate() {
-  QTreeWidgetItem *new_item;
+  QTreeWidgetItem *item, *new_item;
   long int extent_a[2];
   long int extent_b[2];
   QString type;
@@ -19,6 +19,8 @@ void MainWindow::bafflesUpdate() {
   double value;
   long int pos;
   int n;
+  
+  
   for(int i=0; i<3; i++) {
     item = ui.BaffleTree->topLevelItem(0)->child(i);
 
@@ -50,62 +52,60 @@ void MainWindow::bafflesUpdate() {
                       sim.getOrigin(0).toDouble(), sim.getOrigin(1).toDouble(), sim.getOrigin(2).toDouble());
   
   baffleDisplay->connectVTK("vtk/fv_0.vtk");
-  ui.VTKBoundaries->update();
+  ui.VTKBaffles->update();
+  
+  baffleDisplay->clearRectangle();
  
 }
 
 void MainWindow::editBaffle(QTreeWidgetItem *item) {
-  int wb;
 
   if(item == NULL) return;
 
   if(item->childCount() > 0)
     return;
   
-  QTreeWidgetItem *item = ui.BaffleTree->currentItem();
   QString text;
   QString type;
   long int extent_a[2];
   long int extent_b[2];
   double value;
   long int pos;
-  bool numeric;
 
   if(item->parent() == NULL) text = "";
   else  text = item->parent()->text(0);
 
-  if((text != "x"   && text !="y"   &&
-    text != "z" ) ||
-    ui.BaffleTree->indexOfTopLevelItem(item->parent()) == 0) {
+  if(text != "x"   && text !="y" && text != "z" ) {
       QMessageBox::information(this,"Civil CFD",
-                           "Please select from the list of special baffles", QMessageBox::Ok, QMessageBox::Ok);
+                           "Please select from the list of baffles", QMessageBox::Ok, QMessageBox::Ok);
                                
       return;
+    }
     
 
-    int wall = item->parent()->parent()->indexOfChild(item->parent());
-    sim.resetBaffle(wall);
+  int wall = item->parent()->parent()->indexOfChild(item->parent());
+  sim.resetBaffle(wall);
 
-    for(int i = 0; i < item->text(0).toInt(); i++) {
-       sim.getNextBaffle(type, extent_a, extent_b, value, pos);
-    }
-
-    baffleDialog = new BaffleDialog(type, wall, extent_a[0], extent_a[1], extent_b[0], extent_b[1], value, pos);
-    baffleDialog->exec();
-
-    if(baffleDialog->result() == QDialog::Accepted) {
-      sim.resetBaffle(wall);
-      for(int i = 1; i < item->text(0).toInt(); i++) {
-        sim.nextBaffle();
-      }     
-      sim.editBaffle( baffleDialog->getBaffleText(),
-      baffleDialog->getExtentA1(), baffleDialog->getExtentA2(),
-      baffleDialog->getExtentB1(), baffleDialog->getExtentB2(),
-      baffleDialog->getValue(),    baffleDialog->getTurbulence());
-    }
-
-    delete baffleDialog;
+  for(int i = 0; i < item->text(0).toInt(); i++) {
+     sim.getNextBaffle(type, extent_a, extent_b, value, pos);
   }
+
+  baffleDialog = new BaffleDialog(type, wall, extent_a[0], extent_a[1], extent_b[0], extent_b[1], value, pos);
+  baffleDialog->exec();
+
+  if(baffleDialog->result() == QDialog::Accepted) {
+    sim.resetBaffle(wall);
+    for(int i = 1; i < item->text(0).toInt(); i++) {
+      sim.nextBaffle();
+    }     
+    sim.editBaffle( baffleDialog->getBaffleText(),
+    baffleDialog->getExtentA1(), baffleDialog->getExtentA2(),
+    baffleDialog->getExtentB1(), baffleDialog->getExtentB2(),
+    baffleDialog->getValue(),    baffleDialog->getPos());
+  }
+
+  delete baffleDialog;
+  
 
   update();
 }
@@ -124,12 +124,17 @@ void MainWindow::on_AddBaffle_clicked() {
   QString text;
   QTreeWidgetItem *item = ui.BaffleTree->currentItem();
 
+  if(item == NULL) {
+    QMessageBox::information(this,"Civil CFD",
+                             "Please select an axis", QMessageBox::Ok, QMessageBox::Ok);
+    return;
+  }
+
   text = item->text(0);
   if((text != "x"   && text !="y"   &&
-      text != "z"  ) ||
-     ui.BaffleTree->indexOfTopLevelItem(item->parent()) == 0) {
+      text != "z"  )) {
     QMessageBox::information(this,"Civil CFD",
-                             "Please select a wall from the list of special baffles", QMessageBox::Ok, QMessageBox::Ok);
+                             "Please select an axis", QMessageBox::Ok, QMessageBox::Ok);
                                  
     return;
   }
@@ -145,7 +150,7 @@ void MainWindow::on_AddBaffle_clicked() {
       baffleDialog->getBaffleText(),
       baffleDialog->getExtentA1(), baffleDialog->getExtentA2(),
       baffleDialog->getExtentB1(), baffleDialog->getExtentB2(),
-      baffleDialog->getValue(),    baffleDialog->getTurbulence());
+      baffleDialog->getValue(),    baffleDialog->getPos());
   }
 
   delete baffleDialog;
@@ -160,9 +165,7 @@ void MainWindow::on_RemoveBaffle_clicked() {
   if(item->parent() == NULL) text = "";
   else  text = item->parent()->text(0);
   
-  if((text != "x"   && text !="y"   &&
-     text != "z" ) ||
-     ui.BaffleTree->indexOfTopLevelItem(item->parent()) == 0) {
+  if(text != "x"   && text !="y" && text != "z" ) {
     QMessageBox::information(this,"Civil CFD",
                              "Please select from the list of special baffles", QMessageBox::Ok, QMessageBox::Ok);
                                  
@@ -197,6 +200,11 @@ void MainWindow::on_BaffleTree_itemActivated(QTreeWidgetItem *item, int column) 
     long int pos;
     bool numeric;
 
+  if(item==NULL) {
+    baffleDisplay->clearRectangle();
+    return;
+  }
+
     item->text(0).toInt(&numeric);
     if(!numeric) {
       baffleDisplay->clearRectangle();
@@ -212,39 +220,40 @@ void MainWindow::on_BaffleTree_itemActivated(QTreeWidgetItem *item, int column) 
     text = item->parent()->text(0);
 
     if(text == "x") {
-      a_1 = pos;
+      a_1 = (pos + 1) * sim.getDelx().toDouble();;
       a_2 = extent_a[0] * sim.getDely().toDouble();
       a_3 = extent_a[1] * sim.getDelz().toDouble();
 
-      b_1 = pos;
+      b_1 = (pos + 1) * sim.getDelx().toDouble();;
       b_2 = (extent_b[0]-1) * sim.getDely().toDouble();
       b_3 = (extent_b[1]-1) * sim.getDelz().toDouble();
 
       normal = 0;
     }
     else if(text == "y") {
-      a_2 = pos;
+      a_2 = (pos + 1)  * sim.getDely().toDouble();
       a_1 = extent_a[0] * sim.getDelx().toDouble();
       a_3 = extent_a[1] * sim.getDelz().toDouble();
 
-      b_2 = pos;
+      b_2 = (pos + 1)  * sim.getDely().toDouble();
       b_1 = (extent_b[0]-1) * sim.getDelx().toDouble();
       b_3 = (extent_b[1]-1) * sim.getDelz().toDouble();
 
       normal = 1;
     }
     else if(text == "z") {
-      a_3 = pos;
+      a_3 = (pos + 1)  * sim.getDelz().toDouble();
       a_1 = extent_a[0] * sim.getDelx().toDouble();
       a_2 = extent_a[1] * sim.getDely().toDouble();
 
-      b_3 = pos;
+      b_3 = (pos + 1)  * sim.getDelz().toDouble();
       b_1 = (extent_b[0]-1) * sim.getDelx().toDouble();
       b_2 = (extent_b[1]-1) * sim.getDely().toDouble();
       
       normal = 2;
 
     }
+      else return;
 
 
     a_1 +=  + sim.getOrigin(0).toDouble();
@@ -258,5 +267,5 @@ void MainWindow::on_BaffleTree_itemActivated(QTreeWidgetItem *item, int column) 
   }
 
   
-  ui.VTKBoundaries->update();
+  ui.VTKBaffles->update();
 }

@@ -62,7 +62,7 @@ bool MainWindow::saveNotify() {
 void MainWindow::on_RunSimulation_clicked() {
   if(!saveNotify()) return;
 
-  solverDialog = new SolverDialog(sim, appPath);
+  solverDialog = new SolverDialog(sim, appPath, ui.t->currentText());
   solverDialog->exec();
 
   delete solverDialog;
@@ -247,7 +247,9 @@ void MainWindow::enableAll() {
   ui.MeshParameters->expandAll();
   ui.Geometry->setEnabled(true);  
   ui.Boundaries->setEnabled(true);
+  ui.Baffles->setEnabled(true);
   ui.BoundaryTree->expandAll();
+  ui.BaffleTree->expandAll();
   ui.InitialConditions->setEnabled(true);
   ui.Simulate->setEnabled(true);
 }
@@ -370,6 +372,7 @@ void MainWindow::update() {
   ui.STLFile_2->setPlainText(sim.getStlFilename());
 
   boundariesUpdate();
+  bafflesUpdate();
 
   // Initial Values Tab
   double vector[3];

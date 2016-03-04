@@ -90,7 +90,8 @@ int sboundary_setup(struct solver_data *solver, int x, long int *imin, long int 
 int boundary_hgl(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double value, double turbulence) {
-  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
+  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, l, m, n;
+  double sdis, dd, peta;
   double height, partial, rho_v2;
   double normal[3] = {0, 0, 0};
   long int coplanar[3] = {0, 0, 0};
@@ -100,6 +101,8 @@ int boundary_hgl(struct solver_data *solver,
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
     
   /* value += mesh->delz; uncomment and everything is off-set by 1 cell vertically */
+
+  dd = DELZ;
 
   switch(x) {
   case 0: /* west */
@@ -192,20 +195,52 @@ int boundary_hgl(struct solver_data *solver,
   }
 
 /*  if(solver->p_flag != 0) return;*/
-  /* now add the velocity pressure */
+
+  /* UNCOMMENT BELOW TO INCLUDE VELOCITY HEAD IN THE CALC, 
+     CHANGING THIS BOUNDARY FROM HGL TO EGL */
+
+  /* now add the velocity pressure
+     the boundary assumes stagnation if upstream
+     and static pressure if downstream  *
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
-      for(k = kmax-1; k > kmin-1; k--) {
+      for(k = kmin; k <= kmax; k++) {
         if(mesh->vof[mesh_index(mesh,i,j,k)] <= 0.0) continue;
+        if(FV(i,j,k) < 0.000001) continue;
+        
+        if((U(i,j,k) * normal[0] * coplanar[0] + V(i,j,k) * normal[1] * coplanar[1]
+           + W(i,j,k) * normal[2] * coplanar[2]) > 0.0) continue; * assume stagnation if upstream *
+ 
+        l = i+coplanar[0];
+        m = j+coplanar[1];
+        n = k+coplanar[2];
+ 
+        if(N_VOF(l,m,n) == 0) {
+          rho_v2 = solver->rho *     (pow(U(i,j,k),2) * normal[0] + 
+                                      pow(V(i,j,k),2) * normal[1] + 
+                                      pow(W(i,j,k),2) * normal[2]) / 2;
+          mesh->P[mesh_index(mesh,i,j,k)] += rho_v2;
+        } else {
+          if(k > 0) {
+            l = i;
+            m = j;
+            n = k-1;
+          
+            sdis=VOF(i,j,k)*dd+VOF(l,m,n)*dd*0.5;
+            if(FV(l,m,n) < emf) sdis = dd*0.5 + VOF(i,j,k) * dd;
+            sdis=max(sdis,0.5*dd);
+            peta=dd/sdis;
 
-        /* ADDED 01/10/2014 */
-        rho_v2 = solver->rho *     (pow(U(i,j,k),2) * normal[0] + 
-                                    pow(V(i,j,k),2) * normal[1] + 
-                                    pow(W(i,j,k),2) * normal[2]) / 2;
-        mesh->P[mesh_index(mesh,i,j,k)] += rho_v2;
+            if ((FV(l,m,n) >= emf)&&(N_VOF(l,m,n)!=0.0)) peta=1.0;
+            if (peta>2.0) peta=2.0;
+            if (peta<0.0) peta=0.0;
+          
+            P(i,j,k) = (1 - peta) * P(i,j,k-1);
+          }
+        }
       }
     }
-  }
+  } */ /* For simplicity this is being removed.  The boundary is "hgl" which denotes stagnation pressure anyways */
 
   return 0;
 }

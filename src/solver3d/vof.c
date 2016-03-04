@@ -35,6 +35,7 @@ float an(struct solver_data *solver, long int i,long int j,long int k) { return 
 float at(struct solver_data *solver, long int i,long int j,long int k) { return AT(i,j,k); }
 float fv(struct solver_data *solver, long int i,long int j,long int k) { return FV(i,j,k); }
 float peta(struct solver_data *solver, long int i,long int j,long int k) { return PETA(i,j,k); }
+float debug_d(struct solver_data *solver, long int i,long int j,long int k) { return D(i,j,k); }
 
 void track_cell(struct solver_data *solver, long int i,long int j,long int k) {
   printf("U(e/n/t) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i,j,k),V(i,j,k),W(i,j,k));

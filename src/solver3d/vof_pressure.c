@@ -163,7 +163,7 @@ int vof_pressure(struct solver_data *solver) {
   double plmn, delp;
   
   double g, del, dp, dv;
-  double ctos, rcsq;
+  double rcsq;
   double sum_a, ax, ux, stabil_limit;
   
   static int direction = -1;
@@ -344,9 +344,6 @@ int vof_pressure(struct solver_data *solver) {
 
         }
         ignore = none;
-        if(solver->delt* RDX * delp / (solver->rho)>0.1 && j>40 && i>240) {
-          printf("break %ld %ld %ld\n",i,j,k);
-        }       
         sum_a = AE(i,j,k) + AE(i-1,j,k) + AN(i,j,k) + AN(i,j-1,k) + AT(i,j,k) + AT(i,j,k-1);
         
         P(i,j,k)=P(i,j,k)+delp;
@@ -456,7 +453,7 @@ int vof_pressure_old(struct solver_data *solver) {
   double plmn, delp;
   
   double g, del, dp, dv;
-  double ctos, rcsq;
+  double rcsq;
   double sum_a, ax, ux, stabil_limit;
   
   /*enum cell_boundaries nfew, nfee, nfen, nfes, nfet, nfeb, nfe;*/

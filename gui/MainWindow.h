@@ -11,6 +11,7 @@
 #include "Simulation.h"
 #include "MeshDisplay.h"
 #include "Boundary.h"
+#include "Baffle.h"
 #include "GeometryDisplay.h"
 #include "Render.h"
 #include "BoundaryDisplay.h"

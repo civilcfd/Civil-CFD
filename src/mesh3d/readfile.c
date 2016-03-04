@@ -54,12 +54,12 @@ int write_mesh(struct mesh_data *mesh, char *filename) {
   }
   
   for(i=0; i<3; i++) {
-    baffle = mesh->baffles[3];
+    baffle = mesh->baffles[i];
     
     while(baffle != NULL) {
-      fprintf(fp,"baffle_%s %d %lf %lf\n",axis_names[i],baffle->type,baffle->value,baffle->pos);
-      fprintf(fp,"baffle_extent_a_%s %ld %ld\n",wall_names[i],baffle->extent_a[0],baffle->extent_a[1]);
-      fprintf(fp,"baffle_extent_b_%s %ld %ld\n",wall_names[i],baffle->extent_b[0],baffle->extent_b[1]);
+      fprintf(fp,"baffle_%s %d %lf %ld\n",axis_names[i],baffle->type,baffle->value,baffle->pos);
+      fprintf(fp,"baffle_extent_a_%s %ld %ld\n",axis_names[i],baffle->extent_a[0],baffle->extent_a[1]);
+      fprintf(fp,"baffle_extent_b_%s %ld %ld\n",axis_names[i],baffle->extent_b[0],baffle->extent_b[1]);
 
       baffle = baffle->next;
     }

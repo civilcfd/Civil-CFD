@@ -42,4 +42,6 @@ int vof_vorticity(struct solver_data *solver) {
       }
     }
   }
+  
+  return 0;
 }

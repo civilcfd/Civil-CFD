@@ -564,7 +564,7 @@ bool Simulation::addBaffle(int wall,
 
   int n=0;
   if(type == "flow measurement") n = 0;
-  else if(type == "slip") n = 1;
+  else if(type == "barrier") n = 1;
   else if(type == "headloss") n = 2;
 
   if(mesh_baffle_create(solver->mesh, wall, n, value, pos)==1)
@@ -572,7 +572,7 @@ bool Simulation::addBaffle(int wall,
 
   mesh_baffle_extent_a(solver->mesh, wall, extent_a_1, extent_a_2);
   mesh_baffle_extent_b(solver->mesh, wall, extent_b_1, extent_b_2);
-
+  
   return true;
 
 }
