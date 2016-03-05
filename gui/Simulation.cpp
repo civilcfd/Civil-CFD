@@ -618,7 +618,7 @@ bool Simulation::getNextBaffle(
     type = "flow measurement";
     break;
   case 1:
-    type = "slip";
+    type = "barrier";
     break;
   case 2:
     type = "headloss";
@@ -831,8 +831,9 @@ bool Simulation::deleteTrack(QString t) {
 	
 	if(track_delete(n)) {
 		track_write();
+		qDebug() << getPath() + "/" + t;
 		removeDir(getPath() + "/" + t);
-		
+				
 		QDir dir(getPath() + "/vtk");
 		dir.setNameFilters(QStringList() << "*_" + QString::number(n) + ".vtk");
 		dir.setFilter(QDir::Files);

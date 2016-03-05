@@ -70,6 +70,7 @@ public:
         kfactor->setGeometry(QRect(80, 330, 201, 16));
         value = new QPlainTextEdit(BaffleDialog);
         value->setObjectName(QString::fromUtf8("value"));
+        value->setEnabled(false);
         value->setGeometry(QRect(160, 320, 161, 31));
         value->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         label_4 = new QLabel(BaffleDialog);

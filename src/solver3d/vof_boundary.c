@@ -770,6 +770,7 @@ int vof_boundaries(struct solver_data *solver) {
   }
   
   vof_vof_height_boundary(solver);
+  vof_baffles(solver);
   if(solver->p_flag != 0) return 0;      
         
   /* Free surface and sloped boundary conditions */
