@@ -24,3 +24,6 @@ CONFIG += debug
 HEADERS += MainWindow.h Simulation.h MeshDisplay.h GeometryDisplay.h Render.h RenderDisplay.h Boundary.h BoundaryDisplay.h SolverDialog.h VisualizeDisplay.h Baffle.h
 FORMS += civlcfd.ui render.ui boundary.ui sboundary.ui solver.ui baffle.ui
 SOURCES += main.cpp MainWindow.cpp Simulation.cpp MeshDisplay.cpp GeometryDisplay.cpp Render.cpp RenderDisplay.cpp MainWindow_Boundaries.cpp Boundary.cpp BoundaryDisplay.cpp Solver.cpp ResultList.cpp Visualize.cpp VisualizeDisplay.cpp Baffle.cpp MainWindow_Baffles.cpp
+
+RESOURCES += \
+    gui.qrc

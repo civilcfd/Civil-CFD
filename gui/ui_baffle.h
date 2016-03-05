@@ -131,10 +131,13 @@ public:
          << QApplication::translate("BaffleDialog", "headloss", 0, QApplication::UnicodeUTF8)
         );
         kfactor->setText(QApplication::translate("BaffleDialog", "K-factor", 0, QApplication::UnicodeUTF8));
+        value->setPlainText(QApplication::translate("BaffleDialog", "0", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("BaffleDialog", "Baffle Extents", 0, QApplication::UnicodeUTF8));
         A1->setText(QApplication::translate("BaffleDialog", "A1", 0, QApplication::UnicodeUTF8));
+        extentA1->setPlainText(QApplication::translate("BaffleDialog", "0", 0, QApplication::UnicodeUTF8));
         B1->setText(QApplication::translate("BaffleDialog", "B1", 0, QApplication::UnicodeUTF8));
         B2->setText(QApplication::translate("BaffleDialog", "B2", 0, QApplication::UnicodeUTF8));
+        extentA2->setPlainText(QApplication::translate("BaffleDialog", "0", 0, QApplication::UnicodeUTF8));
         A2->setText(QApplication::translate("BaffleDialog", "A2", 0, QApplication::UnicodeUTF8));
         label_pos->setText(QApplication::translate("BaffleDialog", "Position along axis", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

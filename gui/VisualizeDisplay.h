@@ -29,6 +29,7 @@
 #include <vtkGlyph3D.h>
 #include <vtkScalarBarActor.h>
 #include <vtkScalarBarWidget.h>
+#include <vtkVectorNorm.h>
 #include <QString>
 #include <QFile>
 
@@ -48,9 +49,14 @@ public:
 
   void block(QString vtkFile, int normal, double origin, double del);
   void clip(QString vtkFile, int normal, double origin);
+  void clipVector(QString vtkFile, int normal, double origin, bool normalize);
   void vector(QString vtkFile, int normal, double origin);
   void hideVector();
   void hideBlock();
+  void setRange(double a, double b);
+  void getRange(double &a);
+  void hideLegend();
+  void showLegend();
 
 private:
   vtkSmartPointer<vtkStructuredPointsReader> reader;

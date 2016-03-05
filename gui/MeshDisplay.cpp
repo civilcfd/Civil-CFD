@@ -95,7 +95,13 @@ void MeshDisplay::HideMesh() {
 void MeshDisplay::ShowMesh() {
   AddActor(actor);
 }
+void MeshDisplay::HideAxis() {
+  renderer->RemoveActor(axes);
+}
 
+void MeshDisplay::ShowAxis() {
+  renderer->AddActor(axes);
+}
 void MeshDisplay::RemoveVolume(vtkSmartPointer<vtkVolume> &new_volume) {
   renderer->RemoveVolume(new_volume);
 }

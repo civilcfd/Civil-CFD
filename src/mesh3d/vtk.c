@@ -67,13 +67,23 @@ int vtk_write_vorticity(struct mesh_data *mesh, int timestep)
   
   /* only writes z-vorticity because why would you want to visualize any other vorticity */
   /* the csv has all vorticities written */
-
+ 
+ /*
   sprintf(filename, "vtk/z_vorticity_%d.vtk", timestep);
 
-  return vtk_write_scalar_grid(filename, "z_vorticity", 
+  return vtk_write_scalar_magnitude_grid(filename, "z_vorticity", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, mesh->w_omega);
+                        mesh->delx, mesh->dely, mesh->delz, mesh->w_omega); */
+
+ /* changed my mind */
+ sprintf(filename, "vtk/vorticity_%d.vtk", timestep);
+ 
+ return vtk_write_vector_grid(filename, "vorticity", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
+                        mesh->delx, mesh->dely, mesh->delz, 
+                        mesh->u_omega, mesh->v_omega, mesh->w_omega);
 
 }
 
@@ -175,6 +185,61 @@ int vtk_write_scalar_grid(char *filename, char *dataset_name,
 
   return 0;
 }
+
+int vtk_write_scalar_magnitude_grid(char *filename, char *dataset_name, 
+                          long int ni, long int nj, long int nk,
+                          double oi, double oj, double ok,
+                          double di, double dj, double dk,
+                          double *scalars) {
+  FILE *fp;
+  long int i, j, k;
+
+  if(filename == NULL || scalars == NULL) {
+    printf("error: passed null arguments to vtk_write_scalar_grid\n");
+    return 1;
+  }
+
+  fp = fopen(filename, "w");
+
+  if(fp == NULL) {
+    printf("error: vtk_write_scalar_grid cannot open %s to write\n", filename);
+    return 1;
+  }
+
+  fprintf(fp, "# vtk DataFile Version 2.0\n");
+  fprintf(fp, "%s\n", dataset_name);
+#ifdef VTK_BINARY
+  fprintf(fp, "BINARY\n");
+#else
+  fprintf(fp, "ASCII\n");
+#endif
+
+  fprintf(fp, "DATASET STRUCTURED_POINTS\n");
+  fprintf(fp, "DIMENSIONS %ld %ld %ld\n", ni, nj, nk);
+  fprintf(fp, "ORIGIN %lf %lf %lf\n", oi, oj, ok);
+  fprintf(fp, "SPACING %lf %lf %lf\n", di, dj, dk);
+
+  fprintf(fp, "POINT_DATA %ld\n", ni*nj*nk);
+  fprintf(fp, "SCALARS %s_data double 1\n", dataset_name);
+  fprintf(fp, "LOOKUP_TABLE default\n");
+
+  for(k=0; k<nk; k++) {
+    for(j=0; j<nj; j++) {
+      for(i=0; i<ni; i++) {
+#ifdef VTK_BINARY
+        fwrite(&scalars[i + ni * (j + k * nj)], sizeof(double), 1, fp)
+#else
+        fprintf(fp, "%4.6lf\n", fabs(scalars[i + ni * (j + k * nj)])); 
+#endif 
+      }
+    }
+  }
+
+  fclose(fp);
+
+  return 0;
+}
+
 
 int vtk_write_integer_grid(char *filename, char *dataset_name, 
                           long int ni, long int nj, long int nk,

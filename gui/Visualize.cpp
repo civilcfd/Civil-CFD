@@ -4,6 +4,8 @@
 
 #include <QDebug>
 #include <QMessageBox>
+#include <QPixmap>
+#include <QFileDialog>
 
 #include <vtkSmartPointer.h>
 #include <vtkStructuredPoints.h>
@@ -45,12 +47,15 @@ void MainWindow::on_timesteps_currentItemChanged() {
   visualizeRender();
 }
 void MainWindow::on_xNormal_toggled() {
+  updateSlider();
   visualizeRender();
 }
 void MainWindow::on_yNormal_toggled() {
+  updateSlider();
   visualizeRender();
 }
 void MainWindow::on_zNormal_toggled() {
+  updateSlider();
   visualizeRender();
 }
 void MainWindow::on_contourVOF_toggled() {
@@ -62,9 +67,15 @@ void MainWindow::on_contourP_toggled() {
 void MainWindow::on_contourK_toggled() {
   visualizeRender();
 }
-void MainWindow::on_contourVorticity_toggled() {
+void MainWindow::on_showAxis_toggled() {
   visualizeRender();
 }
+void MainWindow::on_showLegend_toggled() {
+  visualizeRender();
+}
+void MainWindow::on_contourVorticity_toggled() {
+  visualizeRender();
+} 
 void MainWindow::on_showVectors_toggled() {
   visualizeRender();
 }
@@ -75,15 +86,12 @@ void MainWindow::on_blockObstacles_toggled() {
   visualizeRender();
 }
 void MainWindow::on_showMesh_toggled() {
-  if(ui.showMesh->isChecked())
-    visualizeDisplay->ShowMesh();
-  else
-    visualizeDisplay->HideMesh();
+
 
   visualizeRender();
 }
 
-void MainWindow::on_origin_valueChanged() {
+void MainWindow::updateSlider() {
   
   double extent, position;
   bool ok;
@@ -101,6 +109,11 @@ void MainWindow::on_origin_valueChanged() {
   position *= extent;
 
   ui.originText->setText(QString::number(position, 'f', 2));
+  
+}
+
+void MainWindow::on_origin_valueChanged() {
+  updateSlider();
 
   visualizeRender();
 }
@@ -114,6 +127,27 @@ void MainWindow::buildTimesteps() {
     ui.timesteps->addItem(sim.getTrackT());
   }
 
+}
+
+void MainWindow::on_updateRange_clicked() {
+  double a, b;
+  bool ok_a, ok_b;
+  
+  a = ui.from->toPlainText().toDouble(&ok_a);
+  b = ui.to->toPlainText().toDouble(&ok_b);
+  
+  if(b>a && ok_a && ok_b) {
+    visualizeDisplay->setRange(a,b);
+    ui.vis->update();
+  }
+}
+
+void MainWindow::on_saveJPEG_clicked() {
+  QString file = QFileDialog::getSaveFileName(this, tr("Save Image"), 
+    QDir::homePath(), tr("png files (*.png)"));
+  QPixmap p = QPixmap::grabWidget(ui.vis);
+  p.save(QString(file),0,100);
+  
 }
 
 void MainWindow::visualizeRender() {
@@ -137,7 +171,9 @@ void MainWindow::visualizeRender() {
     } else if(ui.contourK->isChecked()) {
       vtkFile.prepend("k_");
     } else if(ui.contourVorticity->isChecked()) {
-      vtkFile.prepend("z_vorticity_");
+      vtkFile.prepend("vorticity_");
+    } else {
+      vtkFile.prepend("U_");
     }
     vectFile.prepend("vtk/U_");
     volFile = "vtk/fv_0.vtk";
@@ -163,7 +199,12 @@ void MainWindow::visualizeRender() {
     del = sim.getDelz().toDouble();
   }
 
-  visualizeDisplay->clip(vtkFile, normal, origin);
+  if(!ui.contourVelocity->isChecked() && !ui.contourVorticity->isChecked()) 
+    visualizeDisplay->clip(vtkFile, normal, origin);
+  else if(ui.contourVorticity->isChecked())
+    visualizeDisplay->clipVector(vtkFile, normal, origin, true);
+  else
+    visualizeDisplay->clipVector(vtkFile, normal, origin, false);
 
   if(ui.showVectors->isChecked())
     visualizeDisplay->vector(vectFile, normal, origin);
@@ -172,6 +213,19 @@ void MainWindow::visualizeRender() {
 
   if(ui.blockObstacles->isChecked())
     visualizeDisplay->block(volFile, normal, origin, del);
-
+  if(ui.showMesh->isChecked())
+    visualizeDisplay->ShowMesh();
+  else
+    visualizeDisplay->HideMesh();
+    
+  if(ui.showAxis->isChecked()) 
+    visualizeDisplay->ShowAxis();
+  else
+    visualizeDisplay->HideAxis();
+  if(ui.showLegend->isChecked()) 
+    visualizeDisplay->showLegend();
+  else
+    visualizeDisplay->hideLegend();
+  
   ui.vis->update();
 }

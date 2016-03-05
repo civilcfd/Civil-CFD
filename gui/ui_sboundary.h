@@ -136,11 +136,15 @@ public:
          << QApplication::translate("SBoundaryDialog", "hydraulic grade", 0, QApplication::UnicodeUTF8)
         );
         label_2->setText(QApplication::translate("SBoundaryDialog", "Set Value", 0, QApplication::UnicodeUTF8));
+        value->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
+        turbulence->setPlainText(QApplication::translate("SBoundaryDialog", "0.001", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("SBoundaryDialog", "Turbulence", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("SBoundaryDialog", "Boundary Extents", 0, QApplication::UnicodeUTF8));
         A1->setText(QApplication::translate("SBoundaryDialog", "A1", 0, QApplication::UnicodeUTF8));
+        extentA1->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
         B1->setText(QApplication::translate("SBoundaryDialog", "B1", 0, QApplication::UnicodeUTF8));
         B2->setText(QApplication::translate("SBoundaryDialog", "B2", 0, QApplication::UnicodeUTF8));
+        extentA2->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
         A2->setText(QApplication::translate("SBoundaryDialog", "A2", 0, QApplication::UnicodeUTF8));
         calculate->setText(QApplication::translate("SBoundaryDialog", "Calculate", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

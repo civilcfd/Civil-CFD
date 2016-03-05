@@ -11,11 +11,12 @@ VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax, 
 
 
   update(delx,dely,delz,imax,jmax,kmax,ox,oy,oz);
+  VTKmapper = NULL;
 }
 
 VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax) : 
   MeshDisplay(imax,jmax,kmax) {
-
+  VTKmapper = NULL;
 } 
 
 void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double del) {
@@ -96,6 +97,12 @@ void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double 
 void VisualizeDisplay::hideBlock() {
   RemoveVolume(volume);
 }
+void VisualizeDisplay::hideLegend() {
+  	RemoveScalarBar(legend);
+}
+void VisualizeDisplay::showLegend() {
+  	AddScalarBar(legend);
+}
 
 void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
 	
@@ -137,8 +144,8 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
   geometryFilter->SetInputConnection(cutter->GetOutputPort());
 
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-  lut->SetNumberOfColors(16);
-  lut->SetHueRange(0.0, 0.667);
+  lut->SetNumberOfColors(64);
+  lut->SetHueRange(0.667, 0.0);
   lut->Build();
 
   RemoveActor(VTKactor);
@@ -149,9 +156,86 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
   VTKactor = vtkSmartPointer<vtkActor>::New();
  
   VTKmapper->SetInputConnection(geometryFilter->GetOutputPort());
-  //VTKmapper->SetLookupTable(lut);
+  VTKmapper->SetLookupTable(lut);
   //VTKmapper->UseLookupTableScalarRangeOff();
   VTKmapper->SetScalarRange(reader->GetOutput()->GetScalarRange());
+
+  VTKactor->SetMapper(VTKmapper);
+
+  AddActor(VTKactor);
+
+	RemoveScalarBar(legend);
+	legend = NULL;
+	legend = vtkSmartPointer<vtkScalarBarActor>::New();
+	legend->SetLookupTable(VTKmapper->GetLookupTable());
+	legend->SetWidth(0.07);
+	legend->GetLabelTextProperty()->SetFontSize(9);
+	AddScalarBar(legend);
+
+}
+void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bool normalize) {
+	
+	reader = NULL;
+ 	reader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+  reader->SetFileName(vtkFile.toStdString().c_str());
+  reader->Update();
+
+	geometryFilter = NULL;
+  geometryFilter =
+    vtkSmartPointer<vtkGeometryFilter>::New();
+  //geometryFilter->SetInputConnection(reader->GetOutputPort());
+
+  vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
+
+  switch(normal) {
+  case 0:
+    plane->SetOrigin(origin,0,0);
+    plane->SetNormal(1,0,0);
+    break;
+  case 1:
+    plane->SetOrigin(0,origin,0);
+    plane->SetNormal(0,1,0);
+    break;
+  case 2:
+    plane->SetOrigin(0,0,origin);
+    plane->SetNormal(0,0,1);
+    break;
+  }
+
+  vtkSmartPointer<vtkVectorNorm> vecScalar = vtkSmartPointer<vtkVectorNorm>::New();
+  vecScalar->SetInputConnection(reader->GetOutputPort());
+  if(!normalize) vecScalar->NormalizeOff();
+  else {
+    vecScalar->NormalizeOn();
+    vecScalar->SetNormalize(normal);
+  }
+
+  vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
+  cutter->SetInputConnection(vecScalar->GetOutputPort());
+  cutter->SetCutFunction(plane);
+
+  vtkSmartPointer<vtkContourFilter> iso = vtkSmartPointer<vtkContourFilter>::New();
+  iso->SetInputConnection(vecScalar->GetOutputPort());
+  iso->SetValue(0, 0.5);
+
+  geometryFilter->SetInputConnection(cutter->GetOutputPort());
+
+  vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+  lut->SetNumberOfColors(64);
+  lut->SetHueRange(0.667, 0.0);
+  lut->Build();
+
+  RemoveActor(VTKactor);
+
+	VTKmapper = NULL;
+	VTKactor = NULL;
+  VTKmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+  VTKactor = vtkSmartPointer<vtkActor>::New();
+ 
+  VTKmapper->SetInputConnection(geometryFilter->GetOutputPort());
+  VTKmapper->SetLookupTable(lut);
+  //VTKmapper->UseLookupTableScalarRangeOff();
+  VTKmapper->SetScalarRange(geometryFilter->GetOutput()->GetScalarRange());
 
   VTKactor->SetMapper(VTKmapper);
 
@@ -166,7 +250,12 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
 	AddScalarBar(legend);
 
 }
-
+void VisualizeDisplay::setRange(double a, double b) {
+  if (VTKmapper != NULL) VTKmapper->SetScalarRange(a,b);
+}
+void VisualizeDisplay::getRange(double &a) {
+  VTKmapper->GetScalarRange(&a);
+}
 void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
 
 	vectReader = NULL;
@@ -215,7 +304,7 @@ void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
 //  glyph->SetColorModeToColorByScalar();
   glyph->SetScaleModeToScaleByVector();
   glyph->OrientOn();
-  glyph->SetScaleFactor(0.2);
+  glyph->SetScaleFactor(0.3);
 
 
   RemoveActor(vectActor);

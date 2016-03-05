@@ -34,6 +34,7 @@ private slots:
   void on_Save_clicked();
   void on_actionOpen_triggered();
   void on_actionSave_triggered();
+  void on_actionQuit_triggered();
   void on_kEpsilon_toggled();
   void on_Laminar_toggled();
   void on_MeshParameters_itemDoubleClicked(QTreeWidgetItem *item, int column);
@@ -51,6 +52,9 @@ private slots:
   void on_BaffleTree_itemClicked(QTreeWidgetItem *item, int column);
   void on_RemoveBaffle_clicked();
   
+  void on_updateRange_clicked();
+  void on_saveJPEG_clicked();
+  
   void on_inside_x_textChanged();
   void on_inside_y_textChanged();
   void on_inside_z_textChanged();
@@ -62,6 +66,8 @@ private slots:
   void on_contourVOF_toggled();
   void on_contourP_toggled();
   void on_contourK_toggled();
+  void on_showLegend_toggled();
+  void on_showAxis_toggled();
   void on_contourVorticity_toggled();
   void on_showVectors_toggled();
   void on_blockObstacles_toggled();
@@ -83,7 +89,9 @@ private:
   void toggle();
   void update();
   void boundariesUpdate();
+  void buildBoundaryList();
   void bafflesUpdate();
+  void buildBaffleList();
   void meshUpdate();
   void visualizeUpdate();
   void buildTimesteps();
@@ -91,6 +99,7 @@ private:
   void buildResultList();
   void write();
   void movePoint();
+  void updateSlider();
   Ui::MainWindow ui;
   Simulation sim;
   MeshDisplay *meshDisplay;

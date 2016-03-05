@@ -54,6 +54,8 @@ public:
   void HideMesh();
   void ShowMesh();
 
+  void HideAxis();
+  void ShowAxis();
 
 private:
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;

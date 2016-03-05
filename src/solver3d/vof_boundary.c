@@ -657,101 +657,116 @@ int vof_boundaries(struct solver_data *solver) {
   const int odim[3][3] = { {  1,0,0 }, { 0,1,0 }, { 0,0,1 } };
   double denom;
   
-#pragma omp parallel for shared (solver, ndim, odim) private(i,j,k,l,m,n,o,p,q,x) \
-            collapse(3) schedule(dynamic, 100)
+  /* first boundaries on x-axis */
+  for(j=0; j<JMAX; j++) {
+    for(k=0; k<KMAX; k++) {
+         
+      /* west boundary */
+      switch(solver->mesh->wb[0]) {
+      case slip:
+            /* slip case is zero_gradient for parallel axis
+             * and zero fixed value for perpendicular axis */
+        U(0,j,k) = 0;         U(IMAX-1,j,k) = 0;
+        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-2,j,k);
+        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-2,j,k);
+        break;
+      case no_slip:
+            /* no slip case is velocity = -1.0 * interior velocity at boundary */
+        U(0,j,k) = -1.0 * U(1,j,k);  U(IMAX-1,j,k) = -1.0 * U(IMAX-2,j,k);
+        V(0,j,k) = -1.0 * V(1,j,k);  V(IMAX-1,j,k) = -1.0 * V(IMAX-2,j,k);
+        W(0,j,k) = -1.0 * W(1,j,k);  W(IMAX-1,j,k) = -1.0 * W(IMAX-2,j,k);
+        break;
+      case zero_gradient:
+            /* zero gradient means that velocity at boundary is equal to interior velocity */
+        U(0,j,k) = U(1,j,k);  U(IMAX-1,j,k) = U(IMAX-2,j,k);
+        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-2,j,k);
+        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-2,j,k);
+        break;       
+      }
+      
+      if(solver->p_flag == 0) {
+        P(0,j,k) = P(1,j,k);
+        P(IMAX-1,j,k) = P(IMAX-2,j,k);
+      }
+      VOF(0,j,k) = VOF(1,j,k);
+      VOF(IMAX-1,j,k) = VOF(IMAX-2,j,k);
+      
+    } 
+  }
+  
+  /* boundaries on y-axis */
+  for(i=0; i<IMAX; i++) {
+    for(k=0; k<KMAX; k++) {
+         
+      /* west boundary */
+      switch(solver->mesh->wb[0]) {
+      case slip:
+            /* slip case is zero_gradient for parallel axis
+             * and zero fixed value for perpendicular axis */
+        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-2,k);
+        V(i,0,k) = 0;         V(i,JMAX-1,k) = 0;
+        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-2,k);
+        break;
+      case no_slip:
+            /* no slip case is velocity = -1.0 * interior velocity at boundary */
+        U(i,0,k) = -1.0 * U(i,1,k);  U(i,JMAX-1,k) = -1.0 * U(i,JMAX-2,k);
+        V(i,0,k) = -1.0 * V(i,1,k);  V(i,JMAX-1,k) = -1.0 * V(i,JMAX-2,k);
+        W(i,0,k) = -1.0 * W(i,1,k);  W(i,JMAX-1,k) = -1.0 * W(i,JMAX-2,k);
+        break;
+      case zero_gradient:
+            /* zero gradient means that velocity at boundary is equal to interior velocity */
+        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-2,k);
+        V(i,0,k) = V(i,1,k);  V(i,JMAX-1,k) = V(i,JMAX-2,k);
+        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-2,k);
+        break;       
+      }
+      
+      if(solver->p_flag == 0) {
+        P(i,0,k) = P(i,1,k);
+        P(i,JMAX-1,k) = P(i,JMAX-2,k);
+      }
+      VOF(i,0,k) = VOF(i,1,k);
+      VOF(i,JMAX-1,k) = VOF(i,JMAX-2,k);
+      
+    } 
+  }
+  
+    
+  /* boundaries on z-axis */
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
-      for(k=0; k<KMAX; k++) {
-
-        if(i>0 && i<IMAX-1 && j>0 && j<JMAX-1 && k>0 && k<KMAX-1) continue;
-
-        for(x=0; x<3; x++) { /* iterate through each axis */
-
-          /* set reference dimenstions as follows:
-           * l,m,n: dimensions at reference boundary, based on n
-           * o,p,q: dimensions inside the mesh */
-          l = ndim[x][0] * i;
-          m = ndim[x][1] * j;
-          n = ndim[x][2] * k;
-          o = l + odim[x][0];
-          p = m + odim[x][1];
-          q = n + odim[x][2];
-
-          /* this is the west/south/bottom face */
-          switch(solver->mesh->wb[x*2]) {
-          case slip:
+         
+      /* west boundary */
+      switch(solver->mesh->wb[0]) {
+      case slip:
             /* slip case is zero_gradient for parallel axis
              * and zero fixed value for perpendicular axis */
-            if(ndim[x][0] == 0 || solver->p_flag == 0) U(l,m,n) = ndim[x][0] * U(o,p,q);
-            if(ndim[x][1] == 0 || solver->p_flag == 0) V(l,m,n) = ndim[x][1] * V(o,p,q);
-            if(ndim[x][2] == 0 || solver->p_flag == 0) W(l,m,n) = ndim[x][2] * W(o,p,q);
-            break;
-          case no_slip:
+        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-2);
+        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-2);
+        W(i,j,0) = 0;         W(i,j,KMAX-1) = 0;
+        break;
+      case no_slip:
             /* no slip case is velocity = -1.0 * interior velocity at boundary */
-            U(l,m,n) = ndim[x][0] * -1.0 * U(o,p,q);
-            V(l,m,n) = ndim[x][1] * -1.0 * V(o,p,q);
-            W(l,m,n) = ndim[x][2] * -1.0 * W(o,p,q);
-            break;
-          case zero_gradient:
+        U(i,j,0) = -1.0 * U(i,j,1);  U(i,j,KMAX-1) = -1.0 * U(i,j,KMAX-2);
+        V(i,j,0) = -1.0 * V(i,j,1);  V(i,j,KMAX-1) = -1.0 * V(i,j,KMAX-2);
+        W(i,j,0) = -1.0 * W(i,j,1);  W(i,j,KMAX-1) = -1.0 * W(i,j,KMAX-2);
+        break;
+      case zero_gradient:
             /* zero gradient means that velocity at boundary is equal to interior velocity */
-            if(solver->p_flag !=0) break; /* don't fight the pressure iterations */
-            U(l,m,n) = U(o,p,q);
-            V(l,m,n) = V(o,p,q);
-            W(l,m,n) = W(o,p,q);
-            break;
-          }
-
-          /* pressure and VOF default to von neumann boundaries
-           * and are changed by setting special boundaries */
-          if(solver->p_flag == 0) P(l,m,n) = P(o,p,q);
-          VOF(l,m,n) = VOF(o,p,q);
-
-          /* now set l,m,n,o,p,q similarly for the opposite side of the mesh */
-          l += (IMAX-1) * odim[x][0]; 
-          m += (JMAX-1) * odim[x][1]; 
-          n += (KMAX-1) * odim[x][2];  
-          o += (IMAX-3) * odim[x][0]; /* final value is IMAX-2 if odim[n][0] == 1 */
-          p += (JMAX-3) * odim[x][1];
-          q += (KMAX-3) * odim[x][2];
-
-          /* this is the east/north/top face */
-          switch(solver->mesh->wb[x*2 + 1]) {
-           case slip:
-            /* slip case is zero_gradient for parallel axis
-             * and zero fixed value for perpendicular axis */
-            if(ndim[x][0] == 0 || solver->p_flag == 0) U(l,m,n) = ndim[x][0] * U(o,p,q);
-            if(ndim[x][1] == 0 || solver->p_flag == 0) V(l,m,n) = ndim[x][1] * V(o,p,q);
-            if(ndim[x][2] == 0 || solver->p_flag == 0) W(l,m,n) = ndim[x][2] * W(o,p,q);
-            if(x==0) U(l-1,m,n) = 0.0;
-            if(x==1) V(l,m-1,n) = 0.0;
-            if(x==2) W(l,m,n-1) = 0.0;
-            break;
-          case no_slip:
-            /* no slip case is velocity = -1.0 * interior velocity at boundary */
-            U(l,m,n) = ndim[x][0] * -1.0 * U(o,p,q);
-            V(l,m,n) = ndim[x][1] * -1.0 * V(o,p,q);
-            W(l,m,n) = ndim[x][2] * -1.0 * W(o,p,q);
-            if(x==0) U(l-1,m,n) = 0.0;
-            if(x==1) V(l,m-1,n) = 0.0;
-            if(x==2) W(l,m,n-1) = 0.0;
-            break;
-          case zero_gradient:
-            /* zero gradient means that velocity at boundary is equal to interior velocity */
-            if(solver->p_flag !=0) break;
-            U(l,m,n) = U(o,p,q);
-            V(l,m,n) = V(o,p,q);
-            W(l,m,n) = W(o,p,q);
-            break;
-          }
-
-          /* pressure and VOF default to von neumann boundaries
-           * and are changed by setting special boundaries */
-          if(solver->p_flag == 0) P(l,m,n) = P(o,p,q);
-          VOF(l,m,n) = VOF(o,p,q);
-        }
-
+        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-2);
+        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-2);
+        W(i,j,0) = W(i,j,1);  W(i,j,KMAX-1) = W(i,j,KMAX-2);
+        break;       
       }
-    }
+      
+      if(solver->p_flag == 0) {
+        P(i,j,0) = P(i,j,1);
+        P(i,j,KMAX-1) = P(i,j,KMAX-2);
+      }
+      VOF(i,j,0) = VOF(i,j,1);
+      VOF(i,j,KMAX-1) = VOF(i,j,KMAX-2);
+      
+    } 
   }
   
   vof_vof_height_boundary(solver);

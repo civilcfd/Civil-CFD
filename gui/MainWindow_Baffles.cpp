@@ -10,7 +10,7 @@
 
 #include "MainWindow.h"
 
-void MainWindow::bafflesUpdate() {
+void MainWindow::buildBaffleList() {
   QTreeWidgetItem *item, *new_item;
   long int extent_a[2];
   long int extent_b[2];
@@ -19,7 +19,6 @@ void MainWindow::bafflesUpdate() {
   double value;
   long int pos;
   int n;
-  
   
   for(int i=0; i<3; i++) {
     item = ui.BaffleTree->topLevelItem(0)->child(i);
@@ -40,10 +39,15 @@ void MainWindow::bafflesUpdate() {
       new_item->setText(0, QString::number(n+1));
       new_item->setText(1, type);
       new_item->setText(2, extents);
-      new_item->setText(3, QString::number(value));
-      new_item->setText(4, QString::number(pos));
+      new_item->setText(3, QString::number(pos));
+      new_item->setText(4, QString::number(value));
     }
   }  
+}
+
+void MainWindow::bafflesUpdate() { 
+  
+  buildBaffleList();
 
   baffleDisplay->update(sim.getDelx().toDouble(), sim.getDely().toDouble(),
                       sim.getDelz().toDouble(),
@@ -107,7 +111,9 @@ void MainWindow::editBaffle(QTreeWidgetItem *item) {
   delete baffleDialog;
   
 
-  update();
+  //update();
+  buildBaffleList();
+  baffleDisplay->clearRectangle();
 }
 
 void MainWindow::on_EditBaffle_clicked() {
@@ -155,7 +161,9 @@ void MainWindow::on_AddBaffle_clicked() {
 
   delete baffleDialog;
 
-  update();
+  //update();
+  buildBaffleList();
+  baffleDisplay->clearRectangle();
 }
 
 void MainWindow::on_RemoveBaffle_clicked() {
@@ -181,7 +189,9 @@ void MainWindow::on_RemoveBaffle_clicked() {
 
   sim.removeBaffle(wall);
  
-  update();
+  //update();
+  buildBaffleList();
+  baffleDisplay->clearRectangle();
 }
 
 void MainWindow::on_BaffleTree_itemClicked(QTreeWidgetItem *item, int column) {

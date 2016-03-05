@@ -6,6 +6,7 @@
 #include <QFile>
 #include <cstdlib>
 #include <stdlib.h>
+#include <QMessageBox>
 
 #include "Simulation.h"
 
@@ -804,10 +805,13 @@ bool removeDir(const QString & dirName)
     if (dir.exists(dirName)) {
         Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
             if (info.isDir()) {
-                result = removeDir(info.absoluteFilePath());
+                result = removeDir(info.absoluteFilePath());    
+                if(!result) qDebug() << info.absoluteFilePath();
+
             }
             else {
                 result = QFile::remove(info.absoluteFilePath());
+                if(!result) qDebug() << info.absoluteFilePath();
             }
 
             if (!result) {
@@ -815,7 +819,9 @@ bool removeDir(const QString & dirName)
             }
         }
         result = dir.rmdir(dirName);
+                if(!result) qDebug() << dirName;
     }
+          
     return result;
 }
 

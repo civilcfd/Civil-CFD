@@ -67,6 +67,7 @@ void MainWindow::on_RunSimulation_clicked() {
 
   delete solverDialog;
 
+  sim.loadSimulation(ui.Path->toPlainText());
   update();
 }
 
@@ -82,7 +83,7 @@ void MainWindow::on_STLRender_clicked() {
 }
 
 void MainWindow::on_STLOpen_clicked() {
-   QString file = QFileDialog::getOpenFileName(this, tr("Open STL File"), QCoreApplication::applicationDirPath(), tr("STL Files (*.stl)"));
+   QString file = QFileDialog::getOpenFileName(this, tr("Open STL File"), QDir::homePath(), tr("STL Files (*.stl)"));
 
   if(file.isEmpty()) {
     qDebug() << "no file chosen";
@@ -124,6 +125,7 @@ void MainWindow::on_MeshUndo_clicked() {
 }
 
 void MainWindow::on_MeshUpdate_clicked() {
+  meshUpdate();
   update();
 }
 
@@ -205,6 +207,10 @@ void MainWindow::on_New_clicked() {
   update();
 
   return;
+}
+
+void MainWindow::on_actionQuit_triggered() {
+  QApplication::quit();
 }
 
 void MainWindow::on_actionOpen_triggered() {

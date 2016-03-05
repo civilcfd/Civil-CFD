@@ -64,6 +64,10 @@ void BaffleDialog::accept() {
 
   baffleText = ui.select->currentText();
   value = ui.value->toPlainText().toDouble(&ok_value);
+  if(ui.select->currentText() != "headloss") {
+    value = 0;
+    ok_value = true;
+  }
   pos = ui.pos->toPlainText().toLong(&ok_pos);
   extent_a[0] = ui.extentA1->toPlainText().toLong(&ok_extent_a[0]);
   extent_a[1] = ui.extentA2->toPlainText().toLong(&ok_extent_a[1]);
@@ -106,4 +110,15 @@ long int BaffleDialog::getExtentB2() {
 
 QString BaffleDialog::getBaffleText() {
   return baffleText;
+}
+
+void BaffleDialog::on_select_currentIndexChanged(QString str) {
+
+  if(str == "headloss") {
+    ui.value->setEnabled(true);
+  }
+  else {
+    ui.value->setEnabled(false);
+  }
+
 }

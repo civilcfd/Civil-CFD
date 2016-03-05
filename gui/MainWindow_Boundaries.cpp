@@ -10,7 +10,7 @@
 
 #include "MainWindow.h"
 
-void MainWindow::boundariesUpdate() {
+void MainWindow::buildBoundaryList() {
   QTreeWidgetItem *item = ui.BoundaryTree->topLevelItem(0);
   item->child(0)->setText(1,sim.getBoundaryText(0));
   item->child(1)->setText(1,sim.getBoundaryText(1));
@@ -50,6 +50,13 @@ void MainWindow::boundariesUpdate() {
       new_item->setText(4, QString::number(turbulence));
     }
   }  
+
+
+}
+
+void MainWindow::boundariesUpdate() {
+
+  buildBoundaryList();
 
   boundaryDisplay->update(sim.getDelx().toDouble(), sim.getDely().toDouble(),
                       sim.getDelz().toDouble(),
@@ -131,7 +138,9 @@ void MainWindow::editBoundary(QTreeWidgetItem *item) {
     delete sBoundaryDialog;
   }
 
-  update();
+  //update();
+  buildBoundaryList();
+  boundaryDisplay->clearRectangle();
 }
 
 void MainWindow::on_EditBoundary_clicked() {
@@ -181,7 +190,10 @@ void MainWindow::on_AddSpecialBoundary_clicked() {
 
   delete sBoundaryDialog;
 
-  update();
+  
+  //update();
+  buildBoundaryList();
+  boundaryDisplay->clearRectangle();
 }
 
 void MainWindow::on_RemoveSpecialBoundary_clicked() {
@@ -210,7 +222,10 @@ void MainWindow::on_RemoveSpecialBoundary_clicked() {
 
   sim.removeSpecialBoundary(wall);
  
-  update();
+  
+  //update();
+  buildBoundaryList();
+  boundaryDisplay->clearRectangle();
 }
 
 void MainWindow::on_BoundaryTree_itemClicked(QTreeWidgetItem *item, int column) {

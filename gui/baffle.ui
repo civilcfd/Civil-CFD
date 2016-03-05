@@ -110,6 +110,9 @@
    <property name="verticalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
+   <property name="plainText">
+    <string>0</string>
+   </property>
   </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
@@ -148,6 +151,9 @@
    </property>
    <property name="verticalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="plainText">
+    <string>0</string>
    </property>
   </widget>
   <widget class="QLabel" name="B1">
@@ -219,6 +225,9 @@
    </property>
    <property name="verticalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="plainText">
+    <string>0</string>
    </property>
   </widget>
   <widget class="QLabel" name="A2">

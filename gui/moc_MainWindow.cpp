@@ -22,7 +22,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      46,   14, // methods
+      51,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -40,42 +40,47 @@ static const uint qt_meta_data_MainWindow[] = {
      164,   38,   38,   38, 0x08,
      190,   38,   38,   38, 0x08,
      216,   38,   38,   38, 0x08,
-     238,   38,   38,   38, 0x08,
-     259,  317,   38,   38, 0x08,
-     329,   38,   38,   38, 0x08,
-     355,  317,   38,   38, 0x08,
-     411,   38,   38,   38, 0x08,
-     443,  317,   38,   38, 0x08,
-     495,  317,   38,   38, 0x08,
-     545,   38,   38,   38, 0x08,
-     580,   38,   38,   38, 0x08,
-     604,  317,   38,   38, 0x08,
-     658,   38,   38,   38, 0x08,
-     681,  317,   38,   38, 0x08,
-     731,  317,   38,   38, 0x08,
-     779,   38,   38,   38, 0x08,
+     242,   38,   38,   38, 0x08,
+     264,   38,   38,   38, 0x08,
+     285,  343,   38,   38, 0x08,
+     355,   38,   38,   38, 0x08,
+     381,  343,   38,   38, 0x08,
+     437,   38,   38,   38, 0x08,
+     469,  343,   38,   38, 0x08,
+     521,  343,   38,   38, 0x08,
+     571,   38,   38,   38, 0x08,
+     606,   38,   38,   38, 0x08,
+     630,  343,   38,   38, 0x08,
+     684,   38,   38,   38, 0x08,
+     707,  343,   38,   38, 0x08,
+     757,  343,   38,   38, 0x08,
      805,   38,   38,   38, 0x08,
      831,   38,   38,   38, 0x08,
-     857,   38,   38,   38, 0x08,
-     883,   38,   38,   38, 0x08,
-     908,   38,   38,   38, 0x08,
-     942,   38,   38,   38, 0x08,
-     963,   38,   38,   38, 0x08,
-     984,   38,   38,   38, 0x08,
-    1005,   38,   38,   38, 0x08,
-    1029,   38,   38,   38, 0x08,
-    1051,   38,   38,   38, 0x08,
-    1073,   38,   38,   38, 0x08,
-    1103,   38,   38,   38, 0x08,
-    1128,   38,   38,   38, 0x08,
-    1156,   38,   38,   38, 0x08,
-    1178,   38,   38,   38, 0x08,
-    1204,   38,   38,   38, 0x08,
-    1226,   38,   38,   38, 0x08,
-    1253,   38,   38,   38, 0x08,
-    1276,   38,   38,   38, 0x08,
-    1299,   38,   38,   38, 0x08,
-    1318,   38,   38,   38, 0x08,
+     856,   38,   38,   38, 0x08,
+     878,   38,   38,   38, 0x08,
+     904,   38,   38,   38, 0x08,
+     930,   38,   38,   38, 0x08,
+     956,   38,   38,   38, 0x08,
+     981,   38,   38,   38, 0x08,
+    1015,   38,   38,   38, 0x08,
+    1036,   38,   38,   38, 0x08,
+    1057,   38,   38,   38, 0x08,
+    1078,   38,   38,   38, 0x08,
+    1102,   38,   38,   38, 0x08,
+    1124,   38,   38,   38, 0x08,
+    1146,   38,   38,   38, 0x08,
+    1170,   38,   38,   38, 0x08,
+    1192,   38,   38,   38, 0x08,
+    1222,   38,   38,   38, 0x08,
+    1247,   38,   38,   38, 0x08,
+    1275,   38,   38,   38, 0x08,
+    1297,   38,   38,   38, 0x08,
+    1323,   38,   38,   38, 0x08,
+    1345,   38,   38,   38, 0x08,
+    1372,   38,   38,   38, 0x08,
+    1395,   38,   38,   38, 0x08,
+    1418,   38,   38,   38, 0x08,
+    1437,   38,   38,   38, 0x08,
 
        0        // eod
 };
@@ -87,6 +92,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_New_clicked()\0on_Save_clicked()\0"
     "on_actionOpen_triggered()\0"
     "on_actionSave_triggered()\0"
+    "on_actionQuit_triggered()\0"
     "on_kEpsilon_toggled()\0on_Laminar_toggled()\0"
     "on_MeshParameters_itemDoubleClicked(QTreeWidgetItem*,int)\0"
     "item,column\0on_EditBoundary_clicked()\0"
@@ -101,6 +107,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_BaffleTree_itemActivated(QTreeWidgetItem*,int)\0"
     "on_BaffleTree_itemClicked(QTreeWidgetItem*,int)\0"
     "on_RemoveBaffle_clicked()\0"
+    "on_updateRange_clicked()\0on_saveJPEG_clicked()\0"
     "on_inside_x_textChanged()\0"
     "on_inside_y_textChanged()\0"
     "on_inside_z_textChanged()\0"
@@ -109,6 +116,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_xNormal_toggled()\0on_yNormal_toggled()\0"
     "on_zNormal_toggled()\0on_contourVOF_toggled()\0"
     "on_contourP_toggled()\0on_contourK_toggled()\0"
+    "on_showLegend_toggled()\0on_showAxis_toggled()\0"
     "on_contourVorticity_toggled()\0"
     "on_showVectors_toggled()\0"
     "on_blockObstacles_toggled()\0"
@@ -133,43 +141,48 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->on_Save_clicked(); break;
         case 7: _t->on_actionOpen_triggered(); break;
         case 8: _t->on_actionSave_triggered(); break;
-        case 9: _t->on_kEpsilon_toggled(); break;
-        case 10: _t->on_Laminar_toggled(); break;
-        case 11: _t->on_MeshParameters_itemDoubleClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 12: _t->on_EditBoundary_clicked(); break;
-        case 13: _t->on_BoundaryTree_itemDoubleClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 14: _t->on_AddSpecialBoundary_clicked(); break;
-        case 15: _t->on_BoundaryTree_itemActivated((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 16: _t->on_BoundaryTree_itemClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 17: _t->on_RemoveSpecialBoundary_clicked(); break;
-        case 18: _t->on_EditBaffle_clicked(); break;
-        case 19: _t->on_BaffleTree_itemDoubleClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 20: _t->on_AddBaffle_clicked(); break;
-        case 21: _t->on_BaffleTree_itemActivated((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 22: _t->on_BaffleTree_itemClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 23: _t->on_RemoveBaffle_clicked(); break;
-        case 24: _t->on_inside_x_textChanged(); break;
-        case 25: _t->on_inside_y_textChanged(); break;
-        case 26: _t->on_inside_z_textChanged(); break;
-        case 27: _t->on_origin_valueChanged(); break;
-        case 28: _t->on_timesteps_currentItemChanged(); break;
-        case 29: _t->on_xNormal_toggled(); break;
-        case 30: _t->on_yNormal_toggled(); break;
-        case 31: _t->on_zNormal_toggled(); break;
-        case 32: _t->on_contourVOF_toggled(); break;
-        case 33: _t->on_contourP_toggled(); break;
-        case 34: _t->on_contourK_toggled(); break;
-        case 35: _t->on_contourVorticity_toggled(); break;
-        case 36: _t->on_showVectors_toggled(); break;
-        case 37: _t->on_blockObstacles_toggled(); break;
-        case 38: _t->on_showMesh_toggled(); break;
-        case 39: _t->on_earthGravity_clicked(); break;
-        case 40: _t->on_water20C_clicked(); break;
-        case 41: _t->on_defaultLength_clicked(); break;
-        case 42: _t->on_calcRough_clicked(); break;
-        case 43: _t->on_SelectAll_clicked(); break;
-        case 44: _t->on_Clear_clicked(); break;
-        case 45: _t->on_Delete_clicked(); break;
+        case 9: _t->on_actionQuit_triggered(); break;
+        case 10: _t->on_kEpsilon_toggled(); break;
+        case 11: _t->on_Laminar_toggled(); break;
+        case 12: _t->on_MeshParameters_itemDoubleClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 13: _t->on_EditBoundary_clicked(); break;
+        case 14: _t->on_BoundaryTree_itemDoubleClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 15: _t->on_AddSpecialBoundary_clicked(); break;
+        case 16: _t->on_BoundaryTree_itemActivated((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 17: _t->on_BoundaryTree_itemClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 18: _t->on_RemoveSpecialBoundary_clicked(); break;
+        case 19: _t->on_EditBaffle_clicked(); break;
+        case 20: _t->on_BaffleTree_itemDoubleClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 21: _t->on_AddBaffle_clicked(); break;
+        case 22: _t->on_BaffleTree_itemActivated((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 23: _t->on_BaffleTree_itemClicked((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 24: _t->on_RemoveBaffle_clicked(); break;
+        case 25: _t->on_updateRange_clicked(); break;
+        case 26: _t->on_saveJPEG_clicked(); break;
+        case 27: _t->on_inside_x_textChanged(); break;
+        case 28: _t->on_inside_y_textChanged(); break;
+        case 29: _t->on_inside_z_textChanged(); break;
+        case 30: _t->on_origin_valueChanged(); break;
+        case 31: _t->on_timesteps_currentItemChanged(); break;
+        case 32: _t->on_xNormal_toggled(); break;
+        case 33: _t->on_yNormal_toggled(); break;
+        case 34: _t->on_zNormal_toggled(); break;
+        case 35: _t->on_contourVOF_toggled(); break;
+        case 36: _t->on_contourP_toggled(); break;
+        case 37: _t->on_contourK_toggled(); break;
+        case 38: _t->on_showLegend_toggled(); break;
+        case 39: _t->on_showAxis_toggled(); break;
+        case 40: _t->on_contourVorticity_toggled(); break;
+        case 41: _t->on_showVectors_toggled(); break;
+        case 42: _t->on_blockObstacles_toggled(); break;
+        case 43: _t->on_showMesh_toggled(); break;
+        case 44: _t->on_earthGravity_clicked(); break;
+        case 45: _t->on_water20C_clicked(); break;
+        case 46: _t->on_defaultLength_clicked(); break;
+        case 47: _t->on_calcRough_clicked(); break;
+        case 48: _t->on_SelectAll_clicked(); break;
+        case 49: _t->on_Clear_clicked(); break;
+        case 50: _t->on_Delete_clicked(); break;
         default: ;
         }
     }
@@ -207,9 +220,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 46)
+        if (_id < 51)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 46;
+        _id -= 51;
     }
     return _id;
 }

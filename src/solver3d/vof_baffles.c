@@ -205,18 +205,20 @@ int baffle_flow(struct solver_data *solver,
   
   baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
   
+  *value = 0;
+  
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {   
         switch(x) {
         case 0:
-          *value = U(i,j,k) * (VOF(i,j,k) + VOF(i+1,j,k)) / 2 * AE(i,j,k) + *value;
+          *value = DELY * DELZ * (U(i,j,k) * ((VOF(i,j,k) + VOF(i+1,j,k)) / 2) * AE(i,j,k)) + *value;
           break;
         case 1:
-          *value = W(i,j,k) * (VOF(i,j,k) + VOF(i,j+1,k)) / 2 * AN(i,j,k) + *value;
+          *value = DELX * DELZ * (V(i,j,k) * ((VOF(i,j,k) + VOF(i,j+1,k)) / 2) * AN(i,j,k)) + *value;
           break;
         case 2:
-          *value = V(i,j,k) * (VOF(i,j,k) + VOF(i,j,k+1)) / 2 * AT(i,j,k) + *value;
+          *value = DELX * DELY * (W(i,j,k) * ((VOF(i,j,k) + VOF(i,j,k+1)) / 2) * AT(i,j,k)) + *value;
           break;
         }        
       }
@@ -250,7 +252,7 @@ int baffle_setup(struct solver_data *solver, int x, long int pos,
     *jmin = min_1;
     *jmax = min(JMAX-2,max_1);
     *kmin = min_2;
-    *kmax = min(KMAX-1,max_2);    
+    *kmax = min(KMAX-2,max_2);    
     break;
   case 1:
     *imin = min_1;

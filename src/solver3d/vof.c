@@ -1347,7 +1347,7 @@ int vof_write(struct solver_data *solver) {
     vof_vorticity(solver);
     
     vtk_write_vorticity(solver->mesh,write_step);
-    csv_write_vorticity(solver->mesh,write_step);
+    csv_write_vorticity(solver->mesh,solver->t);
     
     write_flg = solver->t + solver->writet;
   }

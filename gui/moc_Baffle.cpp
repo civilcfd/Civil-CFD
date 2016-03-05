@@ -22,7 +22,7 @@ static const uint qt_meta_data_BaffleDialog[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -31,12 +31,15 @@ static const uint qt_meta_data_BaffleDialog[] = {
 
  // slots: signature, parameters, type, tag, flags
       13,   22,   22,   22, 0x08,
+      23,   62,   22,   22, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_BaffleDialog[] = {
     "BaffleDialog\0accept()\0\0"
+    "on_select_currentIndexChanged(QString)\0"
+    "str\0"
 };
 
 void BaffleDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -46,10 +49,10 @@ void BaffleDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         BaffleDialog *_t = static_cast<BaffleDialog *>(_o);
         switch (_id) {
         case 0: _t->accept(); break;
+        case 1: _t->on_select_currentIndexChanged((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData BaffleDialog::staticMetaObjectExtraData = {
@@ -84,9 +87,9 @@ int BaffleDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }

@@ -23,6 +23,11 @@ int vtk_write_scalar_grid(char *filename, char *dataset_name,
                           double oi, double oj, double ok,
                           double di, double dj, double dk,
                           double *scalars); 
+int vtk_write_scalar_magnitude_grid(char *filename, char *dataset_name, 
+                          long int ni, long int nj, long int nk,
+                          double oi, double oj, double ok,
+                          double di, double dj, double dk,
+                          double *scalars); 
 int vtk_write_integer_grid(char *filename, char *dataset_name, 
                           long int ni, long int nj, long int nk,
                           double oi, double oj, double ok,
