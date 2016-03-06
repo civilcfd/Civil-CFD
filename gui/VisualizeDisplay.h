@@ -57,6 +57,7 @@ public:
   void getRange(double &a);
   void hideLegend();
   void showLegend();
+  void clear();
 
 private:
   vtkSmartPointer<vtkStructuredPointsReader> reader;

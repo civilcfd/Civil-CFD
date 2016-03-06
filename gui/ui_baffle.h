@@ -75,7 +75,7 @@ public:
         value->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         label_4 = new QLabel(BaffleDialog);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(20, 20, 161, 16));
+        label_4->setGeometry(QRect(20, 20, 201, 16));
         A1 = new QLabel(BaffleDialog);
         A1->setObjectName(QString::fromUtf8("A1"));
         A1->setGeometry(QRect(30, 60, 51, 16));
@@ -133,7 +133,7 @@ public:
         );
         kfactor->setText(QApplication::translate("BaffleDialog", "K-factor", 0, QApplication::UnicodeUTF8));
         value->setPlainText(QApplication::translate("BaffleDialog", "0", 0, QApplication::UnicodeUTF8));
-        label_4->setText(QApplication::translate("BaffleDialog", "Baffle Extents", 0, QApplication::UnicodeUTF8));
+        label_4->setText(QApplication::translate("BaffleDialog", "Baffle Extents - mesh cell range", 0, QApplication::UnicodeUTF8));
         A1->setText(QApplication::translate("BaffleDialog", "A1", 0, QApplication::UnicodeUTF8));
         extentA1->setPlainText(QApplication::translate("BaffleDialog", "0", 0, QApplication::UnicodeUTF8));
         B1->setText(QApplication::translate("BaffleDialog", "B1", 0, QApplication::UnicodeUTF8));

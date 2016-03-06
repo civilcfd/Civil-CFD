@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -700,6 +700,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="plainText">
+             <string>0.00161</string>
+            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -831,7 +834,7 @@
               <widget class="QPushButton" name="MeshUndo">
                <property name="maximumSize">
                 <size>
-                 <width>130</width>
+                 <width>160</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1037,7 +1040,7 @@
               <widget class="QPushButton" name="MeshUpdate">
                <property name="maximumSize">
                 <size>
-                 <width>130</width>
+                 <width>160</width>
                  <height>16777215</height>
                 </size>
                </property>

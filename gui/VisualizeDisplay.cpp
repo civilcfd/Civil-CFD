@@ -12,11 +12,13 @@ VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax, 
 
   update(delx,dely,delz,imax,jmax,kmax,ox,oy,oz);
   VTKmapper = NULL;
+  VTKactor = NULL;
 }
 
 VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax) : 
   MeshDisplay(imax,jmax,kmax) {
   VTKmapper = NULL;
+  VTKactor = NULL;
 } 
 
 void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double del) {
@@ -249,6 +251,9 @@ void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bo
 	legend->GetLabelTextProperty()->SetFontSize(9);
 	AddScalarBar(legend);
 
+}
+void VisualizeDisplay::clear() {
+  if(VTKactor != NULL)    RemoveActor(VTKactor);
 }
 void VisualizeDisplay::setRange(double a, double b) {
   if (VTKmapper != NULL) VTKmapper->SetScalarRange(a,b);

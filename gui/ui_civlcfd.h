@@ -695,7 +695,7 @@ public:
         gridLayout_7->setContentsMargins(0, 0, 0, 0);
         MeshUndo = new QPushButton(widget);
         MeshUndo->setObjectName(QString::fromUtf8("MeshUndo"));
-        MeshUndo->setMaximumSize(QSize(130, 16777215));
+        MeshUndo->setMaximumSize(QSize(160, 16777215));
         MeshUndo->setIcon(icon2);
         MeshUndo->setIconSize(QSize(22, 22));
 
@@ -753,7 +753,7 @@ public:
 
         MeshUpdate = new QPushButton(widget);
         MeshUpdate->setObjectName(QString::fromUtf8("MeshUpdate"));
-        MeshUpdate->setMaximumSize(QSize(130, 16777215));
+        MeshUpdate->setMaximumSize(QSize(160, 16777215));
         QIcon icon5;
         icon5.addFile(QString::fromUtf8(":/icons/resources/view-refresh.svg"), QSize(), QIcon::Normal, QIcon::Off);
         MeshUpdate->setIcon(icon5);
@@ -1627,7 +1627,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(6);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1670,6 +1670,7 @@ public:
         Laminar->setText(QApplication::translate("MainWindow", "Laminar Flow Only", 0, QApplication::UnicodeUTF8));
         label_17->setText(QApplication::translate("MainWindow", "z", 0, QApplication::UnicodeUTF8));
         label_11->setText(QApplication::translate("MainWindow", "Constants", 0, QApplication::UnicodeUTF8));
+        rough->setPlainText(QApplication::translate("MainWindow", "0.00161", 0, QApplication::UnicodeUTF8));
         calcRough->setText(QApplication::translate("MainWindow", "Calculate", 0, QApplication::UnicodeUTF8));
         label_19->setText(QApplication::translate("MainWindow", "Length scale (%)", 0, QApplication::UnicodeUTF8));
         earthGravity->setText(QApplication::translate("MainWindow", "Earth Gravity", 0, QApplication::UnicodeUTF8));

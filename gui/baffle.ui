@@ -122,12 +122,12 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>161</width>
+     <width>201</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Baffle Extents</string>
+    <string>Baffle Extents - mesh cell range</string>
    </property>
   </widget>
   <widget class="QLabel" name="A1">

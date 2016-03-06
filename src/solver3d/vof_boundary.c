@@ -90,10 +90,8 @@ int sboundary_setup(struct solver_data *solver, int x, long int *imin, long int 
 int boundary_hgl(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double value, double turbulence) {
-  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, l, m, n;
-  double sdis, dd, peta;
-  double height, partial, rho_v2;
-  double normal[3] = {0, 0, 0};
+  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, i_vel, j_vel, k_vel;
+  double height, partial;
   long int coplanar[3] = {0, 0, 0};
   
   struct mesh_data *mesh = solver->mesh;
@@ -102,40 +100,42 @@ int boundary_hgl(struct solver_data *solver,
     
   /* value += mesh->delz; uncomment and everything is off-set by 1 cell vertically */
 
-  dd = DELZ;
+
+  i_vel = 0;
+  j_vel = 0;
+  k_vel = 0;
 
   switch(x) {
   case 0: /* west */
     /*imax++*/;
-    normal[0] = 1;
     coplanar[0] = 1;
     break;
   case 1: /* east */
     /*imin--*/;
-    normal[0] = 1;
     coplanar[0] = -1;
+    i_vel = -1;
     break;
   case 2: /* south */
     /*jmax++*/;
-    normal[1] = 1;
     coplanar[1] = 1;
     break;
   case 3: /* north */
     /*jmin--*/;
-    normal[1] = 1;
     coplanar[1] = -1;
+    j_vel = -1;
     break;
   case 4: /* bottom */
     /*kmax++*/;
-    normal[2] = 1;
     coplanar[2] = 1;
     break;
-  case 5: /* south */
+  case 5: /* top */
     /*kmin--*/;
-    normal[2] = 1;
     coplanar[2] = -1;
+    k_vel = -1;
     break;
   }
+  
+  if(fmod(value,DELZ) < solver->emf) value -= solver->min_vof * 100;
  
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
@@ -144,9 +144,15 @@ int boundary_hgl(struct solver_data *solver,
         if(FV(i,j,k) < 0.000001) continue;
         
         /* must set velocity to a Von Neumann boundary */
-        U(i,j,k) = U(i+normal[0]*coplanar[0], j+normal[1]*coplanar[1], k+normal[2]*coplanar[2]);
-        V(i,j,k) = V(i+normal[0]*coplanar[0], j+normal[1]*coplanar[1], k+normal[2]*coplanar[2]);
-        W(i,j,k) = W(i+normal[0]*coplanar[0], j+normal[1]*coplanar[1], k+normal[2]*coplanar[2]);
+        /* first set U(i,j,k) equal to the first non-boundary velocity inside the mesh */
+        U(i,j,k) = U(i+i_vel+coplanar[0], j+j_vel+coplanar[1], k+k_vel+coplanar[2]);
+        V(i,j,k) = V(i+i_vel+coplanar[0], j+j_vel+coplanar[1], k+k_vel+coplanar[2]);
+        W(i,j,k) = W(i+i_vel+coplanar[0], j+j_vel+coplanar[1], k+k_vel+coplanar[2]);
+        
+        /* if we are at a east/north/top boundary then also set one more cell interior, as this is also a boundary */
+        U(i+i_vel,j+j_vel,k+k_vel) = U(i,j,k);
+        V(i+i_vel,j+j_vel,k+k_vel) = V(i,j,k);
+        W(i+i_vel,j+j_vel,k+k_vel) = W(i,j,k);
         
         height = k * mesh->delz;
         if(value - height >= mesh->delz - solver->emf) {
@@ -164,9 +170,10 @@ int boundary_hgl(struct solver_data *solver,
           else if(partial <= 0)
             VOF(i,j,k) = 0.0;
         }
+        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (VOF(i,j,k) + VOF(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2;
      
-        /* if(solver->p_flag != 0) continue; */
-
+        /* if(solver->p_flag != 0) return 0; */
+        
         /* ADDED 01/10/2014 */
         if(mesh->vof[mesh_index(mesh,i,j,k)] == 1.0) {
           mesh->P[mesh_index(mesh,i,j,k)] = 
@@ -182,6 +189,9 @@ int boundary_hgl(struct solver_data *solver,
         /* ADDED 01/03/2014 */
         else if(mesh->vof[mesh_index(mesh,i,j,k)] <= 0.0) 
           mesh->P[mesh_index(mesh,i,j,k)] = 0.0;
+          
+        /* now set value 1 cell interior to the mesh to be the same */
+          P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (P(i,j,k) + P(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2;
         
         /* ADDED 02/27/2016 *
         if(FV(i,j,k) < 1.0 && FV(i,j,k) > 0.0) {
@@ -245,6 +255,7 @@ int boundary_hgl(struct solver_data *solver,
   return 0;
 }
 
+/* currently unused - needs re-write *
 int boundary_mass_inflow(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double value, double turbulence) {
@@ -260,13 +271,13 @@ int boundary_mass_inflow(struct solver_data *solver,
   
   
   /* this is inflow so set value so that it is negative on an east/north/top boundary, and
-  positive otherwise */
+  positive otherwise *
   value = fabs(value);
   
   switch(x) {
-  case 1: /* east */
-  case 3: /* north */
-  case 5: /* top */
+  case 1: /* east *
+  case 3: /* north *
+  case 5: /* top *
     value *= -1.0;
     break;
   }
@@ -314,13 +325,13 @@ int boundary_mass_inflow(struct solver_data *solver,
   }
   
   if(fabs(flow) < 0.1 * fabs(value)  || flow * value < 0) { 
-    /* in the case of no flow or reverse flow, we set a fixed velocity to start the solution */
+    /* in the case of no flow or reverse flow, we set a fixed velocity to start the solution *
     boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, value/area, turbulence);
     return 0;
   }
   
   flow_factor = flow / value;
-  flow_factor = min(flow_factor, 1.25); /* maximum 25% deviation per timestep */
+  flow_factor = min(flow_factor, 1.25); /* maximum 25% deviation per timestep *
   flow_factor = max(flow_factor, 0.8); 
 
   for(i=imin; i <= imax; i++) {
@@ -359,7 +370,7 @@ int boundary_mass_inflow(struct solver_data *solver,
   
   return 0;
 }
-#undef emf
+#undef emf */
 
 int boundary_mass_outflow(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
@@ -395,36 +406,46 @@ int boundary_mass_outflow(struct solver_data *solver,
         switch(x) {
         case 0:
           area_0 = DELY * DELZ * AE(i+1,j,k);
-          area_0 *= (VOF(i+1,j,k) + VOF(min(i+2,IMAX-1),j,k))/2;
+          area_0 *= (VOF(i+1,j,k) + VOF(i+2,j,k))/2;
           
           if(UN(i+1,j,k) * value > 0) flow += UN(i+1,j,k) * area_0;
           area += area_0;
           break;          
         case 1:
-          area_0 = DELY * DELZ * AE(max(i-1,0),j,k);
-          area_0 *= (VOF(i,j,k) + VOF(max(i-1,0),j,k))/2;
+          area_0 = DELY * DELZ * AE(i-2,j,k);
+          area_0 *= (VOF(i-1,j,k) + VOF(i-2,j,k))/2;
           
-          flow += UN(i-1,j,k) * area_0;
+          if(UN(i-2,j,k) * value > 0) flow += UN(i-2,j,k) * area_0;
           area += area_0;
           break;
         case 2:
+          area_0 = DELX * DELZ * AN(i,j+1,k);
+          area_0 *= (VOF(i,j+1,k) + VOF(i,j+2,k))/2;
+          
+          if(VN(i,j+1,k) * value > 0) flow += VN(i,j+1,k) * area_0;
+          area += area_0;
+          break;          
         case 3:
-          area_0 = DELX * DELZ * AN(i,j,k);
-          area_0 *= (VOF(i,j,k) + VOF(i,max(j+1,JMAX-1),k))/2;
+          area_0 = DELX * DELZ * AN(i,j-2,k);
+          area_0 *= (VOF(i,j-1,k) + VOF(i,j-2,k))/2;
           
-          if(x==2) flow += V(i,j+1,k) * area_0;
-          if(x==3) flow += V(i,j-1,k) * area_0;
+          if(VN(i,j-2,k) * value > 0 ) flow += VN(i,j-2,k) * area_0;
           area += area_0;
-          break;    
+          break;          
         case 4:
-        case 5:
-          area_0 = DELX * DELY * AT(i,j,k);
-          area_0 *= (VOF(i,j,k) + VOF(i,j,max(k+1,KMAX-1)))/2;
+          area_0 = DELX * DELY * AT(i,j,k+1);
+          area_0 *= (VOF(i,j,k+1) + VOF(i,j,k+2))/2;
           
-          if(x==4) flow += W(i,j,k+1) * area_0;
-          if(x==5) flow += W(i,j,k-1) * area_0;
+          if(WN(i,j,k+1) * value > 0) flow += WN(i,j,k+1) * area_0;
           area += area_0;
-          break;   
+          break;          
+        case 5:
+          area_0 = DELX * DELY * AT(i,j,k-2);
+          area_0 *= (VOF(i,j,k-1) + VOF(i,j,k-2))/2;
+          
+          if(WN(i,j,k-2) * value > 0) flow += WN(i,j,k-2) * area_0;
+          area += area_0;
+          break;     
         }        
       }
     }
@@ -442,33 +463,53 @@ int boundary_mass_outflow(struct solver_data *solver,
 
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
-      for(k=kmin; k <= kmax; k++) {  
+      for(k=kmin; k <= kmax; k++) {        
         switch(x) {
         case 0:
-        case 1:
-          if(x==0) {
-            if(UN(i+1,j,k) * value > 0) U(i,j,k) = UN(i+1,j,k) / flow_factor;
-            else U(i,j,k) = 0.1 * value/area;
-          }
-          
-          if(x==1) U(i,j,k) = UN(i-1,j,k) / flow_factor;
+          if(UN(i+1,j,k) * value > 0) U(i,j,k) = UN(i+1,j,k) / flow_factor;
+          else U(i,j,k) = 0.1 * value/area;
           V(i,j,k) = 0;
           W(i,j,k) = 0;
           break;
-        case 2:
-        case 3:
-          U(i,j,k) = 0;
-          if(x==2) V(i,j,k) = V(i,j+1,k) / flow_factor;
-          if(x==3) V(i,j,k) = V(i,j-1,k) / flow_factor;
+        case 1:
+          if(UN(i-2,j,k) * value > 0) U(i,j,k) = UN(i-2,j,k) / flow_factor;
+          else U(i,j,k) = 0.1 * value/area;
+          U(i-1,j,k) = U(i,j,k);
+          V(i,j,k) = 0;
+          V(i-1,j,k) = 0;
           W(i,j,k) = 0;
-          break;    
+          W(i-1,j,k) = 0;
+          break;
+        case 2:
+          if(VN(i,j+1,k) * value > 0) V(i,j,k) = VN(i,j+1,k) / flow_factor;
+          else V(i,j,k) = 0.1 * value/area;
+          U(i,j,k) = 0;
+          W(i,j,k) = 0;
+          break;
+        case 3:
+          if(VN(i,j-2,k) * value > 0) V(i,j,k) = VN(i,j-2,k) / flow_factor;
+          else V(i,j,k) = 0.1 * value/area;
+          V(i,j-1,k) = V(i,j,k);
+          U(i,j,k) = 0;
+          U(i,j-1,k) = 0;
+          W(i,j,k) = 0;
+          W(i,j-1,k) = 0;
+          break;
         case 4:
-        case 5:
+          if(WN(i,j,k+1) * value > 0) W(i,j,k) = WN(i,j,k+1) / flow_factor;
+          else W(i,j,k) = 0.1 * value/area;
           U(i,j,k) = 0;
           V(i,j,k) = 0;
-          if(x==4) W(i,j,k) = W(i,j,k+1) / flow_factor;
-          if(x==5) W(i,j,k) = W(i,j,k-1) / flow_factor;
-          break;   
+          break;
+        case 5:
+          if(WN(i,j,k-2) * value > 0) W(i,j,k) = WN(i,j,k-2) / flow_factor;
+          else W(i,j,k) = 0.1 * value/area;
+          W(i,j,k-1) = W(i,j,k);
+          U(i,j,k) = 0;
+          U(i,j,k-1) = 0;
+          V(i,j,k) = 0;
+          V(i,j,k-1) = 0;
+          break;
         }        
       }
     }
@@ -503,8 +544,11 @@ int boundary_fixed_velocity(struct solver_data *solver,
           if(value < 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = value;
+          U(i-1,j,k) = value;
           V(i,j,k) = 0;
+          V(i-1,j,k) = 0;
           W(i,j,k) = 0;
+          W(i-1,j,k) = 0;
           break;
         case 2:
           if(value > 0)
@@ -517,8 +561,11 @@ int boundary_fixed_velocity(struct solver_data *solver,
           if(value < 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = 0;
+          U(i,j-1,k) = 0;
           V(i,j,k) = value;
+          V(i,j-1,k) = value;
           W(i,j,k) = 0;
+          W(i,j-1,k) = 0;            
           break;    
         case 4:
           if(value > 0)
@@ -531,10 +578,14 @@ int boundary_fixed_velocity(struct solver_data *solver,
           if(value < 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = 0;
+          U(i,j,k-1) = 0;
           V(i,j,k) = 0;
+          V(i,j,k-1) = 0;
           W(i,j,k) = value;
+          W(i,j,k-1) = value;
           break;   
-        }        
+        }   
+    
       }
     }
   }
@@ -565,12 +616,12 @@ int vof_special_boundaries(struct solver_data *solver) {
          		boundary_hgl(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
-          break;        
+          break;        /*
       	case mass_inflow:
           boundary_mass_inflow(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
-          break;
+          break;*/
           
         }
     }
@@ -649,7 +700,7 @@ int vof_vof_height_boundary(struct solver_data *solver) {
 
 int vof_boundaries(struct solver_data *solver) {
 
-  long int i,j,k,l,m,n,o,p,q,x;
+  long int i,j,k,l,m,n;
   int bm[6], bmtot, nindex;
   enum cell_boundaries nff;
 #define dim(i,j,k) i+3*(j+k*3)
@@ -667,22 +718,26 @@ int vof_boundaries(struct solver_data *solver) {
             /* slip case is zero_gradient for parallel axis
              * and zero fixed value for perpendicular axis */
         U(0,j,k) = 0;         U(IMAX-1,j,k) = 0;
-        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-2,j,k);
-        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-2,j,k);
+        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-3,j,k);
+        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-3,j,k);
         break;
       case no_slip:
             /* no slip case is velocity = -1.0 * interior velocity at boundary */
-        U(0,j,k) = -1.0 * U(1,j,k);  U(IMAX-1,j,k) = -1.0 * U(IMAX-2,j,k);
-        V(0,j,k) = -1.0 * V(1,j,k);  V(IMAX-1,j,k) = -1.0 * V(IMAX-2,j,k);
-        W(0,j,k) = -1.0 * W(1,j,k);  W(IMAX-1,j,k) = -1.0 * W(IMAX-2,j,k);
+        U(0,j,k) = -1.0 * U(1,j,k);  U(IMAX-1,j,k) = -1.0 * U(IMAX-3,j,k);
+        V(0,j,k) = -1.0 * V(1,j,k);  V(IMAX-1,j,k) = -1.0 * V(IMAX-3,j,k);
+        W(0,j,k) = -1.0 * W(1,j,k);  W(IMAX-1,j,k) = -1.0 * W(IMAX-3,j,k);
         break;
       case zero_gradient:
             /* zero gradient means that velocity at boundary is equal to interior velocity */
-        U(0,j,k) = U(1,j,k);  U(IMAX-1,j,k) = U(IMAX-2,j,k);
-        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-2,j,k);
-        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-2,j,k);
+        U(0,j,k) = U(1,j,k);  U(IMAX-1,j,k) = U(IMAX-3,j,k);
+        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-3,j,k);
+        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-3,j,k);
         break;       
       }
+      
+      U(IMAX-2,j,k) = U(IMAX-1,j,k);
+      V(IMAX-2,j,k) = V(IMAX-1,j,k);
+      W(IMAX-2,j,k) = W(IMAX-1,j,k);
       
       if(solver->p_flag == 0) {
         P(0,j,k) = P(1,j,k);
@@ -703,23 +758,27 @@ int vof_boundaries(struct solver_data *solver) {
       case slip:
             /* slip case is zero_gradient for parallel axis
              * and zero fixed value for perpendicular axis */
-        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-2,k);
+        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-3,k);
         V(i,0,k) = 0;         V(i,JMAX-1,k) = 0;
-        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-2,k);
+        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-3,k);
         break;
       case no_slip:
             /* no slip case is velocity = -1.0 * interior velocity at boundary */
-        U(i,0,k) = -1.0 * U(i,1,k);  U(i,JMAX-1,k) = -1.0 * U(i,JMAX-2,k);
-        V(i,0,k) = -1.0 * V(i,1,k);  V(i,JMAX-1,k) = -1.0 * V(i,JMAX-2,k);
-        W(i,0,k) = -1.0 * W(i,1,k);  W(i,JMAX-1,k) = -1.0 * W(i,JMAX-2,k);
+        U(i,0,k) = -1.0 * U(i,1,k);  U(i,JMAX-1,k) = -1.0 * U(i,JMAX-3,k);
+        V(i,0,k) = -1.0 * V(i,1,k);  V(i,JMAX-1,k) = -1.0 * V(i,JMAX-3,k);
+        W(i,0,k) = -1.0 * W(i,1,k);  W(i,JMAX-1,k) = -1.0 * W(i,JMAX-3,k);
         break;
       case zero_gradient:
             /* zero gradient means that velocity at boundary is equal to interior velocity */
-        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-2,k);
-        V(i,0,k) = V(i,1,k);  V(i,JMAX-1,k) = V(i,JMAX-2,k);
-        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-2,k);
+        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-3,k);
+        V(i,0,k) = V(i,1,k);  V(i,JMAX-1,k) = V(i,JMAX-3,k);
+        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-3,k);
         break;       
       }
+      
+      U(i,JMAX-2,k) = U(i,JMAX-1,k);
+      V(i,JMAX-2,k) = V(i,JMAX-1,k);
+      W(i,JMAX-2,k) = W(i,JMAX-1,k);
       
       if(solver->p_flag == 0) {
         P(i,0,k) = P(i,1,k);
@@ -741,23 +800,28 @@ int vof_boundaries(struct solver_data *solver) {
       case slip:
             /* slip case is zero_gradient for parallel axis
              * and zero fixed value for perpendicular axis */
-        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-2);
-        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-2);
+        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-3);
+        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-3);
         W(i,j,0) = 0;         W(i,j,KMAX-1) = 0;
         break;
       case no_slip:
             /* no slip case is velocity = -1.0 * interior velocity at boundary */
-        U(i,j,0) = -1.0 * U(i,j,1);  U(i,j,KMAX-1) = -1.0 * U(i,j,KMAX-2);
-        V(i,j,0) = -1.0 * V(i,j,1);  V(i,j,KMAX-1) = -1.0 * V(i,j,KMAX-2);
-        W(i,j,0) = -1.0 * W(i,j,1);  W(i,j,KMAX-1) = -1.0 * W(i,j,KMAX-2);
+        U(i,j,0) = -1.0 * U(i,j,1);  U(i,j,KMAX-1) = -1.0 * U(i,j,KMAX-3);
+        V(i,j,0) = -1.0 * V(i,j,1);  V(i,j,KMAX-1) = -1.0 * V(i,j,KMAX-3);
+        W(i,j,0) = -1.0 * W(i,j,1);  W(i,j,KMAX-1) = -1.0 * W(i,j,KMAX-3);
         break;
       case zero_gradient:
             /* zero gradient means that velocity at boundary is equal to interior velocity */
-        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-2);
-        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-2);
-        W(i,j,0) = W(i,j,1);  W(i,j,KMAX-1) = W(i,j,KMAX-2);
+        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-3);
+        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-3);
+        W(i,j,0) = W(i,j,1);  W(i,j,KMAX-1) = W(i,j,KMAX-3);
         break;       
       }
+      
+      U(i,j,KMAX-2) = U(i,j,KMAX-1);
+      V(i,j,KMAX-2) = V(i,j,KMAX-1);
+      W(i,j,KMAX-2) = W(i,j,KMAX-1);
+      
       
       if(solver->p_flag == 0) {
         P(i,j,0) = P(i,j,1);

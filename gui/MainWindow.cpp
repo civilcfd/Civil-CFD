@@ -161,7 +161,9 @@ void MainWindow::on_Save_clicked() {
   
   return;
 }
-
+void MainWindow::on_actionNew_triggered() {
+  on_New_clicked();
+}
 void MainWindow::on_New_clicked() {
   QString path;
   QString path_file;

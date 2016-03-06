@@ -83,7 +83,7 @@ public:
         label_3->setGeometry(QRect(30, 330, 71, 16));
         label_4 = new QLabel(SBoundaryDialog);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(20, 20, 161, 16));
+        label_4->setGeometry(QRect(20, 20, 291, 16));
         A1 = new QLabel(SBoundaryDialog);
         A1->setObjectName(QString::fromUtf8("A1"));
         A1->setGeometry(QRect(30, 60, 51, 16));
@@ -139,7 +139,7 @@ public:
         value->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
         turbulence->setPlainText(QApplication::translate("SBoundaryDialog", "0.001", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("SBoundaryDialog", "Turbulence", 0, QApplication::UnicodeUTF8));
-        label_4->setText(QApplication::translate("SBoundaryDialog", "Boundary Extents", 0, QApplication::UnicodeUTF8));
+        label_4->setText(QApplication::translate("SBoundaryDialog", "Boundary Extents - mesh cell range", 0, QApplication::UnicodeUTF8));
         A1->setText(QApplication::translate("SBoundaryDialog", "A1", 0, QApplication::UnicodeUTF8));
         extentA1->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
         B1->setText(QApplication::translate("SBoundaryDialog", "B1", 0, QApplication::UnicodeUTF8));

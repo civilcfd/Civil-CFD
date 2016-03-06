@@ -141,23 +141,35 @@ int baffle_k(struct solver_data *solver,
   
   baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
   
+  if(value < 0.01) {
+    printf("Headloss baffle with k-factor < 0.01.  Ignoring.\n");
+    return 0;
+  }
+  
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {   
+        sgn = 1.0;
         switch(x) {
         case 0:
+          if(AE(i,j,k) < solver->emf) continue;
           delp = P(i+1,j,k) - P(i,j,k);
           sgn = delp * sgn / fabs(delp);
+          if(isnan(sgn)) U(i,j,k) = 0;
           U(i,j,k) = -1.0 * sgn * sqrt((delp * 2) / (solver->rho * value));
           break;
         case 1:
+          if(AN(i,j,k) < solver->emf) continue;
           delp = P(i,j,k) - P(i,j+1,k);
           sgn = delp * sgn / fabs(delp);
+          if(isnan(sgn)) V(i,j,k) = 0;
           V(i,j,k) = -1.0 * sgn * sqrt((delp * 2) / (solver->rho * value));
           break;
         case 2:
+          if(AT(i,j,k) < solver->emf) continue;
           delp = P(i,j,k+1) - P(i,j,k);
           sgn = delp * sgn / fabs(delp);
+          if(isnan(sgn)) W(i,j,k) = 0;
           W(i,j,k) = -1.0 * sgn * sqrt((delp * 2) / (solver->rho * value));
           break;
         }          

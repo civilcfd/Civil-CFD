@@ -15,6 +15,7 @@
 #include "csv.h"
 #include "kE.h"
 #include "track.h"
+#include "vof_baffles.h"
 
 #include "vof_macros.h"
 
@@ -759,9 +760,9 @@ int vof_velocity(struct solver_data *solver) {
             private(i,j,k,vel,af,vis,Flux,Viscocity,Q_C,Q_W,H_vel,CD,upwind,sum_fv,delp, \
                     delv,resi,nu,n,m,o,ro_p1,ro_m1,ro_mp1,ro_mm1,ro_nmm1) \
             collapse(3) schedule(static)
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
+  for(i=1; i<IMAX-2; i++) {
+    for(j=1; j<JMAX-2; j++) {
+      for(k=1; k<KMAX-2; k++) {
 
         U(i,j,k) = 0;
         V(i,j,k) = 0;
@@ -1281,7 +1282,8 @@ int vof_deltcal(struct solver_data *solver) {
       solver->petacal(solver);
     if(delt < solver->delt_min) {
       printf("timestep too small to continue.  exiting...");
-      
+     
+      /*  
       csv_write_P(solver->mesh,solver->t);
       csv_write_U(solver->mesh,solver->t);
       csv_write_vof(solver->mesh,solver->t);
@@ -1290,7 +1292,7 @@ int vof_deltcal(struct solver_data *solver) {
       if(solver->mesh->turbulence_model != NULL) {
         csv_write_k(solver->mesh,solver->t);
         csv_write_E(solver->mesh,solver->t);
-      } 
+      } */
       exit(1);
     }
   }

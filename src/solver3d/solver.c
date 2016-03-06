@@ -361,16 +361,18 @@ int solver_set_initial(struct solver_data *solver, char *param, int dims,
     solver->vof_height = vector[0];
     solver->vof_delay = vector[1];
     
+    if(fmod(solver->vof_height,solver->mesh->delz) < solver->emf) solver->vof_height -= solver->min_vof * 100;
+    
     if(solver->vof_delay < solver->emf) {
     
-      z_height = floor(vector[0] / solver->mesh->delz);
+      z_height = floor(solver->vof_height / solver->mesh->delz);
 
       mesh_set_array(solver->mesh, "vof", 1.0, 0, solver->mesh->imax, 
                                                0, solver->mesh->jmax, 
                                                0, z_height);  
                                                
-      if(vector[0] / solver->mesh->delz - z_height > 0) {
-        mesh_set_array(solver->mesh, "vof", vector[0] / solver->mesh->delz - z_height, 
+      if(solver->vof_height / solver->mesh->delz - z_height > 0) {
+        mesh_set_array(solver->mesh, "vof", solver->vof_height / solver->mesh->delz - z_height, 
                                                0, solver->mesh->imax, 
                                                0, solver->mesh->jmax, 
                                                z_height, z_height+1);        

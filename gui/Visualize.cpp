@@ -27,8 +27,13 @@
 
 void MainWindow::visualizeUpdate() {
 
+  if(buildTimesteps() < 1) {
+    visualizeDisplay->clear();
+    return;
+  }
+  
   on_origin_valueChanged();
-  buildTimesteps();
+    
   visualizeRender();    
   
   
@@ -118,15 +123,19 @@ void MainWindow::on_origin_valueChanged() {
   visualizeRender();
 }
 
-void MainWindow::buildTimesteps() {
+int MainWindow::buildTimesteps() {
+  int count = 0;
+
   ui.timesteps->clear();  
   
   sim.trackRewind();
 
   while(sim.getTrackNext() >= 0) {
     ui.timesteps->addItem(sim.getTrackT());
+    count++;
   }
-
+  
+  return count;
 }
 
 void MainWindow::on_updateRange_clicked() {

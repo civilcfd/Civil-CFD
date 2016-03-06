@@ -34,6 +34,7 @@ private slots:
   void on_Save_clicked();
   void on_actionOpen_triggered();
   void on_actionSave_triggered();
+  void on_actionNew_triggered();
   void on_actionQuit_triggered();
   void on_kEpsilon_toggled();
   void on_Laminar_toggled();
@@ -94,7 +95,7 @@ private:
   void buildBaffleList();
   void meshUpdate();
   void visualizeUpdate();
-  void buildTimesteps();
+  int  buildTimesteps();
   void visualizeRender();
   void buildResultList();
   void write();
