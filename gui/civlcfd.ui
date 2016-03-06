@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -928,7 +928,7 @@
                </column>
                <item>
                 <property name="text">
-                 <string>Mesh Cell Dimensions</string>
+                 <string>Mesh Cell Dimensions (m)</string>
                 </property>
                 <property name="font">
                  <font>
@@ -1001,7 +1001,7 @@
                </item>
                <item>
                 <property name="text">
-                 <string>Mesh Origin</string>
+                 <string>Mesh Origin (m)</string>
                 </property>
                 <property name="font">
                  <font>

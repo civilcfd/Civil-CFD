@@ -175,3 +175,17 @@ long int SBoundaryDialog::getExtentB2() {
 QString SBoundaryDialog::getBoundaryText() {
   return boundaryText;
 }
+
+void SBoundaryDialog::on_select_currentIndexChanged(QString str) {
+
+  if(str == "fixed velocity") {
+    ui.units->setText("m/s");
+  }
+  else if (str == "mass outflow" ){
+    ui.units->setText("m3/s");
+  }
+  else {
+    ui.units->setText("m");
+  }
+
+}

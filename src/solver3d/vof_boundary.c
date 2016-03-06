@@ -255,150 +255,14 @@ int boundary_hgl(struct solver_data *solver,
   return 0;
 }
 
-/* currently unused - needs re-write *
-int boundary_mass_inflow(struct solver_data *solver, 
-                            int x, double min_1, double min_2, double max_1, double max_2, 
-                            double value, double turbulence) {
-#define emf solver->emf  
-
-  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
+double calc_flow(struct solver_data *solver, int x, double value, long int imin, long int imax, 
+                 long int jmin, long int jmax, long int kmin, long int kmax, double *area_ref) {
+  long int i,j,k;
   
-  sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
-  
-  double flow, area, area_0, flow_factor;
-  flow = 0;
+  double area_0, area, flow;
+  area_0 = 0;
   area = 0;
-  
-  
-  /* this is inflow so set value so that it is negative on an east/north/top boundary, and
-  positive otherwise *
-  value = fabs(value);
-  
-  switch(x) {
-  case 1: /* east *
-  case 3: /* north *
-  case 5: /* top *
-    value *= -1.0;
-    break;
-  }
-  
-
-  for(i=imin; i <= imax; i++) {
-    for(j=jmin; j <= jmax; j++) {
-      for(k=kmin; k <= kmax; k++) {  
-        switch(x) {
-        case 0:
-          area_0 = DELY * DELZ * AE(i+1,j,k);
-          area_0 *= (VOF(i+1,j,k) + VOF(min(i+2,IMAX-1),j,k))/2;
-          
-          if(UN(i+1,j,k) * value > 0) flow += UN(i+1,j,k) * area_0;
-          area += area_0;
-          break;          
-        case 1:
-          area_0 = DELY * DELZ * AE(max(i-1,0),j,k);
-          area_0 *= (VOF(i,j,k) + VOF(max(i-1,0),j,k))/2;
-          
-          flow += UN(i-1,j,k) * area_0;
-          area += area_0;
-          break;
-        case 2:
-        case 3:
-          area_0 = DELX * DELZ * AN(i,j,k);
-          area_0 *= (VOF(i,j,k) + VOF(i,max(j+1,JMAX-1),k))/2;
-          
-          if(x==2) flow += V(i,j+1,k) * area_0;
-          if(x==3) flow += V(i,j-1,k) * area_0;
-          area += area_0;
-          break;    
-        case 4:
-        case 5:
-          area_0 = DELX * DELY * AT(i,j,k);
-          area_0 *= (VOF(i,j,k) + VOF(i,j,max(k+1,KMAX-1)))/2;
-          
-          if(x==4) flow += W(i,j,k+1) * area_0;
-          if(x==5) flow += W(i,j,k-1) * area_0;
-          area += area_0;
-          break;   
-        }        
-      }
-    }
-  }
-  
-  if(fabs(flow) < 0.1 * fabs(value)  || flow * value < 0) { 
-    /* in the case of no flow or reverse flow, we set a fixed velocity to start the solution *
-    boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, value/area, turbulence);
-    return 0;
-  }
-  
-  flow_factor = flow / value;
-  flow_factor = min(flow_factor, 1.25); /* maximum 25% deviation per timestep *
-  flow_factor = max(flow_factor, 0.8); 
-
-  for(i=imin; i <= imax; i++) {
-    for(j=jmin; j <= jmax; j++) {
-      for(k=kmin; k <= kmax; k++) {  
-        switch(x) {
-        case 0:
-        case 1:
-          if(x==0) {
-            if(UN(i+1,j,k) * value > 0) U(i,j,k) = UN(i+1,j,k) / flow_factor;
-            else U(i,j,k) = 0.1 * value/area;
-          }
-          
-          if(x==1) U(i,j,k) = UN(i-1,j,k) / flow_factor;
-          V(i,j,k) = 0;
-          W(i,j,k) = 0;
-          break;
-        case 2:
-        case 3:
-          U(i,j,k) = 0;
-          if(x==2) V(i,j,k) = V(i,j+1,k) / flow_factor;
-          if(x==3) V(i,j,k) = V(i,j-1,k) / flow_factor;
-          W(i,j,k) = 0;
-          break;    
-        case 4:
-        case 5:
-          U(i,j,k) = 0;
-          V(i,j,k) = 0;
-          if(x==4) W(i,j,k) = W(i,j,k+1) / flow_factor;
-          if(x==5) W(i,j,k) = W(i,j,k-1) / flow_factor;
-          break;   
-        }        
-      }
-    }
-  }
-  
-  return 0;
-}
-#undef emf */
-
-int boundary_mass_outflow(struct solver_data *solver, 
-                            int x, double min_1, double min_2, double max_1, double max_2, 
-                            double value, double turbulence) {
-#define emf solver->emf  
-
-  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
-  
-  sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
-  
-  double flow, area, area_0, flow_factor;
   flow = 0;
-  area = 0;
-  
-  
-  /* this is outflow so set value so that it is positive on an east/north/top boundary, and
-  negative otherwise */
-  value = fabs(value);
-  
-  switch(x) {
-  case 0: /* west */
-  case 2: /* south */
-  case 4: /* bottom */
-    value *= -1.0;
-    break;
-  }
-  
-  
 
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
@@ -450,6 +314,120 @@ int boundary_mass_outflow(struct solver_data *solver,
       }
     }
   }
+  
+  *area_ref = area;
+  return flow;
+}
+
+int boundary_weir(struct solver_data *solver, 
+                            int x, double min_1, double min_2, double max_1, double max_2, 
+                            double value, double turbulence) {
+#define emf solver->emf  
+
+  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, l, m, n;
+  double flow, area, height, ave_height, count, head; 
+  double coplanar[3] = {0, 0, 0};
+  
+  sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+
+  flow = 0;
+  area = 0;
+  
+  if(x>3) return 0;
+  
+  
+  switch(x) {
+  case 0: /* west */
+    /*imax++*/;
+    coplanar[0] = 1;
+    break;
+  case 1: /* east */
+    /*imin--*/;
+    coplanar[0] = -1;
+    break;
+  case 2: /* south */
+    /*jmax++*/;
+    coplanar[1] = 1;
+    break;
+  case 3: /* north */
+    /*jmin--*/;
+    coplanar[1] = -1;
+    break;
+  }
+  
+  count = 0;
+  ave_height = 0;
+  
+  /* now calculate height of liquid */
+  for(i=imin; i <= imax; i++) {
+    for(j=jmin; j <= jmax; j++) {
+      for(k = kmax-1; k > kmin-1; k--) {
+        
+        if(FV(i,j,k) < 0.000001) continue;
+
+        l = i+coplanar[0];
+        m = j+coplanar[1];
+        n = k+coplanar[2];
+        
+        if(VOF(l,m,n) > (1-emf)) {
+          height = k * DELZ;
+          break;
+        } else if(VOF(l,m,n) > emf) {
+          if(VOF(l,m,max(0,n-1)) > emf) {
+            height = max(k-1,0) * DELZ + VOF(l,m,n) * DELZ;
+            break;
+          }
+        }
+      }
+      
+      ave_height += height;
+      count += 1.0;
+    }
+  } 
+  
+  ave_height = ave_height / count;
+  
+  /* first check water level is greater than weir crest, if not, v=0 */
+  if(ave_height <= solver->vof_height) {
+    boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, 0, 0);
+  }
+  else {
+    head = solver->vof_height - ave_height;
+    flow = 1.6 * value * pow(head, 1.5);
+    boundary_mass_outflow(solver, x, min_1, min_2, max_1, max_2, flow, 0);    
+  }
+
+  return 0;
+}
+
+int boundary_mass_outflow(struct solver_data *solver, 
+                            int x, double min_1, double min_2, double max_1, double max_2, 
+                            double value, double turbulence) {
+#define emf solver->emf  
+
+  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
+  
+  sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+  
+  double flow, area, area_0, flow_factor;
+  flow = 0;
+  area = 0;
+  
+  
+  /* this is outflow so set value so that it is positive on an east/north/top boundary, and
+  negative otherwise */
+  value = fabs(value);
+  
+  switch(x) {
+  case 0: /* west */
+  case 2: /* south */
+  case 4: /* bottom */
+    value *= -1.0;
+    break;
+  }
+  
+  flow = calc_flow(solver, x, value, imin, imax, jmin, jmax, kmin, kmax, &area);
+
   
   if(fabs(flow) < 0.1 * fabs(value) || flow * value < 0) { 
     /* in the case of no flow or reverse flow, we set a fixed velocity to start the solution */
@@ -616,12 +594,12 @@ int vof_special_boundaries(struct solver_data *solver) {
          		boundary_hgl(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
-          break;        /*
-      	case mass_inflow:
-          boundary_mass_inflow(solver, x, sb->extent_a[0], sb->extent_a[1], 
+          break;        
+      	case weir:
+          boundary_weir(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
-          break;*/
+          break;
           
         }
     }

@@ -27,16 +27,15 @@ enum special_boundaries {
   fixed_velocity = 0,
   mass_outflow = 1,
   hgl = 2,
-  mass_inflow = 3
+  weir = 3
 };
 
 enum baffle_type {
   flow = 0,
   barrier = 1,
   k = 2,
-  weir = 3,
-  swirl_angle = 4,
-  v_deviation = 5
+  swirl_angle = 3,
+  v_deviation = 4
 };
 
 struct sb_data {

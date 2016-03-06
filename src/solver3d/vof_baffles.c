@@ -169,16 +169,13 @@ int baffle_k(struct solver_data *solver,
           if(fabs(V(i,j,k)) < solver->emf) continue;
           
           delp = P(i,j,k) - P(i,j+1,k);
-          sgn = delp * sgn / fabs(delp);
           
-          if(isnan(sgn)) {
-            v_prime = 0;
-          } else {
-            v_prime = sgn * sqrt((fabs(delp) * 2) / (solver->rho * value));
-          }
-          
-          if(fabs(v_prime) > fabs(V(i,j,k))) continue; /*
-          if(fabs(V(i,j,k) - v_prime)/fabs(V(i,j,k)) > 0.1) V(i,j,k) = 0.9 * V(i,j,k); */
+          if(delp < 0.0) sgn = -1.0;
+          v_prime = sgn * sqrt((fabs(delp) * 2) / (solver->rho * value));
+                    
+          if(v_prime * V(i,j,k) < solver->emf * -1.0) v_prime = 0; /* this shouldn't cause a direction change */
+          if(fabs(v_prime) > fabs(V(i,j,k)) && v_prime * V(i,j,k) > solver->emf) continue; /* and never speed up */
+          /* if(fabs(V(i,j,k) - v_prime)/fabs(V(i,j,k)) > 0.1) V(i,j,k) = 0.9 * V(i,j,k); */
           else V(i,j,k) = v_prime;
           
           if(isnan(V(i,j,k)) || isnan(v_prime)) {

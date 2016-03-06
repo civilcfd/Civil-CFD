@@ -43,6 +43,7 @@ public:
     QPlainTextEdit *extentA2;
     QLabel *A2;
     QPushButton *calculate;
+    QLabel *units;
 
     void setupUi(QDialog *SBoundaryDialog)
     {
@@ -117,6 +118,9 @@ public:
         calculate = new QPushButton(SBoundaryDialog);
         calculate->setObjectName(QString::fromUtf8("calculate"));
         calculate->setGeometry(QRect(330, 320, 110, 32));
+        units = new QLabel(SBoundaryDialog);
+        units->setObjectName(QString::fromUtf8("units"));
+        units->setGeometry(QRect(340, 270, 59, 16));
 
         retranslateUi(SBoundaryDialog);
         QObject::connect(buttonBox, SIGNAL(accepted()), SBoundaryDialog, SLOT(accept()));
@@ -134,6 +138,7 @@ public:
          << QApplication::translate("SBoundaryDialog", "fixed velocity", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SBoundaryDialog", "mass outflow", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SBoundaryDialog", "hydraulic grade", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SBoundaryDialog", "virtual weir", 0, QApplication::UnicodeUTF8)
         );
         label_2->setText(QApplication::translate("SBoundaryDialog", "Set Value", 0, QApplication::UnicodeUTF8));
         value->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
@@ -147,6 +152,7 @@ public:
         extentA2->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
         A2->setText(QApplication::translate("SBoundaryDialog", "A2", 0, QApplication::UnicodeUTF8));
         calculate->setText(QApplication::translate("SBoundaryDialog", "Calculate", 0, QApplication::UnicodeUTF8));
+        units->setText(QApplication::translate("SBoundaryDialog", "m/s", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

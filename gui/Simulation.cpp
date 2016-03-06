@@ -449,6 +449,7 @@ bool Simulation::addSpecialBoundary(int wall,
   if(type == "fixed velocity") n = 0;
   else if(type == "mass outflow") n = 1;
   else if(type == "hydraulic grade") n = 2;
+  else if(type == "virtual weir") n = 3;
 
   if(mesh_sb_create(solver->mesh, wall, n, value, turbulence)==1)
     return false;
@@ -472,6 +473,7 @@ void Simulation::editSpecialBoundary(QString type, long int extent_a_1, long int
   if(type == "fixed velocity") sb_item->type = fixed_velocity;
   else if(type == "mass outflow") sb_item->type = mass_outflow;
   else if(type == "hydraulic grade") sb_item->type = hgl;
+  else if(type == "virtual weir") sb_item->type = weir;
 
 }
 
@@ -504,6 +506,9 @@ bool Simulation::getNextSpecialBoundary(
     break;
   case 2:
     type = "hydraulic grade";
+    break;
+  case 3:
+    type = "virtual weir";
     break;
   }
 

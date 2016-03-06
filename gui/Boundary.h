@@ -55,6 +55,7 @@ public:
 private slots:
   void accept();
   void on_calculate_clicked();
+  void on_select_currentIndexChanged(QString str);
 
 private:
   void setLabels(int wall);

@@ -841,7 +841,8 @@ int mesh_fill(struct mesh_data *mesh, struct stl_data *stl) {
 
   struct point_data *stack = NULL, *p;
 
-  stack = stack_push(stack, mesh->inside[0]/mesh->delx, mesh->inside[1]/mesh->dely, mesh->inside[2]/mesh->delz);
+  stack = stack_push(stack, (mesh->inside[0]-mesh->origin[0])/mesh->delx, 
+    (mesh->inside[1]-mesh->origin[1])/mesh->dely, (mesh->inside[2]-mesh->origin[2])/mesh->delz);
 
   while((p = stack_pop(stack)) != NULL) {
     

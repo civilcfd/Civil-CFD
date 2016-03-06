@@ -1627,7 +1627,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1685,7 +1685,7 @@ public:
         const bool __sortingEnabled = MeshParameters->isSortingEnabled();
         MeshParameters->setSortingEnabled(false);
         QTreeWidgetItem *___qtreewidgetitem1 = MeshParameters->topLevelItem(0);
-        ___qtreewidgetitem1->setText(0, QApplication::translate("MainWindow", "Mesh Cell Dimensions", 0, QApplication::UnicodeUTF8));
+        ___qtreewidgetitem1->setText(0, QApplication::translate("MainWindow", "Mesh Cell Dimensions (m)", 0, QApplication::UnicodeUTF8));
         QTreeWidgetItem *___qtreewidgetitem2 = ___qtreewidgetitem1->child(0);
         ___qtreewidgetitem2->setText(0, QApplication::translate("MainWindow", "X", 0, QApplication::UnicodeUTF8));
         QTreeWidgetItem *___qtreewidgetitem3 = ___qtreewidgetitem1->child(1);
@@ -1701,7 +1701,7 @@ public:
         QTreeWidgetItem *___qtreewidgetitem8 = ___qtreewidgetitem5->child(2);
         ___qtreewidgetitem8->setText(0, QApplication::translate("MainWindow", "Z", 0, QApplication::UnicodeUTF8));
         QTreeWidgetItem *___qtreewidgetitem9 = MeshParameters->topLevelItem(2);
-        ___qtreewidgetitem9->setText(0, QApplication::translate("MainWindow", "Mesh Origin", 0, QApplication::UnicodeUTF8));
+        ___qtreewidgetitem9->setText(0, QApplication::translate("MainWindow", "Mesh Origin (m)", 0, QApplication::UnicodeUTF8));
         QTreeWidgetItem *___qtreewidgetitem10 = ___qtreewidgetitem9->child(0);
         ___qtreewidgetitem10->setText(0, QApplication::translate("MainWindow", "X", 0, QApplication::UnicodeUTF8));
         QTreeWidgetItem *___qtreewidgetitem11 = ___qtreewidgetitem9->child(1);

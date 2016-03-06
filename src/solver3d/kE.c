@@ -204,7 +204,7 @@ int kE_special_boundaries(struct solver_data *solver) {
         case hgl:
         case mass_outflow:
         case fixed_velocity:
-        case mass_inflow:
+        case weir:
           kE_boundary_fixed_k(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
