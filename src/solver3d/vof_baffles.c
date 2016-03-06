@@ -146,7 +146,7 @@ int baffle_k(struct solver_data *solver,
     return 0;
   }
   
-  if(solver->p_flag != 0) return 0;
+  /* if(solver->p_flag != 0) return 0; */
   
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
