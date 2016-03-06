@@ -136,7 +136,7 @@ int baffle_k(struct solver_data *solver,
                             double value, long int pos) {
 
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
-  double delp;
+  double delp, v_prime;
   double sgn = 1.0;
   
   baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
@@ -145,6 +145,8 @@ int baffle_k(struct solver_data *solver,
     printf("Headloss baffle with k-factor < 0.01.  Ignoring.\n");
     return 0;
   }
+  
+  if(solver->p_flag != 0) return 0;
   
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
@@ -155,22 +157,44 @@ int baffle_k(struct solver_data *solver,
           if(AE(i,j,k) < solver->emf) continue;
           delp = P(i+1,j,k) - P(i,j,k);
           sgn = delp * sgn / fabs(delp);
-          if(isnan(sgn)) U(i,j,k) = 0;
-          U(i,j,k) = -1.0 * sgn * sqrt((delp * 2) / (solver->rho * value));
+          if(isnan(sgn)) {
+            U(i,j,k) = 0;
+            continue;
+          }
+          U(i,j,k) = sgn * sqrt((delp * 2) / (solver->rho * value));
           break;
         case 1:
+          /* TODO: generalize */
           if(AN(i,j,k) < solver->emf) continue;
+          if(fabs(V(i,j,k)) < solver->emf) continue;
+          
           delp = P(i,j,k) - P(i,j+1,k);
           sgn = delp * sgn / fabs(delp);
-          if(isnan(sgn)) V(i,j,k) = 0;
-          V(i,j,k) = -1.0 * sgn * sqrt((delp * 2) / (solver->rho * value));
+          
+          if(isnan(sgn)) {
+            v_prime = 0;
+          } else {
+            v_prime = sgn * sqrt((fabs(delp) * 2) / (solver->rho * value));
+          }
+          
+          if(fabs(v_prime) > fabs(V(i,j,k))) continue; /*
+          if(fabs(V(i,j,k) - v_prime)/fabs(V(i,j,k)) > 0.1) V(i,j,k) = 0.9 * V(i,j,k); */
+          else V(i,j,k) = v_prime;
+          
+          if(isnan(V(i,j,k)) || isnan(v_prime)) {
+            printf("break\n");
+          }
+          
           break;
         case 2:
           if(AT(i,j,k) < solver->emf) continue;
           delp = P(i,j,k+1) - P(i,j,k);
           sgn = delp * sgn / fabs(delp);
-          if(isnan(sgn)) W(i,j,k) = 0;
-          W(i,j,k) = -1.0 * sgn * sqrt((delp * 2) / (solver->rho * value));
+          if(isnan(sgn)) {
+            W(i,j,k) = 0;
+            continue;
+          }
+          W(i,j,k) = sgn * sqrt((delp * 2) / (solver->rho * value));
           break;
         }          
       }
