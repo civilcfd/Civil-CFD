@@ -6,7 +6,7 @@
 #include <math.h>
 #include <sys/stat.h>
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 #include <io.h>
 #endif
 
@@ -28,13 +28,13 @@ int csv_read_U(struct mesh_data *mesh, double timestep)
 int csv_write_U(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
-  #ifndef __MINGW32__
+  #ifndef _WIN32
   mode_t process_mask = umask(0);
   #endif
   
   sprintf(filename, "%4.3lf", timestep);
 
-  #ifdef __MINGW32__  
+  #ifdef _WIN32  
   mkdir(filename);
   #else
   mkdir(filename, S_IRWXU | S_IRWXG | S_IRWXO);
@@ -51,13 +51,13 @@ int csv_write_U(struct mesh_data *mesh, double timestep)
 int csv_write_vorticity(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
-  #ifndef __MINGW32__
+  #ifndef _WIN32
   mode_t process_mask = umask(0);
   #endif
   
   sprintf(filename, "%4.3lf", timestep);
 
-  #ifdef __MINGW32__  
+  #ifdef _WIN32  
   mkdir(filename);
   #else
   mkdir(filename, S_IRWXU | S_IRWXG | S_IRWXO);
@@ -85,13 +85,13 @@ int csv_read_P(struct mesh_data *mesh, double timestep)
 int csv_write_P(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
-	#ifndef __MINGW32__
+	#ifndef _WIN32
   mode_t process_mask = umask(0);
 	#endif
 	
   sprintf(filename, "%4.3lf", timestep);
   
-	#ifdef __MINGW32__
+	#ifdef _WIN32
 	mkdir(filename);
 	#else
   mkdir(filename, S_IRWXU | S_IRWXG | S_IRWXO);
@@ -119,13 +119,13 @@ int csv_read_vof(struct mesh_data *mesh, double timestep)
 int csv_write_n_vof(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
-  #ifndef __MINGW32__
+  #ifndef _WIN32
 	mode_t process_mask = umask(0);
 	#endif
 	
   sprintf(filename, "%4.3lf", timestep);
   
-	#ifdef __MINGW32__
+	#ifdef _WIN32
 	mkdir(filename);
 	#else
   mkdir(filename, S_IRWXU | S_IRWXG | S_IRWXO);
@@ -142,13 +142,13 @@ int csv_write_n_vof(struct mesh_data *mesh, double timestep)
 int csv_write_vof(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
-  #ifndef __MINGW32__
+  #ifndef _WIN32
 	mode_t process_mask = umask(0);
 	#endif
 	
   sprintf(filename, "%4.3lf", timestep);
   
-	#ifdef __MINGW32__
+	#ifdef _WIN32
 	mkdir(filename);
 	#else
   mkdir(filename, S_IRWXU | S_IRWXG | S_IRWXO);

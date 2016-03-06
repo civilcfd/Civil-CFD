@@ -791,9 +791,14 @@ int mesh_free(struct mesh_data *mesh) {
   return(0);
 }
 
-
+#ifdef _WIN32
+long int mesh_index(struct mesh_data *mesh,
+	long int i, long int j, long int k)
+#else
 inline long int mesh_index(struct mesh_data *mesh, 
-                    long int i, long int j, long int k) {
+                    long int i, long int j, long int k) 
+#endif
+{
   /* return i+j*mesh->imax+k*mesh->imax*mesh->jmax; */
   return i + mesh->imax * (j + k * mesh->jmax);
 }
