@@ -14,7 +14,6 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QDialog>
-#include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
@@ -33,6 +32,10 @@ class Ui_Solver
 public:
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
+    QGridLayout *gridLayout_5;
+    QTabWidget *tabWidget_2;
+    QCustomPlot *plot;
+    QWidget *tab_14;
     QPushButton *Return;
     QLabel *status;
     QPlainTextEdit *output;
@@ -42,11 +45,6 @@ public:
     QSpacerItem *verticalSpacer_2;
     QProgressBar *progressBar;
     QPushButton *Stop;
-    QFrame *frame;
-    QTabWidget *tabWidget;
-    QWidget *tab_7;
-    QCustomPlot *plot;
-    QWidget *tab_8;
 
     void setupUi(QDialog *Solver)
     {
@@ -57,6 +55,24 @@ public:
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout_5 = new QGridLayout();
+        gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
+        tabWidget_2 = new QTabWidget(Solver);
+        tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
+        tabWidget_2->setMinimumSize(QSize(0, 300));
+        plot = new QCustomPlot();
+        plot->setObjectName(QString::fromUtf8("plot"));
+        tabWidget_2->addTab(plot, QString());
+        tab_14 = new QWidget();
+        tab_14->setObjectName(QString::fromUtf8("tab_14"));
+        tabWidget_2->addTab(tab_14, QString());
+        plot->raise();
+
+        gridLayout_5->addWidget(tabWidget_2, 0, 0, 1, 1);
+
+
+        gridLayout->addLayout(gridLayout_5, 6, 0, 1, 5);
+
         Return = new QPushButton(Solver);
         Return->setObjectName(QString::fromUtf8("Return"));
         Return->setEnabled(false);
@@ -126,34 +142,13 @@ public:
 
         gridLayout->addWidget(Stop, 3, 1, 1, 1);
 
-        frame = new QFrame(Solver);
-        frame->setObjectName(QString::fromUtf8("frame"));
-        frame->setMinimumSize(QSize(0, 300));
-        frame->setFrameShape(QFrame::NoFrame);
-        frame->setFrameShadow(QFrame::Raised);
-        tabWidget = new QTabWidget(frame);
-        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 601, 301));
-        tab_7 = new QWidget();
-        tab_7->setObjectName(QString::fromUtf8("tab_7"));
-        plot = new QCustomPlot(tab_7);
-        plot->setObjectName(QString::fromUtf8("plot"));
-        plot->setGeometry(QRect(10, 0, 575, 270));
-        plot->setMinimumSize(QSize(300, 200));
-        tabWidget->addTab(tab_7, QString());
-        tab_8 = new QWidget();
-        tab_8->setObjectName(QString::fromUtf8("tab_8"));
-        tabWidget->addTab(tab_8, QString());
-
-        gridLayout->addWidget(frame, 6, 0, 1, 5);
-
 
         gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
 
 
         retranslateUi(Solver);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget_2->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Solver);
@@ -162,11 +157,11 @@ public:
     void retranslateUi(QDialog *Solver)
     {
         Solver->setWindowTitle(QApplication::translate("Solver", "Run Simulation", 0, QApplication::UnicodeUTF8));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(plot), QApplication::translate("Solver", "Timestep Size", 0, QApplication::UnicodeUTF8));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_14), QApplication::translate("Solver", "Baffle Results", 0, QApplication::UnicodeUTF8));
         Return->setText(QApplication::translate("Solver", "Return", 0, QApplication::UnicodeUTF8));
         status->setText(QApplication::translate("Solver", "Status", 0, QApplication::UnicodeUTF8));
         Stop->setText(QApplication::translate("Solver", "Stop Solver", 0, QApplication::UnicodeUTF8));
-        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("Solver", "Timestep Size", 0, QApplication::UnicodeUTF8));
-        tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("Solver", "Baffle Results", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
