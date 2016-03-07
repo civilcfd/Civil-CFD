@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -99,7 +99,7 @@
             </property>
             <property name="icon">
              <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/process-stop.svg</normaloff>:/icons/resources/process-stop.svg</iconset>
+              <normaloff>:/icons/resources/edit-delete.svg</normaloff>:/icons/resources/edit-delete.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -123,7 +123,7 @@
             </property>
             <property name="icon">
              <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/edit-undo.svg</normaloff>:/icons/resources/edit-undo.svg</iconset>
+              <normaloff>:/icons/resources/edit-clear.svg</normaloff>:/icons/resources/edit-clear.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -156,7 +156,7 @@
             </property>
             <property name="icon">
              <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/format-justify-center.svg</normaloff>:/icons/resources/format-justify-center.svg</iconset>
+              <normaloff>:/icons/resources/edit-select-all.svg</normaloff>:/icons/resources/edit-select-all.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -358,7 +358,7 @@
           <item row="1" column="2">
            <widget class="QPlainTextEdit" name="Path">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="maximumSize">
              <size>
@@ -726,6 +726,10 @@
             <property name="text">
              <string>Calculate</string>
             </property>
+            <property name="icon">
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/accessories-calculator.svg</normaloff>:/icons/resources/accessories-calculator.svg</iconset>
+            </property>
            </widget>
           </item>
           <item row="1" column="11">
@@ -779,6 +783,10 @@
             <property name="text">
              <string>Earth Gravity</string>
             </property>
+            <property name="icon">
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/internet-web-browser.svg</normaloff>:/icons/resources/internet-web-browser.svg</iconset>
+            </property>
            </widget>
           </item>
           <item row="3" column="12">
@@ -786,12 +794,26 @@
             <property name="text">
              <string>Water at 20 C</string>
             </property>
+            <property name="icon">
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/water.png</normaloff>:/icons/resources/water.png</iconset>
+            </property>
            </widget>
           </item>
           <item row="9" column="12">
            <widget class="QPushButton" name="defaultLength">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Default</string>
+            </property>
+            <property name="icon">
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/view-refresh.svg</normaloff>:/icons/resources/view-refresh.svg</iconset>
             </property>
            </widget>
           </item>
@@ -1237,8 +1259,8 @@
              <string>Render</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../.designer/backup/icons/actions/media-playback-start.png</normaloff>../../.designer/backup/icons/actions/media-playback-start.png</iconset>
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/media-playback-start.svg</normaloff>:/icons/resources/media-playback-start.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -1276,8 +1298,8 @@
              <string>Open</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../.designer/backup/icons/actions/document-open.png</normaloff>../../.designer/backup/icons/actions/document-open.png</iconset>
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/document-open.svg</normaloff>:/icons/resources/document-open.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -1316,7 +1338,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>125</width>
+                <width>140</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1324,8 +1346,8 @@
                <string>Edit Boundary</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../.designer/backup/icons/actions/format-justify-fill.png</normaloff>../../.designer/backup/icons/actions/format-justify-fill.png</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/edit-find-replace.svg</normaloff>:/icons/resources/edit-find-replace.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1339,7 +1361,7 @@
              <widget class="QPushButton" name="AddSpecialBoundary">
               <property name="maximumSize">
                <size>
-                <width>180</width>
+                <width>190</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1347,8 +1369,8 @@
                <string>Add Special Boundary</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../.designer/backup/icons/actions/list-add.png</normaloff>../../.designer/backup/icons/actions/list-add.png</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1362,7 +1384,7 @@
              <widget class="QPushButton" name="RemoveSpecialBoundary">
               <property name="maximumSize">
                <size>
-                <width>190</width>
+                <width>220</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1370,8 +1392,8 @@
                <string>Remove Special Boundary</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../.designer/backup/icons/actions/list-remove.png</normaloff>../../.designer/backup/icons/actions/list-remove.png</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/edit-delete.svg</normaloff>:/icons/resources/edit-delete.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1743,7 +1765,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>125</width>
+                <width>140</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1751,8 +1773,8 @@
                <string>Edit Baffle</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../.designer/backup/icons/actions/format-justify-fill.png</normaloff>../../.designer/backup/icons/actions/format-justify-fill.png</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/edit-find-replace.svg</normaloff>:/icons/resources/edit-find-replace.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1766,7 +1788,7 @@
              <widget class="QPushButton" name="AddBaffle">
               <property name="maximumSize">
                <size>
-                <width>180</width>
+                <width>190</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1774,8 +1796,8 @@
                <string>Add Baffle</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../.designer/backup/icons/actions/list-add.png</normaloff>../../.designer/backup/icons/actions/list-add.png</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1789,7 +1811,7 @@
              <widget class="QPushButton" name="RemoveBaffle">
               <property name="maximumSize">
                <size>
-                <width>190</width>
+                <width>220</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -1797,8 +1819,8 @@
                <string>Remove Baffle</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>../../.designer/backup/icons/actions/list-remove.png</normaloff>../../.designer/backup/icons/actions/list-remove.png</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/edit-delete.svg</normaloff>:/icons/resources/edit-delete.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -2630,8 +2652,8 @@
              <string>Simulate</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../.designer/backup/icons/actions/media-playback-start.png</normaloff>../../.designer/backup/icons/actions/media-playback-start.png</iconset>
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/media-playback-start.svg</normaloff>:/icons/resources/media-playback-start.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2646,6 +2668,9 @@
        </layout>
       </widget>
       <widget class="QWidget" name="Visualize">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>Visualize</string>
        </attribute>
@@ -2670,7 +2695,7 @@
             <item alignment="Qt::AlignRight">
              <widget class="QLabel" name="label_47">
               <property name="text">
-               <string>Range:</string>
+               <string>Set Range:</string>
               </property>
              </widget>
             </item>
@@ -2728,7 +2753,11 @@
             <item>
              <widget class="QPushButton" name="updateRange">
               <property name="text">
-               <string>Update</string>
+               <string>Rescale</string>
+              </property>
+              <property name="icon">
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/view-fullscreen.svg</normaloff>:/icons/resources/view-fullscreen.svg</iconset>
               </property>
              </widget>
             </item>
@@ -3019,8 +3048,8 @@
              <string>Save Image</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>../../.designer/backup/icons/actions/document-save.png</normaloff>../../.designer/backup/icons/actions/document-save.png</iconset>
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/document-save.svg</normaloff>:/icons/resources/document-save.svg</iconset>
             </property>
            </widget>
           </item>

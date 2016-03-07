@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>resources/document-new.svg</file>
+        <file>resources/accessories-calculator.svg</file>
         <file>resources/address-book-new.svg</file>
         <file>resources/appointment-new.svg</file>
         <file>resources/go-previous.svg</file>
@@ -8,6 +8,7 @@
         <file>resources/go-bottom.svg</file>
         <file>resources/format-justify-center.svg</file>
         <file>resources/contact-new.svg</file>
+        <file>resources/document-new.svg</file>
         <file>resources/document-open.svg</file>
         <file>resources/document-print-preview.svg</file>
         <file>resources/document-print.svg</file>
@@ -18,9 +19,12 @@
         <file>resources/edit-clear.svg</file>
         <file>resources/edit-copy.svg</file>
         <file>resources/edit-cut.svg</file>
+        <file>resources/edit-delete.svg</file>
+        <file>resources/edit-find-replace.svg</file>
         <file>resources/edit-find.svg</file>
         <file>resources/edit-paste.svg</file>
         <file>resources/edit-redo.svg</file>
+        <file>resources/edit-select-all.svg</file>
         <file>resources/edit-undo.svg</file>
         <file>resources/system-log-out.svg</file>
         <file>resources/go-last.svg</file>
@@ -45,19 +49,29 @@
         <file>resources/go-up.svg</file>
         <file>resources/media-seek-forward.svg</file>
         <file>resources/media-seek-backward.svg</file>
+        <file>resources/media-skip-forward.svg</file>
         <file>resources/media-skip-backward.svg</file>
         <file>resources/media-playback-pause.svg</file>
         <file>resources/media-playback-start.svg</file>
-        <file>resources/media-skip-forward.svg</file>
         <file>resources/media-record.svg</file>
         <file>resources/media-playback-stop.svg</file>
         <file>resources/view-refresh.svg</file>
         <file>resources/process-stop.svg</file>
         <file>resources/help-contents.svg</file>
+        <file>resources/internet-web-browser.svg</file>
+        <file>resources/list-add.svg</file>
+        <file>resources/List-add.svg</file>
+        <file>resources/list-remove.svg</file>
+        <file>resources/mail-forward.svg</file>
+        <file>resources/mail-mark-junk.svg</file>
+        <file>resources/mail-reply-all.svg</file>
+        <file>resources/mail-reply-sender.svg</file>
+        <file>resources/mail-send-receive.svg</file>
         <file>resources/media-eject.svg</file>
         <file>resources/tab-new.svg</file>
         <file>resources/window-new.svg</file>
         <file>resources/system-shutdown.svg</file>
-        <file>resources/List-add.svg</file>
+        <file>resources/view-fullscreen.svg</file>
+        <file>resources/water.png</file>
     </qresource>
 </RCC>

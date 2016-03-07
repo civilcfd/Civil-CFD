@@ -142,7 +142,6 @@ int baffle_k(struct solver_data *solver,
   baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
   
   if(value < 0.01) {
-    printf("Headloss baffle with k-factor < 0.01.  Ignoring.\n");
     return 0;
   }
   
@@ -155,16 +154,19 @@ int baffle_k(struct solver_data *solver,
         switch(x) {
         case 0:
           if(AE(i,j,k) < solver->emf) continue;
-          delp = P(i+1,j,k) - P(i,j,k);
-          sgn = delp * sgn / fabs(delp);
-          if(isnan(sgn)) {
-            U(i,j,k) = 0;
-            continue;
-          }
-          U(i,j,k) = sgn * sqrt((delp * 2) / (solver->rho * value));
+          if(fabs(U(i,j,k)) < solver->emf) continue;
+          
+          delp = P(i,j,k) - P(i+1,j,k);
+          
+          if(delp < 0.0) sgn = -1.0;
+          v_prime = sgn * sqrt((fabs(delp) * 2) / (solver->rho * value));
+                    
+          if(v_prime * U(i,j,k) < solver->emf * -1.0) v_prime = 0; /* this shouldn't cause a direction change */
+          if(fabs(v_prime) > fabs(U(i,j,k)) && v_prime * U(i,j,k) > solver->emf) continue; /* and never speed up */
+          else U(i,j,k) = v_prime;
+
           break;
         case 1:
-          /* TODO: generalize */
           if(AN(i,j,k) < solver->emf) continue;
           if(fabs(V(i,j,k)) < solver->emf) continue;
           
@@ -175,23 +177,22 @@ int baffle_k(struct solver_data *solver,
                     
           if(v_prime * V(i,j,k) < solver->emf * -1.0) v_prime = 0; /* this shouldn't cause a direction change */
           if(fabs(v_prime) > fabs(V(i,j,k)) && v_prime * V(i,j,k) > solver->emf) continue; /* and never speed up */
-          /* if(fabs(V(i,j,k) - v_prime)/fabs(V(i,j,k)) > 0.1) V(i,j,k) = 0.9 * V(i,j,k); */
           else V(i,j,k) = v_prime;
-          
-          if(isnan(V(i,j,k)) || isnan(v_prime)) {
-            printf("break\n");
-          }
-          
+
           break;
         case 2:
           if(AT(i,j,k) < solver->emf) continue;
-          delp = P(i,j,k+1) - P(i,j,k);
-          sgn = delp * sgn / fabs(delp);
-          if(isnan(sgn)) {
-            W(i,j,k) = 0;
-            continue;
-          }
-          W(i,j,k) = sgn * sqrt((delp * 2) / (solver->rho * value));
+          if(fabs(W(i,j,k)) < solver->emf) continue;
+          
+          delp = P(i,j,k) - P(i,j,k+1);
+          
+          if(delp < 0.0) sgn = -1.0;
+          v_prime = sgn * sqrt((fabs(delp) * 2) / (solver->rho * value));
+                    
+          if(v_prime * W(i,j,k) < solver->emf * -1.0) v_prime = 0; /* this shouldn't cause a direction change */
+          if(fabs(v_prime) > fabs(W(i,j,k)) && v_prime * W(i,j,k) > solver->emf) continue; /* and never speed up */
+          else W(i,j,k) = v_prime;
+
           break;
         }          
       }

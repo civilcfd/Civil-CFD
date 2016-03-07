@@ -79,8 +79,8 @@
         <string>Stop Solver</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>icons/actions/process-stop.png</normaloff>icons/actions/process-stop.png</iconset>
+        <iconset resource="gui.qrc">
+         <normaloff>:/icons/resources/process-stop.svg</normaloff>:/icons/resources/process-stop.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -130,8 +130,8 @@
         <string>Return</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>icons/actions/system-log-out.png</normaloff>icons/actions/system-log-out.png</iconset>
+        <iconset resource="gui.qrc">
+         <normaloff>:/icons/resources/system-log-out.svg</normaloff>:/icons/resources/system-log-out.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -180,6 +180,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

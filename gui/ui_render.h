@@ -59,7 +59,7 @@ public:
         Return->setMinimumSize(QSize(150, 0));
         Return->setMaximumSize(QSize(150, 16777215));
         QIcon icon;
-        icon.addFile(QString::fromUtf8("icons/actions/system-log-out.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/icons/resources/system-log-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
         Return->setIcon(icon);
         Return->setIconSize(QSize(22, 22));
 
@@ -74,7 +74,7 @@ public:
         Stop->setMinimumSize(QSize(150, 0));
         Stop->setMaximumSize(QSize(150, 16777215));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8("icons/actions/process-stop.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/icons/resources/process-stop.svg"), QSize(), QIcon::Normal, QIcon::Off);
         Stop->setIcon(icon1);
         Stop->setIconSize(QSize(22, 22));
 

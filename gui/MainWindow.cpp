@@ -260,6 +260,7 @@ void MainWindow::enableAll() {
   ui.BaffleTree->expandAll();
   ui.InitialConditions->setEnabled(true);
   ui.Simulate->setEnabled(true);
+  ui.Visualize->setEnabled(true);
 }
 
 void MainWindow::disableAll() {
@@ -327,7 +328,7 @@ void MainWindow::update() {
   ui.ElementNumber->setPlainText(ElementNumber);
  
   QString OutputSize;
-  OutputSize = QString::number((sim.getImax().toLong() * sim.getJmax().toLong() * sim.getKmax().toLong()) * 8 / 1000) + " kB per timestep";
+  OutputSize = QString::number((sim.getImax().toLong() * sim.getJmax().toLong() * sim.getKmax().toLong()) * 0.125) + " kB per saved timestep";
   ui.OutputSize->setPlainText(OutputSize);
   
   ui.ResultList->clear();

@@ -325,13 +325,14 @@ int boundary_weir(struct solver_data *solver,
 #define emf solver->emf  
 
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, l, m, n;
-  double flow, area, height, ave_height, count, head; 
+  double flow, area, height, ave_height, count, head, sgn; 
   double coplanar[3] = {0, 0, 0};
   
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
 
   flow = 0;
   area = 0;
+  sgn  = 1.0;
   
   if(x>3) return 0;
   
@@ -354,6 +355,17 @@ int boundary_weir(struct solver_data *solver,
     coplanar[1] = -1;
     break;
   }
+  
+  
+  switch(x) {
+  case 0: /* west */
+  case 2: /* south */
+  case 4: /* bottom */
+    sgn *= -1.0;
+    break;
+  }
+  
+  flow = calc_flow(solver, x, sgn, imin, imax, jmin, jmax, kmin, kmax, &area);
   
   count = 0;
   ave_height = 0;
@@ -392,7 +404,13 @@ int boundary_weir(struct solver_data *solver,
     boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, 0, 0);
   }
   else {
-    head = solver->vof_height - ave_height;
+    /* COMMENTED FOR TESTING - THIS METHOD BELOW WORKED BETTER PREVIOUSLY */
+    /*
+    head = pow(flow / (1.6 * value),0.667);
+    boundary_hgl(solver, x, min_1, min_2, max_1, max_2, head + solver->vof_height, 0); */
+    
+    
+    head = ave_height - solver->vof_height;
     flow = 1.6 * value * pow(head, 1.5);
     boundary_mass_outflow(solver, x, min_1, min_2, max_1, max_2, flow, 0);    
   }
@@ -446,47 +464,70 @@ int boundary_mass_outflow(struct solver_data *solver,
         case 0:
           if(UN(i+1,j,k) * value > 0) U(i,j,k) = UN(i+1,j,k) / flow_factor;
           else U(i,j,k) = 0.1 * value/area;
-          V(i,j,k) = 0;
-          W(i,j,k) = 0;
+          V(i,j,k) = V(i+1,j,k);
+          W(i,j,k) = W(i+1,j,k);
+          /* V(i,j,k) = 0;
+          W(i,j,k) = 0; */
           break;
         case 1:
           if(UN(i-2,j,k) * value > 0) U(i,j,k) = UN(i-2,j,k) / flow_factor;
           else U(i,j,k) = 0.1 * value/area;
           U(i-1,j,k) = U(i,j,k);
-          V(i,j,k) = 0;
+          
+          V(i,j,k) = V(i-2,j,k);
+          V(i-1,j,k) = V(i,j,k);
+          W(i,j,k) = W(i-2,j,k);
+          W(i-1,j,k) = W(i,j,k);
+          /* V(i,j,k) = 0;
           V(i-1,j,k) = 0;
           W(i,j,k) = 0;
-          W(i-1,j,k) = 0;
+          W(i-1,j,k) = 0; */
           break;
         case 2:
           if(VN(i,j+1,k) * value > 0) V(i,j,k) = VN(i,j+1,k) / flow_factor;
           else V(i,j,k) = 0.1 * value/area;
-          U(i,j,k) = 0;
-          W(i,j,k) = 0;
+          
+          U(i,j,k) = U(i,j+1,k);
+          W(i,j,k) = W(i,j+1,k);
+          /* U(i,j,k) = 0;
+          W(i,j,k) = 0; */
           break;
         case 3:
           if(VN(i,j-2,k) * value > 0) V(i,j,k) = VN(i,j-2,k) / flow_factor;
           else V(i,j,k) = 0.1 * value/area;
           V(i,j-1,k) = V(i,j,k);
-          U(i,j,k) = 0;
+          
+          U(i,j,k) = U(i,j-2,k);
+          U(i,j-1,k) = U(i,j,k);
+          W(i,j,k) = W(i,j-2,k);
+          W(i,j-1,k) = W(i,j,k);
+          /* U(i,j,k) = 0;
           U(i,j-1,k) = 0;
           W(i,j,k) = 0;
-          W(i,j-1,k) = 0;
+          W(i,j-1,k) = 0; */
           break;
         case 4:
           if(WN(i,j,k+1) * value > 0) W(i,j,k) = WN(i,j,k+1) / flow_factor;
           else W(i,j,k) = 0.1 * value/area;
-          U(i,j,k) = 0;
-          V(i,j,k) = 0;
+          
+          U(i,j,k) = U(i,j,k+1);
+          V(i,j,k) = V(i,j,k+1);
+          /* U(i,j,k) = 0;
+          V(i,j,k) = 0; */
           break;
         case 5:
           if(WN(i,j,k-2) * value > 0) W(i,j,k) = WN(i,j,k-2) / flow_factor;
           else W(i,j,k) = 0.1 * value/area;
           W(i,j,k-1) = W(i,j,k);
-          U(i,j,k) = 0;
+          
+          U(i,j,k) = U(i,j,k-2);
+          U(i,j,k-1) = U(i,j,k);
+          V(i,j,k) = V(i,j,k-2);
+          V(i,j,k-1) = V(i,j,k);
+          /* U(i,j,k) = 0;
           U(i,j,k-1) = 0;
           V(i,j,k) = 0;
-          V(i,j,k-1) = 0;
+          V(i,j,k-1) = 0; */
           break;
         }        
       }
