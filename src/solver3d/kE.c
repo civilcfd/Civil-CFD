@@ -470,8 +470,12 @@ int kE_boundaries(struct solver_data *solver) {
   return 0;
 }
 
-
-inline double log_law(double u, double d, double mu, double rho, double rough) {
+#ifdef _WIN32
+double log_law(double u, double d, double mu, double rho, double rough)
+#else
+inline double log_law(double u, double d, double mu, double rho, double rough) 
+#endif
+{
 
   int iter = 0;
   double u_t, u_t_n, res, delB, y_plus, hs_plus;

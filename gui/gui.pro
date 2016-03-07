@@ -16,10 +16,23 @@ QMAKE_CXX = g++
 QMAKE_LINK = g++
 QMAKE_LINK_SHLIB = g++
 }
+win32 {
+QMAKE_CXX = cl.exe
+QMAKE_LINK = link.exe
+QMAKE_LINK_SHLIB = link.exe
+
+}
 INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10
+!win32 {
 LIBS += -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering
 CONFIG += debug
-
+}
+win32 {
+INCLUDEPATH += "C:\qt-everywhere-opensource-src-4.8.7\lib" "C:\Program Files (x86)\VTK\include\vtk-5.10"
+DEPENDPATH += ../bin "C:\Program Files (x86)\VTK\lib\vtk-5.10" "C:\qhull-2015.2\lib" "C:\qt-everywhere-opensource-src-4.8.7\lib"
+LIBS += ../bin/libsolver3d.lib ../bin/libmesh3d.lib "C:\qhull-2015.2\lib\qhullstatic.lib"
+CONFIG += release
+}
 # Input
 HEADERS += MainWindow.h Simulation.h MeshDisplay.h GeometryDisplay.h Render.h RenderDisplay.h Boundary.h BoundaryDisplay.h SolverDialog.h VisualizeDisplay.h Baffle.h
 FORMS += civlcfd.ui render.ui boundary.ui sboundary.ui solver.ui baffle.ui

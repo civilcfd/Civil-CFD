@@ -243,7 +243,7 @@ char *trimwhitespace(char *str)
   return str;
 }
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 char* strtok_r(
     char *str, 
     const char *delim, 

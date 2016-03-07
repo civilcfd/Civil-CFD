@@ -19,7 +19,7 @@ char *trimwhitespace(char *str);
 
 int read_args(char *text, int nargs, char (*args)[256]);
 
-#ifdef __MINGW32__
+#ifdef _WIN32
 char* strtok_r(
     char *str, 
     const char *delim, 
