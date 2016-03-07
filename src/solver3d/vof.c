@@ -1123,16 +1123,18 @@ int vof_loop(struct solver_data *solver) {
 
 int vof_output(struct solver_data *solver) {
   if(solver->iter >= solver->niter) {
-    printf("timestep: %lf (delt %lf) pressure did not converge\n", solver->t, solver->delt);
+    printf("timestep: %lf | delt: %lf | pressure did not converge\n", solver->t, solver->delt);
   }
   else {
-    printf("timestep: %lf (delt %lf) convergence in %ld iterations. epsi %lf\n", solver->t, solver->delt, solver->iter, solver->epsi);
+    printf("timestep: %lf | delt %lf | convergence in %ld iterations. epsi %lf\n", solver->t, solver->delt, solver->iter, solver->epsi);
   }
   printf("max u, v, w: %lf, %lf, %lf\n",solver->umax,solver->vmax,solver->wmax);  
   
   printf("max nu: %lf\n",solver->nu_max);
   
   vof_baffles_output(solver);
+  
+  printf("\n");
   
   return 0;
 }

@@ -5,6 +5,7 @@
  */
 
 #include "SolverDialog.h"
+#include "qcustomplot.h"
 
 SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   QString cmd;
@@ -46,7 +47,22 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
     if(t != "") cmd = cmd + " " + t;
     process->start(cmd);
   }
-
+  
+   
+  ui.plot->addGraph();
+  ui.plot->graph(0)->setPen(QPen(Qt::blue));
+  ui.plot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
+  ui.plot->xAxis->setRange(0,1);
+  ui.plot->xAxis->setLabel("Timestep (s)");
+  ui.plot->yAxis->setRange(0,0.5);
+  ui.plot->yAxis->setLabel("Timestep size (s)");
+  connect(ui.plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui.plot->xAxis2, SLOT(setRange(QCPRange)));
+  connect(ui.plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui.plot->yAxis2, SLOT(setRange(QCPRange)));
+/*
+  ui.plot->plotLayout()->insertRow(0);
+  ui.plot->plotLayout()->addElement(0, 0, new QCPPlotTitle(ui.plot, "Timestep Size")); */
+  
+  maxDelt = 0;
 }
 
 void SolverDialog::on_Return_clicked() {
@@ -63,19 +79,26 @@ void SolverDialog::readyReadStandardOutput() {
   QString str = process->readAllStandardOutput(); 
   ui.output->appendPlainText(str);
 
-  if(str.contains("timestep")) {
-    int progressVal = 0;
+  if(str.contains("timestep") || str.contains("delt")) {
 
     QStringList list = str.split(" ");
     for(int i=0; i < list.count()-1; i++) {
       if(list[i].contains("timestep")) {
-        progressVal = list[i+1].toDouble() * 100;
-        break;
+        progressVal = list[i+1].toDouble();
+      }
+      
+      if(list[i].contains("delt")) {
+        delt = list[i+1].toDouble();
+        if(delt > maxDelt) maxDelt = delt;
+        ui.plot->graph(0)->addData(progressVal, delt);
+        ui.plot->xAxis->setRange(0, progressVal);
+        ui.plot->yAxis->setRange(0, maxDelt);
+        ui.plot->replot();
       }
     }
 
     if(progressVal > 0) {
-      progressVal = progressVal / stopT;
+      progressVal = progressVal * 100 / stopT;
       ui.progressBar->setValue(progressVal);
     }
   }

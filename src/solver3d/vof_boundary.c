@@ -404,15 +404,14 @@ int boundary_weir(struct solver_data *solver,
     boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, 0, 0);
   }
   else {
-    /* COMMENTED FOR TESTING - THIS METHOD BELOW WORKED BETTER PREVIOUSLY */
-    /*
+
     head = pow(flow / (1.6 * value),0.667);
-    boundary_hgl(solver, x, min_1, min_2, max_1, max_2, head + solver->vof_height, 0); */
+    boundary_hgl(solver, x, min_1, min_2, max_1, max_2, head + solver->vof_height, 0); 
     
-    
+    /*
     head = ave_height - solver->vof_height;
     flow = 1.6 * value * pow(head, 1.5);
-    boundary_mass_outflow(solver, x, min_1, min_2, max_1, max_2, flow, 0);    
+    boundary_mass_outflow(solver, x, min_1, min_2, max_1, max_2, flow, 0);    */
   }
 
   return 0;

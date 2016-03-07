@@ -782,7 +782,7 @@ int Simulation::getTrackNext() {
 }
 
 QString Simulation::getTrackT() {
-  return QString::number(track_t());
+  return QString::number(track_t(),'f',3);
 }
 
 void Simulation::trackRewind() {
@@ -836,7 +836,6 @@ bool Simulation::deleteTrack(QString t) {
 	
 	if(track_delete(n)) {
 		track_write();
-		qDebug() << getPath() + "/" + t;
 		removeDir(getPath() + "/" + t);
 				
 		QDir dir(getPath() + "/vtk");

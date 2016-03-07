@@ -28,7 +28,7 @@ int vof_baffles_output(struct solver_data *solver) {
     for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
         switch(baffle->type) {
         case flow:
-          printf("Flow baffle %d, axis %d position %ld, extent %ld %ld to %ld %ld: %.2lf L/s\n", \
+          printf("Flow baffle %d  axis %d position %ld  extent %ld %ld to %ld %ld: %.2lf L/s\n", \
                  count, x, baffle->pos, baffle->extent_a[0], baffle->extent_a[1], \
                  baffle->extent_b[0], baffle->extent_b[1], baffle->value * 1000);
           count++;

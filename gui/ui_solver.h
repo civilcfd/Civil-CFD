@@ -14,6 +14,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QDialog>
+#include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
@@ -21,6 +22,9 @@
 #include <QtGui/QProgressBar>
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
+#include <QtGui/QTabWidget>
+#include <QtGui/QWidget>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -29,74 +33,43 @@ class Ui_Solver
 public:
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
-    QProgressBar *progressBar;
-    QSpacerItem *horizontalSpacer_2;
-    QPlainTextEdit *output;
-    QSpacerItem *verticalSpacer;
-    QPushButton *Stop;
-    QSpacerItem *horizontalSpacer;
     QPushButton *Return;
     QLabel *status;
+    QPlainTextEdit *output;
+    QSpacerItem *horizontalSpacer_2;
+    QSpacerItem *verticalSpacer;
+    QSpacerItem *horizontalSpacer;
     QSpacerItem *verticalSpacer_2;
+    QProgressBar *progressBar;
+    QPushButton *Stop;
+    QFrame *frame;
+    QTabWidget *tabWidget;
+    QWidget *tab_7;
+    QCustomPlot *plot;
+    QWidget *tab_8;
 
     void setupUi(QDialog *Solver)
     {
         if (Solver->objectName().isEmpty())
             Solver->setObjectName(QString::fromUtf8("Solver"));
-        Solver->resize(650, 500);
+        Solver->resize(627, 715);
         gridLayout_2 = new QGridLayout(Solver);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        progressBar = new QProgressBar(Solver);
-        progressBar->setObjectName(QString::fromUtf8("progressBar"));
-        progressBar->setValue(0);
-
-        gridLayout->addWidget(progressBar, 1, 0, 1, 5);
-
-        horizontalSpacer_2 = new QSpacerItem(5, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_2, 3, 4, 1, 1);
-
-        output = new QPlainTextEdit(Solver);
-        output->setObjectName(QString::fromUtf8("output"));
-
-        gridLayout->addWidget(output, 6, 0, 1, 5);
-
-        verticalSpacer = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout->addItem(verticalSpacer, 5, 2, 1, 1);
-
-        Stop = new QPushButton(Solver);
-        Stop->setObjectName(QString::fromUtf8("Stop"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(Stop->sizePolicy().hasHeightForWidth());
-        Stop->setSizePolicy(sizePolicy);
-        Stop->setMinimumSize(QSize(150, 0));
-        Stop->setMaximumSize(QSize(150, 16777215));
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icons/resources/process-stop.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        Stop->setIcon(icon);
-        Stop->setIconSize(QSize(24, 24));
-
-        gridLayout->addWidget(Stop, 3, 1, 1, 1);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer, 3, 0, 1, 1);
-
         Return = new QPushButton(Solver);
         Return->setObjectName(QString::fromUtf8("Return"));
         Return->setEnabled(false);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(Return->sizePolicy().hasHeightForWidth());
         Return->setSizePolicy(sizePolicy);
         Return->setMinimumSize(QSize(150, 0));
         Return->setMaximumSize(QSize(150, 16777215));
-        QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/icons/resources/system-log-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        Return->setIcon(icon1);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/icons/resources/system-log-out.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        Return->setIcon(icon);
         Return->setIconSize(QSize(24, 24));
 
         gridLayout->addWidget(Return, 3, 3, 1, 1);
@@ -112,9 +85,67 @@ public:
 
         gridLayout->addWidget(status, 0, 1, 1, 3, Qt::AlignHCenter);
 
+        output = new QPlainTextEdit(Solver);
+        output->setObjectName(QString::fromUtf8("output"));
+        output->setMinimumSize(QSize(0, 250));
+
+        gridLayout->addWidget(output, 7, 0, 1, 5);
+
+        horizontalSpacer_2 = new QSpacerItem(5, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_2, 3, 4, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout->addItem(verticalSpacer, 5, 2, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer, 3, 0, 1, 1);
+
         verticalSpacer_2 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         gridLayout->addItem(verticalSpacer_2, 2, 1, 1, 1);
+
+        progressBar = new QProgressBar(Solver);
+        progressBar->setObjectName(QString::fromUtf8("progressBar"));
+        progressBar->setValue(0);
+
+        gridLayout->addWidget(progressBar, 1, 0, 1, 5);
+
+        Stop = new QPushButton(Solver);
+        Stop->setObjectName(QString::fromUtf8("Stop"));
+        sizePolicy.setHeightForWidth(Stop->sizePolicy().hasHeightForWidth());
+        Stop->setSizePolicy(sizePolicy);
+        Stop->setMinimumSize(QSize(150, 0));
+        Stop->setMaximumSize(QSize(150, 16777215));
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/icons/resources/process-stop.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        Stop->setIcon(icon1);
+        Stop->setIconSize(QSize(24, 24));
+
+        gridLayout->addWidget(Stop, 3, 1, 1, 1);
+
+        frame = new QFrame(Solver);
+        frame->setObjectName(QString::fromUtf8("frame"));
+        frame->setMinimumSize(QSize(0, 300));
+        frame->setFrameShape(QFrame::NoFrame);
+        frame->setFrameShadow(QFrame::Raised);
+        tabWidget = new QTabWidget(frame);
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+        tabWidget->setGeometry(QRect(0, 0, 601, 301));
+        tab_7 = new QWidget();
+        tab_7->setObjectName(QString::fromUtf8("tab_7"));
+        plot = new QCustomPlot(tab_7);
+        plot->setObjectName(QString::fromUtf8("plot"));
+        plot->setGeometry(QRect(10, 0, 575, 270));
+        plot->setMinimumSize(QSize(300, 200));
+        tabWidget->addTab(tab_7, QString());
+        tab_8 = new QWidget();
+        tab_8->setObjectName(QString::fromUtf8("tab_8"));
+        tabWidget->addTab(tab_8, QString());
+
+        gridLayout->addWidget(frame, 6, 0, 1, 5);
 
 
         gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
@@ -122,15 +153,20 @@ public:
 
         retranslateUi(Solver);
 
+        tabWidget->setCurrentIndex(0);
+
+
         QMetaObject::connectSlotsByName(Solver);
     } // setupUi
 
     void retranslateUi(QDialog *Solver)
     {
         Solver->setWindowTitle(QApplication::translate("Solver", "Run Simulation", 0, QApplication::UnicodeUTF8));
-        Stop->setText(QApplication::translate("Solver", "Stop Solver", 0, QApplication::UnicodeUTF8));
         Return->setText(QApplication::translate("Solver", "Return", 0, QApplication::UnicodeUTF8));
         status->setText(QApplication::translate("Solver", "Status", 0, QApplication::UnicodeUTF8));
+        Stop->setText(QApplication::translate("Solver", "Stop Solver", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("Solver", "Timestep Size", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("Solver", "Baffle Results", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

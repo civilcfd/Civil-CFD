@@ -29,6 +29,7 @@ private slots:
   void readyReadStandardOutput();
   void on_Return_clicked();
   void on_Stop_clicked();
+  
 
 private:
   Ui::Solver ui;
@@ -37,6 +38,11 @@ private:
 
   bool stopped;
   double stopT;
+  
+  double delt;
+  double maxDelt;
+  double progressVal;
+  double baffle[32];
 };
 
 
