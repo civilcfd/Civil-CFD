@@ -827,9 +827,9 @@ int kE_loop_explicit(struct solver_data *solver) {
                        (dvdz + dwdy) * (AT(i,j,k) * dvdz + AN(i,j,k) * dwdy) );
 
         delk = ( -1.0 / FV(i,j,k)) * 
-                ( ((U(i,j,k) + U(i-1,j,k)) / 2) * AEdkdx + 
-                  ((V(i,j,k) + V(i,j-1,k)) / 2) * ANdkdy + 
-                  ((W(i,j,k) + W(i,j,k-1)) / 2) * ATdkdz ) +
+                ( fabs((U(i,j,k) + U(i-1,j,k)) / 2) * AEdkdx + /* TESTING FABS 03/07/16 */
+                  fabs((V(i,j,k) + V(i,j-1,k)) / 2) * ANdkdy + 
+                  fabs((W(i,j,k) + W(i,j,k-1)) / 2) * ATdkdz ) +
                 Production + Diffusion_k - E_N(i,j,k);
 
 /* E central difference *
@@ -875,9 +875,9 @@ int kE_loop_explicit(struct solver_data *solver) {
         Diffusion_E *= nu_eff * (1.0 / FV(i,j,k));
                       
         delE = ( -1.0 / FV(i,j,k)) *
-                ( ((U(i,j,k) + U(i-1,j,k)) / 2) * AEdEdx + 
-                  ((V(i,j,k) + V(i,j-1,k)) / 2) * ANdEdy + 
-                  ((W(i,j,k) + W(i,j,k-1)) / 2) * ATdEdz ) +
+                ( fabs((U(i,j,k) + U(i-1,j,k)) / 2) * AEdEdx +  /* TESTING FABS 03//07/16 */
+                  fabs((V(i,j,k) + V(i,j-1,k)) / 2) * ANdEdy + 
+                  fabs((W(i,j,k) + W(i,j,k-1)) / 2) * ATdEdz ) + 
                ( E_N(i,j,k) / k_N(i,j,k) ) * 
                   ( kE.C1E * Production - kE.C2E * E_N(i,j,k)) +
                Diffusion_E;
