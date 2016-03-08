@@ -572,6 +572,8 @@ bool Simulation::addBaffle(int wall,
   if(type == "flow measurement") n = 0;
   else if(type == "barrier") n = 1;
   else if(type == "headloss") n = 2;
+  else if(type == "swirl angle") n = 3;
+  else if(type == "velocity deviation") n = 3;
 
   if(mesh_baffle_create(solver->mesh, wall, n, value, pos)==1)
     return false;
@@ -595,6 +597,8 @@ void Simulation::editBaffle(QString type, long int extent_a_1, long int extent_a
   if(type == "flow measurement") baffle->type = flow;
   else if(type == "barrier") baffle->type = barrier;
   else if(type == "headloss") baffle->type = k;
+  else if(type == "swirl angle") baffle->type = swirl_angle;
+  else if(type == "velocity deviation") baffle->type = v_deviation;
 
 }
 
@@ -627,6 +631,12 @@ bool Simulation::getNextBaffle(
     break;
   case 2:
     type = "headloss";
+    break;
+  case 3:
+    type = "swirl angle";
+    break;
+  case 4:
+    type = "velocity deviation";
     break;
   }
 
