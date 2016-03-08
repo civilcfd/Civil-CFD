@@ -28,5 +28,11 @@ int baffle_setup(struct solver_data *solver, int x, long int pos,
                            double min_1, double min_2, double max_1, double max_2);
 
                            
-
+int baffle_swirl(struct solver_data *solver, 
+                            int x, double min_1, double min_2, double max_1, double max_2, 
+                            double *value, long int pos);
+                            
+int baffle_velocity_dev(struct solver_data *solver, 
+                            int x, double min_1, double min_2, double max_1, double max_2, 
+                            double *value, long int pos);                          
 #endif
