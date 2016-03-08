@@ -19,6 +19,10 @@
 
 #include "vof_macros.h"
 
+#ifdef _WIN32
+#define M_PI 3.14
+#endif
+
 int vof_baffles_output(struct solver_data *solver) {
   struct baffle_data *baffle;
   int x;
