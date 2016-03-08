@@ -33,19 +33,19 @@ int vof_baffles_output(struct solver_data *solver) {
     for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
         switch(baffle->type) {
         case flow:
-          printf("Flow baffle %d - %.2lf L/s | axis %d position %ld  extent %ld %ld to %ld %ld\n", \
+          printf("Flow baffle %d : %.2lf L/s | axis %d position %ld  extent %ld %ld to %ld %ld\n", \
                  flow_count, baffle->value * 1000, x, baffle->pos, baffle->extent_a[0], baffle->extent_a[1], \
                  baffle->extent_b[0], baffle->extent_b[1]);
           flow_count++;
         break;
         case swirl_angle:
-          printf("Swirl angle baffle %d - %.2lf degrees | axis %d position %ld  extent %ld %ld to %ld %ld\n", \
+          printf("Swirl angle baffle %d : %.2lf degrees | axis %d position %ld  extent %ld %ld to %ld %ld\n", \
                  swirl_count, baffle->value, x, baffle->pos, baffle->extent_a[0], baffle->extent_a[1], \
                  baffle->extent_b[0], baffle->extent_b[1]);
           swirl_count++;
         break;
         case v_deviation:
-          printf("Velocity deviation baffle %d - %.2lf %% | axis %d position %ld  extent %ld %ld to %ld %ld\n", \
+          printf("Velocity deviation baffle %d : %.2lf %% | axis %d position %ld  extent %ld %ld to %ld %ld\n", \
                  swirl_count, baffle->value * 100, x, baffle->pos, baffle->extent_a[0], baffle->extent_a[1], \
                  baffle->extent_b[0], baffle->extent_b[1]);
           swirl_count++;

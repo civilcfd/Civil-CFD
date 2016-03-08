@@ -34,9 +34,9 @@
            <string>Timestep Size</string>
           </attribute>
          </widget>
-         <widget class="QWidget" name="tab_14">
+         <widget class="QCustomPlot" name="flow">
           <attribute name="title">
-           <string>Baffle Results</string>
+           <string>Flow Measurement</string>
           </attribute>
           <zorder>plot</zorder>
          </widget>

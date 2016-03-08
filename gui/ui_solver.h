@@ -22,7 +22,6 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QTabWidget>
-#include <QtGui/QWidget>
 #include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
@@ -35,7 +34,7 @@ public:
     QGridLayout *gridLayout_5;
     QTabWidget *tabWidget_2;
     QCustomPlot *plot;
-    QWidget *tab_14;
+    QCustomPlot *flow;
     QPushButton *Return;
     QLabel *status;
     QPlainTextEdit *output;
@@ -63,9 +62,9 @@ public:
         plot = new QCustomPlot();
         plot->setObjectName(QString::fromUtf8("plot"));
         tabWidget_2->addTab(plot, QString());
-        tab_14 = new QWidget();
-        tab_14->setObjectName(QString::fromUtf8("tab_14"));
-        tabWidget_2->addTab(tab_14, QString());
+        flow = new QCustomPlot();
+        flow->setObjectName(QString::fromUtf8("flow"));
+        tabWidget_2->addTab(flow, QString());
         plot->raise();
 
         gridLayout_5->addWidget(tabWidget_2, 0, 0, 1, 1);
@@ -158,7 +157,7 @@ public:
     {
         Solver->setWindowTitle(QApplication::translate("Solver", "Run Simulation", 0, QApplication::UnicodeUTF8));
         tabWidget_2->setTabText(tabWidget_2->indexOf(plot), QApplication::translate("Solver", "Timestep Size", 0, QApplication::UnicodeUTF8));
-        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_14), QApplication::translate("Solver", "Baffle Results", 0, QApplication::UnicodeUTF8));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(flow), QApplication::translate("Solver", "Flow Measurement", 0, QApplication::UnicodeUTF8));
         Return->setText(QApplication::translate("Solver", "Return", 0, QApplication::UnicodeUTF8));
         status->setText(QApplication::translate("Solver", "Status", 0, QApplication::UnicodeUTF8));
         Stop->setText(QApplication::translate("Solver", "Stop Solver", 0, QApplication::UnicodeUTF8));

@@ -39,6 +39,11 @@ private:
   bool stopped;
   double stopT;
   
+  double flow;
+  double maxFlow;
+  double minFlow;
+  int nFlow;
+  
   double delt;
   double maxDelt;
   double progressVal;

@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   solver->init(solver);
   solver->turbulence_init(solver);
   
-  mesh_load_csv(solver->mesh, 0); 
+  if(mesh_load_csv(solver->mesh, 0) == 1) return 1;
   solver_initial_values(solver);
   solver->petacal(solver);
 

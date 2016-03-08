@@ -19,8 +19,8 @@ int mesh_load_csv(struct mesh_data *mesh, int timestep) {
   mesh_set_array(mesh, "an", 0.0, -1, 0, 0, 0, 0, 0);
   mesh_set_array(mesh, "at", 0.0, -1, 0, 0, 0, 0, 0);
 
-  if(csv_read_af(mesh, timestep) == 1) return 1;
-  if(csv_read_fv(mesh, timestep) == 1) return 1;
+  if(csv_read_af(mesh, timestep) == -1) return 1;
+  if(csv_read_fv(mesh, timestep) == -1) return 1;
 
   return 0;
 }

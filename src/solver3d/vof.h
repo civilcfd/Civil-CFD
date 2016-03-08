@@ -29,5 +29,6 @@ int vof_kill_solver(struct solver_data *solver);
 int vof_pressure_test(struct solver_data *solver);
 int vof_pressure_init(struct solver_data *solver);
 int vof_vorticity(struct solver_data *solver);
-
+int vof_pressure_sor(struct solver_data *solver, long int i, long int j, long int k);
+int vof_pressure_mp(struct solver_data *solver);
 #endif

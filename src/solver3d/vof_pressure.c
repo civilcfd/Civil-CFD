@@ -156,15 +156,11 @@ int vof_pressure_test(struct solver_data *solver) {
   return 0;
 }
 
-int vof_pressure(struct solver_data *solver) {
-  enum cell_boundaries ignore;
+
+int vof_pressure_mp(struct solver_data *solver) {
   
-  long int i,j,k,l,m,n, imax, jmax, kmax, imin, jmin, kmin;
-  double plmn, delp;
+  long int i,j,k, imax, jmax, kmax, imin, jmin, kmin;
   
-  double g, del, dp, dv;
-  double rcsq;
-  double sum_a, ax, ux, stabil_limit;
   
   static int direction = -1;
   
@@ -187,22 +183,277 @@ int vof_pressure(struct solver_data *solver) {
   }  
   
   
-  rcsq = 1 / pow(solver->csq, 2);
   
   solver->p_flag = 0;
   
 #define emf solver->emf
-/*
-#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit,plmn,delp) \
-            collapse(3) schedule(dynamic, 100)*//*
-  for(i=imin; i*direction < imax*direction; i += direction) {
-    for(j=jmin; j*direction < jmax*direction; j += direction) {
-      for(k=kmin; k*direction < kmax*direction; k += direction) {*/
+
+#pragma omp parallel for shared (solver) private(i,j,k) \
+            collapse(3) schedule(dynamic, 100)
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {  
+      
+        vof_pressure_sor(solver,i,j,k);
+      }
+    }
+  }
+  
+ /*
+#pragma omp parallel for shared (solver) private(i,j,k) \
+            collapse(3) schedule(dynamic, 100) 
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {
+        
+        if(FV(i,j,k)<emf) continue;
+
+        if(VOF(i,j,k) < emf) continue;
+        
+        if(N_VOF(i,j,k) == none) continue;
+        
+        if(AE(i,j,k) > emf && i < IMAX-1)
+          U(i,j,k) += up[mesh_index(solver->mesh,i,j,k)];
+          
+        if(AN(i,j,k) > emf && j < JMAX-1)
+          V(i,j,k) += vp[mesh_index(solver->mesh,i,j,k)];
+          
+        if(AT(i,j,k) > emf && k < KMAX-1)
+          W(i,j,k) += wp[mesh_index(solver->mesh,i,j,k)];
+
+      }
+    } 
+  }
+
+#pragma omp parallel for shared (solver) private(i,j,k) \
+            collapse(3) schedule(dynamic, 100)
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {
+        
+        if(FV(i,j,k)<emf) continue;
+
+        if(VOF(i,j,k) < emf) continue;
+        
+        if(N_VOF(i,j,k) == none) continue;
+        
+        if(AE(i-1,j,k) > emf && i > 0)
+          U(i-1,j,k) -= um[mesh_index(solver->mesh,i-1,j,k)];
+
+        if(AN(i,j-1,k) > emf && j > 0)
+          V(i,j-1,k) -= vm[mesh_index(solver->mesh,i,j-1,k)];
+
+        if(AT(i,j,k-1) > emf && k > 0)
+          W(i,j,k-1) -= wm[mesh_index(solver->mesh,i,j,k-1)];
+
+      }
+    } 
+  }    */
+
+  return solver->p_flag;
+}
+
+int vof_pressure_sor(struct solver_data *solver, long int i, long int j, long int k) {
+  long int l,m,n;
+  double plmn, delp;
+  
+  double g, del;
+  double dp, dv;
+  double ax, ux, stabil_limit;
+  
+  if(FV(i,j,k)<emf) return 0;
+
+  if(VOF(i,j,k) < emf) return 0;
+       
+  if(N_VOF(i,j,k) != 0) {
+    l = i;
+    m = j;
+    n = k;
+    switch(N_VOF(i,j,k)) {
+    case east:
+      l=i+1;
+      g = solver->gx;
+      del = DELX;
+      ax = AE(i,j,k); ux = U(i,j,k);
+      break;
+    case west:
+      l=i-1;
+      g = solver->gx;
+      del = DELX;
+      ax = AE(i-1,j,k); ux = U(i-1,j,k);
+      break;
+    case north:
+      m=j+1;
+      g = solver->gy;
+      del = DELY;
+      ax = AN(i,j,k); ux = V(i,j,k);
+      break;
+    case south:
+      m=j-1;
+      g = solver->gy;
+      del = DELY;
+      ax = AN(i,j-1,k); ux = V(i,j-1,k);
+      break;
+    case top:
+      n=k+1;
+      g = solver->gz;
+      del = DELZ;
+      ax = AT(i,j,k); ux = W(i,j,k);
+      break;
+    case bottom:
+      n=k-1;
+      g = solver->gz;
+      del = DELZ;
+      ax = AT(i,j,k-1); ux =  W(i,j,k-1);
+      break;
+    case none:
+    default: /* ADDED 2/29/16 */
+      return 0;
+    }
+ 
+    plmn = P(l,m,n);
+  
+    /* if the neighbor is also a surface cell, then set plm to psurf
+     * this is the case for a very small floating droplet */
+    if(N_VOF(l,m,n) != 0 && FV(i,j,k) != 0)
+      plmn=0; /* psurf */
+
+    if(FV(l,m,n) < emf) { 
+      g = sqrt(pow(solver->gx,2) + pow(solver->gy,2) + pow(solver->gz,2));
+      plmn = fabs(g) * solver->rho * (VOF(i,j,k) + 0.5) * del; 
+    } 
+
+    /* using the interpolation factor
+     * we are setting delp to a mix of surface pressure and
+     * internal pressure according to the formula below */
+    delp = (1.0-PETA(i,j,k)) * plmn; 
+  
+    /* check if excessive pressure is building near the free surface and artificially release it */
+    dp = plmn - delp;
+    dv = solver->delt * ( (1/del) * dp / solver->rho);
+    stabil_limit = solver->con * (min(FV(i,j,k),FV(l,m,n)) / ax)  * del/solver->delt;
+  
+    if((i-l + j-m + k-n) * ux > 0)
+      stabil_limit = min(max(stabil_limit - fabs(ux), emf), stabil_limit / 2);
+    else
+      stabil_limit /= 2;      
+  
+    if(fabs(dv) > stabil_limit) {
+
+      dp = stabil_limit / (solver->delt * (1/del) / solver->rho);
+    
+      /* printf("\n*** Excessive pressure gradient from %lf", delp - P(i,j,k)); */
+    
+      plmn = dp / PETA(i,j,k);
+      P(l,m,n) = plmn;
+      delp = (1-PETA(i,j,k)) * plmn;
+    
+    
+      /* printf(" to %lf\n", delp - P(i,j,k));
+      printf("dv: %lf    ux: %lf\n", dv, ux);
+      printf("i,j,k: %ld %ld %ld\n", i, j, k);
+      printf("l,m,n: %ld %ld %ld\n", l, m, n);
+      printf("P: %lf   plmn: %lf\n\n", delp, plmn); */
+    }
+  
+    delp = delp - P(i,j,k); 
+  
+    D(i,j,k) = 0;
+  
+
+  }
+  else {
+
+  /* if(i==229 && j==48 && k==42) {
+    printf("break\n");
+  } */
+    D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k)) +
+        RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k)) +
+        RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1)); 
+    D(i,j,k) = D(i,j,k) / FV(i,j,k); 
+  
+    /* de-foaming */
+    if(VOF(i,j,k) < (1-emf)) {
+      /* don't de-foam next to boundaries */
+      if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
+           FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
+           FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {
+        D(i,j,k) = D(i,j,k) + (min(1000 * solver->epsi, 
+                              0.1 * (1.0 - VOF(i,j,k)) / solver->delt)) / solver->rho;
+      }
+    }
+  
+    delp=-BETA(i,j,k)*D(i,j,k)*PETA(i,j,k);
+  
+    if(solver->iter > 50 && solver->iter < 75) delp /= (solver->omg - 0.1);
+    if(solver->iter > 100 && solver->iter < 125) delp /= (solver->omg + 0.1);
+  
+    if(fabs(D(i,j,k)) > solver->epsi / FV(i,j,k)) 
+    {
+      solver->p_flag=1;
+    }
+
+  }
+
+  P(i,j,k)=P(i,j,k)+delp;
+  
+  #pragma omp critical(pressure)
+  {
+  if(AE(i,j,k) > emf && i < IMAX-1)
+    U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho );
+  if(AE(i-1,j,k) > emf && i > 0)
+    U(i-1,j,k)=U(i-1,j,k) - solver->delt* RDX * delp / (solver->rho );
+  if(AN(i,j,k) > emf && j < JMAX-1)
+    V(i,j,k)=V(i,j,k) + solver->delt * RDY * delp / (solver->rho );
+  if(AN(i,j-1,k) > emf && j > 0)
+    V(i,j-1,k)=V(i,j-1,k) - solver->delt * RDY * delp / (solver->rho );
+  if(AT(i,j,k) > emf && k < KMAX-1)
+    W(i,j,k)=W(i,j,k) + solver->delt * RDZ * delp / (solver->rho );
+  if(AT(i,j,k-1) > emf && k > 0)
+    W(i,j,k-1)=W(i,j,k-1) - solver->delt * RDZ * delp / (solver->rho );
+  }
+         
+  /*           
+  if(AE(i,j,k) > emf && i < IMAX-1)
+    up[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDX * delp / (solver->rho );
+  if(AE(i-1,j,k) > emf && i > 0)
+    um[mesh_index(solver->mesh,i-1,j,k)]=solver->delt * RDX * delp / (solver->rho );
+  if(AN(i,j,k) > emf && j < JMAX-1)
+    vp[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDY * delp / (solver->rho );
+  if(AN(i,j-1,k) > emf && j > 0)
+    vm[mesh_index(solver->mesh,i,j-1,k)]=solver->delt * RDY * delp / (solver->rho );
+  if(AT(i,j,k) > emf && k < KMAX-1)
+    wp[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDZ * delp / (solver->rho );
+  if(AT(i,j,k-1) > emf && k > 0)
+    wm[mesh_index(solver->mesh,i,j,k-1)]=solver->delt * RDZ * delp / (solver->rho ); */
+
+  D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k))+
+        RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k))+
+        RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1));
+  D(i,j,k) = D(i,j,k) * solver->rho / FV(i,j,k);
+
+  return 0;
+}
+#undef emf
+
+
+int vof_pressure(struct solver_data *solver) {
+  
+  long int i,j,k,l,m,n, imax, jmax, kmax, imin, jmin, kmin;
+  double plmn, delp;
+  
+  double g, del, dp, dv;
+  double ax, ux, stabil_limit;
+  
+  
+  solver->p_flag = 0;
+  
+#define emf solver->emf
+
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {      
       
-        ignore = none; 
         
         if(FV(i,j,k)<emf) continue;
 
@@ -215,42 +466,36 @@ int vof_pressure(struct solver_data *solver) {
           switch(N_VOF(i,j,k)) {
           case east:
             l=i+1;
-            if(N_VOF(i-1,j,k) == 0) ignore = west;
             g = solver->gx;
             del = DELX;
             ax = AE(i,j,k); ux = U(i,j,k);
             break;
           case west:
             l=i-1;
-            if(N_VOF(i+1,j,k) == 0) ignore = east;
             g = solver->gx;
             del = DELX;
             ax = AE(i-1,j,k); ux = U(i-1,j,k);
             break;
           case north:
             m=j+1;
-            if(N_VOF(i,j-1,k) == 0) ignore = south;
             g = solver->gy;
             del = DELY;
             ax = AN(i,j,k); ux = V(i,j,k);
             break;
           case south:
             m=j-1;
-            if(N_VOF(i,j+1,k) == 0) ignore = north;
             g = solver->gy;
             del = DELY;
             ax = AN(i,j-1,k); ux = V(i,j-1,k);
             break;
           case top:
             n=k+1;
-            if(N_VOF(i,j,k-1) == 0) ignore = bottom;
             g = solver->gz;
             del = DELZ;
             ax = AT(i,j,k); ux = W(i,j,k);
             break;
           case bottom:
             n=k-1;
-            if(N_VOF(i,j,k+1) == 0) ignore = top;
             g = solver->gz;
             del = DELZ;
             ax = AT(i,j,k-1); ux =  W(i,j,k-1);
@@ -291,18 +536,18 @@ int vof_pressure(struct solver_data *solver) {
 
             dp = stabil_limit / (solver->delt * (1/del) / solver->rho);
             
-            printf("\n*** Excessive pressure gradient from %lf", delp - P(i,j,k));
+            /* printf("\n*** Excessive pressure gradient from %lf", delp - P(i,j,k)); */
             
             plmn = dp / PETA(i,j,k);
             P(l,m,n) = plmn;
             delp = (1-PETA(i,j,k)) * plmn;
             
             
-            printf(" to %lf\n", delp - P(i,j,k));
+            /* printf(" to %lf\n", delp - P(i,j,k));
             printf("dv: %lf    ux: %lf\n", dv, ux);
             printf("i,j,k: %ld %ld %ld\n", i, j, k);
             printf("l,m,n: %ld %ld %ld\n", l, m, n);
-            printf("P: %lf   plmn: %lf\n\n", delp, plmn);
+            printf("P: %lf   plmn: %lf\n\n", delp, plmn); */
           }
           
           delp = delp - P(i,j,k); 
@@ -313,9 +558,7 @@ int vof_pressure(struct solver_data *solver) {
         }
         else {
 
-       /* if(i==229 && j==48 && k==42) {
-          printf("break\n");
-        } */
+
           D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k)) +
               RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k)) +
               RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1)); 
@@ -343,13 +586,9 @@ int vof_pressure(struct solver_data *solver) {
           }
 
         }
-        ignore = none;
-        sum_a = AE(i,j,k) + AE(i-1,j,k) + AN(i,j,k) + AN(i,j-1,k) + AT(i,j,k) + AT(i,j,k-1);
         
         P(i,j,k)=P(i,j,k)+delp;
-/*
-#pragma omp critical(pressure)
-{*/
+
         if(AE(i,j,k) > emf && i < IMAX-1)
           U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
         if(AE(i-1,j,k) > emf && i > 0)
@@ -362,21 +601,8 @@ int vof_pressure(struct solver_data *solver) {
           W(i,j,k)=W(i,j,k) + solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k) */);
         if(AT(i,j,k-1) > emf && k > 0)
           W(i,j,k-1)=W(i,j,k-1) - solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k-1) */);
-/*}
-*/         
- /*           
-        if(AE(i,j,k) > emf && i < IMAX-1)
-          up[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDX * delp / (solver->rho );
-        if(AE(i-1,j,k) > emf && i > 0)
-          um[mesh_index(solver->mesh,i-1,j,k)]=solver->delt * RDX * delp / (solver->rho );
-        if(AN(i,j,k) > emf && j < JMAX-1)
-          vp[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDY * delp / (solver->rho );
-        if(AN(i,j-1,k) > emf && j > 0)
-          vm[mesh_index(solver->mesh,i,j-1,k)]=solver->delt * RDY * delp / (solver->rho );
-        if(AT(i,j,k) > emf && k < KMAX-1)
-          wp[mesh_index(solver->mesh,i,j,k)]  =solver->delt * RDZ * delp / (solver->rho );
-        if(AT(i,j,k-1) > emf && k > 0)
-          wm[mesh_index(solver->mesh,i,j,k-1)]=solver->delt * RDZ * delp / (solver->rho ); */
+    
+ 
 
         D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k))+
               RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k))+
@@ -387,58 +613,6 @@ int vof_pressure(struct solver_data *solver) {
     }
   }
 
-/*
-#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit) \
-            collapse(3) schedule(dynamic, 100)
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
-        ignore = none; 
-        
-        if(FV(i,j,k)<emf) continue;
-
-        if(VOF(i,j,k) < emf) continue;
-        
-        if(N_VOF(i,j,k) == none) continue;
-        
-        if(AE(i,j,k) > emf && i < IMAX-1)
-          U(i,j,k) += up[mesh_index(solver->mesh,i,j,k)];
-          
-        if(AN(i,j,k) > emf && j < JMAX-1)
-          V(i,j,k) += vp[mesh_index(solver->mesh,i,j,k)];
-          
-        if(AT(i,j,k) > emf && k < KMAX-1)
-          W(i,j,k) += wp[mesh_index(solver->mesh,i,j,k)];
-
-      }
-    } 
-  }
-
-#pragma omp parallel for shared (solver) private(i,j,k,l,m,n,g,del,dp,dv,ctos,rcsq,sum_a,ax,ux,stabil_limit) \
-            collapse(3) schedule(dynamic, 100)
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
-        ignore = none; 
-        
-        if(FV(i,j,k)<emf) continue;
-
-        if(VOF(i,j,k) < emf) continue;
-        
-        if(N_VOF(i,j,k) == none) continue;
-        
-        if(AE(i-1,j,k) > emf && i > 0)
-          U(i-1,j,k) -= um[mesh_index(solver->mesh,i-1,j,k)];
-
-        if(AN(i,j-1,k) > emf && j > 0)
-          V(i,j-1,k) -= vm[mesh_index(solver->mesh,i,j-1,k)];
-
-        if(AT(i,j,k-1) > emf && k > 0)
-          W(i,j,k-1) -= wm[mesh_index(solver->mesh,i,j,k-1)];
-
-      }
-    } 
-  }    */
 
   return solver->p_flag;
 #undef emf

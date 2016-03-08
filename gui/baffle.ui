@@ -84,6 +84,16 @@
      <string>headloss</string>
     </property>
    </item>
+   <item>
+    <property name="text">
+     <string>swirl angle</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>velocity deviation</string>
+    </property>
+   </item>
   </widget>
   <widget class="QLabel" name="kfactor">
    <property name="geometry">
