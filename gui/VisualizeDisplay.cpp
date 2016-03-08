@@ -146,7 +146,7 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
   geometryFilter->SetInputConnection(cutter->GetOutputPort());
 
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-  lut->SetNumberOfColors(64);
+  /* lut->SetNumberOfColors(64); */
   lut->SetHueRange(0.667, 0.0);
   lut->Build();
 
@@ -223,7 +223,7 @@ void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bo
   geometryFilter->SetInputConnection(cutter->GetOutputPort());
 
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-  lut->SetNumberOfColors(64);
+  /* lut->SetNumberOfColors(64);*/
   lut->SetHueRange(0.667, 0.0);
   lut->Build();
 
