@@ -130,10 +130,6 @@ void SolverDialog::readyReadStandardOutput() {
         if(flow > maxFlow) maxFlow = flow;
         if(flow < minFlow) minFlow = flow;
         
-        if(flow < 2 && progressVal > 4) {
-          n++;
-          n--;
-        }
         
         n = list[i+2].toInt(&ok);
         if(!ok) continue;
