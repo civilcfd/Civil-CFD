@@ -32,8 +32,12 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
             SIGNAL(readyReadStandardOutput()),
             SLOT(readyReadStandardOutput()));
 
+#ifdef _WIN32
+  cmd = appPath + "/solver3d.exe";
+#else
   cmd = appPath + "/solver3d";
-
+#endif
+  
   if(t.toDouble(&ok) < 0.00001) t = "";
   if(!ok) t="";
   

@@ -20,7 +20,7 @@ win32 {
 QMAKE_CXX = cl.exe
 QMAKE_LINK = link.exe
 QMAKE_LINK_SHLIB = link.exe
-
+TARGET = ../../bin/gui
 }
 INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10
 !win32 {

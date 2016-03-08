@@ -29,8 +29,13 @@ RenderDialog::RenderDialog(Simulation &sim, QString appPath) {
   connect(process,
             SIGNAL(readyReadStandardOutput()),
             SLOT(readyReadStandardOutput()));
-
+			
+#ifdef _WIN32
+  cmd = appPath + "/mesh3d.exe";
+#else
   cmd = appPath + "/mesh3d";
+#endif
+
   if(!QFile::exists(cmd)) {
     ui.status->setText("Could not find executable: " + cmd);
     ui.Return->setEnabled(true);
