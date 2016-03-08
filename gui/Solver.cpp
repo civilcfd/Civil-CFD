@@ -7,6 +7,7 @@
 #include "SolverDialog.h"
 #include "qcustomplot.h"
 
+
 SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   QString cmd;
   bool ok;
@@ -107,6 +108,7 @@ void SolverDialog::readyReadStandardOutput() {
       if(list[i].contains("delt")) {
         delt = list[i+1].toDouble(&ok);
         if(!ok) continue;
+        if(list[i+2] != "|") continue;
         if(delt > maxDelt) maxDelt = delt;
         
         ui.plot->graph(0)->addData(progressVal, delt);
@@ -117,11 +119,17 @@ void SolverDialog::readyReadStandardOutput() {
       
       if(list[i].contains("Flow")) {
         if(i+4 >= list.count()-3) continue;
+        if(list[i+5] != "L/s") continue;
         
         flow = list[i+4].toDouble(&ok);
         if(!ok) continue;
         if(flow > maxFlow) maxFlow = flow;
         if(flow < minFlow) minFlow = flow;
+        
+        if(flow < 2 && progressVal > 4) {
+          n++;
+          n--;
+        }
         
         n = list[i+2].toInt(&ok);
         if(!ok) continue;
@@ -184,8 +192,7 @@ void SolverDialog::readyReadStandardOutput() {
     }
 
     if(progressVal > 0) {
-      progressVal = progressVal * 100 / stopT;
-      ui.progressBar->setValue(progressVal);
+      ui.progressBar->setValue(progressVal * 100 / stopT);
     }
   }
 
