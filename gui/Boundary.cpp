@@ -187,5 +187,16 @@ void SBoundaryDialog::on_select_currentIndexChanged(QString str) {
   else {
     ui.units->setText("m");
   }
+  
+  if(str == "virtual weir") {
+    ui.labelValue->setText("Weir length");
+    ui.labelTurbulence->setText("Weir invert");
+    ui.calculate->setEnabled(false);
+  } else {
+    ui.labelValue->setText("Value");
+    ui.labelTurbulence->setText("Turbulence");
+    ui.calculate->setEnabled(true);
+  }
+  
 
 }

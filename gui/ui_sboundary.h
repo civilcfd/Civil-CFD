@@ -29,10 +29,10 @@ public:
     QDialogButtonBox *buttonBox;
     QLabel *label;
     QComboBox *select;
-    QLabel *label_2;
+    QLabel *labelValue;
     QPlainTextEdit *value;
     QPlainTextEdit *turbulence;
-    QLabel *label_3;
+    QLabel *labelTurbulence;
     QLabel *label_4;
     QLabel *A1;
     QPlainTextEdit *extentA1;
@@ -68,9 +68,9 @@ public:
         select = new QComboBox(SBoundaryDialog);
         select->setObjectName(QString::fromUtf8("select"));
         select->setGeometry(QRect(70, 200, 301, 31));
-        label_2 = new QLabel(SBoundaryDialog);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(30, 270, 251, 16));
+        labelValue = new QLabel(SBoundaryDialog);
+        labelValue->setObjectName(QString::fromUtf8("labelValue"));
+        labelValue->setGeometry(QRect(30, 270, 251, 16));
         value = new QPlainTextEdit(SBoundaryDialog);
         value->setObjectName(QString::fromUtf8("value"));
         value->setGeometry(QRect(160, 260, 161, 31));
@@ -79,9 +79,9 @@ public:
         turbulence->setObjectName(QString::fromUtf8("turbulence"));
         turbulence->setGeometry(QRect(160, 320, 161, 31));
         turbulence->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        label_3 = new QLabel(SBoundaryDialog);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-        label_3->setGeometry(QRect(30, 330, 71, 16));
+        labelTurbulence = new QLabel(SBoundaryDialog);
+        labelTurbulence->setObjectName(QString::fromUtf8("labelTurbulence"));
+        labelTurbulence->setGeometry(QRect(30, 330, 71, 16));
         label_4 = new QLabel(SBoundaryDialog);
         label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setGeometry(QRect(20, 20, 291, 16));
@@ -140,10 +140,10 @@ public:
          << QApplication::translate("SBoundaryDialog", "hydraulic grade", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SBoundaryDialog", "virtual weir", 0, QApplication::UnicodeUTF8)
         );
-        label_2->setText(QApplication::translate("SBoundaryDialog", "Set Value", 0, QApplication::UnicodeUTF8));
+        labelValue->setText(QApplication::translate("SBoundaryDialog", "Set Value", 0, QApplication::UnicodeUTF8));
         value->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));
         turbulence->setPlainText(QApplication::translate("SBoundaryDialog", "0.001", 0, QApplication::UnicodeUTF8));
-        label_3->setText(QApplication::translate("SBoundaryDialog", "Turbulence", 0, QApplication::UnicodeUTF8));
+        labelTurbulence->setText(QApplication::translate("SBoundaryDialog", "Turbulence", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("SBoundaryDialog", "Boundary Extents - mesh cell range", 0, QApplication::UnicodeUTF8));
         A1->setText(QApplication::translate("SBoundaryDialog", "A1", 0, QApplication::UnicodeUTF8));
         extentA1->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));

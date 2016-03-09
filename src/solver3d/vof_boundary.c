@@ -400,13 +400,13 @@ int boundary_weir(struct solver_data *solver,
   ave_height = ave_height / count;
   
   /* first check water level is greater than weir crest, if not, v=0 */
-  if(ave_height <= solver->vof_height) {
-    boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, 0, 0);
+  if(ave_height <= turbulence) {
+    boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, 0, 0.00001);
   }
   else {
 
     head = pow(flow / (1.6 * value),0.667);
-    boundary_hgl(solver, x, min_1, min_2, max_1, max_2, head + solver->vof_height, 0); 
+    boundary_hgl(solver, x, min_1, min_2, max_1, max_2, head + turbulence, 0.00001); 
     
     /*
     head = ave_height - solver->vof_height;
