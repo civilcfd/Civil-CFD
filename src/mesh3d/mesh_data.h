@@ -27,7 +27,8 @@ enum special_boundaries {
   fixed_velocity = 0,
   mass_outflow = 1,
   hgl = 2,
-  weir = 3
+  weir = 3,
+  wall = 4
 };
 
 enum baffle_type {

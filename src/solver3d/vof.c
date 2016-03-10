@@ -760,9 +760,9 @@ int vof_velocity(struct solver_data *solver) {
             private(i,j,k,vel,af,vis,Flux,Viscocity,Q_C,Q_W,H_vel,CD,upwind,sum_fv,delp, \
                     delv,resi,nu,n,m,o,ro_p1,ro_m1,ro_mp1,ro_mm1,ro_nmm1) \
             collapse(3) schedule(static)
-  for(i=1; i<IMAX-2; i++) {
-    for(j=1; j<JMAX-2; j++) {
-      for(k=1; k<KMAX-2; k++) {
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {
 
         U(i,j,k) = 0;
         V(i,j,k) = 0;
@@ -996,13 +996,13 @@ int vof_velocity(struct solver_data *solver) {
 
           switch(n) {
           case 0:
-            U(i,j,k) = UN(i,j,k) + delv;
+            if(i != IMAX-2)  U(i,j,k) = UN(i,j,k) + delv;
             break;
           case 1:
-            V(i,j,k) = VN(i,j,k) + delv;
+            if(j != JMAX-2)  V(i,j,k) = VN(i,j,k) + delv;
             break;
           case 2:
-            W(i,j,k) = WN(i,j,k) + delv;
+            if(k != KMAX-2)  W(i,j,k) = WN(i,j,k) + delv;
             break;
           }
           

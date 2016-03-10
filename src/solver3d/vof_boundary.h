@@ -25,5 +25,6 @@ int boundary_hgl(struct solver_data *solver,
                             double value, double turbulence); 
                             
 int vof_vof_height_boundary(struct solver_data *solver);
-
+enum special_boundaries vof_boundaries_check_inside_sb(struct solver_data *solver, long int a, long int b,
+                                 int x);
 #endif

@@ -31,6 +31,23 @@ extern struct mesh_data *mesh_n; /* describes mesh at previous timestep for expl
       4         bottom
       5         top */
 
+enum special_boundaries vof_boundaries_check_inside_sb(struct solver_data *solver, long int a, long int b,
+                                 int x) {
+  int i;
+  struct sb_data *sb;
+  
+  
+  for(sb = solver->mesh->sb[x]; sb != NULL; sb = sb->next) {   
+      
+        if(a >= sb->extent_a[0] && a < sb->extent_b[0] &&
+           b >= sb->extent_a[1] && b < sb->extent_b[1])
+          return sb->type;
+  }    
+   
+  
+  return wall;
+}
+
 int sboundary_setup(struct solver_data *solver, int x, long int *imin, long int *jmin, long int *kmin, 
                            long int *imax, long int *jmax, long int *kmax,
                            double min_1, double min_2, double max_1, double max_2) {
@@ -90,7 +107,7 @@ int sboundary_setup(struct solver_data *solver, int x, long int *imin, long int 
 int boundary_hgl(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double value, double turbulence) {
-  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, i_vel, j_vel, k_vel;
+  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
   double height, partial;
   long int coplanar[3] = {0, 0, 0};
   
@@ -101,10 +118,6 @@ int boundary_hgl(struct solver_data *solver,
   /* value += mesh->delz; uncomment and everything is off-set by 1 cell vertically */
 
 
-  i_vel = 0;
-  j_vel = 0;
-  k_vel = 0;
-
   switch(x) {
   case 0: /* west */
     /*imax++*/;
@@ -113,7 +126,6 @@ int boundary_hgl(struct solver_data *solver,
   case 1: /* east */
     /*imin--*/;
     coplanar[0] = -1;
-    i_vel = -1;
     break;
   case 2: /* south */
     /*jmax++*/;
@@ -122,7 +134,6 @@ int boundary_hgl(struct solver_data *solver,
   case 3: /* north */
     /*jmin--*/;
     coplanar[1] = -1;
-    j_vel = -1;
     break;
   case 4: /* bottom */
     /*kmax++*/;
@@ -131,7 +142,6 @@ int boundary_hgl(struct solver_data *solver,
   case 5: /* top */
     /*kmin--*/;
     coplanar[2] = -1;
-    k_vel = -1;
     break;
   }
   
@@ -143,16 +153,31 @@ int boundary_hgl(struct solver_data *solver,
         
         if(FV(i,j,k) < 0.000001) continue;
         
-        /* must set velocity to a Von Neumann boundary */
-        /* first set U(i,j,k) equal to the first non-boundary velocity inside the mesh */
-        U(i,j,k) = U(i+i_vel+coplanar[0], j+j_vel+coplanar[1], k+k_vel+coplanar[2]);
-        V(i,j,k) = V(i+i_vel+coplanar[0], j+j_vel+coplanar[1], k+k_vel+coplanar[2]);
-        W(i,j,k) = W(i+i_vel+coplanar[0], j+j_vel+coplanar[1], k+k_vel+coplanar[2]);
-        
-        /* if we are at a east/north/top boundary then also set one more cell interior, as this is also a boundary */
-        U(i+i_vel,j+j_vel,k+k_vel) = U(i,j,k);
-        V(i+i_vel,j+j_vel,k+k_vel) = V(i,j,k);
-        W(i+i_vel,j+j_vel,k+k_vel) = W(i,j,k);
+        if(solver->p_flag == 0) {
+          /* must set velocity to a Von Neumann boundary */
+          
+          /* first set U(i,j,k) equal to the next neighboring velocity inside the mesh */
+          U(i,j,k) = U(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
+          V(i,j,k) = V(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
+          W(i,j,k) = W(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
+          
+          /* now correct for east / north / top boundary */
+          switch(x) {
+          case 1:
+            U(i,j,k) = U(i-2,j,k);
+            U(i-1,j,k) = U(i-2,j,k); 
+            break;
+          case 3:
+            V(i,j,k) = V(i,j-2,k);
+            V(i,j-1,k) = V(i,j-2,k);
+            break;
+          case 5:
+            W(i,j,k) = W(i,j,k-2);
+            W(i,j,k-1) = W(i,j,k-2);
+            break;
+          }
+
+        }
         
         height = k * mesh->delz;
         if(value - height >= mesh->delz - solver->emf) {
@@ -170,9 +195,10 @@ int boundary_hgl(struct solver_data *solver,
           else if(partial <= 0)
             VOF(i,j,k) = 0.0;
         }
-        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (VOF(i,j,k) + VOF(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2;
+        /* VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (VOF(i,j,k) + VOF(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2; */
+        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = VOF(i,j,k);
      
-        /* if(solver->p_flag != 0) return 0; */
+        if(solver->p_flag != 0) continue; 
         
         /* ADDED 01/10/2014 */
         if(mesh->vof[mesh_index(mesh,i,j,k)] == 1.0) {
@@ -181,7 +207,7 @@ int boundary_hgl(struct solver_data *solver,
             (mesh->delz * solver->rho * fabs(solver->gz)) * 
             (0.5 + min(mesh->vof[mesh_index(mesh,i,j,k+1)],0.5));
 
-       }
+        }
         else  if(mesh->vof[mesh_index(mesh,i,j,k)] > 0.0) {
           mesh->P[mesh_index(mesh,i,j,k)] = 
             mesh->delz * solver->rho * fabs(solver->gz) * max(-0.5,mesh->vof[mesh_index(mesh,i,j,k)] - 0.5);          
@@ -190,8 +216,10 @@ int boundary_hgl(struct solver_data *solver,
         else if(mesh->vof[mesh_index(mesh,i,j,k)] <= 0.0) 
           mesh->P[mesh_index(mesh,i,j,k)] = 0.0;
           
+        /* P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = P(i,j,k); */
         /* now set value 1 cell interior to the mesh to be the same */
-          P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (P(i,j,k) + P(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2;
+        /* P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (P(i,j,k) + P(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2; */
+
         
         /* ADDED 02/27/2016 *
         if(FV(i,j,k) < 1.0 && FV(i,j,k) > 0.0) {
@@ -473,10 +501,8 @@ int boundary_mass_outflow(struct solver_data *solver,
           else U(i,j,k) = 0.1 * value/area;
           U(i-1,j,k) = U(i,j,k);
           
-          V(i,j,k) = V(i-2,j,k);
-          V(i-1,j,k) = V(i,j,k);
-          W(i,j,k) = W(i-2,j,k);
-          W(i-1,j,k) = W(i,j,k);
+          V(i,j,k) = V(i-1,j,k);
+          W(i,j,k) = W(i-1,j,k);
           /* V(i,j,k) = 0;
           V(i-1,j,k) = 0;
           W(i,j,k) = 0;
@@ -496,10 +522,8 @@ int boundary_mass_outflow(struct solver_data *solver,
           else V(i,j,k) = 0.1 * value/area;
           V(i,j-1,k) = V(i,j,k);
           
-          U(i,j,k) = U(i,j-2,k);
-          U(i,j-1,k) = U(i,j,k);
-          W(i,j,k) = W(i,j-2,k);
-          W(i,j-1,k) = W(i,j,k);
+          U(i,j,k) = U(i,j-1,k);
+          W(i,j,k) = W(i,j-1,k);
           /* U(i,j,k) = 0;
           U(i,j-1,k) = 0;
           W(i,j,k) = 0;
@@ -519,10 +543,8 @@ int boundary_mass_outflow(struct solver_data *solver,
           else W(i,j,k) = 0.1 * value/area;
           W(i,j,k-1) = W(i,j,k);
           
-          U(i,j,k) = U(i,j,k-2);
-          U(i,j,k-1) = U(i,j,k);
-          V(i,j,k) = V(i,j,k-2);
-          V(i,j,k-1) = V(i,j,k);
+          U(i,j,k) = U(i,j,k-1);
+          V(i,j,k) = V(i,j,k-1);
           /* U(i,j,k) = 0;
           U(i,j,k-1) = 0;
           V(i,j,k) = 0;
@@ -564,9 +586,7 @@ int boundary_fixed_velocity(struct solver_data *solver,
           U(i,j,k) = value;
           U(i-1,j,k) = value;
           V(i,j,k) = 0;
-          V(i-1,j,k) = 0;
           W(i,j,k) = 0;
-          W(i-1,j,k) = 0;
           break;
         case 2:
           if(value > 0)
@@ -579,11 +599,9 @@ int boundary_fixed_velocity(struct solver_data *solver,
           if(value < 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = 0;
-          U(i,j-1,k) = 0;
           V(i,j,k) = value;
           V(i,j-1,k) = value;
-          W(i,j,k) = 0;
-          W(i,j-1,k) = 0;            
+          W(i,j,k) = 0;         
           break;    
         case 4:
           if(value > 0)
@@ -596,9 +614,7 @@ int boundary_fixed_velocity(struct solver_data *solver,
           if(value < 0)
             VOF(i,j,k) = mesh_n->vof[mesh_index(solver->mesh,i,j,k)];
           U(i,j,k) = 0;
-          U(i,j,k-1) = 0;
           V(i,j,k) = 0;
-          V(i,j,k-1) = 0;
           W(i,j,k) = value;
           W(i,j,k-1) = value;
           break;   
@@ -726,42 +742,77 @@ int vof_boundaries(struct solver_data *solver) {
   const int odim[3][3] = { {  1,0,0 }, { 0,1,0 }, { 0,0,1 } };
   double denom;
   
+  
+  
   /* first boundaries on x-axis */
   for(j=0; j<JMAX; j++) {
     for(k=0; k<KMAX; k++) {
-         
+
       /* west boundary */
-      switch(solver->mesh->wb[0]) {
-      case slip:
-            /* slip case is zero_gradient for parallel axis
-             * and zero fixed value for perpendicular axis */
-        U(0,j,k) = 0;         U(IMAX-1,j,k) = 0;
-        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-3,j,k);
-        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-3,j,k);
-        break;
-      case no_slip:
-            /* no slip case is velocity = -1.0 * interior velocity at boundary */
-        U(0,j,k) = -1.0 * U(1,j,k);  U(IMAX-1,j,k) = -1.0 * U(IMAX-3,j,k);
-        V(0,j,k) = -1.0 * V(1,j,k);  V(IMAX-1,j,k) = -1.0 * V(IMAX-3,j,k);
-        W(0,j,k) = -1.0 * W(1,j,k);  W(IMAX-1,j,k) = -1.0 * W(IMAX-3,j,k);
-        break;
-      case zero_gradient:
-            /* zero gradient means that velocity at boundary is equal to interior velocity */
-        U(0,j,k) = U(1,j,k);  U(IMAX-1,j,k) = U(IMAX-3,j,k);
-        V(0,j,k) = V(1,j,k);  V(IMAX-1,j,k) = V(IMAX-3,j,k);
-        W(0,j,k) = W(1,j,k);  W(IMAX-1,j,k) = W(IMAX-3,j,k);
-        break;       
+      if(vof_boundaries_check_inside_sb(solver, j, k, 0) == wall) {    
+        switch(solver->mesh->wb[0]) {
+        case slip:
+              /* slip case is zero_gradient for parallel axis
+               * and zero fixed value for perpendicular axis */
+          U(0,j,k) = 0;         
+          V(0,j,k) = V(1,j,k);  
+          W(0,j,k) = W(1,j,k);  
+          break;
+        case no_slip:
+              /* no slip case is velocity = -1.0 * interior velocity at boundary */
+          U(0,j,k) = -1.0 * U(1,j,k); 
+          V(0,j,k) = -1.0 * V(1,j,k);  
+          W(0,j,k) = -1.0 * W(1,j,k);  
+          break;
+        case zero_gradient:
+          if(solver->p_flag == 0) {
+              /* zero gradient means that velocity at boundary is equal to interior velocity */
+            U(0,j,k) = U(1,j,k);  
+            V(0,j,k) = V(1,j,k);  
+            W(0,j,k) = W(1,j,k);
+          }
+          break;       
+        }
       }
-      
-      U(IMAX-2,j,k) = U(IMAX-1,j,k);
-      V(IMAX-2,j,k) = V(IMAX-1,j,k);
-      W(IMAX-2,j,k) = W(IMAX-1,j,k);
       
       if(solver->p_flag == 0) {
         P(0,j,k) = P(1,j,k);
-        P(IMAX-1,j,k) = P(IMAX-2,j,k);
       }
       VOF(0,j,k) = VOF(1,j,k);
+      
+      /* east boundary */
+      if(vof_boundaries_check_inside_sb(solver, j, k, 1) == wall) {    
+        switch(solver->mesh->wb[1]) {
+        case slip:
+              /* slip case is zero_gradient for parallel axis
+               * and zero fixed value for perpendicular axis */
+          U(IMAX-1,j,k) = 0;
+          U(IMAX-2,j,k) = U(IMAX-1,j,k);
+          V(IMAX-1,j,k) = V(IMAX-2,j,k);
+          W(IMAX-1,j,k) = W(IMAX-2,j,k);
+          break;
+        case no_slip:
+              /* no slip case is velocity = -1.0 * interior velocity at boundary */
+          U(IMAX-1,j,k) = -1.0 * U(IMAX-3,j,k);
+          U(IMAX-2,j,k) = U(IMAX-1,j,k);
+          V(IMAX-1,j,k) = -1.0 * V(IMAX-2,j,k);
+          W(IMAX-1,j,k) = -1.0 * W(IMAX-2,j,k);
+          break;
+        case zero_gradient:
+          if(solver->p_flag == 0) {
+              /* zero gradient means that velocity at boundary is equal to interior velocity */
+            U(IMAX-1,j,k) = U(IMAX-3,j,k);
+            U(IMAX-2,j,k) = U(IMAX-1,j,k);
+            V(IMAX-1,j,k) = V(IMAX-2,j,k);
+            W(IMAX-1,j,k) = W(IMAX-2,j,k);
+          }
+          break;       
+        }
+      }    
+      
+      if(solver->p_flag == 0) {
+        P(IMAX-1,j,k) = P(IMAX-2,j,k);
+      }
       VOF(IMAX-1,j,k) = VOF(IMAX-2,j,k);
       
     } 
@@ -771,38 +822,70 @@ int vof_boundaries(struct solver_data *solver) {
   for(i=0; i<IMAX; i++) {
     for(k=0; k<KMAX; k++) {
          
-      /* west boundary */
-      switch(solver->mesh->wb[0]) {
-      case slip:
-            /* slip case is zero_gradient for parallel axis
-             * and zero fixed value for perpendicular axis */
-        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-3,k);
-        V(i,0,k) = 0;         V(i,JMAX-1,k) = 0;
-        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-3,k);
-        break;
-      case no_slip:
-            /* no slip case is velocity = -1.0 * interior velocity at boundary */
-        U(i,0,k) = -1.0 * U(i,1,k);  U(i,JMAX-1,k) = -1.0 * U(i,JMAX-3,k);
-        V(i,0,k) = -1.0 * V(i,1,k);  V(i,JMAX-1,k) = -1.0 * V(i,JMAX-3,k);
-        W(i,0,k) = -1.0 * W(i,1,k);  W(i,JMAX-1,k) = -1.0 * W(i,JMAX-3,k);
-        break;
-      case zero_gradient:
-            /* zero gradient means that velocity at boundary is equal to interior velocity */
-        U(i,0,k) = U(i,1,k);  U(i,JMAX-1,k) = U(i,JMAX-3,k);
-        V(i,0,k) = V(i,1,k);  V(i,JMAX-1,k) = V(i,JMAX-3,k);
-        W(i,0,k) = W(i,1,k);  W(i,JMAX-1,k) = W(i,JMAX-3,k);
-        break;       
+      /* south boundary */
+      if(vof_boundaries_check_inside_sb(solver, i, k, 2) == wall) { 
+        switch(solver->mesh->wb[2]) {
+        case slip:
+              /* slip case is zero_gradient for parallel axis
+               * and zero fixed value for perpendicular axis */
+          U(i,0,k) = U(i,1,k);  
+          V(i,0,k) = 0;         
+          W(i,0,k) = W(i,1,k); 
+          break;
+        case no_slip:
+              /* no slip case is velocity = -1.0 * interior velocity at boundary */
+          U(i,0,k) = -1.0 * U(i,1,k);  
+          V(i,0,k) = -1.0 * V(i,1,k);  
+          W(i,0,k) = -1.0 * W(i,1,k);  
+          break;
+        case zero_gradient:
+              /* zero gradient means that velocity at boundary is equal to interior velocity */
+          if(solver->p_flag == 0) {
+            U(i,0,k) = U(i,1,k);  
+            V(i,0,k) = V(i,1,k);  
+            W(i,0,k) = W(i,1,k);  
+          }
+          break;       
+        }
       }
-      
-      U(i,JMAX-2,k) = U(i,JMAX-1,k);
-      V(i,JMAX-2,k) = V(i,JMAX-1,k);
-      W(i,JMAX-2,k) = W(i,JMAX-1,k);
-      
       if(solver->p_flag == 0) {
         P(i,0,k) = P(i,1,k);
-        P(i,JMAX-1,k) = P(i,JMAX-2,k);
       }
       VOF(i,0,k) = VOF(i,1,k);
+         
+      /* north boundary */
+      if(vof_boundaries_check_inside_sb(solver, i, k, 3) == wall) { 
+        switch(solver->mesh->wb[3]) {
+        case slip:
+              /* slip case is zero_gradient for parallel axis
+               * and zero fixed value for perpendicular axis */
+          U(i,JMAX-1,k) = U(i,JMAX-2,k);
+          V(i,JMAX-1,k) = 0;
+          V(i,JMAX-2,k) = V(i,JMAX-1,k);
+          W(i,JMAX-1,k) = W(i,JMAX-2,k);
+          break;
+        case no_slip:
+              /* no slip case is velocity = -1.0 * interior velocity at boundary */
+          U(i,JMAX-1,k) = -1.0 * U(i,JMAX-2,k);
+          V(i,JMAX-1,k) = -1.0 * V(i,JMAX-3,k);
+          V(i,JMAX-2,k) = V(i,JMAX-1,k);
+          W(i,JMAX-1,k) = -1.0 * W(i,JMAX-2,k);
+          break;
+        case zero_gradient:
+              /* zero gradient means that velocity at boundary is equal to interior velocity */
+          if(solver->p_flag == 0) {
+            U(i,JMAX-1,k) = U(i,JMAX-2,k);
+            V(i,JMAX-1,k) = V(i,JMAX-3,k);
+            V(i,JMAX-2,k) = V(i,JMAX-1,k);
+            W(i,JMAX-1,k) = W(i,JMAX-2,k);
+          }
+          break;       
+        }
+      }   
+      
+      if(solver->p_flag == 0) {
+        P(i,JMAX-1,k) = P(i,JMAX-2,k);
+      }
       VOF(i,JMAX-1,k) = VOF(i,JMAX-2,k);
       
     } 
@@ -813,39 +896,70 @@ int vof_boundaries(struct solver_data *solver) {
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
          
-      /* west boundary */
-      switch(solver->mesh->wb[0]) {
-      case slip:
-            /* slip case is zero_gradient for parallel axis
-             * and zero fixed value for perpendicular axis */
-        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-3);
-        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-3);
-        W(i,j,0) = 0;         W(i,j,KMAX-1) = 0;
-        break;
-      case no_slip:
-            /* no slip case is velocity = -1.0 * interior velocity at boundary */
-        U(i,j,0) = -1.0 * U(i,j,1);  U(i,j,KMAX-1) = -1.0 * U(i,j,KMAX-3);
-        V(i,j,0) = -1.0 * V(i,j,1);  V(i,j,KMAX-1) = -1.0 * V(i,j,KMAX-3);
-        W(i,j,0) = -1.0 * W(i,j,1);  W(i,j,KMAX-1) = -1.0 * W(i,j,KMAX-3);
-        break;
-      case zero_gradient:
-            /* zero gradient means that velocity at boundary is equal to interior velocity */
-        U(i,j,0) = U(i,j,1);  U(i,j,KMAX-1) = U(i,j,KMAX-3);
-        V(i,j,0) = V(i,j,1);  V(i,j,KMAX-1) = V(i,j,KMAX-3);
-        W(i,j,0) = W(i,j,1);  W(i,j,KMAX-1) = W(i,j,KMAX-3);
-        break;       
+      /* bottom boundary */
+      if(vof_boundaries_check_inside_sb(solver, i, j, 4) == wall) { 
+        switch(solver->mesh->wb[4]) {
+        case slip:
+              /* slip case is zero_gradient for parallel axis
+               * and zero fixed value for perpendicular axis */
+          U(i,j,0) = U(i,j,1); 
+          V(i,j,0) = V(i,j,1);  
+          W(i,j,0) = 0;         
+          break;
+        case no_slip:
+              /* no slip case is velocity = -1.0 * interior velocity at boundary */
+          U(i,j,0) = -1.0 * U(i,j,1);  
+          V(i,j,0) = -1.0 * V(i,j,1);  
+          W(i,j,0) = -1.0 * W(i,j,1);  
+          break;
+        case zero_gradient:
+              /* zero gradient means that velocity at boundary is equal to interior velocity */
+          if(solver->p_flag == 0) {
+            U(i,j,0) = U(i,j,1);  
+            V(i,j,0) = V(i,j,1);  
+            W(i,j,0) = W(i,j,1);  
+          }
+          break;       
+        }
       }
-      
-      U(i,j,KMAX-2) = U(i,j,KMAX-1);
-      V(i,j,KMAX-2) = V(i,j,KMAX-1);
-      W(i,j,KMAX-2) = W(i,j,KMAX-1);
-      
-      
       if(solver->p_flag == 0) {
         P(i,j,0) = P(i,j,1);
-        P(i,j,KMAX-1) = P(i,j,KMAX-2);
       }
       VOF(i,j,0) = VOF(i,j,1);
+      
+      /* top boundary */
+      if(vof_boundaries_check_inside_sb(solver, i, j, 5) == wall) { 
+        switch(solver->mesh->wb[5]) {
+        case slip:
+              /* slip case is zero_gradient for parallel axis
+               * and zero fixed value for perpendicular axis */
+          U(i,j,KMAX-1) = U(i,j,KMAX-2);
+          V(i,j,KMAX-1) = V(i,j,KMAX-2);
+          W(i,j,KMAX-1) = 0;
+          W(i,j,KMAX-2) = W(i,j,KMAX-1);
+          break;
+        case no_slip:
+              /* no slip case is velocity = -1.0 * interior velocity at boundary */
+          U(i,j,KMAX-1) = -1.0 * U(i,j,KMAX-2);
+          V(i,j,KMAX-1) = -1.0 * V(i,j,KMAX-2);
+          W(i,j,KMAX-1) = -1.0 * W(i,j,KMAX-3);
+          W(i,j,KMAX-2) = W(i,j,KMAX-1);
+          break;
+        case zero_gradient:
+              /* zero gradient means that velocity at boundary is equal to interior velocity */
+          if(solver->p_flag == 0) {
+            U(i,j,KMAX-1) = U(i,j,KMAX-2);
+            V(i,j,KMAX-1) = V(i,j,KMAX-2);
+            W(i,j,KMAX-1) = W(i,j,KMAX-3);
+            W(i,j,KMAX-2) = W(i,j,KMAX-1);
+          }
+          break;       
+        }
+      }     
+      
+      if(solver->p_flag == 0) {
+        P(i,j,KMAX-1) = P(i,j,KMAX-2);
+      }
       VOF(i,j,KMAX-1) = VOF(i,j,KMAX-2);
       
     } 
