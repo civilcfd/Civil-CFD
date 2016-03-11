@@ -14,6 +14,7 @@ RenderDialog::RenderDialog(Simulation &sim, QString appPath) {
   ui.setupUi(this);
 
   ui.status->setText("Starting...");
+  ui.Return->setEnabled(false);
 
   process = new QProcess(this);
 
@@ -64,7 +65,12 @@ void RenderDialog::on_Return_clicked() {
 }
 
 void RenderDialog::on_Stop_clicked() {
+
+#ifdef _WIN32
+  process->kill();
+#else
   process->terminate();
+#endif
 
   stopped = true;
 }
@@ -126,6 +132,7 @@ void RenderDialog::finished(int exitCode, QProcess::ExitStatus status) {
   }
 
   ui.Return->setEnabled(true);
+  stopped = false;
 }
 
 void RenderDialog::stateChanged(QProcess::ProcessState state) {

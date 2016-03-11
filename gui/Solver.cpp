@@ -40,6 +40,8 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   cmd = appPath + "/solver3d";
 #endif
   
+  mint=0;
+  
   if(t.toDouble(&ok) < 0.00001) t = "";
   if(!ok) t="";
   
@@ -49,7 +51,10 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
     ui.Return->setEnabled(true);
   }
   else {
-    if(t != "") cmd = cmd + " " + t;
+    if(t != "") {
+      cmd = cmd + " " + t;
+      mint = t.toDouble();
+    }
     process->start(cmd);
   }
   
@@ -57,7 +62,7 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   ui.plot->addGraph();
   ui.plot->graph(0)->setPen(QPen(Qt::blue));
   ui.plot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
-  ui.plot->xAxis->setRange(0,1);
+  ui.plot->xAxis->setRange(mint,mint+1);
   ui.plot->xAxis->setLabel("Timestep (s)");
   ui.plot->yAxis->setRange(0,0.5);
   ui.plot->yAxis->setLabel("Timestep size (s)");
@@ -66,7 +71,7 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   
   ui.flow->addGraph();
   ui.flow->graph(0)->setPen(QPen(Qt::blue));
-  ui.flow->xAxis->setRange(0,1);
+  ui.flow->xAxis->setRange(mint,mint+1);
   ui.flow->xAxis->setLabel("Timestep (s)");
   ui.flow->yAxis->setRange(0,0.5);
   ui.flow->yAxis->setLabel("Flow (L/s)");
@@ -195,10 +200,10 @@ void SolverDialog::readyReadStandardOutput() {
     }
   }
   
-  ui.plot->xAxis->setRange(0, progressVal);
+  ui.plot->xAxis->setRange(mint, progressVal);
   ui.plot->yAxis->setRange(0, maxDelt);
   ui.plot->replot();
-  ui.flow->xAxis->setRange(0, progressVal);
+  ui.flow->xAxis->setRange(mint, progressVal);
   ui.flow->yAxis->setRange(minFlow, maxFlow);
   ui.flow->replot();
 

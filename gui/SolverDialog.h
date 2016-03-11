@@ -44,6 +44,7 @@ private:
   double minFlow;
   int nFlow;
   
+  double mint;
   double delt;
   double maxDelt;
   double progressVal;
