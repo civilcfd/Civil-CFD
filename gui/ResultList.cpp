@@ -11,6 +11,7 @@
 void MainWindow::buildResultList() {
   sim.trackRewind();
 
+  ui.t->clear();
   ui.t->addItem("0");
   
   bool ok;

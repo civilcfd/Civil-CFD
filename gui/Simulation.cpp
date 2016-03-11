@@ -65,6 +65,7 @@ int Simulation::newSimulation(QString new_name, QString new_path) {
   
   setPath(new_path);
   setName(new_name);
+  setAutot(true);
 
   track_empty();
   track_write();

@@ -199,9 +199,9 @@ int stl_check_normals(struct mesh_data *mesh, struct stl_data *stl,
   int flg = 0;
   double f_min = 9999999;
 
-  r_o[0] = mesh->origin[0] + mesh->delx * i + mesh->delx/2;
-  r_o[1] = mesh->origin[1] + mesh->dely * j + mesh->dely/2;
-  r_o[2] = mesh->origin[2] + mesh->delz * k + mesh->delz/2;
+  r_o[0] = mesh->origin[0] + mesh->delx * i + mesh->delx/2 + 0.000001;
+  r_o[1] = mesh->origin[1] + mesh->dely * j + mesh->dely/2 + 0.000001;
+  r_o[2] = mesh->origin[2] + mesh->delz * k + mesh->delz/2 + 0.000001;
 
   for(n=0; n < stl->facets; n++) {
     
@@ -218,7 +218,7 @@ int stl_check_normals(struct mesh_data *mesh, struct stl_data *stl,
           /* in this case, the normal is facing away from our point
            * check if this is the closest intersection
            * if so, set the flag to 1 */
-          if(fabs(f) < f_min) {
+          if(fabs(f) < (f_min - 0.000001)) {
             flg = 1;
             f_min = fabs(f);
           }

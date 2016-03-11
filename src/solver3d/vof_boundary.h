@@ -18,7 +18,7 @@ int boundary_mass_outflow(struct solver_data *solver,
 int boundary_weir(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double value, double turbulence);   
-double calc_flow(struct solver_data *solver, int x, double value, long int imin, long int imax, 
+double calc_flow(struct solver_data *solver, int x, long int imin, long int imax, 
                  long int jmin, long int jmax, long int kmin, long int kmax, double *area_ref);
 int boundary_hgl(struct solver_data *solver, 
                             int x, double min_1, double min_2, double max_1, double max_2, 

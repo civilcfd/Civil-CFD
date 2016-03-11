@@ -925,6 +925,7 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
   }
 
 	avr_max_obs = 0;
+	avr_fix = 0;
 	
   for(i = 0; i < mesh->imax; i++) {
     for(j = 0; j < mesh->jmax; j++) {
@@ -970,7 +971,8 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
 					mesh_area_correct(&AN(i,j,k), &AN(i,jm1,k), an_n[mesh_index(mesh,i,j,k)], 
 														an_n[mesh_index(mesh,i,jm1,k)], r);		
 					mesh_area_correct(&AT(i,j,k), &AT(i,j,km1), at_n[mesh_index(mesh,i,j,k)], 
-														at_n[mesh_index(mesh,i,j,km1)], r);								
+														at_n[mesh_index(mesh,i,j,km1)], r);	
+				  avr_max_obs = max(avr_fix,avr_max_obs);							
 
 				}
 				
@@ -985,7 +987,8 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
 					mesh_area_correct(&AE(i,j,k), &AE(im1,j,k), ae_n[mesh_index(mesh,i,j,k)], 
 														ae_n[mesh_index(mesh,im1,j,k)], r);		
 					mesh_area_correct(&AT(i,j,k), &AT(i,j,km1), at_n[mesh_index(mesh,i,j,k)], 
-														at_n[mesh_index(mesh,i,j,km1)], r);					
+														at_n[mesh_index(mesh,i,j,km1)], r);		
+				  avr_max_obs = max(avr_fix,avr_max_obs);			
 					
 				}			
 
@@ -1001,6 +1004,7 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
 														ae_n[mesh_index(mesh,im1,j,k)], r);		
 					mesh_area_correct(&AT(i,j,k), &AT(i,j,km1), at_n[mesh_index(mesh,i,j,k)], 
 														at_n[mesh_index(mesh,i,j,km1)], r);	
+				  avr_max_obs = max(avr_fix,avr_max_obs);
 				} 
 
 				if(corrected == 1) {
@@ -1008,7 +1012,6 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
 
 				}
 				
-				avr_max_obs = max(avr_fix,avr_max_obs);
 			}
 		}
 	}		

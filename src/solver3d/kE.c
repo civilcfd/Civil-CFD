@@ -110,7 +110,7 @@ int kE_setup(struct solver_data *solver) {
   kE.vonKarman = kE_n.vonKarman = 0.41;
   kE.length_scale = 0.038;
 
-  kE.rough = kE_n.rough = 0.0;
+  kE.rough = kE_n.rough = 0.00161; /* concrete */
   
   return 0;
 }

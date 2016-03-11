@@ -196,7 +196,7 @@ int boundary_hgl(struct solver_data *solver,
             VOF(i,j,k) = 0.0;
         }
         /* VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (VOF(i,j,k) + VOF(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2; */
-        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = VOF(i,j,k);
+        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = VOF(i,j,k); 
      
         if(solver->p_flag != 0) continue; 
         
@@ -216,7 +216,7 @@ int boundary_hgl(struct solver_data *solver,
         else if(mesh->vof[mesh_index(mesh,i,j,k)] <= 0.0) 
           mesh->P[mesh_index(mesh,i,j,k)] = 0.0;
           
-        /* P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = P(i,j,k); */
+        P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = P(i,j,k); 
         /* now set value 1 cell interior to the mesh to be the same */
         /* P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (P(i,j,k) + P(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2; */
 
@@ -283,7 +283,7 @@ int boundary_hgl(struct solver_data *solver,
   return 0;
 }
 
-double calc_flow(struct solver_data *solver, int x, double value, long int imin, long int imax, 
+double calc_flow(struct solver_data *solver, int x, long int imin, long int imax, 
                  long int jmin, long int jmax, long int kmin, long int kmax, double *area_ref) {
   long int i,j,k;
   
@@ -292,6 +292,7 @@ double calc_flow(struct solver_data *solver, int x, double value, long int imin,
   area = 0;
   flow = 0;
 
+  
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {  
@@ -300,49 +301,48 @@ double calc_flow(struct solver_data *solver, int x, double value, long int imin,
           area_0 = DELY * DELZ * AE(i+1,j,k);
           area_0 *= (VOF(i+1,j,k) + VOF(i+2,j,k))/2;
           
-          if(UN(i+1,j,k) * value > 0) flow += UN(i+1,j,k) * area_0;
+          flow += UN(i+1,j,k) * area_0;
           area += area_0;
           break;          
         case 1:
           area_0 = DELY * DELZ * AE(i-2,j,k);
           area_0 *= (VOF(i-1,j,k) + VOF(i-2,j,k))/2;
           
-          if(UN(i-2,j,k) * value > 0) flow += UN(i-2,j,k) * area_0;
+          flow += UN(i-2,j,k) * area_0;
           area += area_0;
           break;
         case 2:
           area_0 = DELX * DELZ * AN(i,j+1,k);
           area_0 *= (VOF(i,j+1,k) + VOF(i,j+2,k))/2;
           
-          if(VN(i,j+1,k) * value > 0) flow += VN(i,j+1,k) * area_0;
+          flow += VN(i,j+1,k) * area_0;
           area += area_0;
           break;          
         case 3:
           area_0 = DELX * DELZ * AN(i,j-2,k);
           area_0 *= (VOF(i,j-1,k) + VOF(i,j-2,k))/2;
           
-          if(VN(i,j-2,k) * value > 0 ) flow += VN(i,j-2,k) * area_0;
+          flow += VN(i,j-2,k) * area_0;
           area += area_0;
           break;          
         case 4:
           area_0 = DELX * DELY * AT(i,j,k+1);
           area_0 *= (VOF(i,j,k+1) + VOF(i,j,k+2))/2;
           
-          if(WN(i,j,k+1) * value > 0) flow += WN(i,j,k+1) * area_0;
+          flow += WN(i,j,k+1) * area_0;
           area += area_0;
           break;          
         case 5:
           area_0 = DELX * DELY * AT(i,j,k-2);
           area_0 *= (VOF(i,j,k-1) + VOF(i,j,k-2))/2;
           
-          if(WN(i,j,k-2) * value > 0) flow += WN(i,j,k-2) * area_0;
+          flow += WN(i,j,k-2) * area_0;
           area += area_0;
           break;     
         }        
       }
     }
   }
-  
   *area_ref = area;
   return flow;
 }
@@ -393,7 +393,8 @@ int boundary_weir(struct solver_data *solver,
     break;
   }
   
-  flow = calc_flow(solver, x, sgn, imin, imax, jmin, jmax, kmin, kmax, &area);
+  flow = calc_flow(solver, x, imin, imax, jmin, jmax, kmin, kmax, &area);
+  flow *= sgn;
   
   count = 0;
   ave_height = 0;
@@ -433,6 +434,7 @@ int boundary_weir(struct solver_data *solver,
   }
   else {
 
+    if(flow < emf) flow = emf;
     head = pow(flow / (1.6 * value),0.667);
     boundary_hgl(solver, x, min_1, min_2, max_1, max_2, head + turbulence, 0.00001); 
     
@@ -471,7 +473,56 @@ int boundary_mass_outflow(struct solver_data *solver,
     break;
   }
   
-  flow = calc_flow(solver, x, value, imin, imax, jmin, jmax, kmin, kmax, &area);
+  for(i=imin; i <= imax; i++) {
+    for(j=jmin; j <= jmax; j++) {
+      for(k=kmin; k <= kmax; k++) {  
+        switch(x) {
+        case 0:
+          area_0 = DELY * DELZ * AE(i+1,j,k);
+          area_0 *= (VOF(i+1,j,k) + VOF(i+2,j,k))/2;
+          
+          if(UN(i+1,j,k) * value > 0) flow += UN(i+1,j,k) * area_0;
+          area += area_0;
+          break;          
+        case 1:
+          area_0 = DELY * DELZ * AE(i-2,j,k);
+          area_0 *= (VOF(i-1,j,k) + VOF(i-2,j,k))/2;
+          
+          if(UN(i-2,j,k) * value > 0) flow += UN(i-2,j,k) * area_0;
+          area += area_0;
+          break;
+        case 2:
+          area_0 = DELX * DELZ * AN(i,j+1,k);
+          area_0 *= (VOF(i,j+1,k) + VOF(i,j+2,k))/2;
+          
+          if(VN(i,j+1,k) * value > 0) flow += VN(i,j+1,k) * area_0;
+          area += area_0;
+          break;          
+        case 3:
+          area_0 = DELX * DELZ * AN(i,j-2,k);
+          area_0 *= (VOF(i,j-1,k) + VOF(i,j-2,k))/2;
+          
+          if(VN(i,j-2,k) * value > 0 ) flow += VN(i,j-2,k) * area_0;
+          area += area_0;
+          break;          
+        case 4:
+          area_0 = DELX * DELY * AT(i,j,k+1);
+          area_0 *= (VOF(i,j,k+1) + VOF(i,j,k+2))/2;
+          
+          if(WN(i,j,k+1) * value > 0) flow += WN(i,j,k+1) * area_0;
+          area += area_0;
+          break;          
+        case 5:
+          area_0 = DELX * DELY * AT(i,j,k-2);
+          area_0 *= (VOF(i,j,k-1) + VOF(i,j,k-2))/2;
+          
+          if(WN(i,j,k-2) * value > 0) flow += WN(i,j,k-2) * area_0;
+          area += area_0;
+          break;     
+        }        
+      }
+    }
+  }
 
   
   if(fabs(flow) < 0.1 * fabs(value) || flow * value < 0) { 

@@ -484,17 +484,22 @@ void MainWindow::write() {
 void MainWindow::toggle() {
   if(ui.kEpsilon->isChecked()) {
     ui.length_scale->setEnabled(true);
+    ui.initialk->setEnabled(true);
     ui.rough->setEnabled(true);
+    
     if(ui.length_scale->toPlainText().isEmpty() && 
        ui.rough->toPlainText().isEmpty()) {
       sim.setTurbulence("kEpsilon");
       ui.rough->setPlainText(sim.getRough());
       ui.length_scale->setPlainText(sim.getLength_scale());
     }
+    
+    if(ui.initialk->toPlainText() == "-1") ui.initialk->setPlainText("0.001");
   }
   else {
     ui.length_scale->setEnabled(false);
     ui.rough->setEnabled(false);
+    ui.initialk->setEnabled(false);
   }
 }
 

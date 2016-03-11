@@ -42,7 +42,6 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   if(t.toDouble(&ok) < 0.00001) t = "";
   if(!ok) t="";
   
-  if(t != "") cmd = cmd + " " + t;
   
   if(!QFile::exists(cmd)) {
     ui.status->setText("Could not find executable: " + cmd);
@@ -116,9 +115,6 @@ void SolverDialog::readyReadStandardOutput() {
         if(delt > maxDelt) maxDelt = delt;
         
         ui.plot->graph(0)->addData(progressVal, delt);
-        ui.plot->xAxis->setRange(0, progressVal);
-        ui.plot->yAxis->setRange(0, maxDelt);
-        ui.plot->replot();
       }
       
       if(list[i].contains("Flow")) {
@@ -184,9 +180,6 @@ void SolverDialog::readyReadStandardOutput() {
         }
         
         ui.flow->graph(n)->addData(progressVal, flow);
-        ui.flow->xAxis->setRange(0, progressVal);
-        ui.flow->yAxis->setRange(minFlow, maxFlow);
-        ui.flow->replot();
         
       }
     }
@@ -195,6 +188,13 @@ void SolverDialog::readyReadStandardOutput() {
       ui.progressBar->setValue(progressVal * 100 / stopT);
     }
   }
+  
+  ui.plot->xAxis->setRange(0, progressVal);
+  ui.plot->yAxis->setRange(0, maxDelt);
+  ui.plot->replot();
+  ui.flow->xAxis->setRange(0, progressVal);
+  ui.flow->yAxis->setRange(minFlow, maxFlow);
+  ui.flow->replot();
 
 }
 

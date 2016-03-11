@@ -1,6 +1,6 @@
 LIBS = -L/usr/local/lib -L/opt/local/lib -L../../lib -lsolver3d -lmesh3d -lm -lqhull -fopenmp
 CC = clang-omp
-CFLAGS = -g -I /opt/local/include -I ../mesh3d -I ../solver3d -Wall -DDEBUG -O3 -fopenmp
+CFLAGS = -g -I /opt/local/include -I ../mesh3d -I ../solver3d -Wall -DDEBUG -Os -fopenmp
 
 .PHONY: default all clean
 
@@ -21,7 +21,7 @@ libmesh3d:
 libsolver3d:
 	$(MAKE) -C ../solver3d
 
-mesh3d: clean libmesh3d mesh3d.o
+mesh3d: clean libmesh3d libsolver3d mesh3d.o
 	$(CC) mesh3d.o -Wall $(LIBS) -o ../../bin/$@
 	test -d ../../bin/gui.app/Contents/MacOS && cp ../../bin/$@ ../../bin/gui.app/Contents/MacOS
 
