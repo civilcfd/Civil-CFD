@@ -17,6 +17,7 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   ui.setupUi(this);
 
   ui.status->setText("Simulation Running");
+  ui.Return->setEnabled(false);
 
   process = new QProcess(this);
 
@@ -86,7 +87,12 @@ void SolverDialog::on_Return_clicked() {
 }
 
 void SolverDialog::on_Stop_clicked() {
+
+#ifdef _WIN32
+  process->kill();
+#else
   process->terminate();
+#endif
 
   stopped = true;
 }
@@ -222,6 +228,7 @@ void SolverDialog::finished(int exitCode, QProcess::ExitStatus status) {
   }
 
   ui.Return->setEnabled(true);
+  stopped = false;
 }
 
 void SolverDialog::stateChanged(QProcess::ProcessState state) {
