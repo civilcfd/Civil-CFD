@@ -13,6 +13,7 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
   bool ok;
 
   stopT = sim.getEndt().toDouble();
+  stopped = false;
 
   ui.setupUi(this);
 
