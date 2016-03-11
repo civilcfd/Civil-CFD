@@ -93,13 +93,14 @@ void SolverDialog::on_Return_clicked() {
 
 void SolverDialog::on_Stop_clicked() {
 
+  stopped = true;
+  
 #ifdef _WIN32
   process->kill();
 #else
   process->terminate();
 #endif
 
-  stopped = true;
 }
 
 void SolverDialog::readyReadStandardOutput() {
@@ -211,13 +212,16 @@ void SolverDialog::readyReadStandardOutput() {
 
 void SolverDialog::error(QProcess::ProcessError error) {
 
-  if(error == QProcess::FailedToStart) {
+  if(stopped == true) {
+    ui.status->setText("Stopped by user");  
+  } else if(error == QProcess::FailedToStart) {
     ui.status->setText("Error: solver3d could not start");
   } else if(error == QProcess::Crashed) {
     ui.status->setText("Error: solver3d has crashed");
   }
 
   ui.Return->setEnabled(true);
+  stopped = false;
 }
 
 void SolverDialog::finished(int exitCode, QProcess::ExitStatus status) {

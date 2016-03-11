@@ -66,13 +66,14 @@ void RenderDialog::on_Return_clicked() {
 
 void RenderDialog::on_Stop_clicked() {
 
+  stopped = true;
+  
 #ifdef _WIN32
   process->kill();
 #else
   process->terminate();
 #endif
 
-  stopped = true;
 }
 
 void RenderDialog::readyReadStandardOutput() {
@@ -107,11 +108,15 @@ void RenderDialog::readyReadStandardOutput() {
 
 void RenderDialog::error(QProcess::ProcessError error) {
 
-  if(error == QProcess::FailedToStart) {
+  if(stopped == true) {
+    ui.status->setText("Stopped by user");
+  } else if(error == QProcess::FailedToStart) {
     ui.status->setText("Error: mesh3d could not start");
   } else if(error == QProcess::Crashed) {
     ui.status->setText("Error: mesh3d has crashed");
   }
+
+  stopped = false;
 
   ui.Return->setEnabled(true);
 }
