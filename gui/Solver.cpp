@@ -59,6 +59,7 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
     process->start(cmd);
   }
   
+  progressVal = mint;
    
   ui.plot->addGraph();
   ui.plot->graph(0)->setPen(QPen(Qt::blue));
