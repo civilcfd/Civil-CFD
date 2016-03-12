@@ -981,7 +981,7 @@ int vof_velocity(struct solver_data *solver) {
           else
             nu = solver->nu;
           solver->nu_max = max(nu, solver->nu_max);
-                            
+                 
           Viscocity = nu * (vis[0]/pow(del[0],2) + vis[1]/pow(del[1],2) + vis[2]/pow(del[2],2));
 
           /* deleted from this code 6/18

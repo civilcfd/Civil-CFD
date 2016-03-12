@@ -145,7 +145,7 @@ int kE_init(struct solver_data *solver) {
   kE.length = max(kE.length, KMAX * DELZ);
   kE.length *= kE.length_scale;
    
-  kE_set_internal(solver, 0.001, 0);
+  kE_set_internal(solver, 0.0001, 0);
  
   return 0;
 }
@@ -204,10 +204,14 @@ int kE_special_boundaries(struct solver_data *solver) {
         case hgl:
         case mass_outflow:
         case fixed_velocity:
-        case weir:
           kE_boundary_fixed_k(solver, x, sb->extent_a[0], sb->extent_a[1], 
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, sb->turbulence);
+          break;
+        case weir:
+          kE_boundary_fixed_k(solver, x, sb->extent_a[0], sb->extent_a[1], 
+                                     sb->extent_b[0], sb->extent_b[1], 
+                                     sb->value, 0.0001);
           break;
         }
     }
