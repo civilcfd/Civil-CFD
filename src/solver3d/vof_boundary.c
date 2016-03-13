@@ -39,8 +39,8 @@ enum special_boundaries vof_boundaries_check_inside_sb(struct solver_data *solve
   
   for(sb = solver->mesh->sb[x]; sb != NULL; sb = sb->next) {   
       
-        if(a >= sb->extent_a[0] && a < sb->extent_b[0] &&
-           b >= sb->extent_a[1] && b < sb->extent_b[1])
+        if(a >= sb->extent_a[0] && a <= sb->extent_b[0] &&
+           b >= sb->extent_a[1] && b <= sb->extent_b[1])
           return sb->type;
   }    
    
