@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'civlcfd.ui'
 **
-** Created by: Qt User Interface Compiler version 4.8.7
+** Created by: Qt User Interface Compiler version 4.8.6
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -259,6 +259,42 @@ public:
     QLabel *label_40;
     QCheckBox *showAxis;
     QCheckBox *showLegend;
+    QWidget *Visualize3d;
+    QGridLayout *gridLayout_23;
+    QGridLayout *gridLayout_21;
+    QCheckBox *showAxis3d;
+    QLabel *extent3dText;
+    QVTKWidget *vis3d;
+    QLabel *origin3dText;
+    QLabel *label_54;
+    QCheckBox *blockObstacles3d;
+    QCheckBox *showMesh3d;
+    QPushButton *saveJPEG3d;
+    QRadioButton *yNormal3d;
+    QSpacerItem *verticalSpacer_27;
+    QSpacerItem *verticalSpacer_23;
+    QSpacerItem *verticalSpacer_25;
+    QRadioButton *xNormal3d;
+    QSpacerItem *verticalSpacer_26;
+    QLabel *label_51;
+    QSlider *origin3d;
+    QLabel *label_53;
+    QFrame *line_9;
+    QHBoxLayout *horizontalLayout_4;
+    QSpacerItem *horizontalSpacer_19;
+    QLabel *label_49;
+    QPlainTextEdit *from3d;
+    QLabel *label_50;
+    QPlainTextEdit *to3d;
+    QPushButton *animate3d;
+    QSpacerItem *horizontalSpacer_20;
+    QRadioButton *zNormal3d;
+    QListWidget *timesteps3d;
+    QSpacerItem *verticalSpacer_28;
+    QLabel *label_55;
+    QLabel *label_56;
+    QLabel *label_52;
+    QSlider *extent3d;
     QMenuBar *menubar;
     QMenu *menuFile;
     QStatusBar *statusbar;
@@ -270,7 +306,7 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->setEnabled(true);
-        MainWindow->resize(874, 766);
+        MainWindow->resize(950, 752);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -704,8 +740,8 @@ public:
         widget->setObjectName(QString::fromUtf8("widget"));
         widget->setMinimumSize(QSize(500, 0));
         gridLayout_7 = new QGridLayout(widget);
-        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         gridLayout_7->setContentsMargins(0, 0, 0, 0);
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         MeshUndo = new QPushButton(widget);
         MeshUndo->setObjectName(QString::fromUtf8("MeshUndo"));
         MeshUndo->setMaximumSize(QSize(160, 16777215));
@@ -1616,13 +1652,230 @@ public:
         gridLayout_18->addLayout(gridLayout_17, 0, 0, 1, 1);
 
         tabWidget->addTab(Visualize, QString());
+        Visualize3d = new QWidget();
+        Visualize3d->setObjectName(QString::fromUtf8("Visualize3d"));
+        Visualize3d->setEnabled(false);
+        gridLayout_23 = new QGridLayout(Visualize3d);
+        gridLayout_23->setObjectName(QString::fromUtf8("gridLayout_23"));
+        gridLayout_21 = new QGridLayout();
+        gridLayout_21->setObjectName(QString::fromUtf8("gridLayout_21"));
+        showAxis3d = new QCheckBox(Visualize3d);
+        showAxis3d->setObjectName(QString::fromUtf8("showAxis3d"));
+        showAxis3d->setChecked(true);
+
+        gridLayout_21->addWidget(showAxis3d, 8, 1, 1, 1, Qt::AlignHCenter);
+
+        extent3dText = new QLabel(Visualize3d);
+        extent3dText->setObjectName(QString::fromUtf8("extent3dText"));
+        extent3dText->setAlignment(Qt::AlignCenter);
+
+        gridLayout_21->addWidget(extent3dText, 6, 2, 1, 1);
+
+        vis3d = new QVTKWidget(Visualize3d);
+        vis3d->setObjectName(QString::fromUtf8("vis3d"));
+
+        gridLayout_21->addWidget(vis3d, 13, 1, 2, 4);
+
+        origin3dText = new QLabel(Visualize3d);
+        origin3dText->setObjectName(QString::fromUtf8("origin3dText"));
+        origin3dText->setMaximumSize(QSize(16777215, 15));
+        origin3dText->setAlignment(Qt::AlignCenter);
+
+        gridLayout_21->addWidget(origin3dText, 4, 2, 1, 1);
+
+        label_54 = new QLabel(Visualize3d);
+        label_54->setObjectName(QString::fromUtf8("label_54"));
+        label_54->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_21->addWidget(label_54, 3, 0, 1, 1);
+
+        blockObstacles3d = new QCheckBox(Visualize3d);
+        blockObstacles3d->setObjectName(QString::fromUtf8("blockObstacles3d"));
+        blockObstacles3d->setChecked(true);
+
+        gridLayout_21->addWidget(blockObstacles3d, 8, 2, 1, 1, Qt::AlignHCenter);
+
+        showMesh3d = new QCheckBox(Visualize3d);
+        showMesh3d->setObjectName(QString::fromUtf8("showMesh3d"));
+        showMesh3d->setChecked(false);
+
+        gridLayout_21->addWidget(showMesh3d, 8, 3, 1, 1, Qt::AlignHCenter);
+
+        saveJPEG3d = new QPushButton(Visualize3d);
+        saveJPEG3d->setObjectName(QString::fromUtf8("saveJPEG3d"));
+        saveJPEG3d->setIcon(icon);
+
+        gridLayout_21->addWidget(saveJPEG3d, 13, 0, 1, 1);
+
+        yNormal3d = new QRadioButton(Visualize3d);
+        yNormal3d->setObjectName(QString::fromUtf8("yNormal3d"));
+        yNormal3d->setChecked(true);
+
+        gridLayout_21->addWidget(yNormal3d, 1, 2, 1, 1, Qt::AlignHCenter);
+
+        verticalSpacer_27 = new QSpacerItem(20, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_21->addItem(verticalSpacer_27, 4, 3, 1, 1);
+
+        verticalSpacer_23 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_21->addItem(verticalSpacer_23, 2, 2, 1, 1);
+
+        verticalSpacer_25 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_21->addItem(verticalSpacer_25, 7, 3, 1, 1);
+
+        xNormal3d = new QRadioButton(Visualize3d);
+        xNormal3d->setObjectName(QString::fromUtf8("xNormal3d"));
+
+        gridLayout_21->addWidget(xNormal3d, 1, 1, 1, 1, Qt::AlignHCenter);
+
+        verticalSpacer_26 = new QSpacerItem(20, 13, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_21->addItem(verticalSpacer_26, 9, 1, 1, 1);
+
+        label_51 = new QLabel(Visualize3d);
+        label_51->setObjectName(QString::fromUtf8("label_51"));
+        sizePolicy5.setHeightForWidth(label_51->sizePolicy().hasHeightForWidth());
+        label_51->setSizePolicy(sizePolicy5);
+        label_51->setMaximumSize(QSize(16777215, 15));
+        label_51->setFont(font);
+
+        gridLayout_21->addWidget(label_51, 0, 0, 1, 1);
+
+        origin3d = new QSlider(Visualize3d);
+        origin3d->setObjectName(QString::fromUtf8("origin3d"));
+        origin3d->setValue(0);
+        origin3d->setSliderPosition(0);
+        origin3d->setTracking(false);
+        origin3d->setOrientation(Qt::Horizontal);
+        origin3d->setInvertedAppearance(false);
+        origin3d->setInvertedControls(false);
+
+        gridLayout_21->addWidget(origin3d, 3, 1, 1, 3);
+
+        label_53 = new QLabel(Visualize3d);
+        label_53->setObjectName(QString::fromUtf8("label_53"));
+        sizePolicy5.setHeightForWidth(label_53->sizePolicy().hasHeightForWidth());
+        label_53->setSizePolicy(sizePolicy5);
+        label_53->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_21->addWidget(label_53, 5, 0, 1, 1);
+
+        line_9 = new QFrame(Visualize3d);
+        line_9->setObjectName(QString::fromUtf8("line_9"));
+        line_9->setFrameShape(QFrame::HLine);
+        line_9->setFrameShadow(QFrame::Sunken);
+
+        gridLayout_21->addWidget(line_9, 10, 0, 1, 5);
+
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        horizontalSpacer_19 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_4->addItem(horizontalSpacer_19);
+
+        label_49 = new QLabel(Visualize3d);
+        label_49->setObjectName(QString::fromUtf8("label_49"));
+
+        horizontalLayout_4->addWidget(label_49, 0, Qt::AlignRight);
+
+        from3d = new QPlainTextEdit(Visualize3d);
+        from3d->setObjectName(QString::fromUtf8("from3d"));
+        sizePolicy3.setHeightForWidth(from3d->sizePolicy().hasHeightForWidth());
+        from3d->setSizePolicy(sizePolicy3);
+        from3d->setMaximumSize(QSize(100, 28));
+
+        horizontalLayout_4->addWidget(from3d);
+
+        label_50 = new QLabel(Visualize3d);
+        label_50->setObjectName(QString::fromUtf8("label_50"));
+        label_50->setMaximumSize(QSize(17, 16777215));
+
+        horizontalLayout_4->addWidget(label_50, 0, Qt::AlignHCenter);
+
+        to3d = new QPlainTextEdit(Visualize3d);
+        to3d->setObjectName(QString::fromUtf8("to3d"));
+        sizePolicy4.setHeightForWidth(to3d->sizePolicy().hasHeightForWidth());
+        to3d->setSizePolicy(sizePolicy4);
+        to3d->setMaximumSize(QSize(100, 28));
+
+        horizontalLayout_4->addWidget(to3d, 0, Qt::AlignLeft);
+
+        animate3d = new QPushButton(Visualize3d);
+        animate3d->setObjectName(QString::fromUtf8("animate3d"));
+        animate3d->setIcon(icon14);
+
+        horizontalLayout_4->addWidget(animate3d);
+
+        horizontalSpacer_20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_4->addItem(horizontalSpacer_20);
+
+
+        gridLayout_21->addLayout(horizontalLayout_4, 12, 2, 1, 3);
+
+        zNormal3d = new QRadioButton(Visualize3d);
+        zNormal3d->setObjectName(QString::fromUtf8("zNormal3d"));
+
+        gridLayout_21->addWidget(zNormal3d, 1, 3, 1, 1, Qt::AlignHCenter);
+
+        timesteps3d = new QListWidget(Visualize3d);
+        timesteps3d->setObjectName(QString::fromUtf8("timesteps3d"));
+        sizePolicy6.setHeightForWidth(timesteps3d->sizePolicy().hasHeightForWidth());
+        timesteps3d->setSizePolicy(sizePolicy6);
+        timesteps3d->setMaximumSize(QSize(150, 1600000));
+        timesteps3d->setLayoutMode(QListView::SinglePass);
+
+        gridLayout_21->addWidget(timesteps3d, 14, 0, 1, 1);
+
+        verticalSpacer_28 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_21->addItem(verticalSpacer_28, 0, 2, 1, 1);
+
+        label_55 = new QLabel(Visualize3d);
+        label_55->setObjectName(QString::fromUtf8("label_55"));
+        label_55->setFont(font);
+        label_55->setAlignment(Qt::AlignCenter);
+
+        gridLayout_21->addWidget(label_55, 12, 1, 1, 1);
+
+        label_56 = new QLabel(Visualize3d);
+        label_56->setObjectName(QString::fromUtf8("label_56"));
+        sizePolicy5.setHeightForWidth(label_56->sizePolicy().hasHeightForWidth());
+        label_56->setSizePolicy(sizePolicy5);
+        label_56->setMaximumSize(QSize(16777215, 15));
+        label_56->setFont(font);
+
+        gridLayout_21->addWidget(label_56, 12, 0, 1, 1);
+
+        label_52 = new QLabel(Visualize3d);
+        label_52->setObjectName(QString::fromUtf8("label_52"));
+        sizePolicy5.setHeightForWidth(label_52->sizePolicy().hasHeightForWidth());
+        label_52->setSizePolicy(sizePolicy5);
+        label_52->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_21->addWidget(label_52, 1, 0, 1, 1);
+
+        extent3d = new QSlider(Visualize3d);
+        extent3d->setObjectName(QString::fromUtf8("extent3d"));
+        extent3d->setValue(99);
+        extent3d->setTracking(false);
+        extent3d->setOrientation(Qt::Horizontal);
+
+        gridLayout_21->addWidget(extent3d, 5, 1, 1, 3);
+
+
+        gridLayout_23->addLayout(gridLayout_21, 0, 0, 1, 1);
+
+        tabWidget->addTab(Visualize3d, QString());
 
         gridLayout_3->addWidget(tabWidget, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 874, 22));
+        menubar->setGeometry(QRect(0, 0, 950, 22));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         MainWindow->setMenuBar(menubar);
@@ -1868,6 +2121,27 @@ public:
         showAxis->setText(QApplication::translate("MainWindow", "Show Axis", 0, QApplication::UnicodeUTF8));
         showLegend->setText(QApplication::translate("MainWindow", "Show Legend", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Visualize), QApplication::translate("MainWindow", "Visualize", 0, QApplication::UnicodeUTF8));
+        showAxis3d->setText(QApplication::translate("MainWindow", "Show Axis", 0, QApplication::UnicodeUTF8));
+        extent3dText->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
+        origin3dText->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
+        label_54->setText(QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
+        blockObstacles3d->setText(QApplication::translate("MainWindow", "Block Obstacles", 0, QApplication::UnicodeUTF8));
+        showMesh3d->setText(QApplication::translate("MainWindow", "Show Mesh", 0, QApplication::UnicodeUTF8));
+        saveJPEG3d->setText(QApplication::translate("MainWindow", "Save Image", 0, QApplication::UnicodeUTF8));
+        yNormal3d->setText(QApplication::translate("MainWindow", "Y-Normal", 0, QApplication::UnicodeUTF8));
+        xNormal3d->setText(QApplication::translate("MainWindow", "X-Normal", 0, QApplication::UnicodeUTF8));
+        label_51->setText(QApplication::translate("MainWindow", "Iso-Surface Clipping", 0, QApplication::UnicodeUTF8));
+        label_53->setText(QApplication::translate("MainWindow", "Extent", 0, QApplication::UnicodeUTF8));
+        label_49->setText(QApplication::translate("MainWindow", "Animate", 0, QApplication::UnicodeUTF8));
+        from3d->setPlainText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
+        label_50->setText(QApplication::translate("MainWindow", "to", 0, QApplication::UnicodeUTF8));
+        to3d->setPlainText(QApplication::translate("MainWindow", "1", 0, QApplication::UnicodeUTF8));
+        animate3d->setText(QApplication::translate("MainWindow", "Animate", 0, QApplication::UnicodeUTF8));
+        zNormal3d->setText(QApplication::translate("MainWindow", "Z-Normal", 0, QApplication::UnicodeUTF8));
+        label_55->setText(QApplication::translate("MainWindow", "Results", 0, QApplication::UnicodeUTF8));
+        label_56->setText(QApplication::translate("MainWindow", "Timestep", 0, QApplication::UnicodeUTF8));
+        label_52->setText(QApplication::translate("MainWindow", "Orientation", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(Visualize3d), QApplication::translate("MainWindow", "3D Surface", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

@@ -1,5 +1,5 @@
 /*
- * RenderDisplay.cpp
+ * VisualizeDisplay.cpp
  *
  * Implements VTK displayer for the redering window
  *

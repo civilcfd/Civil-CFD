@@ -47,7 +47,7 @@ public:
                   long int kmax); 
 
 
-  void block(QString vtkFile, int normal, double origin, double del);
+  virtual void block(QString vtkFile, int normal, double origin, double del);
   void clip(QString vtkFile, int normal, double origin);
   void clipVector(QString vtkFile, int normal, double origin, bool normalize);
   void vector(QString vtkFile, int normal, double origin);
@@ -59,7 +59,7 @@ public:
   void showLegend();
   void clear();
 
-private:
+protected:
   vtkSmartPointer<vtkStructuredPointsReader> reader;
   vtkSmartPointer<vtkPolyDataMapper> VTKmapper;
   vtkSmartPointer<vtkActor> VTKactor;

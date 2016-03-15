@@ -45,4 +45,5 @@ void MainWindow::on_Delete_clicked() {
 	}
 	
   buildTimesteps();
+  build3dTimesteps();
 }

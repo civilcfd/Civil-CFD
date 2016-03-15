@@ -122,6 +122,16 @@ void MainWindow::on_EditBaffle_clicked() {
 }
 
 void MainWindow::on_BaffleTree_itemDoubleClicked(QTreeWidgetItem *item, int column) {
+	if(item == NULL) return;
+	
+	if(item->parent() == NULL) return;
+	
+	if(item->parent()->parent() == NULL) { // Double clicked on axis - shortcut to add item
+		on_AddBaffle_clicked();
+		return;
+	}
+	
+
   editBaffle(item);
 }
 
@@ -135,6 +145,13 @@ void MainWindow::on_AddBaffle_clicked() {
                              "Please select an axis", QMessageBox::Ok, QMessageBox::Ok);
     return;
   }
+  if(item->parent() == NULL) {
+    QMessageBox::information(this,"Civil CFD",
+                             "Please select an axis", QMessageBox::Ok, QMessageBox::Ok);
+    return;
+  }
+
+	if(item->parent()->parent() != NULL) item = item->parent(); //Allows user to select from an existing baffle when adding
 
   text = item->text(0);
   if((text != "x"   && text !="y"   &&

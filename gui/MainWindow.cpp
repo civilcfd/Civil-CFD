@@ -17,6 +17,7 @@ MainWindow::MainWindow() : QMainWindow() {
   boundaryDisplay = new BoundaryDisplay(10,10,10);
   baffleDisplay = new BoundaryDisplay(10,10,10);
   visualizeDisplay = new VisualizeDisplay(10,10,10);
+  visualize3dDisplay = new Visualize3DDisplay(10,10,10);
 
   appPath = QCoreApplication::applicationDirPath();
 
@@ -33,6 +34,8 @@ MainWindow::MainWindow() : QMainWindow() {
   ui.VTKBaffles->SetRenderWindow(baffleDisplay->getRenderWindow());  
 
   ui.vis->SetRenderWindow(visualizeDisplay->getRenderWindow());
+  
+  ui.vis3d->SetRenderWindow(visualize3dDisplay->getRenderWindow());
 }
 
 bool MainWindow::saveNotify() {
@@ -261,6 +264,7 @@ void MainWindow::enableAll() {
   ui.InitialConditions->setEnabled(true);
   ui.Simulate->setEnabled(true);
   ui.Visualize->setEnabled(true);
+  ui.Visualize3d->setEnabled(true);
 }
 
 void MainWindow::disableAll() {
@@ -416,6 +420,7 @@ void MainWindow::update() {
 
 
   visualizeUpdate();
+  visualize3dUpdate();
 }
 
 void MainWindow::write() {

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'MainWindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.7)
+** Created by: The Qt Meta Object Compiler version 63 (Qt 4.8.6)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,7 +10,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'MainWindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.7. It"
+#error "This file was generated using the moc from 4.8.6. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -22,7 +22,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      52,   14, // methods
+      62,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -59,29 +59,39 @@ static const uint qt_meta_data_MainWindow[] = {
      856,   38,   38,   38, 0x08,
      881,   38,   38,   38, 0x08,
      903,   38,   38,   38, 0x08,
-     929,   38,   38,   38, 0x08,
-     955,   38,   38,   38, 0x08,
-     981,   38,   38,   38, 0x08,
-    1006,   38,   38,   38, 0x08,
-    1040,   38,   38,   38, 0x08,
-    1061,   38,   38,   38, 0x08,
-    1082,   38,   38,   38, 0x08,
-    1103,   38,   38,   38, 0x08,
-    1127,   38,   38,   38, 0x08,
-    1149,   38,   38,   38, 0x08,
-    1171,   38,   38,   38, 0x08,
-    1195,   38,   38,   38, 0x08,
+     927,   38,   38,   38, 0x08,
+     953,   38,   38,   38, 0x08,
+     979,   38,   38,   38, 0x08,
+    1005,   38,   38,   38, 0x08,
+    1030,   38,   38,   38, 0x08,
+    1057,   38,   38,   38, 0x08,
+    1084,   38,   38,   38, 0x08,
+    1118,   38,   38,   38, 0x08,
+    1154,   38,   38,   38, 0x08,
+    1175,   38,   38,   38, 0x08,
+    1196,   38,   38,   38, 0x08,
     1217,   38,   38,   38, 0x08,
-    1247,   38,   38,   38, 0x08,
-    1272,   38,   38,   38, 0x08,
-    1300,   38,   38,   38, 0x08,
-    1322,   38,   38,   38, 0x08,
-    1348,   38,   38,   38, 0x08,
-    1370,   38,   38,   38, 0x08,
-    1397,   38,   38,   38, 0x08,
-    1420,   38,   38,   38, 0x08,
-    1443,   38,   38,   38, 0x08,
-    1462,   38,   38,   38, 0x08,
+    1240,   38,   38,   38, 0x08,
+    1263,   38,   38,   38, 0x08,
+    1286,   38,   38,   38, 0x08,
+    1310,   38,   38,   38, 0x08,
+    1332,   38,   38,   38, 0x08,
+    1354,   38,   38,   38, 0x08,
+    1378,   38,   38,   38, 0x08,
+    1400,   38,   38,   38, 0x08,
+    1424,   38,   38,   38, 0x08,
+    1454,   38,   38,   38, 0x08,
+    1479,   38,   38,   38, 0x08,
+    1507,   38,   38,   38, 0x08,
+    1529,   38,   38,   38, 0x08,
+    1553,   38,   38,   38, 0x08,
+    1583,   38,   38,   38, 0x08,
+    1609,   38,   38,   38, 0x08,
+    1631,   38,   38,   38, 0x08,
+    1658,   38,   38,   38, 0x08,
+    1681,   38,   38,   38, 0x08,
+    1704,   38,   38,   38, 0x08,
+    1723,   38,   38,   38, 0x08,
 
        0        // eod
 };
@@ -110,19 +120,27 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_BaffleTree_itemClicked(QTreeWidgetItem*,int)\0"
     "on_RemoveBaffle_clicked()\0"
     "on_updateRange_clicked()\0on_saveJPEG_clicked()\0"
+    "on_saveJPEG3d_clicked()\0"
     "on_inside_x_textChanged()\0"
     "on_inside_y_textChanged()\0"
     "on_inside_z_textChanged()\0"
     "on_origin_valueChanged()\0"
+    "on_origin3d_valueChanged()\0"
+    "on_extent3d_valueChanged()\0"
     "on_timesteps_currentItemChanged()\0"
+    "on_timesteps3d_currentItemChanged()\0"
     "on_xNormal_toggled()\0on_yNormal_toggled()\0"
-    "on_zNormal_toggled()\0on_contourVOF_toggled()\0"
-    "on_contourP_toggled()\0on_contourK_toggled()\0"
-    "on_showLegend_toggled()\0on_showAxis_toggled()\0"
+    "on_zNormal_toggled()\0on_xNormal3d_toggled()\0"
+    "on_yNormal3d_toggled()\0on_zNormal3d_toggled()\0"
+    "on_contourVOF_toggled()\0on_contourP_toggled()\0"
+    "on_contourK_toggled()\0on_showLegend_toggled()\0"
+    "on_showAxis_toggled()\0on_showAxis3d_toggled()\0"
     "on_contourVorticity_toggled()\0"
     "on_showVectors_toggled()\0"
     "on_blockObstacles_toggled()\0"
-    "on_showMesh_toggled()\0on_earthGravity_clicked()\0"
+    "on_showMesh_toggled()\0on_showMesh3d_toggled()\0"
+    "on_blockObstacles3d_toggled()\0"
+    "on_earthGravity_clicked()\0"
     "on_water20C_clicked()\0on_defaultLength_clicked()\0"
     "on_calcRough_clicked()\0on_SelectAll_clicked()\0"
     "on_Clear_clicked()\0on_Delete_clicked()\0"
@@ -162,30 +180,40 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 25: _t->on_RemoveBaffle_clicked(); break;
         case 26: _t->on_updateRange_clicked(); break;
         case 27: _t->on_saveJPEG_clicked(); break;
-        case 28: _t->on_inside_x_textChanged(); break;
-        case 29: _t->on_inside_y_textChanged(); break;
-        case 30: _t->on_inside_z_textChanged(); break;
-        case 31: _t->on_origin_valueChanged(); break;
-        case 32: _t->on_timesteps_currentItemChanged(); break;
-        case 33: _t->on_xNormal_toggled(); break;
-        case 34: _t->on_yNormal_toggled(); break;
-        case 35: _t->on_zNormal_toggled(); break;
-        case 36: _t->on_contourVOF_toggled(); break;
-        case 37: _t->on_contourP_toggled(); break;
-        case 38: _t->on_contourK_toggled(); break;
-        case 39: _t->on_showLegend_toggled(); break;
-        case 40: _t->on_showAxis_toggled(); break;
-        case 41: _t->on_contourVorticity_toggled(); break;
-        case 42: _t->on_showVectors_toggled(); break;
-        case 43: _t->on_blockObstacles_toggled(); break;
-        case 44: _t->on_showMesh_toggled(); break;
-        case 45: _t->on_earthGravity_clicked(); break;
-        case 46: _t->on_water20C_clicked(); break;
-        case 47: _t->on_defaultLength_clicked(); break;
-        case 48: _t->on_calcRough_clicked(); break;
-        case 49: _t->on_SelectAll_clicked(); break;
-        case 50: _t->on_Clear_clicked(); break;
-        case 51: _t->on_Delete_clicked(); break;
+        case 28: _t->on_saveJPEG3d_clicked(); break;
+        case 29: _t->on_inside_x_textChanged(); break;
+        case 30: _t->on_inside_y_textChanged(); break;
+        case 31: _t->on_inside_z_textChanged(); break;
+        case 32: _t->on_origin_valueChanged(); break;
+        case 33: _t->on_origin3d_valueChanged(); break;
+        case 34: _t->on_extent3d_valueChanged(); break;
+        case 35: _t->on_timesteps_currentItemChanged(); break;
+        case 36: _t->on_timesteps3d_currentItemChanged(); break;
+        case 37: _t->on_xNormal_toggled(); break;
+        case 38: _t->on_yNormal_toggled(); break;
+        case 39: _t->on_zNormal_toggled(); break;
+        case 40: _t->on_xNormal3d_toggled(); break;
+        case 41: _t->on_yNormal3d_toggled(); break;
+        case 42: _t->on_zNormal3d_toggled(); break;
+        case 43: _t->on_contourVOF_toggled(); break;
+        case 44: _t->on_contourP_toggled(); break;
+        case 45: _t->on_contourK_toggled(); break;
+        case 46: _t->on_showLegend_toggled(); break;
+        case 47: _t->on_showAxis_toggled(); break;
+        case 48: _t->on_showAxis3d_toggled(); break;
+        case 49: _t->on_contourVorticity_toggled(); break;
+        case 50: _t->on_showVectors_toggled(); break;
+        case 51: _t->on_blockObstacles_toggled(); break;
+        case 52: _t->on_showMesh_toggled(); break;
+        case 53: _t->on_showMesh3d_toggled(); break;
+        case 54: _t->on_blockObstacles3d_toggled(); break;
+        case 55: _t->on_earthGravity_clicked(); break;
+        case 56: _t->on_water20C_clicked(); break;
+        case 57: _t->on_defaultLength_clicked(); break;
+        case 58: _t->on_calcRough_clicked(); break;
+        case 59: _t->on_SelectAll_clicked(); break;
+        case 60: _t->on_Clear_clicked(); break;
+        case 61: _t->on_Delete_clicked(); break;
         default: ;
         }
     }
@@ -223,9 +251,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 52)
+        if (_id < 62)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 52;
+        _id -= 62;
     }
     return _id;
 }

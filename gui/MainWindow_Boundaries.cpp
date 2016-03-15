@@ -162,7 +162,14 @@ void MainWindow::on_AddSpecialBoundary_clicked() {
                              "Please select a wall from the list of special boundaries", QMessageBox::Ok, QMessageBox::Ok);
     return;
   }
+  if(item->parent() == NULL) {
+    QMessageBox::information(this,"Civil CFD",
+                             "Please select a wall from the list of special boundaries", QMessageBox::Ok, QMessageBox::Ok);
+    return;
+  }
 
+	if(item->parent()->parent() != NULL) item=item->parent(); // allows user to select existing boundary when adding
+  
   text = item->text(0);
   if((text != "West"   && text !="East"   &&
      text != "South"  && text != "North" &&
