@@ -57,6 +57,9 @@ void GeometryDisplay::clearPoint() {
 
 void GeometryDisplay::connectSTL(QString stlFile) {
 
+	RemoveActor(STLactor);
+	STLactor = NULL;
+	
   if(!QFile::exists(stlFile)) return;
 
   reader->SetFileName(stlFile.toStdString().c_str());

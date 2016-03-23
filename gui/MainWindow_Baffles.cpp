@@ -45,6 +45,20 @@ void MainWindow::buildBaffleList() {
   }  
 }
 
+void MainWindow::on_hideBaffleMesh_toggled() {
+  if(ui.hideBaffleMesh->isChecked()) baffleDisplay->HideMesh();
+  else baffleDisplay->ShowMesh();
+	
+	ui.VTKBaffles->update();
+}
+
+void MainWindow::on_hideBaffleDomain_toggled() {
+  if(!ui.hideBaffleDomain->isChecked())  baffleDisplay->connectVTK("vtk/fv_0.vtk");
+	else baffleDisplay->connectVTK("");
+	
+	ui.VTKBaffles->update();
+}
+
 void MainWindow::bafflesUpdate() { 
   
   buildBaffleList();
@@ -55,9 +69,15 @@ void MainWindow::bafflesUpdate() {
                       sim.getKmax().toDouble(),
                       sim.getOrigin(0).toDouble(), sim.getOrigin(1).toDouble(), sim.getOrigin(2).toDouble());
   
-  baffleDisplay->connectVTK("vtk/fv_0.vtk");
   ui.VTKBaffles->update();
   
+  if(ui.hideBaffleMesh->isChecked()) baffleDisplay->HideMesh();
+  else baffleDisplay->ShowMesh();
+    
+  if(!ui.hideBaffleDomain->isChecked())  baffleDisplay->connectVTK("vtk/fv_0.vtk");
+	else baffleDisplay->connectVTK("");
+
+  ui.VTKBaffles->update();
   baffleDisplay->clearRectangle();
  
 }
@@ -247,33 +267,33 @@ void MainWindow::on_BaffleTree_itemActivated(QTreeWidgetItem *item, int column) 
     text = item->parent()->text(0);
 
     if(text == "x") {
-      a_1 = (pos + 1) * sim.getDelx().toDouble();;
+      a_1 = (pos ) * sim.getDelx().toDouble();;
       a_2 = extent_a[0] * sim.getDely().toDouble();
       a_3 = extent_a[1] * sim.getDelz().toDouble();
 
-      b_1 = (pos + 1) * sim.getDelx().toDouble();;
+      b_1 = (pos ) * sim.getDelx().toDouble();;
       b_2 = (extent_b[0]-1) * sim.getDely().toDouble();
       b_3 = (extent_b[1]-1) * sim.getDelz().toDouble();
 
       normal = 0;
     }
     else if(text == "y") {
-      a_2 = (pos + 1)  * sim.getDely().toDouble();
+      a_2 = (pos )  * sim.getDely().toDouble();
       a_1 = extent_a[0] * sim.getDelx().toDouble();
       a_3 = extent_a[1] * sim.getDelz().toDouble();
 
-      b_2 = (pos + 1)  * sim.getDely().toDouble();
+      b_2 = (pos )  * sim.getDely().toDouble();
       b_1 = (extent_b[0]-1) * sim.getDelx().toDouble();
       b_3 = (extent_b[1]-1) * sim.getDelz().toDouble();
 
       normal = 1;
     }
     else if(text == "z") {
-      a_3 = (pos + 1)  * sim.getDelz().toDouble();
+      a_3 = (pos )  * sim.getDelz().toDouble();
       a_1 = extent_a[0] * sim.getDelx().toDouble();
       a_2 = extent_a[1] * sim.getDely().toDouble();
 
-      b_3 = (pos + 1)  * sim.getDelz().toDouble();
+      b_3 = (pos )  * sim.getDelz().toDouble();
       b_1 = (extent_b[0]-1) * sim.getDelx().toDouble();
       b_2 = (extent_b[1]-1) * sim.getDely().toDouble();
       

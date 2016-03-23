@@ -95,7 +95,7 @@ void SBoundaryDialog::setLabels(int wall) {
   case 5: // top
     ui.A1->setText("min X");
     ui.B1->setText("max X");
-    ui.B1->setText("min Y");
+    ui.A2->setText("min Y");
     ui.B2->setText("max Y");
     break;
   }

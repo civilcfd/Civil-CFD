@@ -489,7 +489,7 @@ int vof_vfconv(struct solver_data *solver) {
 
   solver->vof_flag = 0;
   
-  if(solver->t > 0) {
+  if(solver->t > 0 /*emf + solver->delt*/) {
   /* this code only executes after the first timestep */
     for(i=0; i<IMAX-1; i++) {
       for(j=0; j<JMAX-1; j++) {

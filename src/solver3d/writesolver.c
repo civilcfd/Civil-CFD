@@ -66,17 +66,17 @@ int write_initial(struct solver_data *solver, char *filename) {
 
   solver_get_initial_vector(solver, "velocity", velocity);
   fprintf(fp,"velocity %e %e %e\n",velocity[0],velocity[1],velocity[2]);
-
-  while(solver_get_initial_vector(solver, "inside", inside) != 1); // make sure we start at the first instance
-  while(solver_get_initial_vector(solver, "inside", inside) != 1) {
-    fprintf(fp,"inside %e %e %e\n",inside[0],inside[1],inside[2]);
-  }
   
   value = solver_get_initial_scalar(solver, "vof_height");  
   if(value>0) fprintf(fp,"vof_height %e\n",value);
   
   value = solver_get_initial_scalar(solver, "hydrostatic");    
   if(value > 0) fprintf(fp,"hydrostatic 1\n");
+
+  while(solver_get_initial_vector(solver, "inside", inside) != 1); // make sure we start at the first instance
+  while(solver_get_initial_vector(solver, "inside", inside) != 1) {
+    fprintf(fp,"inside %e %e %e\n",inside[0],inside[1],inside[2]);
+  }
   
   value = solver_get_initial_scalar(solver, "kE_k");     
   if(value > 0 && kE_check(solver)) fprintf(fp,"kE_k %e\n",value);

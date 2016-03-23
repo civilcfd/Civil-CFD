@@ -147,12 +147,18 @@ public:
     QWidget *Boundaries;
     QGridLayout *gridLayout_8;
     QGridLayout *gridLayout_12;
+    QTreeWidget *BoundaryTree;
     QHBoxLayout *horizontalLayout;
     QPushButton *EditBoundary;
     QPushButton *AddSpecialBoundary;
     QPushButton *RemoveSpecialBoundary;
     QVTKWidget *VTKBoundaries;
-    QTreeWidget *BoundaryTree;
+    QHBoxLayout *horizontalLayout_6;
+    QSpacerItem *horizontalSpacer_24;
+    QCheckBox *hideBoundaryMesh;
+    QSpacerItem *horizontalSpacer_26;
+    QCheckBox *hideBoundaryDomain;
+    QSpacerItem *horizontalSpacer_25;
     QWidget *Baffles;
     QGridLayout *gridLayout_20;
     QGridLayout *gridLayout_19;
@@ -162,6 +168,12 @@ public:
     QPushButton *RemoveBaffle;
     QVTKWidget *VTKBaffles;
     QTreeWidget *BaffleTree;
+    QHBoxLayout *horizontalLayout_5;
+    QSpacerItem *horizontalSpacer_21;
+    QCheckBox *hideBaffleMesh;
+    QSpacerItem *horizontalSpacer_23;
+    QCheckBox *hideBaffleDomain;
+    QSpacerItem *horizontalSpacer_22;
     QWidget *InitialConditions;
     QGridLayout *gridLayout_14;
     QGridLayout *gridLayout_13;
@@ -222,11 +234,10 @@ public:
     QGridLayout *gridLayout_17;
     QHBoxLayout *horizontalLayout_3;
     QSpacerItem *horizontalSpacer_17;
-    QLabel *label_47;
+    QCheckBox *updateRange;
     QPlainTextEdit *from;
     QLabel *label_48;
     QPlainTextEdit *to;
-    QPushButton *updateRange;
     QSpacerItem *horizontalSpacer_18;
     QSpacerItem *verticalSpacer_19;
     QSpacerItem *verticalSpacer_21;
@@ -931,6 +942,34 @@ public:
         gridLayout_8->setObjectName(QString::fromUtf8("gridLayout_8"));
         gridLayout_12 = new QGridLayout();
         gridLayout_12->setObjectName(QString::fromUtf8("gridLayout_12"));
+        BoundaryTree = new QTreeWidget(Boundaries);
+        QTreeWidgetItem *__qtreewidgetitem12 = new QTreeWidgetItem(BoundaryTree);
+        __qtreewidgetitem12->setFlags(Qt::ItemIsDragEnabled|Qt::ItemIsEnabled);
+        __qtreewidgetitem12->setFont(0, font);
+        new QTreeWidgetItem(__qtreewidgetitem12);
+        new QTreeWidgetItem(__qtreewidgetitem12);
+        new QTreeWidgetItem(__qtreewidgetitem12);
+        new QTreeWidgetItem(__qtreewidgetitem12);
+        new QTreeWidgetItem(__qtreewidgetitem12);
+        new QTreeWidgetItem(__qtreewidgetitem12);
+        QTreeWidgetItem *__qtreewidgetitem13 = new QTreeWidgetItem(BoundaryTree);
+        __qtreewidgetitem13->setFlags(Qt::ItemIsDragEnabled|Qt::ItemIsEnabled);
+        __qtreewidgetitem13->setFont(0, font);
+        new QTreeWidgetItem(__qtreewidgetitem13);
+        new QTreeWidgetItem(__qtreewidgetitem13);
+        new QTreeWidgetItem(__qtreewidgetitem13);
+        new QTreeWidgetItem(__qtreewidgetitem13);
+        new QTreeWidgetItem(__qtreewidgetitem13);
+        new QTreeWidgetItem(__qtreewidgetitem13);
+        BoundaryTree->setObjectName(QString::fromUtf8("BoundaryTree"));
+        sizePolicy.setHeightForWidth(BoundaryTree->sizePolicy().hasHeightForWidth());
+        BoundaryTree->setSizePolicy(sizePolicy);
+        BoundaryTree->setMinimumSize(QSize(320, 0));
+        BoundaryTree->setAlternatingRowColors(true);
+        BoundaryTree->header()->setDefaultSectionSize(165);
+
+        gridLayout_12->addWidget(BoundaryTree, 1, 1, 1, 1);
+
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -970,37 +1009,36 @@ public:
         VTKBoundaries->setObjectName(QString::fromUtf8("VTKBoundaries"));
         sizePolicy.setHeightForWidth(VTKBoundaries->sizePolicy().hasHeightForWidth());
         VTKBoundaries->setSizePolicy(sizePolicy);
-        VTKBoundaries->setMinimumSize(QSize(400, 350));
+        VTKBoundaries->setMinimumSize(QSize(400, 310));
 
-        gridLayout_12->addWidget(VTKBoundaries, 2, 1, 1, 1);
+        gridLayout_12->addWidget(VTKBoundaries, 3, 1, 1, 1);
 
-        BoundaryTree = new QTreeWidget(Boundaries);
-        QTreeWidgetItem *__qtreewidgetitem12 = new QTreeWidgetItem(BoundaryTree);
-        __qtreewidgetitem12->setFlags(Qt::ItemIsDragEnabled|Qt::ItemIsEnabled);
-        __qtreewidgetitem12->setFont(0, font);
-        new QTreeWidgetItem(__qtreewidgetitem12);
-        new QTreeWidgetItem(__qtreewidgetitem12);
-        new QTreeWidgetItem(__qtreewidgetitem12);
-        new QTreeWidgetItem(__qtreewidgetitem12);
-        new QTreeWidgetItem(__qtreewidgetitem12);
-        new QTreeWidgetItem(__qtreewidgetitem12);
-        QTreeWidgetItem *__qtreewidgetitem13 = new QTreeWidgetItem(BoundaryTree);
-        __qtreewidgetitem13->setFlags(Qt::ItemIsDragEnabled|Qt::ItemIsEnabled);
-        __qtreewidgetitem13->setFont(0, font);
-        new QTreeWidgetItem(__qtreewidgetitem13);
-        new QTreeWidgetItem(__qtreewidgetitem13);
-        new QTreeWidgetItem(__qtreewidgetitem13);
-        new QTreeWidgetItem(__qtreewidgetitem13);
-        new QTreeWidgetItem(__qtreewidgetitem13);
-        new QTreeWidgetItem(__qtreewidgetitem13);
-        BoundaryTree->setObjectName(QString::fromUtf8("BoundaryTree"));
-        sizePolicy.setHeightForWidth(BoundaryTree->sizePolicy().hasHeightForWidth());
-        BoundaryTree->setSizePolicy(sizePolicy);
-        BoundaryTree->setMinimumSize(QSize(320, 0));
-        BoundaryTree->setAlternatingRowColors(true);
-        BoundaryTree->header()->setDefaultSectionSize(165);
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+        horizontalSpacer_24 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_12->addWidget(BoundaryTree, 1, 1, 1, 1);
+        horizontalLayout_6->addItem(horizontalSpacer_24);
+
+        hideBoundaryMesh = new QCheckBox(Boundaries);
+        hideBoundaryMesh->setObjectName(QString::fromUtf8("hideBoundaryMesh"));
+
+        horizontalLayout_6->addWidget(hideBoundaryMesh);
+
+        horizontalSpacer_26 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_26);
+
+        hideBoundaryDomain = new QCheckBox(Boundaries);
+        hideBoundaryDomain->setObjectName(QString::fromUtf8("hideBoundaryDomain"));
+
+        horizontalLayout_6->addWidget(hideBoundaryDomain);
+
+        horizontalSpacer_25 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_6->addItem(horizontalSpacer_25);
+
+
+        gridLayout_12->addLayout(horizontalLayout_6, 2, 1, 1, 1);
 
 
         gridLayout_8->addLayout(gridLayout_12, 0, 0, 1, 1);
@@ -1052,7 +1090,7 @@ public:
         VTKBaffles->setSizePolicy(sizePolicy);
         VTKBaffles->setMinimumSize(QSize(400, 350));
 
-        gridLayout_19->addWidget(VTKBaffles, 2, 0, 1, 1);
+        gridLayout_19->addWidget(VTKBaffles, 7, 0, 1, 1);
 
         BaffleTree = new QTreeWidget(Baffles);
         QTreeWidgetItem *__qtreewidgetitem14 = new QTreeWidgetItem(BaffleTree);
@@ -1069,6 +1107,33 @@ public:
         BaffleTree->header()->setDefaultSectionSize(165);
 
         gridLayout_19->addWidget(BaffleTree, 1, 0, 1, 1);
+
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        horizontalSpacer_21 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer_21);
+
+        hideBaffleMesh = new QCheckBox(Baffles);
+        hideBaffleMesh->setObjectName(QString::fromUtf8("hideBaffleMesh"));
+
+        horizontalLayout_5->addWidget(hideBaffleMesh);
+
+        horizontalSpacer_23 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer_23);
+
+        hideBaffleDomain = new QCheckBox(Baffles);
+        hideBaffleDomain->setObjectName(QString::fromUtf8("hideBaffleDomain"));
+
+        horizontalLayout_5->addWidget(hideBaffleDomain);
+
+        horizontalSpacer_22 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer_22);
+
+
+        gridLayout_19->addLayout(horizontalLayout_5, 4, 0, 1, 1);
 
 
         gridLayout_20->addLayout(gridLayout_19, 0, 0, 1, 1);
@@ -1395,10 +1460,10 @@ public:
 
         horizontalLayout_3->addItem(horizontalSpacer_17);
 
-        label_47 = new QLabel(Visualize);
-        label_47->setObjectName(QString::fromUtf8("label_47"));
+        updateRange = new QCheckBox(Visualize);
+        updateRange->setObjectName(QString::fromUtf8("updateRange"));
 
-        horizontalLayout_3->addWidget(label_47, 0, Qt::AlignRight);
+        horizontalLayout_3->addWidget(updateRange);
 
         from = new QPlainTextEdit(Visualize);
         from->setObjectName(QString::fromUtf8("from"));
@@ -1427,14 +1492,6 @@ public:
         to->setMaximumSize(QSize(100, 28));
 
         horizontalLayout_3->addWidget(to, 0, Qt::AlignLeft);
-
-        updateRange = new QPushButton(Visualize);
-        updateRange->setObjectName(QString::fromUtf8("updateRange"));
-        QIcon icon14;
-        icon14.addFile(QString::fromUtf8(":/icons/resources/view-fullscreen.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        updateRange->setIcon(icon14);
-
-        horizontalLayout_3->addWidget(updateRange);
 
         horizontalSpacer_18 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -1804,6 +1861,8 @@ public:
 
         animate3d = new QPushButton(Visualize3d);
         animate3d->setObjectName(QString::fromUtf8("animate3d"));
+        QIcon icon14;
+        icon14.addFile(QString::fromUtf8(":/icons/resources/view-fullscreen.svg"), QSize(), QIcon::Normal, QIcon::Off);
         animate3d->setIcon(icon14);
 
         horizontalLayout_4->addWidget(animate3d);
@@ -1893,7 +1952,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(6);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1986,9 +2045,6 @@ public:
         STLRender->setText(QApplication::translate("MainWindow", "Render", 0, QApplication::UnicodeUTF8));
         STLOpen->setText(QApplication::translate("MainWindow", "Open", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Geometry), QApplication::translate("MainWindow", "Geometry", 0, QApplication::UnicodeUTF8));
-        EditBoundary->setText(QApplication::translate("MainWindow", "Edit Boundary", 0, QApplication::UnicodeUTF8));
-        AddSpecialBoundary->setText(QApplication::translate("MainWindow", "Add Special Boundary", 0, QApplication::UnicodeUTF8));
-        RemoveSpecialBoundary->setText(QApplication::translate("MainWindow", "Remove Special Boundary", 0, QApplication::UnicodeUTF8));
         QTreeWidgetItem *___qtreewidgetitem13 = BoundaryTree->headerItem();
         ___qtreewidgetitem13->setText(4, QApplication::translate("MainWindow", "Turbulence", 0, QApplication::UnicodeUTF8));
         ___qtreewidgetitem13->setText(3, QApplication::translate("MainWindow", "Value", 0, QApplication::UnicodeUTF8));
@@ -2028,6 +2084,11 @@ public:
         ___qtreewidgetitem27->setText(0, QApplication::translate("MainWindow", "Top", 0, QApplication::UnicodeUTF8));
         BoundaryTree->setSortingEnabled(__sortingEnabled1);
 
+        EditBoundary->setText(QApplication::translate("MainWindow", "Edit Boundary", 0, QApplication::UnicodeUTF8));
+        AddSpecialBoundary->setText(QApplication::translate("MainWindow", "Add Special Boundary", 0, QApplication::UnicodeUTF8));
+        RemoveSpecialBoundary->setText(QApplication::translate("MainWindow", "Remove Special Boundary", 0, QApplication::UnicodeUTF8));
+        hideBoundaryMesh->setText(QApplication::translate("MainWindow", "Hide Mesh", 0, QApplication::UnicodeUTF8));
+        hideBoundaryDomain->setText(QApplication::translate("MainWindow", "Hide Rendered Domain", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Boundaries), QApplication::translate("MainWindow", "Boundaries", 0, QApplication::UnicodeUTF8));
         EditBaffle->setText(QApplication::translate("MainWindow", "Edit Baffle", 0, QApplication::UnicodeUTF8));
         AddBaffle->setText(QApplication::translate("MainWindow", "Add Baffle", 0, QApplication::UnicodeUTF8));
@@ -2051,6 +2112,8 @@ public:
         ___qtreewidgetitem32->setText(0, QApplication::translate("MainWindow", "z", 0, QApplication::UnicodeUTF8));
         BaffleTree->setSortingEnabled(__sortingEnabled2);
 
+        hideBaffleMesh->setText(QApplication::translate("MainWindow", "Hide Mesh", 0, QApplication::UnicodeUTF8));
+        hideBaffleDomain->setText(QApplication::translate("MainWindow", "Hide Rendered Domain", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Baffles), QApplication::translate("MainWindow", "Baffles", 0, QApplication::UnicodeUTF8));
         label_26->setText(QApplication::translate("MainWindow", "Velocity", 0, QApplication::UnicodeUTF8));
         label_30->setText(QApplication::translate("MainWindow", "V (m/s)", 0, QApplication::UnicodeUTF8));
@@ -2068,11 +2131,11 @@ public:
         initialk->setPlainText(QApplication::translate("MainWindow", "0.001", 0, QApplication::UnicodeUTF8));
         label_43->setText(QApplication::translate("MainWindow", "Internal Fill Points", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem = fillPoints->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "U", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "x", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem1 = fillPoints->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "V", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "y", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem2 = fillPoints->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "W", 0, QApplication::UnicodeUTF8));
+        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "z", 0, QApplication::UnicodeUTF8));
 
         const bool __sortingEnabled3 = fillPoints->isSortingEnabled();
         fillPoints->setSortingEnabled(false);
@@ -2094,11 +2157,10 @@ public:
         autot->setText(QApplication::translate("MainWindow", "Automatic timestep adjustment", 0, QApplication::UnicodeUTF8));
         RunSimulation->setText(QApplication::translate("MainWindow", "Simulate", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Simulate), QApplication::translate("MainWindow", "Simulate", 0, QApplication::UnicodeUTF8));
-        label_47->setText(QApplication::translate("MainWindow", "Set Range:", 0, QApplication::UnicodeUTF8));
+        updateRange->setText(QApplication::translate("MainWindow", "Rescale Range from:", 0, QApplication::UnicodeUTF8));
         from->setPlainText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
         label_48->setText(QApplication::translate("MainWindow", "to", 0, QApplication::UnicodeUTF8));
         to->setPlainText(QApplication::translate("MainWindow", "1", 0, QApplication::UnicodeUTF8));
-        updateRange->setText(QApplication::translate("MainWindow", "Rescale", 0, QApplication::UnicodeUTF8));
         label_41->setText(QApplication::translate("MainWindow", "Section Plane", 0, QApplication::UnicodeUTF8));
         xNormal->setText(QApplication::translate("MainWindow", "X-Normal", 0, QApplication::UnicodeUTF8));
         label_44->setText(QApplication::translate("MainWindow", "Orientation", 0, QApplication::UnicodeUTF8));

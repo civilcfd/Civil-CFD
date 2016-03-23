@@ -24,6 +24,11 @@ BoundaryDisplay::BoundaryDisplay(long int imax, long int jmax, long int kmax) :
 void BoundaryDisplay::clearRectangle() {
 
   RemoveActor(rectangleActor);
+  hex = NULL;
+  hexPoints = NULL;
+  hexGrid = NULL;
+  dataSetMapper = NULL;
+  rectangleActor = NULL;
 }
 
 #define set_vector(a,b,c,d) { a[0] = b; a[1] = c; a[2] = d; }
@@ -142,7 +147,7 @@ void BoundaryDisplay::drawRectangle(double a_1, double a_2, double a_3,
   rectangleActor->SetMapper(dataSetMapper);
   
   rectangleActor->GetProperty()->SetDiffuseColor(1,1,0);
-  rectangleActor->GetProperty()->SetOpacity(0.95);
+  rectangleActor->GetProperty()->SetOpacity(0.99);
  
   AddActor(rectangleActor);
  

@@ -54,7 +54,7 @@ private slots:
   void on_BaffleTree_itemClicked(QTreeWidgetItem *item, int column);
   void on_RemoveBaffle_clicked();
   
-  void on_updateRange_clicked();
+  void on_updateRange_toggled();
   void on_saveJPEG_clicked();
   void on_saveJPEG3d_clicked();
   
@@ -72,6 +72,10 @@ private slots:
   void on_xNormal3d_toggled();
   void on_yNormal3d_toggled();
   void on_zNormal3d_toggled();
+  void on_hideBoundaryMesh_toggled();
+  void on_hideBoundaryDomain_toggled();
+  void on_hideBaffleMesh_toggled();
+  void on_hideBaffleDomain_toggled();
   void on_contourVOF_toggled();
   void on_contourP_toggled();
   void on_contourK_toggled();

@@ -73,10 +73,20 @@ void MainWindow::on_contourK_toggled() {
   visualizeRender();
 }
 void MainWindow::on_showAxis_toggled() {
-  visualizeRender();
+  if(ui.showAxis->isChecked()) 
+    visualizeDisplay->ShowAxis();
+  else
+    visualizeDisplay->HideAxis();  
+  ui.vis->update();
 }
 void MainWindow::on_showLegend_toggled() {
-  visualizeRender();
+
+  if(ui.showLegend->isChecked()) 
+    visualizeDisplay->showLegend();
+  else
+    visualizeDisplay->hideLegend();
+      
+  ui.vis->update();
 }
 void MainWindow::on_contourVorticity_toggled() {
   visualizeRender();
@@ -85,15 +95,15 @@ void MainWindow::on_showVectors_toggled() {
   visualizeRender();
 }
 void MainWindow::on_blockObstacles_toggled() {
-  if(!ui.blockObstacles->isChecked())
-    visualizeDisplay->hideBlock();
-
   visualizeRender();
 }
 void MainWindow::on_showMesh_toggled() {
-
-
-  visualizeRender();
+  if(ui.showMesh->isChecked())
+    visualizeDisplay->ShowMesh();
+  else
+    visualizeDisplay->HideMesh();
+  
+  ui.vis->update();
 }
 
 void MainWindow::updateSlider() {
@@ -138,16 +148,19 @@ int MainWindow::buildTimesteps() {
   return count;
 }
 
-void MainWindow::on_updateRange_clicked() {
+void MainWindow::on_updateRange_toggled() {
   double a, b;
   bool ok_a, ok_b;
   
   a = ui.from->toPlainText().toDouble(&ok_a);
   b = ui.to->toPlainText().toDouble(&ok_b);
   
-  if(b>a && ok_a && ok_b) {
+  if(b>a && ok_a && ok_b && ui.updateRange->isChecked()) {
     visualizeDisplay->setRange(a,b);
     ui.vis->update();
+  }
+  else {
+  	visualizeRender();
   }
 }
 
@@ -235,6 +248,16 @@ void MainWindow::visualizeRender() {
     visualizeDisplay->showLegend();
   else
     visualizeDisplay->hideLegend();
+  
+  double a, b;
+  bool ok_a, ok_b;
+  
+  a = ui.from->toPlainText().toDouble(&ok_a);
+  b = ui.to->toPlainText().toDouble(&ok_b);
+  
+  if(b>a && ok_a && ok_b && ui.updateRange->isChecked()) {
+    visualizeDisplay->setRange(a,b);
+  }
   
   ui.vis->update();
 }

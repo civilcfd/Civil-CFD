@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -1314,104 +1314,6 @@
        <layout class="QGridLayout" name="gridLayout_8">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_12">
-          <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetFixedSize</enum>
-            </property>
-            <item>
-             <widget class="QPushButton" name="EditBoundary">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>140</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Edit Boundary</string>
-              </property>
-              <property name="icon">
-               <iconset resource="gui.qrc">
-                <normaloff>:/icons/resources/edit-find-replace.svg</normaloff>:/icons/resources/edit-find-replace.svg</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>22</width>
-                <height>22</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="AddSpecialBoundary">
-              <property name="maximumSize">
-               <size>
-                <width>190</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Add Special Boundary</string>
-              </property>
-              <property name="icon">
-               <iconset resource="gui.qrc">
-                <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>22</width>
-                <height>22</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="RemoveSpecialBoundary">
-              <property name="maximumSize">
-               <size>
-                <width>220</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Remove Special Boundary</string>
-              </property>
-              <property name="icon">
-               <iconset resource="gui.qrc">
-                <normaloff>:/icons/resources/edit-delete.svg</normaloff>:/icons/resources/edit-delete.svg</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>22</width>
-                <height>22</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="1">
-           <widget class="QVTKWidget" name="VTKBoundaries">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>350</height>
-             </size>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QTreeWidget" name="BoundaryTree">
             <property name="sizePolicy">
@@ -1715,6 +1617,161 @@
             </item>
            </widget>
           </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetFixedSize</enum>
+            </property>
+            <item>
+             <widget class="QPushButton" name="EditBoundary">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>140</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Edit Boundary</string>
+              </property>
+              <property name="icon">
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/edit-find-replace.svg</normaloff>:/icons/resources/edit-find-replace.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="AddSpecialBoundary">
+              <property name="maximumSize">
+               <size>
+                <width>190</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Add Special Boundary</string>
+              </property>
+              <property name="icon">
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="RemoveSpecialBoundary">
+              <property name="maximumSize">
+               <size>
+                <width>220</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Remove Special Boundary</string>
+              </property>
+              <property name="icon">
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/edit-delete.svg</normaloff>:/icons/resources/edit-delete.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>22</width>
+                <height>22</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="1">
+           <widget class="QVTKWidget" name="VTKBoundaries">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>310</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <spacer name="horizontalSpacer_24">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="hideBoundaryMesh">
+              <property name="text">
+               <string>Hide Mesh</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_26">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="hideBoundaryDomain">
+              <property name="text">
+               <string>Hide Rendered Domain</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_25">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
          </layout>
         </item>
        </layout>
@@ -1823,7 +1880,7 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0">
+          <item row="7" column="0">
            <widget class="QVTKWidget" name="VTKBaffles">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1962,6 +2019,63 @@
              </item>
             </item>
            </widget>
+          </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <spacer name="horizontalSpacer_21">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="hideBaffleMesh">
+              <property name="text">
+               <string>Hide Mesh</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_23">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="hideBaffleDomain">
+              <property name="text">
+               <string>Hide Rendered Domain</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_22">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -2358,20 +2472,23 @@
             <row/>
             <column>
              <property name="text">
-              <string>U</string>
+              <string>x</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>V</string>
+              <string>y</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>W</string>
+              <string>z</string>
              </property>
             </column>
             <item row="0" column="0">
+             <property name="text">
+              <string/>
+             </property>
              <property name="flags">
               <set>ItemIsSelectable|ItemIsEditable|ItemIsEnabled</set>
              </property>
@@ -2683,10 +2800,10 @@
               </property>
              </spacer>
             </item>
-            <item alignment="Qt::AlignRight">
-             <widget class="QLabel" name="label_47">
+            <item>
+             <widget class="QCheckBox" name="updateRange">
               <property name="text">
-               <string>Set Range:</string>
+               <string>Rescale Range from:</string>
               </property>
              </widget>
             </item>
@@ -2738,17 +2855,6 @@
               </property>
               <property name="plainText">
                <string>1</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="updateRange">
-              <property name="text">
-               <string>Rescale</string>
-              </property>
-              <property name="icon">
-               <iconset resource="gui.qrc">
-                <normaloff>:/icons/resources/view-fullscreen.svg</normaloff>:/icons/resources/view-fullscreen.svg</iconset>
               </property>
              </widget>
             </item>
