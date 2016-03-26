@@ -61,6 +61,8 @@ private slots:
   void on_inside_x_textChanged();
   void on_inside_y_textChanged();
   void on_inside_z_textChanged();
+  void on_from_textChanged();
+  void on_to_textChanged();
   void on_origin_valueChanged();
   void on_origin3d_valueChanged();
   void on_extent3d_valueChanged();

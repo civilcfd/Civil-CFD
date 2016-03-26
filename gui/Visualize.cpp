@@ -148,6 +148,14 @@ int MainWindow::buildTimesteps() {
   return count;
 }
 
+void MainWindow::on_from_textChanged() {
+	on_updateRange_toggled();
+}
+
+void MainWindow::on_to_textChanged() {
+	on_updateRange_toggled();
+}
+
 void MainWindow::on_updateRange_toggled() {
   double a, b;
   bool ok_a, ok_b;

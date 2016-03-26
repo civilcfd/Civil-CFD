@@ -39,9 +39,17 @@ void MainWindow::on_Clear_clicked() {
 
 void MainWindow::on_Delete_clicked() {
 	
+	int index;
+	
 	foreach(QListWidgetItem *item, ui.ResultList->selectedItems()) {
-		if(sim.deleteTrack(item->text()))
+		if(sim.deleteTrack(item->text())) {
+			index = ui.t->findText(item->text());
+			if(index != -1) {
+				ui.t->removeItem(index);
+			}
+			
 			delete item;
+		}
 	}
 	
   buildTimesteps();

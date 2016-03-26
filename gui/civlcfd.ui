@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>950</width>
-    <height>752</height>
+    <height>751</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -57,7 +57,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">

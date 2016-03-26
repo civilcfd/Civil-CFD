@@ -352,9 +352,9 @@ int baffle_swirl(struct solver_data *solver,
   swirl = 0;
   count = 0;
   
-  for(i=imin; i <= imax-1; i++) {
-    for(j=jmin; j <= jmax-1; j++) {
-      for(k=kmin; k <= kmax-1; k++) {   
+  for(i=imin; i <= imax; i++) {
+    for(j=jmin; j <= jmax; j++) {
+      for(k=kmin; k <= kmax; k++) {   
         /* find cell-centered velocity */
         u_ave = (U(i,j,k) + U(i+1,j,k)) / 2;
         v_ave = (V(i,j,k) + V(i,j+1,k)) / 2;
@@ -362,17 +362,17 @@ int baffle_swirl(struct solver_data *solver,
       
         switch(x) {
         case 0:
-          if((AE(i,j,k) + AE(i+1,j,k)) < (1-solver->emf)) continue;
+          if((AE(i,j,k) + AE(i+1,j,k)) < (1-solver->emf) || fabs(u_ave) < solver->emf) continue;
           swirl = swirl + atan(sqrt(pow(v_ave,2) + pow(w_ave,2)) / fabs(u_ave)) * 180 / M_PI;
           count = count + 1;
           break;
         case 1:
-          if((AN(i,j,k) + AN(i,j+1,k)) < (1-solver->emf)) continue;
+          if((AN(i,j,k) + AN(i,j+1,k)) < (1-solver->emf) || fabs(v_ave) < solver->emf) continue;
           swirl = swirl + atan(sqrt(pow(u_ave,2) + pow(w_ave,2)) / fabs(v_ave)) * 180 / M_PI;
           count = count + 1;
           break;
         case 2:
-          if((AT(i,j,k) + AT(i+1,j,k)) < (1-solver->emf)) continue;
+          if((AT(i,j,k) + AT(i+1,j,k)) < (1-solver->emf) || fabs(w_ave) < solver->emf) continue;
           swirl = swirl + atan(sqrt(pow(u_ave,2) + pow(v_ave,2)) / fabs(w_ave)) * 180 / M_PI;
           count = count + 1;
           break;
@@ -408,19 +408,19 @@ int baffle_velocity_dev(struct solver_data *solver,
       
         switch(x) {
         case 0:
-          if(AE(i,j,k) > solver->emf) {
+          if(AE(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i+1,j,k)) > solver->emf) {
             v_ave += U(i,j,k);
             count = count+1;
           }
           break;
         case 1:
-          if(AN(i,j,k) > solver->emf) {
+          if(AN(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i,j+1,k)) > solver->emf) {
             v_ave += V(i,j,k);
             count = count+1;
           }
           break;
         case 2:
-          if(AT(i,j,k) > solver->emf) {
+          if(AT(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i,j,k+1)) > solver->emf) {
             v_ave += W(i,j,k);
             count = count+1;
           }
@@ -438,13 +438,19 @@ int baffle_velocity_dev(struct solver_data *solver,
       
         switch(x) {
         case 0:
-          v_dev = max(v_dev, fabs(U(i,j,k) / v_ave));
+          if(AE(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i+1,j,k)) > solver->emf) {
+          	v_dev = max(v_dev, fabs(U(i,j,k) / v_ave));
+          }
           break;
         case 1:
-          v_dev = max(v_dev, fabs(V(i,j,k) / v_ave));
+          if(AN(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i,j+1,k)) > solver->emf) {
+          	v_dev = max(v_dev, fabs(V(i,j,k) / v_ave));
+          }
           break;
         case 2:
-          v_dev = max(v_dev, fabs(W(i,j,k) / v_ave));
+          if(AT(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i,j,k+1)) > solver->emf) {
+          	v_dev = max(v_dev, fabs(W(i,j,k) / v_ave));
+          }
           break;
         }        
       }

@@ -574,7 +574,7 @@ bool Simulation::addBaffle(int wall,
   else if(type == "barrier") n = 1;
   else if(type == "headloss") n = 2;
   else if(type == "swirl angle") n = 3;
-  else if(type == "velocity deviation") n = 3;
+  else if(type == "velocity deviation") n = 4;
 
   if(mesh_baffle_create(solver->mesh, wall, n, value, pos)==1)
     return false;
