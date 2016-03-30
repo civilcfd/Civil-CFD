@@ -1062,17 +1062,6 @@ int vof_loop(struct solver_data *solver) {
     
       if(solver->pressure(solver) == 0) break;
 
-      /*if(solver->iter % 200 == 0) {
-        if(solver->iter > 1)  {
-          solver->delt *= (0.3 + solver->emf);
-          solver->betacal(solver);
-          solver->petacal(solver);
-          printf("timestep temporarily reduced to %lf\n",solver->delt);
-          solver->epsi = 0.0001 / solver->delt;
-        }
-        solver->velocity(solver);     
-      }   */
-
       solver->boundaries(solver);
       if(solver->special_boundaries != NULL)
         solver->special_boundaries(solver);
@@ -1229,12 +1218,7 @@ int vof_deltcal(struct solver_data *solver) {
 				if(AE(i,j,k) > solver->emf && !isnan(dt_U))
 					delt = min(delt, dt_U);
 				
-				/*	
-				if(delt < 0.0001) {
-					printf("Timestep very small when calculating convective stability limit. \n i j k %ld %ld %ld \n dt_U %lf  solver->con %lf  FV(i,j,k) %lf  FV(i+1,j,k) %lf  AE(i,j,k) %lf\n", 
-					       i, j, k, dt_U, solver->con, FV(i,j,k), FV(min(IMAX-1,i+1),j,k), AE(i,j,k) );
-					exit(1);
-				} */
+
       	dp = P(i,j,k) - P(i, min(JMAX-1,j+1), k);
       	if(j < JMAX-1) dp += solver->gy * solver->rho * DELY;
       	if(dp * V(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELY) * dp / solver->rho); /* dv is additive to calc stability limit based on pressure gradient effect on velocity */
@@ -1245,12 +1229,7 @@ int vof_deltcal(struct solver_data *solver) {
 				if(AN(i,j,k) > solver->emf && !isnan(dt_U))
 					delt = min(delt, dt_U);
 					
-				/* 	
-				if(delt < 0.0001) {
-					printf("Timestep very small when calculating convective stability limit.  \n i j k %ld %ld %ld \n dt_U %lf  solver->con %lf  FV(i,j,k) %lf  FV(i,j+1,k) %lf  AE(i,j,k) %lf\n", 
-					       i,j,k, dt_U, solver->con, FV(i,j,k), FV(i,min(JMAX-1,j+1),k), AN(i,j,k) );
-					exit(1);
-				} */
+
       	dp = P(i,j,k) - P(i,j, min(KMAX-1,k+1));
       	if(k < KMAX-1) dp += solver->gz * solver->rho * DELZ;
       	if(dp * W(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELZ) * dp / solver->rho); /* dv is additive to calc stability limit based on pressure gradient effect on velocity */
@@ -1261,12 +1240,6 @@ int vof_deltcal(struct solver_data *solver) {
 				if(AT(i,j,k) > solver->emf && !isnan(dt_U))
 					delt = min(delt, dt_U);		
 				
-				/* 	
-				if(delt < 0.0001) {
-					printf("Timestep very small when calculating convective stability limit.  \n i j k %ld %ld %ld \n dt_U %lf  solver->con %lf  FV(i,j,k) %lf  FV(i,j,k+1) %lf  AE(i,j,k) %lf\n", 
-					       i,j,k, dt_U, solver->con, FV(i,j,k), FV(i,j,min(KMAX-1,k+1)), AT(i,j,k) );
-					exit(1);
-				} */
 				
 					
 			}
@@ -1283,18 +1256,8 @@ int vof_deltcal(struct solver_data *solver) {
     if(solver->petacal != NULL)
       solver->petacal(solver);
     if(delt < solver->delt_min) {
-      printf("timestep too small to continue.  exiting...");
-     
-      /*  
-      csv_write_P(solver->mesh,solver->t);
-      csv_write_U(solver->mesh,solver->t);
-      csv_write_vof(solver->mesh,solver->t);
-      csv_write_n_vof(solver->mesh,solver->t);
-      
-      if(solver->mesh->turbulence_model != NULL) {
-        csv_write_k(solver->mesh,solver->t);
-        csv_write_E(solver->mesh,solver->t);
-      } */
+      printf("timestep too small to continue.  writing current timestep and exiting...");
+      vof_write_timestep(solver);
       exit(1);
     }
   }
@@ -1305,7 +1268,7 @@ int vof_deltcal(struct solver_data *solver) {
   alpha = max(alpha, 1.5*solver->vmax*solver->delt/DELY);
   alpha = max(alpha, 1.5*solver->wmax*solver->delt/DELZ);
   alpha = min(alpha, 1.0);
-  printf("alpha adjusted from %lf to %lf\n",solver->alpha, alpha);
+  /* printf("alpha adjusted from %lf to %lf\n",solver->alpha, alpha); */
   solver->alpha = alpha;
   
   /* adjust epsi */
@@ -1322,39 +1285,45 @@ int vof_deltcal(struct solver_data *solver) {
 
 int vof_write(struct solver_data *solver) {
   static double write_flg = 0;
-  int write_step;
     
   if(solver->t >= write_flg) {
-    /* write_step = (int) (solver->t / solver->writet); */
-    write_step = track_add(solver->t);
-    track_write();
-    
-    vtk_write_P(solver->mesh,write_step);
-    vtk_write_U(solver->mesh,write_step);
-    vtk_write_vof(solver->mesh,write_step);
-    vtk_write_n_vof(solver->mesh,write_step);
-    
-    csv_write_P(solver->mesh,solver->t);
-    csv_write_U(solver->mesh,solver->t);
-    csv_write_vof(solver->mesh,solver->t);
-    csv_write_n_vof(solver->mesh,solver->t);
-    
-    if(solver->mesh->turbulence_model != NULL) {
-      vtk_write_k(solver->mesh,write_step);
-      vtk_write_E(solver->mesh,write_step);
-      csv_write_k(solver->mesh,solver->t);
-      csv_write_E(solver->mesh,solver->t);
-    }
-    
-    vof_baffles_write(solver);
-    
-    vof_vorticity(solver);
-    
-    vtk_write_vorticity(solver->mesh,write_step);
-    csv_write_vorticity(solver->mesh,solver->t);
+  
+		vof_write_timestep(solver);
     
     write_flg = solver->t + solver->writet;
   }
 
   return 0;
 }
+
+int vof_write_timestep(struct solver_data * solver) {
+	int write_step;
+	
+	write_step = track_add(solver->t);
+	track_write();
+	
+	vtk_write_P(solver->mesh,write_step);
+	vtk_write_U(solver->mesh,write_step);
+	vtk_write_vof(solver->mesh,write_step);
+	vtk_write_n_vof(solver->mesh,write_step);
+	
+	csv_write_P(solver->mesh,solver->t);
+	csv_write_U(solver->mesh,solver->t);
+	csv_write_vof(solver->mesh,solver->t);
+	csv_write_n_vof(solver->mesh,solver->t);
+	
+	if(solver->mesh->turbulence_model != NULL) {
+		vtk_write_k(solver->mesh,write_step);
+		vtk_write_E(solver->mesh,write_step);
+		csv_write_k(solver->mesh,solver->t);
+		csv_write_E(solver->mesh,solver->t);
+	}
+	
+	vof_baffles_write(solver);
+	
+	vof_vorticity(solver);
+	
+	vtk_write_vorticity(solver->mesh,write_step);
+	csv_write_vorticity(solver->mesh,solver->t);
+}
+

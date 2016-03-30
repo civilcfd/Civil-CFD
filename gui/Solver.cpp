@@ -110,6 +110,7 @@ void SolverDialog::readyReadStandardOutput() {
   ui.output->appendPlainText(str);
   int n;
   bool ok;
+  double val;
 
   QFont legendFont;
   
@@ -118,13 +119,16 @@ void SolverDialog::readyReadStandardOutput() {
     QStringList list = str.split(" ");
     for(int i=0; i < list.count()-2; i++) {
       if(list[i].contains("timestep")) {
-        progressVal = list[i+1].toDouble(&ok);
-        if(!ok) continue;
+      	
+        val = list[i+1].toDouble(&ok);
+        if(ok) progressVal = val; 
+        else continue;
       }
       
       if(list[i].contains("delt")) {
-        delt = list[i+1].toDouble(&ok);
-        if(!ok) continue;
+        val = list[i+1].toDouble(&ok);
+        if(ok) delt = val; 
+        else continue;
         if(list[i+2] != "|") continue;
         if(delt > maxDelt) maxDelt = delt;
         

@@ -540,16 +540,27 @@ int boundary_mass_outflow(struct solver_data *solver,
       for(k=kmin; k <= kmax; k++) {        
         switch(x) {
         case 0:
-          if(UN(i+1,j,k) * value > 0) U(i,j,k) = UN(i+1,j,k) / flow_factor;
-          else U(i,j,k) = 0.1 * value/area;
+        	if(VOF(i+1,j,k) > emf) {
+          	if(UN(i+1,j,k) * value > 0) U(i,j,k) = UN(i+1,j,k) / flow_factor;
+          	else U(i,j,k) = 0.1 * value/area;
+          } 
+          else {
+          	U(i,j,k) = U(i+1,j,k);
+          }
           V(i,j,k) = V(i+1,j,k);
           W(i,j,k) = W(i+1,j,k);
           /* V(i,j,k) = 0;
           W(i,j,k) = 0; */
           break;
         case 1:
-          if(UN(i-2,j,k) * value > 0) U(i,j,k) = UN(i-2,j,k) / flow_factor;
-          else U(i,j,k) = 0.1 * value/area;
+        	if(VOF(i-1,j,k) > emf) {
+          	if(UN(i-2,j,k) * value > 0) U(i,j,k) = UN(i-2,j,k) / flow_factor;
+          	else U(i,j,k) = 0.1 * value/area;
+          }
+          else {
+          	U(i,j,k) = U(i-2,j,k);
+          }
+          
           U(i-1,j,k) = U(i,j,k);
           
           V(i,j,k) = V(i-1,j,k);
@@ -560,8 +571,13 @@ int boundary_mass_outflow(struct solver_data *solver,
           W(i-1,j,k) = 0; */
           break;
         case 2:
-          if(VN(i,j+1,k) * value > 0) V(i,j,k) = VN(i,j+1,k) / flow_factor;
-          else V(i,j,k) = 0.1 * value/area;
+        	if(VOF(i,j+1,k) > emf) {
+          	if(VN(i,j+1,k) * value > 0) V(i,j,k) = VN(i,j+1,k) / flow_factor;
+          	else V(i,j,k) = 0.1 * value/area;
+          }
+          else {
+          	V(i,j,k) = V(i,j+1,k);
+          }
           
           U(i,j,k) = U(i,j+1,k);
           W(i,j,k) = W(i,j+1,k);
@@ -569,8 +585,13 @@ int boundary_mass_outflow(struct solver_data *solver,
           W(i,j,k) = 0; */
           break;
         case 3:
-          if(VN(i,j-2,k) * value > 0) V(i,j,k) = VN(i,j-2,k) / flow_factor;
-          else V(i,j,k) = 0.1 * value/area;
+        	if(VOF(i,j-1,k) > emf) {
+          	if(VN(i,j-2,k) * value > 0) V(i,j,k) = VN(i,j-2,k) / flow_factor;
+          	else V(i,j,k) = 0.1 * value/area;
+          }
+          else {
+          	V(i,j,k) = V(i,j-2,k);
+          }
           V(i,j-1,k) = V(i,j,k);
           
           U(i,j,k) = U(i,j-1,k);
@@ -581,8 +602,13 @@ int boundary_mass_outflow(struct solver_data *solver,
           W(i,j-1,k) = 0; */
           break;
         case 4:
-          if(WN(i,j,k+1) * value > 0) W(i,j,k) = WN(i,j,k+1) / flow_factor;
-          else W(i,j,k) = 0.1 * value/area;
+        	if(VOF(i,j,k+1) > emf) {
+          	if(WN(i,j,k+1) * value > 0) W(i,j,k) = WN(i,j,k+1) / flow_factor;
+          	else W(i,j,k) = 0.1 * value/area;
+          }
+          else {
+          	W(i,j,k) = W(i,j,k+1);
+          }
           
           U(i,j,k) = U(i,j,k+1);
           V(i,j,k) = V(i,j,k+1);
@@ -590,8 +616,13 @@ int boundary_mass_outflow(struct solver_data *solver,
           V(i,j,k) = 0; */
           break;
         case 5:
-          if(WN(i,j,k-2) * value > 0) W(i,j,k) = WN(i,j,k-2) / flow_factor;
-          else W(i,j,k) = 0.1 * value/area;
+        	if(VOF(i,j,k-1) > emf) {
+          	if(WN(i,j,k-2) * value > 0) W(i,j,k) = WN(i,j,k-2) / flow_factor;
+          	else W(i,j,k) = 0.1 * value/area;
+          }
+          else {
+          	W(i,j,k) = W(i,j,k-2);
+          }
           W(i,j,k-1) = W(i,j,k);
           
           U(i,j,k) = U(i,j,k-1);

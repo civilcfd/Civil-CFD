@@ -23,6 +23,7 @@ int vof_hydrostatic(struct solver_data *solver);
 int vof_betacal(struct solver_data *solver);
 int vof_deltcal(struct solver_data *solver);
 int vof_write(struct solver_data *solver);
+int vof_write_timestep(struct solver_data * solver);
 int vof_output(struct solver_data *solver);
 int vof_setup_solver(struct solver_data *solver);
 int vof_kill_solver(struct solver_data *solver);
