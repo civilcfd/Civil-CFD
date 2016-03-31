@@ -149,11 +149,11 @@ int MainWindow::buildTimesteps() {
 }
 
 void MainWindow::on_from_textChanged() {
-	on_updateRange_toggled();
+  if(ui.updateRange->isChecked()) on_updateRange_toggled();
 }
 
 void MainWindow::on_to_textChanged() {
-	on_updateRange_toggled();
+	if(ui.updateRange->isChecked()) on_updateRange_toggled();
 }
 
 void MainWindow::on_updateRange_toggled() {

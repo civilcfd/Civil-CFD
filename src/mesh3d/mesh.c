@@ -931,6 +931,7 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
     for(j = 0; j < mesh->jmax; j++) {
       for(k = 0; k < mesh->kmax; k++) {
 				if(FV(i,j,k) < emf) continue; 
+				if(FV(i,j,k) > (1-emf)) continue;
 				
 				corrected = 0;
 				im1 = max(i-1, 0);
@@ -1016,7 +1017,7 @@ int mesh_avratio(struct mesh_data *mesh, double avr_max) {
 		}
 	}		
 	
-	if(avr_max_obs < avr_max)
+	if(avr_max_obs > avr_max)
 		printf("Maximum observed avr: %e\n", avr_max_obs);
 	
 	free(ae_n);
