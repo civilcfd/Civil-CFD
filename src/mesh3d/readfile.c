@@ -134,6 +134,117 @@ int read_mesh(struct mesh_data *mesh, char *filename)
 }
 
 int read_stl(struct stl_data *stl, char *filename, double *limits) {
+  FILE *fp;
+  
+  char text[80];
+  char args[5][256];
+  int nargs;
+  
+  if(filename == NULL || stl == NULL) {
+    printf("error: passed null arguments to read_stl\n");
+    return(1);
+  }
+
+  fp = fopen(filename, "r");
+
+  if(fp == NULL) {
+    printf("error: cannot open %s in read_stl\n",filename);
+    return(1);
+  }
+  
+  if(!fgets(text, sizeof(text), fp)) { 
+      if(!feof(fp)) {
+        printf("error: fgets in read_stl\n");
+        return(1);
+      }
+  }
+  fclose(fp);
+  
+  nargs = read_args(text, 5, args);
+  
+  if(strcmp(args[0], "solid") == 0) {
+    /* detected ASCII stl file */
+    return read_stl_ascii(stl, filename, limits);
+  } else {
+    return read_stl_binary(stl, filename, limits);
+  }
+  
+}
+
+int read_stl_binary(struct stl_data *stl, char *filename, double *limits) {
+  FILE *fp;
+  char text[80];
+  float buf[12];
+  int n, count, i;
+  long int res;
+  
+  if(filename == NULL || stl == NULL) {
+    printf("error: passed null arguments to read_stl\n");
+    return(1);
+  }
+
+  fp = fopen(filename, "rb");
+
+  if(fp == NULL) {
+    printf("error: cannot open %s in read_stl\n",filename);
+    return(1);
+  }
+  
+  res = fread(&text, 80, 1, fp);
+  if(res != 1) {
+    printf("error: misformed binary stl file %s\n",filename);
+    return(1);
+  }  
+  
+  res = fread(&count, 4, 1, fp);
+  if(res != 1) {
+    printf("error: misformed binary stl file %s\n",filename);
+    return(1);
+  }
+  
+  i=0;
+  stl->facets = 0;
+  while(!feof(fp) && i < count) {
+    i++;
+  
+    if(fread(&buf, 4, 12, fp) != 12) {
+      printf("error: misformed binary stl file %s\n",filename);
+      return(1);
+    }
+    if(fread(&n, 2, 1, fp) != 1) {
+      printf("error: misformed binary stl file %s\n",filename);
+      return(1);
+    }
+    
+    stl->normal[stl->facets][0] = buf[0];
+    stl->normal[stl->facets][1] = buf[1];
+    stl->normal[stl->facets][2] = buf[2];
+    stl->v_1[stl->facets][0]    = buf[3];
+    stl->v_1[stl->facets][1]    = buf[4];
+    stl->v_1[stl->facets][2]    = buf[5];
+    stl->v_2[stl->facets][0]    = buf[6];
+    stl->v_2[stl->facets][1]    = buf[7];
+    stl->v_2[stl->facets][2]    = buf[8];
+    stl->v_3[stl->facets][0]    = buf[9];
+    stl->v_3[stl->facets][1]    = buf[10];
+    stl->v_3[stl->facets][2]    = buf[11];  
+
+    if((stl->v_1[stl->facets][0] > limits[0] && stl->v_2[stl->facets][0] > limits[0] && stl->v_3[stl->facets][0] > limits[0]) ||
+       (stl->v_1[stl->facets][1] > limits[1] && stl->v_2[stl->facets][1] > limits[1] && stl->v_3[stl->facets][1] > limits[1]) ||
+       (stl->v_1[stl->facets][2] > limits[2] && stl->v_2[stl->facets][2] > limits[2] && stl->v_3[stl->facets][2] > limits[2])) {
+    } else {
+      stl->facets++;
+    }
+  
+  }  
+  fclose(fp);
+  
+  strncpy(stl->solid, "binary", 6);
+  
+  return 0;
+}
+
+int read_stl_ascii(struct stl_data *stl, char *filename, double *limits) {
 
   FILE *fp;
 

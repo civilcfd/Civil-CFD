@@ -14,6 +14,8 @@ int read_mesh(struct mesh_data *mesh, char *filename);
 int write_mesh(struct mesh_data *mesh, char *filename);
 
 int read_stl(struct stl_data *stl, char *filename, double *limits);
+int read_stl_ascii(struct stl_data *stl, char *filename, double *limits);
+int read_stl_binary(struct stl_data *stl, char *filename, double *limits);
 
 char *trimwhitespace(char *str);
 

@@ -65,6 +65,14 @@ bool MainWindow::saveNotify() {
 void MainWindow::on_RunSimulation_clicked() {
   if(!saveNotify()) return;
 
+  if((ui.t->currentText() == "0" || ui.t->currentText() == "") && ui.t->count() > 1) {
+    if(QMessageBox::question(this, "Delete all timesteps", "This will delete all saved timesteps.  Proceed?",
+     QMessageBox::Ok|QMessageBox::Cancel) == QMessageBox::Cancel) return;
+      
+	  ui.ResultList->selectAll();  
+	  on_Delete_clicked();  
+  }
+
   solverDialog = new SolverDialog(sim, appPath, ui.t->currentText());
   solverDialog->exec();
 

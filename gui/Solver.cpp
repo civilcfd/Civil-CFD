@@ -227,7 +227,6 @@ void SolverDialog::error(QProcess::ProcessError error) {
   }
 
   ui.Return->setEnabled(true);
-  stopped = false;
 }
 
 void SolverDialog::finished(int exitCode, QProcess::ExitStatus status) {
@@ -243,7 +242,6 @@ void SolverDialog::finished(int exitCode, QProcess::ExitStatus status) {
   }
 
   ui.Return->setEnabled(true);
-  stopped = false;
 }
 
 void SolverDialog::stateChanged(QProcess::ProcessState state) {
