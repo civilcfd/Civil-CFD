@@ -420,7 +420,6 @@ void MainWindow::update() {
    
   // Simulate Tab
 
-  ui.t->setCurrentIndex(ui.t->findText(sim.getT(), Qt::MatchContains));
   ui.endt->setPlainText(sim.getEndt());
   ui.writet->setPlainText(sim.getWritet());
   ui.delt->setPlainText(sim.getDelt());

@@ -24,7 +24,15 @@ void MainWindow::buildResultList() {
   }
 
   if(t_last.toDouble(&ok) > 0.0000001)
-    if(ok) ui.t->addItem(t_last);
+  {
+    if(ok)  {
+      ui.t->addItem(t_last);
+      ui.t->setCurrentIndex(1);
+    } else {
+      ui.t->setCurrentIndex(0);
+    }
+  }
+  
 
 }
 
@@ -71,6 +79,13 @@ void MainWindow::on_Delete_clicked() {
     }
 
     if(t_last.toDouble(&ok) > 0.0000001)
-      if(ok) ui.t->addItem(t_last);    
+    {
+      if(ok)  {
+        ui.t->addItem(t_last);
+        ui.t->setCurrentIndex(1);
+      } else {
+        ui.t->setCurrentIndex(0);
+      }
+    } 
   }
 }

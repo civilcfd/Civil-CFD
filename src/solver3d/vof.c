@@ -555,7 +555,7 @@ int vof_vfconv(struct solver_data *solver) {
           # it is basically equal to the difference in VOF
           # between the donor and acceptor, multiplied by the velocity */
 
-          if(rb > emf) {
+          if(rb > emf && ra > emf && rd > emf) {
             fx1 = VOF_N(iad,j,k)*fabs(vx) + 
                   max((fdm-VOF_N(iad,j,k))*fabs(vx)-(fdm-VOF_N(id,j,k))*DELX, 0.0);
             
@@ -605,7 +605,7 @@ int vof_vfconv(struct solver_data *solver) {
 
           if(andm < emf) fdm = 1.0;
 
-          if (rb > emf) {
+          if (rb > emf && ra > emf && rd > emf) {
             fy1 = VOF_N(i,jad,k)*fabs(vy) + 
                   max((fdm-VOF_N(i,jad,k))*fabs(vy)-(fdm-VOF_N(i,jd,k))*DELY,0.0);
             fy  = min(fy1,VOF_N(i,jd,k)*DELY*rd/rb);
@@ -649,7 +649,7 @@ int vof_vfconv(struct solver_data *solver) {
 
           if(atdm < emf) fdm = 1.0;
 
-          if (rb > emf) {
+          if (rb > emf && ra > emf && rd > emf) {
             fz1 = VOF_N(i,j,kad)*fabs(vz) + 
                   max((fdm-VOF_N(i,j,kad))*fabs(vz)-(fdm-VOF_N(i,j,kd))*DELZ,0.0);
             fz  = min(fz1,VOF_N(i,j,kd)*DELZ*rd/rb);
