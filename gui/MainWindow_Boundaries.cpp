@@ -118,6 +118,7 @@ void MainWindow::editBoundary(QTreeWidgetItem *item) {
     long int extent_a[2];
     long int extent_b[2];
     double value, turbulence;
+  	QString maxA, maxB;
 
     if(item->parent() == NULL) text = "";
     else  text = item->parent()->text(0);
@@ -139,7 +140,25 @@ void MainWindow::editBoundary(QTreeWidgetItem *item) {
        sim.getNextSpecialBoundary(type, extent_a, extent_b, value, turbulence);
     }
 
-    sBoundaryDialog = new SBoundaryDialog(type, wall, extent_a[0], extent_a[1], extent_b[0], extent_b[1], value, turbulence);
+		switch(wall) {
+			case 0:
+			case 1:
+				maxA = sim.getJmax();
+				maxB = sim.getKmax();
+				break;
+			case 2:
+			case 3:
+				maxA = sim.getImax();
+				maxB = sim.getKmax();
+				break;
+			case 4:
+			case 5:
+				maxA = sim.getImax();
+				maxB = sim.getJmax();
+				break;
+		}
+  
+    sBoundaryDialog = new SBoundaryDialog(type, wall, extent_a[0], extent_a[1], extent_b[0], extent_b[1], value, turbulence, maxA, maxB);
     sBoundaryDialog->exec();
 
     if(sBoundaryDialog->result() == QDialog::Accepted) {
@@ -174,6 +193,7 @@ void MainWindow::on_AddSpecialBoundary_clicked() {
   int wall;
   QString text;
   QTreeWidgetItem *item = ui.BoundaryTree->currentItem();
+  QString maxA, maxB;
 
   if(item == NULL) {
     QMessageBox::information(this,"Civil CFD",
@@ -201,7 +221,25 @@ void MainWindow::on_AddSpecialBoundary_clicked() {
 
   wall = item->parent()->indexOfChild(item);
 
-  sBoundaryDialog = new SBoundaryDialog(wall);
+  switch(wall) {
+  	case 0:
+  	case 1:
+  		maxA = sim.getJmax();
+  		maxB = sim.getKmax();
+  		break;
+  	case 2:
+  	case 3:
+  		maxA = sim.getImax();
+  		maxB = sim.getKmax();
+  		break;
+  	case 4:
+  	case 5:
+  		maxA = sim.getImax();
+  		maxB = sim.getJmax();
+  		break;
+  }
+  
+  sBoundaryDialog = new SBoundaryDialog(wall, maxA, maxB);
   sBoundaryDialog->exec();
 
   if(sBoundaryDialog->result() == QDialog::Accepted) {

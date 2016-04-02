@@ -37,7 +37,7 @@ QString BoundaryDialog::getBoundaryText() {
   return boundaryText;
 }
 
-SBoundaryDialog::SBoundaryDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, double turbulence) {
+SBoundaryDialog::SBoundaryDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, double turbulence, QString maxA, QString maxB) {
   ui.setupUi(this);
 
   ui.extentA1->setPlainText(QString::number(extentA1));
@@ -51,12 +51,16 @@ SBoundaryDialog::SBoundaryDialog(QString type, int wall, long int extentA1, long
 	ui.select->setCurrentIndex(ui.select->findText(type));
 
   setLabels(wall);
+	ui.maxA->setText("of " + maxA);
+	ui.maxB->setText("of " + maxB);
 }
 
-SBoundaryDialog::SBoundaryDialog(int wall) {
+SBoundaryDialog::SBoundaryDialog(int wall, QString maxA, QString maxB) {
   ui.setupUi(this);
 
   setLabels(wall);
+	ui.maxA->setText("of " + maxA);
+	ui.maxB->setText("of " + maxB);
 }
 
 void SBoundaryDialog::setLabels(int wall) {

@@ -44,19 +44,21 @@ public:
     QLabel *A2;
     QPushButton *calculate;
     QLabel *units;
+    QLabel *maxA;
+    QLabel *maxB;
 
     void setupUi(QDialog *SBoundaryDialog)
     {
         if (SBoundaryDialog->objectName().isEmpty())
             SBoundaryDialog->setObjectName(QString::fromUtf8("SBoundaryDialog"));
-        SBoundaryDialog->resize(450, 424);
+        SBoundaryDialog->resize(500, 424);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(SBoundaryDialog->sizePolicy().hasHeightForWidth());
         SBoundaryDialog->setSizePolicy(sizePolicy);
-        SBoundaryDialog->setMinimumSize(QSize(450, 424));
-        SBoundaryDialog->setMaximumSize(QSize(450, 424));
+        SBoundaryDialog->setMinimumSize(QSize(500, 424));
+        SBoundaryDialog->setMaximumSize(QSize(500, 424));
         buttonBox = new QDialogButtonBox(SBoundaryDialog);
         buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
         buttonBox->setGeometry(QRect(40, 380, 291, 32));
@@ -133,6 +135,12 @@ public:
         units = new QLabel(SBoundaryDialog);
         units->setObjectName(QString::fromUtf8("units"));
         units->setGeometry(QRect(340, 270, 59, 16));
+        maxA = new QLabel(SBoundaryDialog);
+        maxA->setObjectName(QString::fromUtf8("maxA"));
+        maxA->setGeometry(QRect(400, 60, 56, 13));
+        maxB = new QLabel(SBoundaryDialog);
+        maxB->setObjectName(QString::fromUtf8("maxB"));
+        maxB->setGeometry(QRect(400, 110, 56, 13));
 
         retranslateUi(SBoundaryDialog);
         QObject::connect(buttonBox, SIGNAL(accepted()), SBoundaryDialog, SLOT(accept()));
@@ -165,6 +173,8 @@ public:
         A2->setText(QApplication::translate("SBoundaryDialog", "A2", 0, QApplication::UnicodeUTF8));
         calculate->setText(QApplication::translate("SBoundaryDialog", "Calculate", 0, QApplication::UnicodeUTF8));
         units->setText(QApplication::translate("SBoundaryDialog", "m/s", 0, QApplication::UnicodeUTF8));
+        maxA->setText(QApplication::translate("SBoundaryDialog", "of ", 0, QApplication::UnicodeUTF8));
+        maxB->setText(QApplication::translate("SBoundaryDialog", "of ", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

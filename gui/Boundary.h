@@ -41,8 +41,8 @@ class SBoundaryDialog : public QDialog {
 
 public:
 
-  SBoundaryDialog(int wall);
-  SBoundaryDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, double turbulence); 
+  SBoundaryDialog(int wall, QString maxA, QString maxB);
+  SBoundaryDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, double turbulence, QString maxA, QString maxB); 
  
   QString getBoundaryText();
   double getValue();
