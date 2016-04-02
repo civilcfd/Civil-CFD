@@ -248,3 +248,5 @@ pip-log.txt
 # Debug files
 *.dSYM/
 
+
+*.o

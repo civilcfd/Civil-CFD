@@ -18,6 +18,7 @@
 #include "VisualizeDisplay.h"
 #include "Visualize3DDisplay.h"
 #include "SolverDialog.h"
+#include "About.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -37,6 +38,7 @@ private slots:
   void on_actionSave_triggered();
   void on_actionNew_triggered();
   void on_actionQuit_triggered();
+  void on_actionAbout_triggered();
   void on_kEpsilon_toggled();
   void on_Laminar_toggled();
   void on_MeshParameters_itemDoubleClicked(QTreeWidgetItem *item, int column);
@@ -135,6 +137,7 @@ private:
   BaffleDialog *baffleDialog;
   BoundaryDisplay *baffleDisplay;
   SolverDialog *solverDialog;
+  AboutDialog *aboutDialog;
   QString appPath;
 };
 

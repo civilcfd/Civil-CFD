@@ -13,7 +13,9 @@
 
 #include <math.h>
 
-BaffleDialog::BaffleDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, long int pos) {
+BaffleDialog::BaffleDialog(QString type, int wall, long int extentA1, long int extentA2, 
+				long int extentB1, long int extentB2, double value, long int pos,
+				QString maxA, QString maxB, QString maxPos) {
   ui.setupUi(this);
 
   ui.extentA1->setPlainText(QString::number(extentA1));
@@ -25,14 +27,23 @@ BaffleDialog::BaffleDialog(QString type, int wall, long int extentA1, long int e
   ui.pos->setPlainText(QString::number(pos));
 
 	ui.select->setCurrentIndex(ui.select->findText(type));
+	
+	ui.maxA->setText("of " + maxA);
+	ui.maxB->setText("of " + maxB);
+	ui.maxPos->setText("of " + maxPos);
 
   setLabels(wall);
 }
 
-BaffleDialog::BaffleDialog(int wall) {
+BaffleDialog::BaffleDialog(int wall,
+				QString maxA, QString maxB, QString maxPos) {
   ui.setupUi(this);
 
   setLabels(wall);
+  
+	ui.maxA->setText("of " + maxA);
+	ui.maxB->setText("of " + maxB);
+	ui.maxPos->setText("of " + maxPos);
 }
 
 void BaffleDialog::setLabels(int wall) {

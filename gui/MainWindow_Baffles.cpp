@@ -95,6 +95,7 @@ void MainWindow::editBaffle(QTreeWidgetItem *item) {
   long int extent_b[2];
   double value;
   long int pos;
+  QString maxA, maxB, maxPos;
 
   if(item->parent() == NULL) text = "";
   else  text = item->parent()->text(0);
@@ -113,8 +114,26 @@ void MainWindow::editBaffle(QTreeWidgetItem *item) {
   for(int i = 0; i < item->text(0).toInt(); i++) {
      sim.getNextBaffle(type, extent_a, extent_b, value, pos);
   }
+  
+  switch(wall) {
+  	case 0:
+  		maxA = sim.getJmax();
+  		maxB = sim.getKmax();
+  		maxPos = sim.getImax();
+  		break;
+  	case 1:
+  		maxA = sim.getImax();
+  		maxB = sim.getKmax();
+  		maxPos = sim.getJmax();
+  		break;
+  	case 2:
+  		maxA = sim.getImax();
+  		maxB = sim.getJmax();
+  		maxPos = sim.getKmax();
+  		break;
+  }
 
-  baffleDialog = new BaffleDialog(type, wall, extent_a[0], extent_a[1], extent_b[0], extent_b[1], value, pos);
+  baffleDialog = new BaffleDialog(type, wall, extent_a[0], extent_a[1], extent_b[0], extent_b[1], value, pos, maxA, maxB, maxPos);
   baffleDialog->exec();
 
   if(baffleDialog->result() == QDialog::Accepted) {
@@ -159,6 +178,8 @@ void MainWindow::on_AddBaffle_clicked() {
   int wall;
   QString text;
   QTreeWidgetItem *item = ui.BaffleTree->currentItem();
+  long int pos;
+  QString maxA, maxB, maxPos;
 
   if(item == NULL) {
     QMessageBox::information(this,"Civil CFD",
@@ -184,7 +205,25 @@ void MainWindow::on_AddBaffle_clicked() {
 
   wall = item->parent()->indexOfChild(item);
 
-  baffleDialog = new BaffleDialog(wall);
+  switch(wall) {
+  	case 0:
+  		maxA = sim.getJmax();
+  		maxB = sim.getKmax();
+  		maxPos = sim.getImax();
+  		break;
+  	case 1:
+  		maxA = sim.getImax();
+  		maxB = sim.getKmax();
+  		maxPos = sim.getJmax();
+  		break;
+  	case 2:
+  		maxA = sim.getImax();
+  		maxB = sim.getJmax();
+  		maxPos = sim.getKmax();
+  		break;
+  }
+  
+  baffleDialog = new BaffleDialog(wall, maxA, maxB, maxPos);
   baffleDialog->exec();
 
   if(baffleDialog->result() == QDialog::Accepted) {

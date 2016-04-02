@@ -19,8 +19,10 @@ class BaffleDialog : public QDialog {
 
 public:
 
-  BaffleDialog(int wall);
-  BaffleDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, long int pos); 
+  BaffleDialog(int wall,
+				QString maxA, QString maxB, QString maxPos);
+  BaffleDialog(QString type, int wall, long int extentA1, long int extentA2, long int extentB1, long int extentB2, double value, long int pos,
+				QString maxA, QString maxB, QString maxPos); 
  
   QString getBaffleText();
   double getValue();

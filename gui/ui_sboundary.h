@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sboundary.ui'
 **
-** Created by: Qt User Interface Compiler version 4.8.7
+** Created by: Qt User Interface Compiler version 4.8.6
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -75,10 +75,14 @@ public:
         value->setObjectName(QString::fromUtf8("value"));
         value->setGeometry(QRect(160, 260, 161, 31));
         value->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        value->setTabChangesFocus(true);
+        value->setLineWrapMode(QPlainTextEdit::NoWrap);
         turbulence = new QPlainTextEdit(SBoundaryDialog);
         turbulence->setObjectName(QString::fromUtf8("turbulence"));
         turbulence->setGeometry(QRect(160, 320, 161, 31));
         turbulence->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        turbulence->setTabChangesFocus(true);
+        turbulence->setLineWrapMode(QPlainTextEdit::NoWrap);
         labelTurbulence = new QLabel(SBoundaryDialog);
         labelTurbulence->setObjectName(QString::fromUtf8("labelTurbulence"));
         labelTurbulence->setGeometry(QRect(30, 330, 71, 16));
@@ -92,6 +96,8 @@ public:
         extentA1->setObjectName(QString::fromUtf8("extentA1"));
         extentA1->setGeometry(QRect(90, 50, 81, 31));
         extentA1->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        extentA1->setTabChangesFocus(true);
+        extentA1->setLineWrapMode(QPlainTextEdit::NoWrap);
         B1 = new QLabel(SBoundaryDialog);
         B1->setObjectName(QString::fromUtf8("B1"));
         B1->setGeometry(QRect(260, 60, 41, 16));
@@ -100,11 +106,15 @@ public:
         extentB1->setGeometry(QRect(310, 50, 81, 31));
         extentB1->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         extentB1->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        extentB1->setTabChangesFocus(true);
+        extentB1->setLineWrapMode(QPlainTextEdit::NoWrap);
         extentB2 = new QPlainTextEdit(SBoundaryDialog);
         extentB2->setObjectName(QString::fromUtf8("extentB2"));
         extentB2->setGeometry(QRect(310, 100, 81, 31));
         extentB2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         extentB2->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        extentB2->setTabChangesFocus(true);
+        extentB2->setLineWrapMode(QPlainTextEdit::NoWrap);
         B2 = new QLabel(SBoundaryDialog);
         B2->setObjectName(QString::fromUtf8("B2"));
         B2->setGeometry(QRect(260, 110, 41, 16));
@@ -112,6 +122,8 @@ public:
         extentA2->setObjectName(QString::fromUtf8("extentA2"));
         extentA2->setGeometry(QRect(90, 100, 81, 31));
         extentA2->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        extentA2->setTabChangesFocus(true);
+        extentA2->setLineWrapMode(QPlainTextEdit::NoWrap);
         A2 = new QLabel(SBoundaryDialog);
         A2->setObjectName(QString::fromUtf8("A2"));
         A2->setGeometry(QRect(30, 110, 51, 16));

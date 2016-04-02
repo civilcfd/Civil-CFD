@@ -46,6 +46,7 @@ public:
     QAction *actionOpen;
     QAction *actionSave;
     QAction *actionQuit;
+    QAction *actionAbout;
     QWidget *centralwidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -293,11 +294,6 @@ public:
     QFrame *line_9;
     QHBoxLayout *horizontalLayout_4;
     QSpacerItem *horizontalSpacer_19;
-    QLabel *label_49;
-    QPlainTextEdit *from3d;
-    QLabel *label_50;
-    QPlainTextEdit *to3d;
-    QPushButton *animate3d;
     QSpacerItem *horizontalSpacer_20;
     QRadioButton *zNormal3d;
     QListWidget *timesteps3d;
@@ -308,6 +304,7 @@ public:
     QSlider *extent3d;
     QMenuBar *menubar;
     QMenu *menuFile;
+    QMenu *menuHelp;
     QStatusBar *statusbar;
     QButtonGroup *buttonGroup_2;
     QButtonGroup *buttonGroup;
@@ -323,6 +320,9 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/icons/icon.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        MainWindow->setWindowIcon(icon);
         actionNew = new QAction(MainWindow);
         actionNew->setObjectName(QString::fromUtf8("actionNew"));
         actionOpen = new QAction(MainWindow);
@@ -331,6 +331,8 @@ public:
         actionSave->setObjectName(QString::fromUtf8("actionSave"));
         actionQuit = new QAction(MainWindow);
         actionQuit->setObjectName(QString::fromUtf8("actionQuit"));
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         centralwidget->setEnabled(true);
@@ -359,18 +361,18 @@ public:
         Save = new QPushButton(Information);
         Save->setObjectName(QString::fromUtf8("Save"));
         Save->setEnabled(false);
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icons/resources/document-save.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        Save->setIcon(icon);
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/icons/resources/document-save.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        Save->setIcon(icon1);
         Save->setIconSize(QSize(22, 22));
 
         gridLayout->addWidget(Save, 1, 3, 1, 1);
 
         Delete = new QPushButton(Information);
         Delete->setObjectName(QString::fromUtf8("Delete"));
-        QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/icons/resources/edit-delete.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        Delete->setIcon(icon1);
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/icons/resources/edit-delete.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        Delete->setIcon(icon2);
         Delete->setIconSize(QSize(22, 22));
 
         gridLayout->addWidget(Delete, 14, 3, 1, 1);
@@ -382,9 +384,9 @@ public:
 
         Clear = new QPushButton(Information);
         Clear->setObjectName(QString::fromUtf8("Clear"));
-        QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/icons/resources/edit-clear.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        Clear->setIcon(icon2);
+        QIcon icon3;
+        icon3.addFile(QString::fromUtf8(":/icons/resources/edit-clear.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        Clear->setIcon(icon3);
         Clear->setIconSize(QSize(22, 22));
 
         gridLayout->addWidget(Clear, 12, 3, 1, 1);
@@ -395,9 +397,9 @@ public:
 
         SelectAll = new QPushButton(Information);
         SelectAll->setObjectName(QString::fromUtf8("SelectAll"));
-        QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/icons/resources/edit-select-all.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        SelectAll->setIcon(icon3);
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/icons/resources/edit-select-all.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        SelectAll->setIcon(icon4);
         SelectAll->setIconSize(QSize(22, 22));
 
         gridLayout->addWidget(SelectAll, 11, 3, 1, 1);
@@ -451,9 +453,9 @@ public:
 
         New = new QPushButton(Information);
         New->setObjectName(QString::fromUtf8("New"));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/icons/resources/document-new.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        New->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/icons/resources/document-new.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        New->setIcon(icon5);
         New->setIconSize(QSize(22, 22));
 
         gridLayout->addWidget(New, 0, 3, 1, 1);
@@ -684,9 +686,9 @@ public:
 
         calcRough = new QPushButton(Models);
         calcRough->setObjectName(QString::fromUtf8("calcRough"));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/icons/resources/accessories-calculator.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        calcRough->setIcon(icon5);
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icons/resources/accessories-calculator.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        calcRough->setIcon(icon6);
 
         gridLayout_4->addWidget(calcRough, 10, 12, 1, 1);
 
@@ -713,26 +715,26 @@ public:
 
         earthGravity = new QPushButton(Models);
         earthGravity->setObjectName(QString::fromUtf8("earthGravity"));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/icons/resources/internet-web-browser.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        earthGravity->setIcon(icon6);
+        QIcon icon7;
+        icon7.addFile(QString::fromUtf8(":/icons/resources/internet-web-browser.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        earthGravity->setIcon(icon7);
 
         gridLayout_4->addWidget(earthGravity, 1, 12, 1, 1);
 
         water20C = new QPushButton(Models);
         water20C->setObjectName(QString::fromUtf8("water20C"));
-        QIcon icon7;
-        icon7.addFile(QString::fromUtf8(":/icons/resources/water.png"), QSize(), QIcon::Normal, QIcon::Off);
-        water20C->setIcon(icon7);
+        QIcon icon8;
+        icon8.addFile(QString::fromUtf8(":/icons/resources/water.png"), QSize(), QIcon::Normal, QIcon::Off);
+        water20C->setIcon(icon8);
 
         gridLayout_4->addWidget(water20C, 3, 12, 1, 1);
 
         defaultLength = new QPushButton(Models);
         defaultLength->setObjectName(QString::fromUtf8("defaultLength"));
         defaultLength->setMinimumSize(QSize(0, 0));
-        QIcon icon8;
-        icon8.addFile(QString::fromUtf8(":/icons/resources/view-refresh.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        defaultLength->setIcon(icon8);
+        QIcon icon9;
+        icon9.addFile(QString::fromUtf8(":/icons/resources/view-refresh.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        defaultLength->setIcon(icon9);
 
         gridLayout_4->addWidget(defaultLength, 9, 12, 1, 1);
 
@@ -756,9 +758,9 @@ public:
         MeshUndo = new QPushButton(widget);
         MeshUndo->setObjectName(QString::fromUtf8("MeshUndo"));
         MeshUndo->setMaximumSize(QSize(160, 16777215));
-        QIcon icon9;
-        icon9.addFile(QString::fromUtf8(":/icons/resources/edit-undo.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        MeshUndo->setIcon(icon9);
+        QIcon icon10;
+        icon10.addFile(QString::fromUtf8(":/icons/resources/edit-undo.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        MeshUndo->setIcon(icon10);
         MeshUndo->setIconSize(QSize(22, 22));
 
         gridLayout_7->addWidget(MeshUndo, 0, 1, 1, 1, Qt::AlignLeft);
@@ -816,7 +818,7 @@ public:
         MeshUpdate = new QPushButton(widget);
         MeshUpdate->setObjectName(QString::fromUtf8("MeshUpdate"));
         MeshUpdate->setMaximumSize(QSize(160, 16777215));
-        MeshUpdate->setIcon(icon8);
+        MeshUpdate->setIcon(icon9);
         MeshUpdate->setIconSize(QSize(22, 22));
         MeshUpdate->setCheckable(false);
         MeshUpdate->setFlat(false);
@@ -910,9 +912,9 @@ public:
         STLRender = new QPushButton(Geometry);
         STLRender->setObjectName(QString::fromUtf8("STLRender"));
         STLRender->setMinimumSize(QSize(100, 0));
-        QIcon icon10;
-        icon10.addFile(QString::fromUtf8(":/icons/resources/media-playback-start.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        STLRender->setIcon(icon10);
+        QIcon icon11;
+        icon11.addFile(QString::fromUtf8(":/icons/resources/media-playback-start.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        STLRender->setIcon(icon11);
         STLRender->setIconSize(QSize(22, 22));
 
         gridLayout_9->addWidget(STLRender, 1, 9, 1, 1);
@@ -924,9 +926,9 @@ public:
         STLOpen = new QPushButton(Geometry);
         STLOpen->setObjectName(QString::fromUtf8("STLOpen"));
         STLOpen->setMinimumSize(QSize(100, 0));
-        QIcon icon11;
-        icon11.addFile(QString::fromUtf8(":/icons/resources/document-open.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        STLOpen->setIcon(icon11);
+        QIcon icon12;
+        icon12.addFile(QString::fromUtf8(":/icons/resources/document-open.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        STLOpen->setIcon(icon12);
         STLOpen->setIconSize(QSize(22, 22));
 
         gridLayout_9->addWidget(STLOpen, 0, 9, 1, 1);
@@ -977,9 +979,9 @@ public:
         EditBoundary->setObjectName(QString::fromUtf8("EditBoundary"));
         EditBoundary->setMinimumSize(QSize(0, 0));
         EditBoundary->setMaximumSize(QSize(140, 16777215));
-        QIcon icon12;
-        icon12.addFile(QString::fromUtf8(":/icons/resources/edit-find-replace.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        EditBoundary->setIcon(icon12);
+        QIcon icon13;
+        icon13.addFile(QString::fromUtf8(":/icons/resources/edit-find-replace.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        EditBoundary->setIcon(icon13);
         EditBoundary->setIconSize(QSize(22, 22));
 
         horizontalLayout->addWidget(EditBoundary);
@@ -987,9 +989,9 @@ public:
         AddSpecialBoundary = new QPushButton(Boundaries);
         AddSpecialBoundary->setObjectName(QString::fromUtf8("AddSpecialBoundary"));
         AddSpecialBoundary->setMaximumSize(QSize(190, 16777215));
-        QIcon icon13;
-        icon13.addFile(QString::fromUtf8(":/icons/resources/List-add.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        AddSpecialBoundary->setIcon(icon13);
+        QIcon icon14;
+        icon14.addFile(QString::fromUtf8(":/icons/resources/List-add.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        AddSpecialBoundary->setIcon(icon14);
         AddSpecialBoundary->setIconSize(QSize(22, 22));
 
         horizontalLayout->addWidget(AddSpecialBoundary);
@@ -997,7 +999,7 @@ public:
         RemoveSpecialBoundary = new QPushButton(Boundaries);
         RemoveSpecialBoundary->setObjectName(QString::fromUtf8("RemoveSpecialBoundary"));
         RemoveSpecialBoundary->setMaximumSize(QSize(220, 16777215));
-        RemoveSpecialBoundary->setIcon(icon1);
+        RemoveSpecialBoundary->setIcon(icon2);
         RemoveSpecialBoundary->setIconSize(QSize(22, 22));
 
         horizontalLayout->addWidget(RemoveSpecialBoundary);
@@ -1060,7 +1062,7 @@ public:
         EditBaffle->setObjectName(QString::fromUtf8("EditBaffle"));
         EditBaffle->setMinimumSize(QSize(0, 0));
         EditBaffle->setMaximumSize(QSize(140, 16777215));
-        EditBaffle->setIcon(icon12);
+        EditBaffle->setIcon(icon13);
         EditBaffle->setIconSize(QSize(22, 22));
 
         horizontalLayout_2->addWidget(EditBaffle);
@@ -1068,7 +1070,7 @@ public:
         AddBaffle = new QPushButton(Baffles);
         AddBaffle->setObjectName(QString::fromUtf8("AddBaffle"));
         AddBaffle->setMaximumSize(QSize(190, 16777215));
-        AddBaffle->setIcon(icon13);
+        AddBaffle->setIcon(icon14);
         AddBaffle->setIconSize(QSize(22, 22));
 
         horizontalLayout_2->addWidget(AddBaffle);
@@ -1076,7 +1078,7 @@ public:
         RemoveBaffle = new QPushButton(Baffles);
         RemoveBaffle->setObjectName(QString::fromUtf8("RemoveBaffle"));
         RemoveBaffle->setMaximumSize(QSize(220, 16777215));
-        RemoveBaffle->setIcon(icon1);
+        RemoveBaffle->setIcon(icon2);
         RemoveBaffle->setIconSize(QSize(22, 22));
 
         horizontalLayout_2->addWidget(RemoveBaffle);
@@ -1438,7 +1440,7 @@ public:
         RunSimulation->setObjectName(QString::fromUtf8("RunSimulation"));
         RunSimulation->setMinimumSize(QSize(120, 0));
         RunSimulation->setMaximumSize(QSize(120, 16777215));
-        RunSimulation->setIcon(icon10);
+        RunSimulation->setIcon(icon11);
         RunSimulation->setIconSize(QSize(24, 24));
 
         gridLayout_15->addWidget(RunSimulation, 8, 5, 1, 2, Qt::AlignRight|Qt::AlignTop);
@@ -1640,7 +1642,7 @@ public:
 
         saveJPEG = new QPushButton(Visualize);
         saveJPEG->setObjectName(QString::fromUtf8("saveJPEG"));
-        saveJPEG->setIcon(icon);
+        saveJPEG->setIcon(icon1);
 
         gridLayout_17->addWidget(saveJPEG, 13, 0, 1, 1);
 
@@ -1760,7 +1762,7 @@ public:
 
         saveJPEG3d = new QPushButton(Visualize3d);
         saveJPEG3d->setObjectName(QString::fromUtf8("saveJPEG3d"));
-        saveJPEG3d->setIcon(icon);
+        saveJPEG3d->setIcon(icon1);
 
         gridLayout_21->addWidget(saveJPEG3d, 13, 0, 1, 1);
 
@@ -1832,41 +1834,6 @@ public:
 
         horizontalLayout_4->addItem(horizontalSpacer_19);
 
-        label_49 = new QLabel(Visualize3d);
-        label_49->setObjectName(QString::fromUtf8("label_49"));
-
-        horizontalLayout_4->addWidget(label_49, 0, Qt::AlignRight);
-
-        from3d = new QPlainTextEdit(Visualize3d);
-        from3d->setObjectName(QString::fromUtf8("from3d"));
-        sizePolicy3.setHeightForWidth(from3d->sizePolicy().hasHeightForWidth());
-        from3d->setSizePolicy(sizePolicy3);
-        from3d->setMaximumSize(QSize(100, 28));
-
-        horizontalLayout_4->addWidget(from3d);
-
-        label_50 = new QLabel(Visualize3d);
-        label_50->setObjectName(QString::fromUtf8("label_50"));
-        label_50->setMaximumSize(QSize(17, 16777215));
-
-        horizontalLayout_4->addWidget(label_50, 0, Qt::AlignHCenter);
-
-        to3d = new QPlainTextEdit(Visualize3d);
-        to3d->setObjectName(QString::fromUtf8("to3d"));
-        sizePolicy4.setHeightForWidth(to3d->sizePolicy().hasHeightForWidth());
-        to3d->setSizePolicy(sizePolicy4);
-        to3d->setMaximumSize(QSize(100, 28));
-
-        horizontalLayout_4->addWidget(to3d, 0, Qt::AlignLeft);
-
-        animate3d = new QPushButton(Visualize3d);
-        animate3d->setObjectName(QString::fromUtf8("animate3d"));
-        QIcon icon14;
-        icon14.addFile(QString::fromUtf8(":/icons/resources/view-fullscreen.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        animate3d->setIcon(icon14);
-
-        horizontalLayout_4->addWidget(animate3d);
-
         horizontalSpacer_20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_4->addItem(horizontalSpacer_20);
@@ -1937,18 +1904,22 @@ public:
         menubar->setGeometry(QRect(0, 0, 950, 22));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
+        menuHelp = new QMenu(menubar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWindow->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());
+        menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionNew);
         menuFile->addAction(actionOpen);
         menuFile->addSeparator();
         menuFile->addAction(actionSave);
         menuFile->addSeparator();
         menuFile->addAction(actionQuit);
+        menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
 
@@ -1968,6 +1939,7 @@ public:
         actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0, QApplication::UnicodeUTF8));
         actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0, QApplication::UnicodeUTF8));
+        actionAbout->setText(QApplication::translate("MainWindow", "About", 0, QApplication::UnicodeUTF8));
         Save->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         Delete->setText(QApplication::translate("MainWindow", "Delete", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("MainWindow", "Timesteps Saved", 0, QApplication::UnicodeUTF8));
@@ -2194,17 +2166,13 @@ public:
         xNormal3d->setText(QApplication::translate("MainWindow", "X-Normal", 0, QApplication::UnicodeUTF8));
         label_51->setText(QApplication::translate("MainWindow", "Iso-Surface Clipping", 0, QApplication::UnicodeUTF8));
         label_53->setText(QApplication::translate("MainWindow", "Extent", 0, QApplication::UnicodeUTF8));
-        label_49->setText(QApplication::translate("MainWindow", "Animate", 0, QApplication::UnicodeUTF8));
-        from3d->setPlainText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
-        label_50->setText(QApplication::translate("MainWindow", "to", 0, QApplication::UnicodeUTF8));
-        to3d->setPlainText(QApplication::translate("MainWindow", "1", 0, QApplication::UnicodeUTF8));
-        animate3d->setText(QApplication::translate("MainWindow", "Animate", 0, QApplication::UnicodeUTF8));
         zNormal3d->setText(QApplication::translate("MainWindow", "Z-Normal", 0, QApplication::UnicodeUTF8));
         label_55->setText(QApplication::translate("MainWindow", "Results", 0, QApplication::UnicodeUTF8));
         label_56->setText(QApplication::translate("MainWindow", "Timestep", 0, QApplication::UnicodeUTF8));
         label_52->setText(QApplication::translate("MainWindow", "Orientation", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Visualize3d), QApplication::translate("MainWindow", "3D Surface", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

@@ -22,6 +22,10 @@
   <property name="windowTitle">
    <string>Civil CFD</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="gui.qrc">
+    <normaloff>:/icons/icon.svg</normaloff>:/icons/icon.svg</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
     <bool>true</bool>
@@ -3533,75 +3537,6 @@
               </property>
              </spacer>
             </item>
-            <item alignment="Qt::AlignRight">
-             <widget class="QLabel" name="label_49">
-              <property name="text">
-               <string>Animate</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPlainTextEdit" name="from3d">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>28</height>
-               </size>
-              </property>
-              <property name="plainText">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_50">
-              <property name="maximumSize">
-               <size>
-                <width>17</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>to</string>
-              </property>
-             </widget>
-            </item>
-            <item alignment="Qt::AlignLeft">
-             <widget class="QPlainTextEdit" name="to3d">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>28</height>
-               </size>
-              </property>
-              <property name="plainText">
-               <string>1</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="animate3d">
-              <property name="text">
-               <string>Animate</string>
-              </property>
-              <property name="icon">
-               <iconset resource="gui.qrc">
-                <normaloff>:/icons/resources/view-fullscreen.svg</normaloff>:/icons/resources/view-fullscreen.svg</iconset>
-              </property>
-             </widget>
-            </item>
             <item>
              <spacer name="horizontalSpacer_20">
               <property name="orientation">
@@ -3757,7 +3692,14 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
@@ -3787,6 +3729,11 @@
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

@@ -12,6 +12,8 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() : QMainWindow() {
+
+
   meshDisplay = new MeshDisplay(10,10,10);
   geometryDisplay = new GeometryDisplay(10,10,10);
   boundaryDisplay = new BoundaryDisplay(10,10,10);
@@ -220,6 +222,12 @@ void MainWindow::on_New_clicked() {
   update();
 
   return;
+}
+
+void MainWindow::on_actionAbout_triggered() {
+	aboutDialog = new AboutDialog();
+	aboutDialog->exec();
+	delete aboutDialog;
 }
 
 void MainWindow::on_actionQuit_triggered() {

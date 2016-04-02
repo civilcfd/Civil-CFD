@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AboutDialog</class>
+ <widget class="QDialog" name="AboutDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>740</width>
+    <height>343</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>About Civil CFD</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>51</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="gui.qrc">:/icons/icon.svg</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>10</y>
+     <width>681</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Civil CFD v. 0.1&lt;br/&gt;Free Surface CFD Solver for Civil Engineering Problems&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Copyright (c) 2016 by Michael Celli&lt;br/&gt;Released under the GNU LGPL (&lt;a href=&quot;www.gnu.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.gnu.org&lt;/span&gt;&lt;/a&gt;)&lt;br/&gt;&lt;br/&gt;VTK is Copyright (c) 1993-2016 Ken Martin, Will Schroeder, Bill Lorensen&lt;br/&gt;The Qt GUI Toolkit is Copyright (c) 2016 The Qt Company Ltd.&lt;br/&gt;Qhull is Copyright (c) 1993-2016 C.B. Barber and the The Geometry Centre&lt;br/&gt;QCustomPlot is Copyright (c) 2016 Emanuel Eichhammer&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;The author(s) of Civil CFD provide the program '&lt;span style=&quot; font-weight:600;&quot;&gt;as is'&lt;/span&gt; without warranty of any kind, expressed or implied, including, but not limited to, the &lt;span style=&quot; font-weight:600;&quot;&gt;implied warranties of merchantability and fitness for a particular purpose&lt;/span&gt;.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Civil CFD is an open source framework for numerical simulation of differential equations using finite difference methods. The methods, equations, and theory are outlined in the source files that are made available to the user for study or modification. Practicioners using this software must apply their own professional judgement when interpreting the results, and take sole responsibility for professional decisions made based on use of this software. The author(s) of this software shall not be liable for professional decisions made based on results obtained from this software, including results that may be erroneous due to errors in the code. By using this software, you agree not to hold the author(s) liable for any injury or cost to any party from using this software or relying on its results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::RichText</enum>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="OK">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>310</y>
+     <width>110</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <zorder>label_2</zorder>
+  <zorder>label</zorder>
+  <zorder>OK</zorder>
+ </widget>
+ <resources>
+  <include location="gui.qrc"/>
+ </resources>
+ <connections/>
+</ui>
