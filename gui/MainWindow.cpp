@@ -12,7 +12,6 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() : QMainWindow() {
-
   meshDisplay = new MeshDisplay(10,10,10);
   geometryDisplay = new GeometryDisplay(10,10,10);
   boundaryDisplay = new BoundaryDisplay(10,10,10);
