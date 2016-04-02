@@ -38,15 +38,9 @@ CONFIG += release
 # kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib 
 }
 # Input
-<<<<<<< Updated upstream
-HEADERS += MainWindow.h Simulation.h MeshDisplay.h GeometryDisplay.h Render.h RenderDisplay.h Boundary.h BoundaryDisplay.h SolverDialog.h VisualizeDisplay.h Baffle.h qcustomplot.h Visualize3DDisplay.h
-FORMS += civlcfd.ui render.ui boundary.ui sboundary.ui solver.ui baffle.ui
-SOURCES += main.cpp MainWindow.cpp Simulation.cpp MeshDisplay.cpp GeometryDisplay.cpp Render.cpp RenderDisplay.cpp MainWindow_Boundaries.cpp Boundary.cpp BoundaryDisplay.cpp Solver.cpp ResultList.cpp Visualize.cpp VisualizeDisplay.cpp Baffle.cpp MainWindow_Baffles.cpp qcustomplot.cpp Visualize3D.cpp Visualize3DDisplay.cpp
-=======
 HEADERS += MainWindow.h Simulation.h MeshDisplay.h GeometryDisplay.h Render.h RenderDisplay.h Boundary.h BoundaryDisplay.h SolverDialog.h VisualizeDisplay.h Baffle.h qcustomplot.h Visualize3DDisplay.h About.h
 FORMS += civlcfd.ui render.ui boundary.ui sboundary.ui solver.ui baffle.ui about.ui
-SOURCES += main.cpp MainWindow.cpp Simulation.cpp MeshDisplay.cpp GeometryDisplay.cpp Render.cpp RenderDisplay.cpp MainWindow_Boundaries.cpp Boundary.cpp BoundaryDisplay.cpp Solver.cpp ResultList.cpp Visualize.cpp VisualizeDisplay.cpp Baffle.cpp MainWindow_Baffles.cpp qcustomplot.cpp Visualize3DDisplay.cpp Visualize3D.cpp About.cpp
->>>>>>> Stashed changes
+SOURCES += main.cpp MainWindow.cpp Simulation.cpp MeshDisplay.cpp GeometryDisplay.cpp Render.cpp RenderDisplay.cpp MainWindow_Boundaries.cpp Boundary.cpp BoundaryDisplay.cpp Solver.cpp ResultList.cpp Visualize.cpp VisualizeDisplay.cpp Baffle.cpp MainWindow_Baffles.cpp qcustomplot.cpp Visualize3D.cpp Visualize3DDisplay.cpp About.cpp
 
 RESOURCES += \
     gui.qrc

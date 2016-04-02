@@ -13,6 +13,13 @@
 
 MainWindow::MainWindow() : QMainWindow() {
 
+#if defined(Q_OS_MAC)
+QDir pluginsDir(QApplication::applicationDirPath());
+if (pluginsDir.dirName() == "MacOS") {
+    pluginsDir.cdUp();
+    
+}
+#endif
 
   meshDisplay = new MeshDisplay(10,10,10);
   geometryDisplay = new GeometryDisplay(10,10,10);
