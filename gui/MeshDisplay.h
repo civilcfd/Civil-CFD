@@ -42,6 +42,7 @@ public:
   void AddActor(vtkSmartPointer<vtkActor> &new_actor);
   void RemoveActor(vtkSmartPointer<vtkActor> &new_actor);
   void reset();
+	void normalizeCamera(int x, double y, double z);
 
   void AddVolume(vtkSmartPointer<vtkVolume> &volume);
   void RemoveVolume(vtkSmartPointer<vtkVolume> &volume);

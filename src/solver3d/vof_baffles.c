@@ -390,7 +390,7 @@ int baffle_velocity_dev(struct solver_data *solver,
                             int x, double min_1, double min_2, double max_1, double max_2, 
                             double *value, long int pos) {
 
-  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
+  long int i, j, k, imin, jmin, kmin, imax, jmax, kmax, ip1, im1, jp1, jm1, kp1, km1;
   double count;
   double v_ave, v_dev;
   
@@ -409,18 +409,46 @@ int baffle_velocity_dev(struct solver_data *solver,
         switch(x) {
         case 0:
           if(AE(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i+1,j,k)) > solver->emf) {
+          	jp1 = min(j+1, jmax);
+          	jm1 = max(j-1, 0);
+          	kp1 = min(k+1, kmax);
+          	km1 = max(k-1, 0);
+          	
+          	if(AE(i,jp1,k) < (1-solver->emf)) continue;
+          	if(AE(i,jm1,k) < (1-solver->emf)) continue;
+          	if(AE(i,j,kp1) < (1-solver->emf)) continue;
+          	if(AE(i,j,km1) < (1-solver->emf)) continue;
+          	
             v_ave += U(i,j,k);
             count = count+1;
           }
           break;
         case 1:
           if(AN(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i,j+1,k)) > solver->emf) {
+          	ip1 = min(i+1, imax);
+          	im1 = max(i-1, 0);
+          	kp1 = min(k+1, kmax);
+          	km1 = max(k-1, 0);
+          	
+          	if(AN(ip1,j,k) < (1-solver->emf)) continue;
+          	if(AN(im1,j,k) < (1-solver->emf)) continue;
+          	if(AN(i,j,kp1) < (1-solver->emf)) continue;
+          	if(AN(i,j,km1) < (1-solver->emf)) continue;
             v_ave += V(i,j,k);
             count = count+1;
           }
           break;
         case 2:
           if(AT(i,j,k) > (1-solver->emf) && (VOF(i,j,k) + VOF(i,j,k+1)) > solver->emf) {
+          	ip1 = min(i+1, imax);
+          	im1 = max(i-1, 0);
+          	jp1 = min(j+1, jmax);
+          	jm1 = max(j-1, 0);
+          	
+          	if(AT(ip1,j,k) < (1-solver->emf)) continue;
+          	if(AT(im1,j,k) < (1-solver->emf)) continue;
+          	if(AT(i,jp1,k) < (1-solver->emf)) continue;
+          	if(AT(i,jm1,k) < (1-solver->emf)) continue;
             v_ave += W(i,j,k);
             count = count+1;
           }

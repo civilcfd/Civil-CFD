@@ -36,6 +36,7 @@ MainWindow::MainWindow() : QMainWindow() {
   ui.vis->SetRenderWindow(visualizeDisplay->getRenderWindow());
   
   ui.vis3d->SetRenderWindow(visualize3dDisplay->getRenderWindow());
+  
 }
 
 bool MainWindow::saveNotify() {
@@ -278,6 +279,7 @@ void MainWindow::enableAll() {
   ui.InitialConditions->setEnabled(true);
   ui.Simulate->setEnabled(true);
   ui.Visualize->setEnabled(true);
+  on_yNormal_toggled();
   ui.Visualize3d->setEnabled(true);
 }
 

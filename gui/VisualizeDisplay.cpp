@@ -308,6 +308,7 @@ void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
   glyph->SetVectorModeToUseVector();
 //  glyph->SetColorModeToColorByScalar();
   glyph->SetScaleModeToScaleByVector();
+  glyph->SetOrient(normal);
   glyph->OrientOn();
   glyph->SetScaleFactor(0.3);
 

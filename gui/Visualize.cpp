@@ -52,14 +52,29 @@ void MainWindow::on_timesteps_currentItemChanged() {
   visualizeRender();
 }
 void MainWindow::on_xNormal_toggled() {
+	if(ui.xNormal->isChecked()) { //reset the camera
+		visualizeDisplay->normalizeCamera(1,sim.getJmax().toDouble() * sim.getDely().toDouble()
+																			 ,sim.getKmax().toDouble() * sim.getDelz().toDouble());
+	}
+
   updateSlider();
   visualizeRender();
 }
 void MainWindow::on_yNormal_toggled() {
+	if(ui.yNormal->isChecked()) { //reset the camera
+		visualizeDisplay->normalizeCamera(2,sim.getImax().toDouble() * sim.getDelx().toDouble()
+																			 ,sim.getKmax().toDouble() * sim.getDelz().toDouble());
+	}
+
   updateSlider();
   visualizeRender();
 }
 void MainWindow::on_zNormal_toggled() {
+	if(ui.zNormal->isChecked()) { //reset the camera
+		visualizeDisplay->normalizeCamera(3,sim.getImax().toDouble() * sim.getDelx().toDouble()
+																			 ,sim.getJmax().toDouble() * sim.getDely().toDouble());
+	}
+
   updateSlider();
   visualizeRender();
 }
@@ -243,6 +258,8 @@ void MainWindow::visualizeRender() {
 
   if(ui.blockObstacles->isChecked())
     visualizeDisplay->block(volFile, normal, origin, del);
+  else
+  	visualizeDisplay->hideBlock();
   if(ui.showMesh->isChecked())
     visualizeDisplay->ShowMesh();
   else

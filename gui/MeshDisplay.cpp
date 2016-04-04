@@ -181,3 +181,27 @@ MeshDisplay::MeshDisplay(long int numi, long int numj, long int numk) {
 
   //renderWindow->Render();
 }
+
+void MeshDisplay::normalizeCamera(int x, double y, double z) {
+	switch(x) {
+	case 1:
+		renderer->GetActiveCamera()->SetPosition(10,y/2,z/2);
+		renderer->GetActiveCamera()->SetViewUp(0,0,1);
+		renderer->GetActiveCamera()->SetFocalPoint(0,y/2,z/2);
+		break;
+		
+	case 2:
+		renderer->GetActiveCamera()->SetPosition(y/2,-10,z/2);
+		renderer->GetActiveCamera()->SetViewUp(0,0,1);
+		renderer->GetActiveCamera()->SetFocalPoint(y/2,0,z/2);
+		break;
+		
+	case 3:
+		renderer->GetActiveCamera()->SetPosition(y/2,z/2,10);
+		renderer->GetActiveCamera()->SetViewUp(0,1,0);
+		renderer->GetActiveCamera()->SetFocalPoint(y/2,z/2,0);
+		break;
+	}
+	
+	renderer->ResetCamera();
+}
