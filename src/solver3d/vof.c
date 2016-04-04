@@ -1276,7 +1276,7 @@ int vof_deltcal(struct solver_data *solver) {
   /* solver->epsi = 0.0001 / solver->delt; */
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
-  solver->epsi = 0.001 * solver->rho * mindx / (solver->dzro * solver->delt);
+  solver->epsi = 0.001 * solver->rho * mindx / (solver->dzro * max(solver->delt,0.001));
   
   
   return ret;
