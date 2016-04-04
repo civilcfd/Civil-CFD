@@ -798,7 +798,8 @@ int vof_velocity(struct solver_data *solver) {
           if(af[n][ro] < solver->emf) continue;
 
           if(VOF(i,j,k) + VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < solver->emf
-             || (N_VOF(i,j,k) == 8.0 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) > 0)) { /* added 09/13 */
+             || (N_VOF(i,j,k) == 8 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) > 0)
+             || (N_VOF(i,j,k) >  0 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) == 8)) { /* added 09/13 */
             switch(n) {
             case 0:
               U(i,j,k) = 0;

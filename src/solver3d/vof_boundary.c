@@ -823,12 +823,12 @@ int vof_vof_height_boundary(struct solver_data *solver) {
 int vof_boundaries(struct solver_data *solver) {
 
   long int i,j,k,l,m,n;
-  int bm[6], bmtot, nindex;
+  int bm[6], bmtot, nindex, flg;
   enum cell_boundaries nff;
 #define dim(i,j,k) i+3*(j+k*3)
   const int ndim[3][3] = { {  0,1,1 }, { 1,0,1 }, { 1,1,0 } };
   const int odim[3][3] = { {  1,0,0 }, { 0,1,0 }, { 0,0,1 } };
-  double denom;
+  double denom, dv;
   
   
   
@@ -1174,10 +1174,84 @@ int vof_boundaries(struct solver_data *solver) {
         # the free surface cell, should we skip the pressure correction? */
 
         nff = N_VOF(i,j,k);
-        if(nff > 0 && nff < 8.0 && solver->p_flag==0) { /* code applies to free surface */
+        
+        
+        if(nff > 0 && nff < 8) { /* code applies to free surface */
  #pragma omp critical(free_surf_bdry) 
  {
+ 
+          if(AE(i,j,k)   > emf && N_VOF(i+1,j,k) > 7) U(i,j,k)   = U(i-1,j,k) * AE(i-1,j,k) / AE(i,j,k);
+          if(AE(i-1,j,k) > emf && N_VOF(i-1,j,k) > 7) U(i-1,j,k) = U(i,j,k)   * AE(i,j,k)   / AE(i-1,j,k); 
+          if(AN(i,j,k)   > emf && N_VOF(i,j+1,k) > 7) V(i,j,k)   = V(i,j-1,k) * AN(i,j-1,k) / AN(i,j,k);
+          if(AN(i,j-1,k) > emf && N_VOF(i,j-1,k) > 7) V(i,j-1,k) = V(i,j,k)   * AN(i,j,k)   / AN(i,j-1,k);
+          if(AT(i,j,k)   > emf && N_VOF(i,j,k+1) > 7) W(i,j,k)   = W(i,j,k-1) * AT(i,j,k-1) / AT(i,j,k);
+          if(AT(i,j,k-1) > emf && N_VOF(i,j,k-1) > 7) W(i,j,k-1) = W(i,j,k)   * AT(i,j,k)   / AT(i,j,k-1);
 
+          flg = 0;
+          nindex = 0;
+          nff = N_VOF(i,j,k);
+          dv  = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k)) +
+              RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k)) +
+              RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1));
+          
+          while(flg == 0) {
+          
+            switch(nff) {
+            case west:
+              if(N_VOF(i+1,j,k) > 7 && AE(i,j,k) > emf) {
+                U(i,j,k) = U(i,j,k) - DELX * dv / AE(i,j,k);
+                flg = 1;
+                dv  = 0;
+              }
+              break;
+            case east:
+              if(N_VOF(i-1,j,k) > 7 && AE(i-1,j,k) > emf) {
+                U(i-1,j,k) = U(i-1,j,k) - DELX * dv / AE(i-1,j,k);
+                flg = 1;
+                dv  = 0;
+              }
+              break;
+            case south:
+              if(N_VOF(i,j+1,k) > 7 && AN(i,j,k) > emf) {
+                V(i,j,k) = V(i,j,k) - DELY * dv / AN(i,j,k);
+                flg = 1;
+                dv  = 0;
+              }
+              break;
+            case north:
+              if(N_VOF(i,j-1,k) > 7 && AN(i,j-1,k) > emf) {
+                V(i,j-1,k) = V(i,j-1,k) - DELY * dv / AN(i,j-1,k);
+                flg = 1;
+                dv  = 0;
+              }
+              break;
+            case bottom:
+              if(N_VOF(i,j,k+1) > 7 && AT(i,j,k) > emf) {
+                W(i,j,k) = W(i,j,k) - DELZ * dv / AT(i,j,k);
+                flg = 1;
+                dv  = 0;
+              }
+              break;
+            case top:
+              if(N_VOF(i,j,k-1) > 7 && AT(i,j,k-1) > emf) {
+                W(i,j,k-1) = W(i,j,k-1) - DELZ * dv / AT(i,j,k-1);
+                flg = 1;
+                dv  = 0;
+              }
+              break;
+            }
+            
+            if(flg == 0) {
+              nff++;
+              if(nff > 6) nff = 1;
+            }
+            
+            nindex++;
+            if(nindex > 6) flg = 1;
+            
+          }
+ 
+/* OLD METHOD FROM 3dVOF - make sure to add that p_flag == 0 to run this
           switch(nff) {
           case west:
             if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i-1,j,  k);
@@ -1283,12 +1357,12 @@ int vof_boundaries(struct solver_data *solver) {
             }
               
             nff++;
-            if(nff>7) nff = 1;
-          }
+            if(nff>7) nff = 1; 
+          } */
           
 #define emf solver->emf
 
-   /* # set velociies in empty cells adjacent to partial fluid cells */
+   /* # set velocities in empty cells adjacent to partial fluid cells */
           if(solver->p_flag==0 && solver->iter==0) {
         
             if(VOF(i+1,j,k) < emf) {

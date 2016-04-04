@@ -580,7 +580,7 @@ int vof_pressure(struct solver_data *solver) {
           if(solver->iter > 50 && solver->iter < 75) delp /= (solver->omg - 0.1);
           if(solver->iter > 100 && solver->iter < 125) delp /= (solver->omg + 0.1);
           
-          if(fabs(D(i,j,k)) > solver->epsi / FV(i,j,k)) 
+          if(fabs(D(i,j,k)) * solver->rho > solver->epsi / FV(i,j,k)) 
           {
             solver->p_flag=1;
           }
@@ -695,6 +695,7 @@ int vof_pressure_old(struct solver_data *solver) {
             ax = AT(i,j,k-1); ux =  W(i,j,k-1);
             break;
           case none:
+          default:
             continue;
           }
          
