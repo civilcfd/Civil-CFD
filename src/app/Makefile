@@ -4,8 +4,8 @@ CFLAGS = -g -I /opt/local/include -I ../mesh3d -I ../solver3d -Wall -DDEBUG -Os 
 
 .PHONY: default all clean
 
-default: mesh3d vofsolver solver3d
-all: mesh3d vofsolver solver3d
+default: mesh3d vofsolver solver3d inspect_cell
+all: mesh3d vofsolver solver3d inspect_cell
 
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 HEADERS = $(wildcard *.h)
@@ -27,6 +27,9 @@ mesh3d: clean libmesh3d libsolver3d mesh3d.o
 
 vofsolver: clean libmesh3d libsolver3d vofsolver.o
 	$(CC) vofsolver.o -Wall $(LIBS) -o ../../bin/$@
+  
+inspect_cell: clean libmesh3d libsolver3d inspect_cell.o
+	$(CC) inspect_cell.o -Wall $(LIBS) -o ../../bin/$@
 
 solver3d: clean libmesh3d libsolver3d solver3d.o
 	$(CC) solver3d.o -Wall $(LIBS) -o ../../bin/$@
