@@ -1363,7 +1363,7 @@ int vof_boundaries(struct solver_data *solver) {
 #define emf solver->emf
 
    /* # set velocities in empty cells adjacent to partial fluid cells */
-          if(solver->p_flag==0 && solver->iter==0) {
+          if(solver->p_flag==0 || solver->iter==0) {
         
             if(VOF(i+1,j,k) < emf) {
               if(VOF(i+1,j+1,k) < emf && AN(i+1,j,k) > emf)
