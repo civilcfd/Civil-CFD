@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
 
 #include "vtk.h"
 #include "kE.h"
@@ -139,6 +140,7 @@ int vtk_write_scalar_grid(char *filename, char *dataset_name,
                           double *scalars) {
   FILE *fp;
   long int i, j, k;
+  double d;
 
   if(filename == NULL || scalars == NULL) {
     printf("error: passed null arguments to vtk_write_scalar_grid\n");
@@ -173,7 +175,8 @@ int vtk_write_scalar_grid(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
-        fwrite(&scalars[i + ni * (j + k * nj)], sizeof(double), 1, fp)
+        d = double_swap(scalars[i + ni * (j + k * nj)]);
+        fwrite(&d, sizeof(double), 1, fp)
 #else
         fprintf(fp, "%4.6lf\n", scalars[i + ni * (j + k * nj)]); 
 #endif 
@@ -193,6 +196,7 @@ int vtk_write_scalar_magnitude_grid(char *filename, char *dataset_name,
                           double *scalars) {
   FILE *fp;
   long int i, j, k;
+  double d;
 
   if(filename == NULL || scalars == NULL) {
     printf("error: passed null arguments to vtk_write_scalar_grid\n");
@@ -227,7 +231,8 @@ int vtk_write_scalar_magnitude_grid(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
-        fwrite(&scalars[i + ni * (j + k * nj)], sizeof(double), 1, fp)
+        d = double_swap(scalars[i + ni * (j + k * nj)]);
+        fwrite(&d, sizeof(double), 1, fp)
 #else
         fprintf(fp, "%4.6lf\n", fabs(scalars[i + ni * (j + k * nj)])); 
 #endif 
@@ -248,6 +253,7 @@ int vtk_write_integer_grid(char *filename, char *dataset_name,
                           int *scalars) {
   FILE *fp;
   long int i, j, k;
+  uint16_t n;
 
   if(filename == NULL || scalars == NULL) {
     printf("error: passed null arguments to vtk_write_integer_grid\n");
@@ -282,7 +288,8 @@ int vtk_write_integer_grid(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
-        fwrite(&scalars[i + ni * (j + k * nj)], sizeof(int), 1, fp)
+        n = int_swap(scalars[i + ni * (j + k * nj)]);
+        fwrite(&n, sizeof(uint16_t), 1, fp)
 #else
         fprintf(fp, "%d\n", scalars[i + ni * (j + k * nj)]); 
 #endif 
@@ -303,7 +310,7 @@ int vtk_write_vector_grid(char *filename, char *dataset_name,
                           double *v1, double *v2, double *v3) {
   FILE *fp;
   long int i, j, k;
-  const double emf = 0.000001;
+  const double emf = 0.000001, d;
   
   if(filename == NULL || v1 == NULL || v2 == NULL || v3 == NULL) {
     printf("error: passed null arguments to vtk_write_vector_grid\n");
@@ -337,9 +344,14 @@ int vtk_write_vector_grid(char *filename, char *dataset_name,
     for(j=0; j<nj-1; j++) {
       for(i=0; i<ni-1; i++) {
 #ifdef VTK_BINARY
-        fwrite(&v1[i + ni * (j + k * nj)], sizeof(double), 1, fp)
-        fwrite(&v2[i + ni * (j + k * nj)], sizeof(double), 1, fp)
-        fwrite(&v3[i + ni * (j + k * nj)], sizeof(double), 1, fp)
+        d=double_swap(v1[i + ni * (j + k * nj)]);
+        fwrite(&d, sizeof(double), 1, fp)
+        
+        d=double_swap(v2[i + ni * (j + k * nj)]);
+        fwrite(&d, sizeof(double), 1, fp)
+        
+        d=double_swap(v3[i + ni * (j + k * nj)]);
+        fwrite(&d, sizeof(double), 1, fp)
 #else
         if( (fabs(v1[i+ni * (j+ k*nj)]) > emf && fabs(v1[i+1 +ni * (j+ k*nj)]) > emf) || 
             (fabs(v2[i+ni * (j+ k*nj)]) > emf && fabs(v2[i+ni * ((j+1)+ k*nj)]) > emf) ||  
@@ -359,4 +371,34 @@ int vtk_write_vector_grid(char *filename, char *dataset_name,
   fclose(fp);
 
   return 0;
+}
+uint16_t int_swap(uint16_t n) {
+   union
+   {
+      uint16_t n;
+      byte b[2];
+   } dat1, dat2;
+
+   dat1.n = n;
+   dat2.n[0] = dat1.n[1];
+   dat2.n[1] = dat1.n[0];
+   return dat2.n;
+}
+double double_swap(double d) {
+   union
+   {
+      double d;
+      byte b[8];
+   } dat1, dat2;
+
+   dat1.d = d;
+   dat2.b[0] = dat1.b[7];
+   dat2.b[1] = dat1.b[6];
+   dat2.b[2] = dat1.b[5];
+   dat2.b[3] = dat1.b[4];
+   dat2.b[4] = dat1.b[3];
+   dat2.b[5] = dat1.b[2];
+   dat2.b[6] = dat1.b[1];
+   dat2.b[7] = dat1.b[0];
+   return dat2.d;
 }
