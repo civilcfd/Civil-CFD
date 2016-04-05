@@ -116,6 +116,17 @@ int csv_read_vof(struct mesh_data *mesh, double timestep)
                         mesh->vof);
 
 }
+int csv_read_n_vof(struct mesh_data *mesh, double timestep)
+{
+  char filename[256];
+
+  sprintf(filename, "%4.3lf/n_vof.csv", timestep);
+
+  return csv_read_integer_grid(filename, 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->n_vof);
+
+}
 int csv_write_n_vof(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
@@ -267,6 +278,53 @@ long int csv_read_scalar_grid(char *filename,
   while(!feof(fp))
   {
     fscanf(fp, "%ld%*c %ld%*c %ld%*c %lf", &i, &j, &k, &f);
+    
+    if(i>ni || j>nj || k>nk) {
+      printf("error: data out of bounds in csv_read_scalar_grid\n");
+      break;
+    }
+
+    scalars[i + ni * (j + k * nj)] = f;
+    count++;
+  }
+
+  fclose(fp);
+
+  return count;
+}
+long int csv_read_integer_grid(char *filename,  
+                          long int ni, long int nj, long int nk,
+                          int *scalars) {
+  FILE *fp;
+  long int i, j, k, count;
+  char text[1024];
+  int f;
+
+  if(filename == NULL || scalars == NULL) {
+    printf("error: passed null arguments to csv_read_scalar_grid\n");
+    return -1;
+  }
+
+  fp = fopen(filename, "r");
+
+  if(fp == NULL) {
+    printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
+    return -1;
+  }
+
+  if(!fgets(text, sizeof(text), fp))
+  { 
+    if(!feof(fp)) {
+      printf("error: fgets in csv_read_scalar_grid\n");
+      return(-1);
+    }
+    return 0;
+  }
+
+  count=0;
+  while(!feof(fp))
+  {
+    fscanf(fp, "%ld%*c %ld%*c %ld%*c %d", &i, &j, &k, &f);
     
     if(i>ni || j>nj || k>nk) {
       printf("error: data out of bounds in csv_read_scalar_grid\n");

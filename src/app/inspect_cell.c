@@ -13,6 +13,7 @@
 #include "csv.h"
 #include "kE.h"
 #include "track.h"
+#include "vof_macros.h"
 
 int main(int argc, char *argv[])
 {
@@ -58,10 +59,13 @@ int main(int argc, char *argv[])
   csv_read_U(solver->mesh,timestep);
   csv_read_P(solver->mesh,timestep);
   csv_read_vof(solver->mesh,timestep);
-  solver->petacal(solver);
+  csv_read_n_vof(solver->mesh,timestep);
   solver->t = timestep;
 
-  printf("\ntimestep %lf     cell: %ld %ld %ld\n\ncell data:\n\n",timestep, i, j, k);
+  printf("\ntimestep %lf     cell: %ld %ld %ld\n",timestep, i, j, k);
+  printf("position: %lf %lf %lf\n\ncell data:\n\n", i * DELX + solver->mesh->origin[0], 
+                                                    j * DELY + solver->mesh->origin[1],
+                                                    k * DELZ + solver->mesh->origin[2]);
   
   printf("FV: %lf\n",FV(i,j,k));
   printf("P: %lf      VOF: %lf     N_VOF: %d\n\nedge data:\n\n",P(i,j,k),VOF(i,j,k),N_VOF(i,j,k));
