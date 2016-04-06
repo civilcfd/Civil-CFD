@@ -1175,6 +1175,7 @@ int vof_boundaries(struct solver_data *solver) {
 
         nff = N_VOF(i,j,k);
         
+#define emf solver->emf
         
         if(nff > 0 && nff < 8) { /* code applies to free surface */
  #pragma omp critical(free_surf_bdry) 
@@ -1360,7 +1361,6 @@ int vof_boundaries(struct solver_data *solver) {
             if(nff>7) nff = 1; 
           } */
           
-#define emf solver->emf
 
    /* # set velocities in empty cells adjacent to partial fluid cells */
           if(solver->p_flag==0 || solver->iter==0) {

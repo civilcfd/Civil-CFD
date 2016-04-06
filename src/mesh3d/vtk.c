@@ -376,21 +376,21 @@ uint32_t int_swap(uint32_t n) {
    union
    {
       uint32_t n;
-      byte b[4];
+      uint8_t b[4];
    } dat1, dat2;
 
    dat1.n = n;
-   dat2.n[0] = dat1.n[3];
-   dat2.n[1] = dat1.n[2];
-   dat2.n[2] = dat1.n[1];
-   dat2.n[3] = dat1.n[0];
+   dat2.b[0] = dat1.b[3];
+   dat2.b[1] = dat1.b[2];
+   dat2.b[2] = dat1.b[1];
+   dat2.b[3] = dat1.b[0];
    return dat2.n;
 }
 double double_swap(double d) {
    union
    {
       double d;
-      byte b[8];
+      uint8_t b[8];
    } dat1, dat2;
 
    dat1.d = d;

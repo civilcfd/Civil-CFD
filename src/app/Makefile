@@ -1,4 +1,4 @@
-LIBS = -L/usr/local/lib -L/opt/local/lib -L../../lib -lsolver3d -lmesh3d -lm -lqhull -fopenmp -lcrt1.o -g
+LIBS = -L/usr/local/lib -L/opt/local/lib -L../../lib -L/usr/local/Cellar/lzlib/1.7/lib -lsolver3d -lmesh3d -lm -lqhull -fopenmp -lcrt1.o -lz -g
 CC = clang-omp
 CFLAGS = -g -I /opt/local/include -I ../mesh3d -I ../solver3d -Wall -DDEBUG -Os -fopenmp
 

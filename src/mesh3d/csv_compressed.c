@@ -107,7 +107,7 @@ int csv_compressed_write_integer_grid(char *filename_csv, char *dataset_name, lo
   char filename[1024];
 
 
-  if(filename == NULL || scalars == NULL) {
+  if(filename_csv == NULL || scalars == NULL) {
     printf("error: passed null arguments to csv_write_scalar_grid\n");
     return 1;
   }
