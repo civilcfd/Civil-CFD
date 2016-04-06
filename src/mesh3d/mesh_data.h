@@ -106,6 +106,9 @@ struct mesh_data {
    * and mesh is ready for dynamic array allocation */
   int ready;
   
+  /* flag to indicate whether output should be compressed */
+  int compress;
+  
   /* The next set of data describes 1D arrays of data that describe
    * the fluid properties.  The 1D arrays describe flattened
    * 3D arrays. */

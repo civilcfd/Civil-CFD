@@ -137,6 +137,8 @@ struct mesh_data *mesh_init_empty() {
   mesh->inside[0] = 0.1;
   mesh->inside[1] = 0.1;
   mesh->inside[2] = 0.1;
+  
+  mesh->compress = 1;
 
   for(i = 0; i < 6; i++) {
     mesh->wb[i] = slip;

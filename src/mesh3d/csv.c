@@ -43,7 +43,10 @@ int csv_write_U(struct mesh_data *mesh, double timestep)
   
   sprintf(filename, "%4.3lf/U.csv", timestep);
 
-  return csv_write_vector_grid(filename, "u, v, w", 
+  if(mesh->compress) return csv_compressed_write_vector_grid(filename, "u, v, w", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->u, mesh->v, mesh->w);
+  else return csv_write_vector_grid(filename, "u, v, w", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->u, mesh->v, mesh->w);
 
@@ -66,7 +69,10 @@ int csv_write_vorticity(struct mesh_data *mesh, double timestep)
   
   sprintf(filename, "%4.3lf/vorticity.csv", timestep);
 
-  return csv_write_vector_grid(filename, "u-vorticity, v-vorticity, w-vorticity", 
+  if(mesh->compress)  csv_compressed_write_vector_grid(filename, "u-vorticity, v-vorticity, w-vorticity", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->u_omega, mesh->v_omega, mesh->w_omega);
+  else return csv_write_vector_grid(filename, "u-vorticity, v-vorticity, w-vorticity", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->u_omega, mesh->v_omega, mesh->w_omega);
 
@@ -100,7 +106,10 @@ int csv_write_P(struct mesh_data *mesh, double timestep)
 	
   sprintf(filename, "%4.3lf/P.csv", timestep);
 
-  return csv_write_scalar_grid(filename, "P", 
+  if(mesh->compress) return csv_compressed_write_scalar_grid(filename, "P", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->P);
+  else return csv_write_scalar_grid(filename, "P", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->P);
 
@@ -145,7 +154,10 @@ int csv_write_n_vof(struct mesh_data *mesh, double timestep)
 	
   sprintf(filename, "%4.3lf/n_vof.csv", timestep);
 
-  return csv_write_integer_grid(filename, "n_vof", 
+  if(mesh->compress) return csv_compressed_write_integer_grid(filename, "n_vof", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->n_vof);
+  else return csv_write_integer_grid(filename, "n_vof", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->n_vof);
 
@@ -168,7 +180,10 @@ int csv_write_vof(struct mesh_data *mesh, double timestep)
 	
   sprintf(filename, "%4.3lf/vof.csv", timestep);
 
-  return csv_write_scalar_grid(filename, "vof", 
+  if(mesh->compress) return csv_compressed_write_scalar_grid(filename, "vof", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->vof);
+  else return csv_write_scalar_grid(filename, "vof", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->vof);
 
@@ -190,7 +205,10 @@ int csv_write_af(struct mesh_data *mesh, double timestep)
 
   sprintf(filename, "%4.3lf/af.csv", timestep);
 
-  return csv_write_vector_grid(filename, "ae, an, at", 
+  if(mesh->compress)  return csv_compressed_write_vector_grid(filename, "ae, an, at", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->ae, mesh->an, mesh->at);
+  else return csv_write_vector_grid(filename, "ae, an, at", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->ae, mesh->an, mesh->at);
 
@@ -212,7 +230,10 @@ int csv_write_fv(struct mesh_data *mesh, double timestep)
 
   sprintf(filename, "%4.3lf/fv.csv", timestep);
 
-  return csv_write_scalar_grid(filename, "fv", 
+  if(mesh->compress)  return csv_compressed_write_scalar_grid(filename, "fv", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        mesh->fv); 
+  else return csv_write_scalar_grid(filename, "fv", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->fv);
 
@@ -226,7 +247,10 @@ int csv_write_k(struct mesh_data *mesh, double timestep)
 
   sprintf(filename, "%4.3lf/k.csv", timestep);
 
-  return csv_write_scalar_grid(filename, "k", 
+  if(mesh->compress)  return csv_compressed_write_scalar_grid(filename, "k", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        turb->k);
+  else return csv_write_scalar_grid(filename, "k", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         turb->k);
 
@@ -240,7 +264,10 @@ int csv_write_E(struct mesh_data *mesh, double timestep)
 
   sprintf(filename, "%4.3lf/E.csv", timestep);
 
-  return csv_write_scalar_grid(filename, "E", 
+  if(mesh->compress) return csv_compressed_write_scalar_grid(filename, "E", 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        turb->E); 
+  else return csv_write_scalar_grid(filename, "E", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         turb->E);
 
@@ -249,7 +276,7 @@ long int csv_read_scalar_grid(char *filename,
                           long int ni, long int nj, long int nk,
                           double *scalars) {
   FILE *fp;
-  long int i, j, k, count;
+  long int i, j, k, count, n;
   char text[1024];
   double f;
 
@@ -261,8 +288,12 @@ long int csv_read_scalar_grid(char *filename,
   fp = fopen(filename, "r");
 
   if(fp == NULL) {
-    printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
-    return -1;
+    n = csv_compressed_read_scalar_grid(filename, ni, nj, nk, &scalars);
+    if(n == -1) {
+      printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
+      return -1;
+    }
+    return n;
   }
 
   if(!fgets(text, sizeof(text), fp))
@@ -296,7 +327,7 @@ long int csv_read_integer_grid(char *filename,
                           long int ni, long int nj, long int nk,
                           int *scalars) {
   FILE *fp;
-  long int i, j, k, count;
+  long int i, j, k, count, n;
   char text[1024];
   int f;
 
@@ -308,8 +339,12 @@ long int csv_read_integer_grid(char *filename,
   fp = fopen(filename, "r");
 
   if(fp == NULL) {
-    printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
-    return -1;
+    n = csv_compressed_read_integer_grid(filename, ni, nj, nk, &scalars);
+    if(n == -1) {
+      printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
+      return -1;
+    }
+    return n;
   }
 
   if(!fgets(text, sizeof(text), fp))
@@ -344,7 +379,7 @@ long int csv_read_vector_grid(char *filename,
                           long int ni, long int nj, long int nk,
                           double *v0, double *v1, double *v2) {
   FILE *fp;
-  long int i, j, k, count;
+  long int i, j, k, count, n;
   char text[1024];
   double f, g, h;
 
@@ -356,8 +391,12 @@ long int csv_read_vector_grid(char *filename,
   fp = fopen(filename, "r");
 
   if(fp == NULL) {
-    printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
-    return -1;
+    n = csv_compressed_read_vector_grid(filename, ni, nj, nk, &v0, &v1, &v2);
+    if(n == -1) {
+      printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
+      return -1;
+    }
+    return n;
   }
 
   if(!fgets(text, sizeof(text), fp))

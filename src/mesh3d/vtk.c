@@ -253,7 +253,7 @@ int vtk_write_integer_grid(char *filename, char *dataset_name,
                           int *scalars) {
   FILE *fp;
   long int i, j, k;
-  uint16_t n;
+  uint32_t n;
 
   if(filename == NULL || scalars == NULL) {
     printf("error: passed null arguments to vtk_write_integer_grid\n");
@@ -289,7 +289,7 @@ int vtk_write_integer_grid(char *filename, char *dataset_name,
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
         n = int_swap(scalars[i + ni * (j + k * nj)]);
-        fwrite(&n, sizeof(uint16_t), 1, fp)
+        fwrite(&n, sizeof(uint32_t), 1, fp)
 #else
         fprintf(fp, "%d\n", scalars[i + ni * (j + k * nj)]); 
 #endif 
@@ -372,16 +372,18 @@ int vtk_write_vector_grid(char *filename, char *dataset_name,
 
   return 0;
 }
-uint16_t int_swap(uint16_t n) {
+uint32_t int_swap(uint32_t n) {
    union
    {
-      uint16_t n;
-      byte b[2];
+      uint32_t n;
+      byte b[4];
    } dat1, dat2;
 
    dat1.n = n;
-   dat2.n[0] = dat1.n[1];
-   dat2.n[1] = dat1.n[0];
+   dat2.n[0] = dat1.n[3];
+   dat2.n[1] = dat1.n[2];
+   dat2.n[2] = dat1.n[1];
+   dat2.n[3] = dat1.n[0];
    return dat2.n;
 }
 double double_swap(double d) {

@@ -34,5 +34,5 @@ int vtk_write_integer_grid(char *filename, char *dataset_name,
                           double di, double dj, double dk,
                           int *scalars); 
 double double_swap(double d);
-uint16_t int_swap(uint16_t n);
+uint32_t int_swap(uint32_t n);
 #endif
