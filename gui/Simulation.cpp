@@ -861,3 +861,7 @@ bool Simulation::deleteTrack(QString t) {
 	else return false;
 }
 
+bool Simulation::decompressFile(QString filename) {
+  if(vtk_decompress(filename.toLatin1().data())) return true;
+  else return false;
+}

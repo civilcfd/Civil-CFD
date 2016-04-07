@@ -197,39 +197,63 @@ void MainWindow::on_saveJPEG_clicked() {
 
 void MainWindow::visualizeRender() {
 
-    double origin, del;
-    int normal;
+  double origin, del;
+  int normal;
 
-    QListWidgetItem *item = ui.timesteps->currentItem();
-    if(item == NULL) return;
+  QListWidgetItem *item = ui.timesteps->currentItem();
+  if(item == NULL) return;
 
-    QString vtkFile = sim.getTrackN(item->text());
-    QString vectFile, volFile;
-    vtkFile.append(".vtk");
+  QString vtkFile = sim.getTrackN(item->text());
+  QString vectFile, volFile;
+  
+  // Flag whether these files needed to be decompressed
+  bool vtkFile_d, vectFile_d, volFile_d;
+  vtkFile_d = false;
+  vectFile_d = false;
+  
+  vtkFile.append(".vtk");
 
-    vectFile = vtkFile;
+  vectFile = vtkFile;
 
-    if(ui.contourVOF->isChecked()) {
-      vtkFile.prepend("vof_");
-    } else if(ui.contourP->isChecked()) {
-      vtkFile.prepend("P_");
-    } else if(ui.contourK->isChecked()) {
-      vtkFile.prepend("k_");
-    } else if(ui.contourVorticity->isChecked()) {
-      vtkFile.prepend("vorticity_");
-    } else {
-      vtkFile.prepend("U_");
-    }
-    vectFile.prepend("vtk/U_");
-    volFile = "vtk/fv_0.vtk";
-    vtkFile.prepend("vtk/");
+  if(ui.contourVOF->isChecked()) {
+    vtkFile.prepend("vof_");
+  } else if(ui.contourP->isChecked()) {
+    vtkFile.prepend("P_");
+  } else if(ui.contourK->isChecked()) {
+    vtkFile.prepend("k_");
+  } else if(ui.contourVorticity->isChecked()) {
+    vtkFile.prepend("vorticity_");
+  } else {
+    vtkFile.prepend("U_");
+  }
+  vectFile.prepend("vtk/U_");
+  volFile = "vtk/fv_0.vtk";
+  vtkFile.prepend("vtk/");
 
-    if(!QFile::exists(vtkFile)) {
+  if(!QFile::exists(vtkFile)) {
+    sim.decompressFile(vtkFile);
+    if(!QFile::exists(vtkFile)); {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
       msgBox.setText(vtkFile);
       msgBox.exec();
     }
+    else {
+      vtkFile_d = true;
+    }
+  }
+  if(!QFile::exists(vectFile)) {
+    sim.decompressFile(vectFile);
+    if(!QFile::exists(vectFile)) {
+      QMessageBox msgBox;
+      vtkFile.prepend("Failed to open VTK file: ");
+      msgBox.setText(vectFile);
+      msgBox.exec();
+    }
+    else {
+      vectFile_d = true;
+    }
+  }
 
   origin = ui.originText->text().toDouble();
 
@@ -285,4 +309,7 @@ void MainWindow::visualizeRender() {
   }
   
   ui.vis->update();
+  
+  if(vtkFile_d) QFile::remove(vtkFile);
+  if(vectFile_d) QFile::remove(vectFile);
 }

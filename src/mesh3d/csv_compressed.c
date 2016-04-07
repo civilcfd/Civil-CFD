@@ -29,6 +29,7 @@ int csv_compressed_write_scalar_grid(char *filename_csv, char *dataset_name, lon
     return 1;
   }
 
+  csv_remove(filename_csv);
   strncpy(filename, filename_csv, strlen(filename_csv));
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "w");
@@ -70,6 +71,7 @@ int csv_compressed_write_vector_grid(char *filename_csv, char *dataset_name, lon
     return 1;
   }
 
+  csv_remove(filename_csv);
   strncpy(filename, filename_csv, strlen(filename_csv));
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "w");
@@ -112,6 +114,7 @@ int csv_compressed_write_integer_grid(char *filename_csv, char *dataset_name, lo
     return 1;
   }
 
+  csv_remove(filename_csv);
   strncpy(filename, filename_csv, strlen(filename_csv));
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "w");

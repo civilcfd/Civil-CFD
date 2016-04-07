@@ -185,6 +185,8 @@ void MainWindow::visualize3dRender() {
 
     QString vtkFile = sim.getTrackN(item->text());
     QString volFile;
+    bool vtkFile_d = false;
+    
     vtkFile.append(".vtk");
 
   	vtkFile.prepend("vof_");
@@ -192,12 +194,18 @@ void MainWindow::visualize3dRender() {
     volFile = "vtk/fv_0.vtk";
     vtkFile.prepend("vtk/");
 
-    if(!QFile::exists(vtkFile)) {
+  if(!QFile::exists(vtkFile)) {
+    sim.decompressFile(vtkFile);
+    if(!QFile::exists(vtkFile)); {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
       msgBox.setText(vtkFile);
       msgBox.exec();
     }
+    else {
+      vtkFile_d = true;
+    }
+  }
 
   origin = ui.origin3dText->text().toDouble();
 
@@ -232,4 +240,6 @@ void MainWindow::visualize3dRender() {
     visualizeDisplay->hideLegend();*/
   
   ui.vis3d->update();
+  
+  if(vtkFile_d) QFile::remove(vtkFile);
 }

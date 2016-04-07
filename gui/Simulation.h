@@ -18,6 +18,7 @@ extern "C" {
 #include "laminar.h"
 #include "vof.h"
 #include "track.h"
+#include "vtk.h"
 }
 
 bool removeDir(const QString & dirName);
@@ -148,6 +149,8 @@ public:
   void trackRewind();
   QString getTrackN(QString str);
   bool deleteTrack(QString t);
+  
+  bool decompressFile(QString filename);
 
 private:
   struct solver_data *solver; 

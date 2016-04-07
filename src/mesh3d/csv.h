@@ -65,4 +65,5 @@ int csv_write_scalar_grid_paraview(char *filename, char *dataset_name,
                           double di, double dj, double dk,
                           double *scalars);
 
+void csv_remove(char *filename);
 #endif

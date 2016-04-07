@@ -441,6 +441,7 @@ int csv_write_vector_grid(char *filename, char *dataset_name, long int ni, long 
     return 1;
   }
 
+  csv_remove(filename);
   fp = fopen(filename, "w");
 
   if(fp == NULL) {
@@ -481,6 +482,7 @@ int csv_write_scalar_grid(char *filename, char *dataset_name, long int ni, long 
     return 1;
   }
 
+  csv_remove(filename);
   fp = fopen(filename, "w");
 
   if(fp == NULL) {
@@ -518,6 +520,7 @@ int csv_write_integer_grid(char *filename, char *dataset_name, long int ni, long
     return 1;
   }
 
+  csv_remove(filename);
   fp = fopen(filename, "w");
 
   if(fp == NULL) {
@@ -563,6 +566,7 @@ int csv_write_scalar_grid_paraview(char *filename, char *dataset_name,
     return 1;
   }
 
+  csv_remove(filename);
   fp = fopen(filename, "w");
 
   if(fp == NULL) {
@@ -590,4 +594,12 @@ int csv_write_scalar_grid_paraview(char *filename, char *dataset_name,
   return 0;
 }
 
+void csv_remove(char *filename) {
+  char filename_gz[1024];
+  
+  strncpy(filename_gz, filename, strlen(filename));
+  strncat(filename_gz, ".gz", 3);
+  remove(filename);
+  remove(filename_gz);
+}
 
