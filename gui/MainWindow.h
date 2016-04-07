@@ -19,6 +19,7 @@
 #include "Visualize3DDisplay.h"
 #include "SolverDialog.h"
 #include "About.h"
+#include "Inspect.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -48,6 +49,7 @@ private slots:
   void on_BoundaryTree_itemActivated(QTreeWidgetItem *item, int column);
   void on_BoundaryTree_itemClicked(QTreeWidgetItem *item, int column);
   void on_RemoveSpecialBoundary_clicked();
+  void on_InspectCell_clicked();
   
   void on_EditBaffle_clicked();
   void on_BaffleTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
@@ -138,6 +140,7 @@ private:
   BoundaryDisplay *baffleDisplay;
   SolverDialog *solverDialog;
   AboutDialog *aboutDialog;
+  InspectDialog *inspectDialog;
   QString appPath;
 };
 

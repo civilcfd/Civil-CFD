@@ -207,7 +207,7 @@ void MainWindow::visualizeRender() {
   QString vectFile, volFile;
   
   // Flag whether these files needed to be decompressed
-  bool vtkFile_d, vectFile_d, volFile_d;
+  bool vtkFile_d, vectFile_d;
   vtkFile_d = false;
   vectFile_d = false;
   
@@ -232,7 +232,7 @@ void MainWindow::visualizeRender() {
 
   if(!QFile::exists(vtkFile)) {
     sim.decompressFile(vtkFile);
-    if(!QFile::exists(vtkFile)); {
+    if(!QFile::exists(vtkFile)) {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
       msgBox.setText(vtkFile);

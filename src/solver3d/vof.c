@@ -1203,8 +1203,8 @@ int vof_deltcal(struct solver_data *solver) {
   printf("Max w: %lf in cell %ld %ld %ld\n", solver->wmax, wmax_cell[0], wmax_cell[1], wmax_cell[2]);  
 #endif
   
-  if(solver->iter > 45) delt *= 0.98; 
-  if(solver->iter < 20) delt *= 1.03; 
+  if(solver->iter > 60) delt *= 0.985; 
+  if(solver->iter < 20) delt *= 1.025; 
 
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
@@ -1277,7 +1277,7 @@ int vof_deltcal(struct solver_data *solver) {
   /* solver->epsi = 0.0001 / solver->delt; */
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
-  solver->epsi = 0.001 * solver->rho * mindx / (solver->dzro * max(solver->delt,0.001));
+  solver->epsi = 0.075 * solver->rho * mindx / (solver->dzro * max(solver->delt,0.00005));
   
   
   return ret;

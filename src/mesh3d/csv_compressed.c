@@ -30,7 +30,7 @@ int csv_compressed_write_scalar_grid(char *filename_csv, char *dataset_name, lon
   }
 
   csv_remove(filename_csv);
-  strncpy(filename, filename_csv, strlen(filename_csv));
+  strncpy(filename, filename_csv, strlen(filename_csv) + 1);
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "w");
 
@@ -72,7 +72,7 @@ int csv_compressed_write_vector_grid(char *filename_csv, char *dataset_name, lon
   }
 
   csv_remove(filename_csv);
-  strncpy(filename, filename_csv, strlen(filename_csv));
+  strncpy(filename, filename_csv, strlen(filename_csv) + 1);
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "w");
 
@@ -115,7 +115,7 @@ int csv_compressed_write_integer_grid(char *filename_csv, char *dataset_name, lo
   }
 
   csv_remove(filename_csv);
-  strncpy(filename, filename_csv, strlen(filename_csv));
+  strncpy(filename, filename_csv, strlen(filename_csv) + 1);
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "w");
 
@@ -156,7 +156,7 @@ long int csv_compressed_read_scalar_grid(char *filename_csv,
     return -1;
   }
 
-  strncpy(filename, filename_csv, strlen(filename_csv));
+  strncpy(filename, filename_csv, strlen(filename_csv) + 1);
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "r");
 
@@ -215,7 +215,7 @@ long int csv_compressed_read_integer_grid(char *filename_csv,
     return -1;
   }
 
-  strncpy(filename, filename_csv, strlen(filename_csv));
+  strncpy(filename, filename_csv, strlen(filename_csv) + 1);
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "r");
 
@@ -274,19 +274,19 @@ long int csv_compressed_read_vector_grid(char *filename_csv,
     return -1;
   }
 
-  strncpy(filename, filename_csv, strlen(filename_csv));
+  strncpy(filename, filename_csv, strlen(filename_csv) + 1);
   strncat(filename, ".gz", 3);
   fp = gzopen(filename, "r");
 
   if(fp == NULL) {
-    printf("error: csv_compressed_read_scalar_grid cannot open %s to read\n", filename);
+    printf("error: csv_compressed_read_vector_grid cannot open %s to read\n", filename);
     return -1;
   }
 
   if(!gzgets(fp, text, sizeof(text)))
   { 
     if(!gzeof(fp)) {
-      printf("error: gzgets in csv_compressed_read_scalar_grid\n");
+      printf("error: gzgets in csv_compressed_read_vector_grid\n");
       return(-1);
     }
     return 0;

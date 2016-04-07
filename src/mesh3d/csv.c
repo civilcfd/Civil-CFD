@@ -288,7 +288,7 @@ long int csv_read_scalar_grid(char *filename,
   fp = fopen(filename, "r");
 
   if(fp == NULL) {
-    n = csv_compressed_read_scalar_grid(filename, ni, nj, nk, &scalars);
+    n = csv_compressed_read_scalar_grid(filename, ni, nj, nk, scalars);
     if(n == -1) {
       printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
       return -1;
@@ -339,7 +339,7 @@ long int csv_read_integer_grid(char *filename,
   fp = fopen(filename, "r");
 
   if(fp == NULL) {
-    n = csv_compressed_read_integer_grid(filename, ni, nj, nk, &scalars);
+    n = csv_compressed_read_integer_grid(filename, ni, nj, nk, scalars);
     if(n == -1) {
       printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
       return -1;
@@ -384,16 +384,16 @@ long int csv_read_vector_grid(char *filename,
   double f, g, h;
 
   if(filename == NULL || v0 == NULL || v1 == NULL || v2 == NULL) {
-    printf("error: passed null arguments to csv_read_scalar_grid\n");
+    printf("error: passed null arguments to csv_read_vector_grid\n");
     return -1;
   }
 
   fp = fopen(filename, "r");
 
   if(fp == NULL) {
-    n = csv_compressed_read_vector_grid(filename, ni, nj, nk, &v0, &v1, &v2);
+    n = csv_compressed_read_vector_grid(filename, ni, nj, nk, v0, v1, v2);
     if(n == -1) {
-      printf("error: csv_read_scalar_grid cannot open %s to read\n", filename);
+      printf("error: csv_read_vector_grid cannot open %s to read\n", filename);
       return -1;
     }
     return n;
@@ -402,7 +402,7 @@ long int csv_read_vector_grid(char *filename,
   if(!fgets(text, sizeof(text), fp))
   { 
     if(!feof(fp)) {
-      printf("error: fgets in csv_read_scalar_grid\n");
+      printf("error: fgets in csv_read_vector_grid\n");
       return(-1);
     }
     return 0;
@@ -414,7 +414,7 @@ long int csv_read_vector_grid(char *filename,
     fscanf(fp, "%ld%*c %ld%*c %ld%*c %lf%*c %lf%*c %lf%*c", &i, &j, &k, &f, &g, &h);
     
     if(i>ni || j>nj || k>nk) {
-      printf("error: data out of bounds in csv_read_scalar_grid\n");
+      printf("error: data out of bounds in csv_read_vector_grid\n");
       break;
     }
 
@@ -597,7 +597,7 @@ int csv_write_scalar_grid_paraview(char *filename, char *dataset_name,
 void csv_remove(char *filename) {
   char filename_gz[1024];
   
-  strncpy(filename_gz, filename, strlen(filename));
+  strncpy(filename_gz, filename, strlen(filename) + 1);
   strncat(filename_gz, ".gz", 3);
   remove(filename);
   remove(filename_gz);

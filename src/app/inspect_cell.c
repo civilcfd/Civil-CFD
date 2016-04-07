@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
   close(stdoutBackupFd);
 
   if(i > solver->mesh->imax-1 || j > solver->mesh->jmax-1 || k > solver->mesh->kmax-1 ||
-     i < 0 || k j 0 || k < 0) {
+     i < 0 || j < 0 || k < 0) {
     printf("Cannot read cell - out of range\n");
     return 0;
   }

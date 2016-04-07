@@ -449,7 +449,7 @@ double double_swap(double d) {
 void vtk_remove(char *filename) {
   char filename_gz[1024];
   
-  strncpy(filename_gz, filename, strlen(filename));
+  strncpy(filename_gz, filename, strlen(filename) + 1);
   strncat(filename_gz, ".gz", 3);
   remove(filename);
   remove(filename_gz);

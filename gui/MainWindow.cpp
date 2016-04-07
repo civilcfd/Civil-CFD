@@ -229,6 +229,21 @@ void MainWindow::on_actionAbout_triggered() {
 	delete aboutDialog;
 }
 
+void MainWindow::on_InspectCell_clicked() {
+  QString t;
+  bool ok;
+  	
+	if(ui.ResultList->currentItem() == NULL) return;
+  t = ui.ResultList->currentItem()->text();
+
+  t.toDouble(&ok);
+  if(!ok) return;
+
+	inspectDialog = new InspectDialog(sim, appPath, t);
+	inspectDialog->exec();
+	delete inspectDialog;
+}
+
 void MainWindow::on_actionQuit_triggered() {
   QApplication::quit();
 }
