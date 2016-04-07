@@ -551,7 +551,7 @@ int vof_pressure(struct solver_data *solver) {
           }
           
           delp = delp - P(i,j,k); 
-          if(fabs(delp) / (solver->epsi / max(0.1,FV(i,j,k))) < 0.1) {
+          if(fabs(delp) / (solver->epsi / max(0.1,FV(i,j,k))) < 0.9) {
             D(i,j,k) = delp / solver->rho;
             continue;
           }
@@ -588,7 +588,7 @@ int vof_pressure(struct solver_data *solver) {
           residual = (fabs(D(i,j,k)) * solver->rho) / (solver->epsi / max(0.1,FV(i,j,k)));
           if(residual > 1.0) {
             solver->p_flag=1;
-          } else if(residual < 0.1) {
+          } else if(residual < 0.5) {
             /* testing - if it aint broke don't fix it */
             continue;
           }
