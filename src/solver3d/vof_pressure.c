@@ -440,7 +440,7 @@ int vof_pressure_sor(struct solver_data *solver, long int i, long int j, long in
 int vof_pressure(struct solver_data *solver) {
   
   long int i,j,k,l,m,n, imax, jmax, kmax, imin, jmin, kmin;
-  double plmn, delp;
+  double plmn, delp, residual;
   
   double g, del, dp, dv;
   double ax, ux, stabil_limit;
@@ -551,6 +551,10 @@ int vof_pressure(struct solver_data *solver) {
           }
           
           delp = delp - P(i,j,k); 
+          if(fabs(delp) / (solver->epsi / max(0.1,FV(i,j,k))) < 0.1) {
+            D(i,j,k) = delp / solver->rho;
+            continue;
+          }
           
           D(i,j,k) = 0;
           
@@ -570,8 +574,8 @@ int vof_pressure(struct solver_data *solver) {
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
                  FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {
-              D(i,j,k) = D(i,j,k) + (min(1000 * solver->epsi, 
-                                    (1.0 - VOF(i,j,k)) / solver->delt)) / solver->rho;
+              D(i,j,k) = D(i,j,k) + min(solver->epsi, 
+                                    (1.0 - VOF(i,j,k)) / solver->delt) / 10;
             }
           }
           
@@ -580,9 +584,13 @@ int vof_pressure(struct solver_data *solver) {
           if(solver->iter > 50 && solver->iter < 75) delp /= (solver->omg - 0.1);
           if(solver->iter > 100 && solver->iter < 125) delp /= (solver->omg + 0.1);
           
-          if(fabs(D(i,j,k)) * solver->rho > solver->epsi / FV(i,j,k)) 
-          {
+          
+          residual = (fabs(D(i,j,k)) * solver->rho) / (solver->epsi / max(0.1,FV(i,j,k)));
+          if(residual > 1.0) {
             solver->p_flag=1;
+          } else if(residual < 0.1) {
+            /* testing - if it aint broke don't fix it */
+            continue;
           }
 
         }
