@@ -3,6 +3,7 @@
 #ifndef VTK_H
 #define VTK_H
 
+#include <stdint.h>
 #include "mesh.h"
 
 int vtk_write_n_vof(struct mesh_data *mesh, int timestep);

@@ -866,6 +866,7 @@ bool Simulation::deleteTrack(QString t) {
 	else return false;
 }
 
+#define _CRT_SECURE_NO_WARNINGS
 int vtk_decompress(const QString & f) {
   char buf[1024*1024*16];
   char filename[1024];
@@ -890,17 +891,17 @@ int vtk_decompress(const QString & f) {
   fp = fopen(filename,"w");
   if(fp == NULL) return 0;
   
-  gzrewind(fi);
-  while(!gzeof(fi))
+  gzrewind(*fi);
+  while(!gzeof(*fi))
   {
-      len  = gzread(fi,buf,sizeof(buf));
+      len  = gzread(*fi,buf,sizeof(buf));
       wlen = fwrite(buf, len, 1, fp);
       if(len != wlen) {
         printf("vtk_decompress: error writing to file\n");
         return 0;
       }
   }
-  gzclose(fi);  
+  gzclose(*fi);  
   fclose(fp);
   
   return 1;
