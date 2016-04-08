@@ -231,7 +231,7 @@ void MainWindow::visualizeRender() {
   vtkFile.prepend("vtk/");
 
   if(!QFile::exists(vtkFile)) {
-    sim.decompressFile(vtkFile);
+    vtk_decompress(vtkFile);
     if(!QFile::exists(vtkFile)) {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");

@@ -805,6 +805,7 @@ void Simulation::trackRewind() {
 
 QString Simulation::getTrackN(QString value) {
 	int n;
+	QString ret;
   track_rewind();
 
   while(value != getTrackT()) {
@@ -813,7 +814,8 @@ QString Simulation::getTrackN(QString value) {
 
 	n = track_get_n();
   track_rewind();
-  return QString::number(n);
+  ret = QString::number(n);
+  return ret;
 }
 
 bool removeDir(const QString & dirName)
@@ -864,7 +866,7 @@ bool Simulation::deleteTrack(QString t) {
 	else return false;
 }
 
-int vtk_decompress(QString f) {
+int vtk_decompress(const QString & f) {
   char buf[1024*1024*16];
   char filename[1024];
   char filename_gz[1024];
@@ -908,4 +910,5 @@ bool Simulation::decompressFile(QString filename) {
 
   if(vtk_decompress(filename)) return true;
   else return false;
+  
 }

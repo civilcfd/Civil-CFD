@@ -30,6 +30,8 @@ vofsolver: clean libmesh3d libsolver3d vofsolver.o
   
 inspect_cell: clean libmesh3d libsolver3d inspect_cell.o
 	$(CC) inspect_cell.o -Wall $(LIBS) -o ../../bin/$@
+	test -d ../../bin/civil-cfd.app/Contents/MacOS && cp ../../bin/$@ ../../bin/civil-cfd.app/Contents/MacOS
+
 
 solver3d: clean libmesh3d libsolver3d solver3d.o
 	$(CC) solver3d.o -Wall $(LIBS) -o ../../bin/$@
@@ -40,3 +42,11 @@ clean:
 	-rm -f mesh3d
 	-rm -f vofsolver
 	-rm -f solver3d
+	-cd ../mesh3d && make clean
+	-cd ../solver3d && make clean
+	-rm ../../bin/civil-cfd.app/Contents/MacOS/mesh3d
+	-rm ../../bin/civil-cfd.app/Contents/MacOS/solver3d
+	-rm ../../bin/civil-cfd.app/Contents/MacOS/inspect_cell
+	-rm ../../bin/mesh3d
+	-rm ../../bin/solver3d
+	-rm ../../bin/inspect_cell

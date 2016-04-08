@@ -180,10 +180,13 @@ void MainWindow::visualize3dRender() {
     double origin, del;
     int normal;
 
+    if(ui.timesteps3d->currentItem() == NULL) return;
     QListWidgetItem *item = ui.timesteps3d->currentItem();
-    if(item == NULL) return;
 
-    QString vtkFile = sim.getTrackN(item->text());
+    QString vtkFile;
+    vtkFile = sim.getTrackN(item->text());
+    
+    
     QString volFile;
     bool vtkFile_d = false;
     

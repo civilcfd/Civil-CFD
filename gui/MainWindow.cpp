@@ -362,9 +362,9 @@ void MainWindow::update() {
   ElementNumber = sim.getImax() + " x " + sim.getJmax() + " x " + sim.getKmax() + " cells";
   ui.ElementNumber->setPlainText(ElementNumber);
  
-  QString OutputSize;
-  OutputSize = QString::number((sim.getImax().toLong() * sim.getJmax().toLong() * sim.getKmax().toLong()) * 0.125) + " kB per saved timestep";
-  ui.OutputSize->setPlainText(OutputSize);
+  //QString OutputSize;
+  //OutputSize = QString::number((sim.getImax().toLong() * sim.getJmax().toLong() * sim.getKmax().toLong()) * 0.125) + " kB per saved timestep";
+  //ui.OutputSize->setPlainText(OutputSize);
   
   ui.ResultList->clear();
   ui.t->clear();

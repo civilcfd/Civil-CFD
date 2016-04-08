@@ -22,7 +22,7 @@ extern "C" {
 }
 
 bool removeDir(const QString & dirName);
-int vtk_decompress(QString f);
+int vtk_decompress(const QString & f);
 
 class Simulation {
 

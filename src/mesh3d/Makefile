@@ -1,7 +1,7 @@
 TARGET = ../../lib/libmesh3d.a
-LIBS = -lm -lqhull
+LIBS = -lm -lqhull 
 CC = clang-omp
-CFLAGS = -g -I /usr/local/include -I /opt/local/include -I ../solver3d -I ../mesh3d -Wall -DDEBUG -fopenmp -Os
+CFLAGS = -g -I /usr/local/include -I /opt/local/include -I ../solver3d -I ../mesh3d -Wall -DDEBUG -fopenmp -O0
 
 .PHONY: default all clean
 
