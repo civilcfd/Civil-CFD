@@ -24,6 +24,7 @@
 #include <vtkOBJReader.h>
 #include <vtkLookupTable.h>
 
+
 #include "MainWindow.h"
 
 void MainWindow::visualize3dUpdate() {
@@ -183,26 +184,26 @@ void MainWindow::visualize3dRender() {
     if(ui.timesteps3d->currentItem() == NULL) return;
     QListWidgetItem *item = ui.timesteps3d->currentItem();
 
-    QString vtkFile;
-    vtkFile = sim.getTrackN(item->text());
+    QString *vtkFile;
+    vtkFile = new QString(sim.getTrackN(item->text()));
     
     
     QString volFile;
     bool vtkFile_d = false;
     
-    vtkFile.append(".vtk");
+    vtkFile->append(".vtk");
 
-  	vtkFile.prepend("vof_");
+  	vtkFile->prepend("vof_");
 
     volFile = "vtk/fv_0.vtk";
-    vtkFile.prepend("vtk/");
+    vtkFile->prepend("vtk/");
 
-  if(!QFile::exists(vtkFile)) {
-    sim.decompressFile(vtkFile);
-    if(!QFile::exists(vtkFile)) {
+  if(!QFile::exists(*vtkFile)) {
+    sim.decompressFile(*vtkFile);
+    if(!QFile::exists(*vtkFile)) {
       QMessageBox msgBox;
-      vtkFile.prepend("Failed to open VTK file: ");
-      msgBox.setText(vtkFile);
+      vtkFile->prepend("Failed to open VTK file: ");
+      msgBox.setText(*vtkFile);
       msgBox.exec();
     }
     else {
@@ -221,7 +222,7 @@ void MainWindow::visualize3dRender() {
   }
   del = ui.extent3dText->text().toDouble();
 
-	visualize3dDisplay->contour3d(vtkFile, normal, origin, del);
+	visualize3dDisplay->contour3d(*vtkFile, normal, origin, del);
 
 
   if(ui.blockObstacles3d->isChecked())
@@ -244,5 +245,6 @@ void MainWindow::visualize3dRender() {
   
   ui.vis3d->update();
   
-  if(vtkFile_d) QFile::remove(vtkFile);
+  if(vtkFile_d) QFile::remove(*vtkFile);
+  delete vtkFile;
 }

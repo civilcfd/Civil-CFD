@@ -7,11 +7,14 @@
 #include <cstdlib>
 #include <stdlib.h>
 #include <string.h>
-#include <zlib.h>
 #include <QMessageBox>
 #include <QByteArray>
 
 #include "Simulation.h"
+
+extern "C" {
+#include <zlib.h>
+}
 
 Simulation::Simulation() {
   solver = solver_init_empty();
@@ -866,6 +869,14 @@ bool Simulation::deleteTrack(QString t) {
 	else return false;
 }
 
+
+bool Simulation::decompressFile(QString filename) {
+
+  if(vtk_decompress(filename)) return true;
+  else return false;
+  
+}
+
 #define _CRT_SECURE_NO_WARNINGS
 int vtk_decompress(const QString & f) {
   char buf[1024*1024*16];
@@ -905,11 +916,4 @@ int vtk_decompress(const QString & f) {
   fclose(fp);
   
   return 1;
-}
-
-bool Simulation::decompressFile(QString filename) {
-
-  if(vtk_decompress(filename)) return true;
-  else return false;
-  
 }
