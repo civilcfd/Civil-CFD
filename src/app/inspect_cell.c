@@ -20,6 +20,7 @@
 char * const nulFileName = "NUL";
 #define CROSS_DUP(fd) _dup(fd)
 #define CROSS_DUP2(fd, newfd) _dup2(fd, newfd)
+#define STDOUT_FILENO 1
 #else
 #include <unistd.h>
 char * const nulFileName = "/dev/null";
@@ -51,8 +52,11 @@ int main(int argc, char *argv[])
   stdoutBackupFd = CROSS_DUP(STDOUT_FILENO);
   fflush(stdout);
   nullOut = fopen(nulFileName, "w");
+#ifndef _WIN32
   CROSS_DUP2(fileno(nullOut), STDOUT_FILENO);
-
+#else
+  CROSS_DUP2(_fileno(nullOut), STDOUT_FILENO);
+#endif
 
   timestep = atof(argv[1]);
   i = atol(argv[2]);
@@ -68,7 +72,11 @@ int main(int argc, char *argv[])
     fflush(stdout);
     fclose(nullOut);  
     CROSS_DUP2(stdoutBackupFd, STDOUT_FILENO);
+#ifndef _WIN32
     close(stdoutBackupFd);
+#else
+	_close(stdoutBackupFd);
+#endif
     printf("Error reading solver and mesh data.\n");
   
     return 1;
@@ -77,8 +85,12 @@ int main(int argc, char *argv[])
   if(solver_init_complete(solver)==1) {
     fflush(stdout);
     fclose(nullOut);  
-    CROSS_DUP2(stdoutBackupFd, STDOUT_FILENO);
+	CROSS_DUP2(stdoutBackupFd, STDOUT_FILENO);
+#ifndef _WIN32
     close(stdoutBackupFd);
+#else
+	_close(stdoutBackupFd);
+#endif
     printf("Error reading solver and mesh data.\n");
   
     return 1;
@@ -93,7 +105,11 @@ int main(int argc, char *argv[])
     fflush(stdout);
     fclose(nullOut);  
     CROSS_DUP2(stdoutBackupFd, STDOUT_FILENO);
-    close(stdoutBackupFd);
+#ifndef _WIN32
+	close(stdoutBackupFd);
+#else
+	_close(stdoutBackupFd);
+#endif
     printf("Error reading solver and mesh data.\n");
   
     return 1;
@@ -111,7 +127,11 @@ int main(int argc, char *argv[])
   fflush(stdout);
   fclose(nullOut);  
   CROSS_DUP2(stdoutBackupFd, STDOUT_FILENO);
+#ifndef _WIN32
   close(stdoutBackupFd);
+#else
+  _close(stdoutBackupFd);
+#endif
 
   if(i > solver->mesh->imax-1 || j > solver->mesh->jmax-1 || k > solver->mesh->kmax-1 ||
      i < 0 || j < 0 || k < 0) {
