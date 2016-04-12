@@ -234,7 +234,7 @@ long int csv_compressed_read_integer_grid(char *filename_csv,
   }
 
   count=0;
-  while(!feof(fp))
+  while(!gzeof(fp))
   {
     if(!gzgets(fp, text, sizeof(text)))
     { 

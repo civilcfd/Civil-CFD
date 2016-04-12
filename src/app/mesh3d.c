@@ -83,9 +83,9 @@ int main(int argc, char *argv[])
 	/* */
 	printf("Checking area / velocity ratios\n");
 	
-	mesh_avratio(mesh, 3.0); /* */
-	mesh_avratio(mesh, 3.0); /* */
-	mesh_avratio(mesh, 3.0); /* */
+	mesh_avratio(mesh, 2.8); /* */
+	mesh_avratio(mesh, 2.8); /* */
+	mesh_avratio(mesh, 2.8); /* */
   mesh_normalize(mesh);
 
   printf("Writing mesh to file\n");

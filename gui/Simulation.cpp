@@ -6,15 +6,10 @@
 #include <QFile>
 #include <cstdlib>
 #include <stdlib.h>
-#include <string.h>
 #include <QMessageBox>
 #include <QByteArray>
 
 #include "Simulation.h"
-
-extern "C" {
-#include <zlib.h>
-}
 
 Simulation::Simulation() {
   solver = solver_init_empty();
@@ -869,51 +864,3 @@ bool Simulation::deleteTrack(QString t) {
 	else return false;
 }
 
-
-bool Simulation::decompressFile(QString filename) {
-
-  if(vtk_decompress(filename)) return true;
-  else return false;
-  
-}
-
-#define _CRT_SECURE_NO_WARNINGS
-int vtk_decompress(const QString & f) {
-  char buf[1024*1024*16];
-  char filename[1024];
-  char filename_gz[1024];
-  int len, wlen;
-  gzFile *fi;
-  FILE *fp;
-  
-  QByteArray ba = f.toLatin1();
-  const char *cstr = ba.data(); 
-
-  strncpy(filename, cstr, strlen(cstr) + 1);
-  
-  if(filename == NULL) return 0;
-  
-  strncpy(filename_gz, filename, strlen(filename) + 1);
-  strncat(filename_gz, ".gz", 3);
-  
-  fi = (gzFile *) gzopen(filename_gz,"r");
-  if(fi == NULL) return 0;
-  
-  fp = fopen(filename,"w");
-  if(fp == NULL) return 0;
-  
-  gzrewind(*fi);
-  while(!gzeof(*fi))
-  {
-      len  = gzread(*fi,buf,sizeof(buf));
-      wlen = fwrite(buf, len, 1, fp);
-      if(len != wlen) {
-        printf("vtk_decompress: error writing to file\n");
-        return 0;
-      }
-  }
-  gzclose(*fi);  
-  fclose(fp);
-  
-  return 1;
-}

@@ -52,4 +52,5 @@ int vtk_compressed_write_integer_grid(char *filename_vtk, char *dataset_name,
 double double_swap(double d);
 uint32_t int_swap(uint32_t n);
 void vtk_remove(char *filename);
+int vtk_decompress(const char *cstr);
 #endif

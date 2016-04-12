@@ -503,8 +503,9 @@ int vof_vfconv(struct solver_data *solver) {
           
           if(fabs(vx) > 0.5 * DELX 
           || fabs(vy) > 0.5 * DELY 
-          || fabs(vz) > 0.5 * DELZ)
+          || fabs(vz) > 0.5 * DELZ) {
             solver->vof_flag = 1;
+          }
 
           if(vx >=0) {
             ia=i+1;
@@ -797,9 +798,9 @@ int vof_velocity(struct solver_data *solver) {
           /* ADDED 9/12 to eliminate pointless calcs that mess things up */
           if(af[n][ro] < solver->emf) continue;
 
-          if(VOF(i,j,k) + VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < solver->emf
-             || (N_VOF(i,j,k) == 8 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) > 0)
-             || (N_VOF(i,j,k) >  0 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) == 8)) { /* added 09/13 */
+          if(VOF(i,j,k) + VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < solver->emf /*
+             || (N_VOF(i,j,k) >  7 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) > 0)
+             || (N_VOF(i,j,k) >  0 && N_VOF(i+odim[n][0],j+odim[n][1],k+odim[n][2]) > 7) */) { /* added 09/13 */
             switch(n) {
             case 0:
               U(i,j,k) = 0;
@@ -1041,7 +1042,11 @@ int vof_loop(struct solver_data *solver) {
 
   while(solver->t < solver->endt) {
     
+    if(solver->petacal != NULL)
+      solver->petacal(solver);
+      
     solver->iter = 0;
+    solver->resimax = 0;
     solver->nu_max = solver->nu;
     solver->delt_n = solver->delt;
 
@@ -1088,9 +1093,7 @@ int vof_loop(struct solver_data *solver) {
     if(solver->special_boundaries != NULL)
       solver->special_boundaries(solver); 
 
-    if(solver->petacal != NULL)
-      solver->petacal(solver);
-      
+    // moved petacal from here to start of loop so old N_VOF values are saved
     if(solver->deltcal != NULL) {
       if(solver->deltcal(solver) == 0) 
         mesh_copy_data(mesh_n, solver->mesh);
@@ -1116,7 +1119,7 @@ int vof_output(struct solver_data *solver) {
     printf("timestep: %lf | delt: %lf | pressure did not converge\n", solver->t, solver->delt);
   }
   else {
-    printf("timestep: %lf | delt %lf | convergence in %ld iterations. epsi %lf\n", solver->t, solver->delt, solver->iter, solver->epsi);
+    printf("timestep: %lf | delt %lf | convergence in %ld iterations. Max residual %lf\nepsi %lf\n", solver->t, solver->delt, solver->iter, solver->resimax, solver->epsi);
   }
   printf("max u, v, w: %lf, %lf, %lf\n",solver->umax,solver->vmax,solver->wmax);  
   
@@ -1135,6 +1138,7 @@ int vof_deltcal(struct solver_data *solver) {
   double dtvis;
   double mindx;
   long int i,j,k;
+  int nan_flag = 0;
   
   #ifdef DEBUG
   long int umax_cell[3], vmax_cell[3], wmax_cell[3];
@@ -1153,31 +1157,19 @@ int vof_deltcal(struct solver_data *solver) {
   
   delt = solver->delt_n;
   
-  if(solver->vof_flag == 1) {
-    delt = solver->delt * 0.5;
-    ret = 1;
-    solver->con *= 0.95;
- 
-#pragma omp parallel for shared(solver) private(i,j,k)
-    for(i=1; i<IMAX-1; i++) {
-      for(j=1; j<JMAX-1; j++) {
-        for(k=1; k<KMAX-1; k++) {
-          U(i,j,k) = 0;
-          V(i,j,k) = 0;
-          W(i,j,k) = 0;
-          P(i,j,k) = PN(i,j,k);
-          VOF(i,j,k) = VOF_N(i,j,k);
-          N_VOF(i,j,k) = N_VOF_N(i,j,k);
-          
-        }
-      }
-    }
-              
-  }
   
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {        
+        if(isnan(U(i,j,k)) || isnan(V(i,j,k)) || isnan(W(i,j,k))) {
+          nan_flag = 1;
+          printf("divide by zero error in cell %ld %ld %ld | ",i,j,k);
+          if(isnan(U(i,j,k))) printf("east");
+          if(isnan(V(i,j,k))) printf("north");
+          if(isnan(W(i,j,k))) printf("top");
+          printf(" of cell\nwriting previous timestep and exiting\n");
+        }
+      
 #ifdef DEBUG
         if(fabs(U(i,j,k)) > solver->umax) {
           umax_cell[0]=i; umax_cell[1]=j; umax_cell[2]=k;
@@ -1202,46 +1194,108 @@ int vof_deltcal(struct solver_data *solver) {
   printf("Max v: %lf in cell %ld %ld %ld\n", solver->vmax, vmax_cell[0], vmax_cell[1], vmax_cell[2]);
   printf("Max w: %lf in cell %ld %ld %ld\n", solver->wmax, wmax_cell[0], wmax_cell[1], wmax_cell[2]);  
 #endif
+
+  if(solver->vof_flag == 1) {
+    delt = solver->delt * 0.67;
+    ret = 1;
+    solver->con *= 0.975;
+ 
+#pragma omp parallel for shared(solver) private(i,j,k)
+    for(i=1; i<IMAX-1; i++) {
+      for(j=1; j<JMAX-1; j++) {
+        for(k=1; k<KMAX-1; k++) {
+          U(i,j,k) = 0;
+          V(i,j,k) = 0;
+          W(i,j,k) = 0;
+          P(i,j,k) = PN(i,j,k);
+          VOF(i,j,k) = VOF_N(i,j,k);
+          N_VOF(i,j,k) = N_VOF_N(i,j,k);
+          
+        }
+      }
+    }
+              
+  }
+  
+  if(nan_flag == 1) { /* divide by zero error - exit */
+    for(i=1; i<IMAX-1; i++) {
+      for(j=1; j<JMAX-1; j++) {
+        for(k=1; k<KMAX-1; k++) {
+          U(i,j,k) = UN(i,j,k);
+          V(i,j,k) = VN(i,j,k);
+          W(i,j,k) = WN(i,j,k);
+          P(i,j,k) = PN(i,j,k);
+          VOF(i,j,k) = VOF_N(i,j,k);
+          N_VOF(i,j,k) = N_VOF_N(i,j,k);
+          
+        }
+      }
+    }    
+    vof_write_timestep(solver);
+    exit(1);
+  }
   
   if(solver->iter > 60) delt *= 0.985; 
-  if(solver->iter < 20) delt *= 1.025; 
+  if(solver->iter < 20) delt *= 1.015; 
 
+  dv = 0;
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {  
-      	dp = P(i,j,k) - P(min(IMAX-1,i+1),j,k);
-      	if(i < IMAX-1) dp += solver->gx * solver->rho * DELX;
-      	if(dp * U(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELX) * dp / solver->rho);
-      	else dv = 0;
-      	dv *= 1.25;
-      	
-				dt_U = solver->con * min(1, min(FV(i,j,k),FV(min(IMAX-1,i+1),j,k)) / AE(i,j,k)) * DELX/(fabs(dv + U(i,j,k)));
-				if(AE(i,j,k) > solver->emf && !isnan(dt_U))
-					delt = min(delt, dt_U);
-				
-
-      	dp = P(i,j,k) - P(i, min(JMAX-1,j+1), k);
-      	if(j < JMAX-1) dp += solver->gy * solver->rho * DELY;
-      	if(dp * V(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELY) * dp / solver->rho); /* dv is additive to calc stability limit based on pressure gradient effect on velocity */
-      	else dv = 0;
-      	dv *= 1.25;
-      					
-				dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k)) * DELY/(fabs(dv + V(i,j,k)));
-				if(AN(i,j,k) > solver->emf && !isnan(dt_U))
-					delt = min(delt, dt_U);
-					
-
-      	dp = P(i,j,k) - P(i,j, min(KMAX-1,k+1));
-      	if(k < KMAX-1) dp += solver->gz * solver->rho * DELZ;
-      	if(dp * W(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELZ) * dp / solver->rho); /* dv is additive to calc stability limit based on pressure gradient effect on velocity */
-      	else dv = 0;		
-      	dv *= 1.25;		
-				
-				dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
-				if(AT(i,j,k) > solver->emf && !isnan(dt_U))
-					delt = min(delt, dt_U);		
-				
-				
+        /*
+        if((N_VOF(i,j,k) > 7 && N_VOF(i+1,j,k) > 0) || (N_VOF(i,j,k) > 0 && N_VOF(i+1,j,k) > 7)) {
+          if(U(i,j,k) > 0) { // && N_VOF(i+1,j,k) > 7) {
+            dt_U = 0.5 * FV(i+1,j,k) * DELX * FV(i,j,k) / (fabs(U(i,j,k)) * AE(i,j,k) * VOF(i,j,k));
+          } else if (U(i,j,k) < 0) { // && N_VOF(i,j,k) > 7) {
+            dt_U = 0.5 * FV(i+1,j,k) * DELX * FV(i,j,k) / (fabs(U(i,j,k)) * AE(i,j,k) * VOF(i+1,j,k));
+          } 
+        }
+        dp = P(i,j,k) - P(min(IMAX-1,i+1),j,k);
+        if(i < IMAX-1) dp += solver->gx * solver->rho * DELX;
+        if(dp * U(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELX) * dp / solver->rho);
+        else dv = 0;
+        dv *= 1.25;
+      */
+        dt_U = solver->con * min(1, min(FV(i,j,k),FV(min(IMAX-1,i+1),j,k)) / AE(i,j,k)) * DELX/(fabs(dv + U(i,j,k)));
+      //}
+        if(AE(i,j,k) > solver->emf && !isnan(dt_U))
+          delt = min(delt, dt_U);
+/*
+        if((N_VOF(i,j,k) > 7 && N_VOF(i,j+1,k) > 0) || (N_VOF(i,j,k) > 0 && N_VOF(i,j+1,k) > 7)) {
+          if(V(i,j,k) > 0) { // && N_VOF(i,j+1,k) > 7) {
+            dt_U = 0.5 * FV(i,j+1,k) * DELY * FV(i,j,k) / (fabs(V(i,j,k)) * AN(i,j,k) * VOF(i,j,k));
+          } else if (V(i,j,k) < 0) { // && N_VOF(i,j,k) > 7) {
+            dt_U = 0.5 * FV(i,j+1,k) * DELY * FV(i,j,k) / (fabs(V(i,j,k)) * AN(i,j,k) * VOF(i,j+1,k));
+          } 
+        } 
+        dp = P(i,j,k) - P(i, min(JMAX-1,j+1), k);
+        if(j < JMAX-1) dp += solver->gy * solver->rho * DELY;
+        if(dp * V(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELY) * dp / solver->rho); // dv is additive to calc stability limit based on pressure gradient effect on velocity 
+        else dv = 0;
+        dv *= 1.25;
+              */
+        dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k)) * DELY/(fabs(dv + V(i,j,k)));
+      //}
+        if(AN(i,j,k) > solver->emf && !isnan(dt_U))
+          delt = min(delt, dt_U);
+          /*
+        if((N_VOF(i,j,k) > 7 && N_VOF(i,j,k+1) > 0) || (N_VOF(i,j,k) > 0 && N_VOF(i,j,k+1) > 7)) {					
+          if(W(i,j,k) > 0) { // && N_VOF(i,j,k+1) > 7) {
+            dt_U = 0.5 * FV(i,j,k+1) * DELZ * FV(i,j,k) / (fabs(W(i,j,k)) * AT(i,j,k) * VOF(i,j,k));
+          } else if (W(i,j,k) < 0) { // && N_VOF(i,j,k) > 7) {
+            dt_U = 0.5 * FV(i,j,k+1) * DELZ * FV(i,j,k) / (fabs(W(i,j,k)) * AT(i,j,k) * VOF(i,j,k+1));
+          } 
+        } 
+        dp = P(i,j,k) - P(i,j, min(KMAX-1,k+1));
+        if(k < KMAX-1) dp += solver->gz * solver->rho * DELZ;
+        if(dp * W(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELZ) * dp / solver->rho); // dv is additive to calc stability limit based on pressure gradient effect on velocity 
+        else dv = 0;		
+        dv *= 1.25;		
+      */
+        dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
+      //}
+        if(AT(i,j,k) > solver->emf && !isnan(dt_U))
+          delt = min(delt, dt_U);					
 					
 			}
 		}
@@ -1263,6 +1317,13 @@ int vof_deltcal(struct solver_data *solver) {
     }
   }
   
+#ifdef DEBUG
+  if(delt / solver->delt_n < 0.7 && solver->vof_flag != 1) {
+    printf("large change in timestep - saving\n");
+    vof_write_timestep(solver);
+  }
+#endif
+  
   /* now adjust alpha */
   alpha = solver->alpha;
   alpha = max(alpha, 1.5*solver->umax*solver->delt/DELX);
@@ -1277,7 +1338,7 @@ int vof_deltcal(struct solver_data *solver) {
   /* solver->epsi = 0.0001 / solver->delt; */
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
-  solver->epsi = 0.05 * solver->rho * mindx / 
+  solver->epsi = 0.1 * solver->rho * mindx / 
                 (solver->dzro * 0.01 * max(pow(solver->delt * 100, 1.2),0.001));
   
   
@@ -1327,5 +1388,7 @@ int vof_write_timestep(struct solver_data * solver) {
 	
 	vtk_write_vorticity(solver->mesh,write_step);
 	csv_write_vorticity(solver->mesh,solver->t);
+	
+	return 1;
 }
 

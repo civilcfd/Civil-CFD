@@ -256,3 +256,5 @@ pip-log.txt
 *.a
 
 *.o
+
+*.o

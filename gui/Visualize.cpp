@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QFileDialog>
+#include <QFile>
+#include <QByteArray>
 
 #include <vtkSmartPointer.h>
 #include <vtkStructuredPoints.h>
@@ -22,8 +24,10 @@
 #include <vtkOBJReader.h>
 #include <vtkLookupTable.h>
 
+#include <quazip/quagzipfile.h>
 
 #include "MainWindow.h"
+
 
 void MainWindow::visualizeUpdate() {
 
@@ -195,6 +199,7 @@ void MainWindow::on_saveJPEG_clicked() {
   
 }
 
+
 void MainWindow::visualizeRender() {
 
   double origin, del;
@@ -203,7 +208,7 @@ void MainWindow::visualizeRender() {
   QListWidgetItem *item = ui.timesteps->currentItem();
   if(item == NULL) return;
 
-  QString vtkFile = sim.getTrackN(item->text());
+  QString vtkFile = QString(sim.getTrackN(item->text()) + ".vtk");
   QString vectFile, volFile;
   
   // Flag whether these files needed to be decompressed
@@ -211,7 +216,6 @@ void MainWindow::visualizeRender() {
   vtkFile_d = false;
   vectFile_d = false;
   
-  vtkFile.append(".vtk");
 
   vectFile = vtkFile;
 
@@ -231,7 +235,7 @@ void MainWindow::visualizeRender() {
   vtkFile.prepend("vtk/");
 
   if(!QFile::exists(vtkFile)) {
-    vtk_decompress(vtkFile);
+    decompressFile(vtkFile + ".gz", vtkFile);
     if(!QFile::exists(vtkFile)) {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
@@ -243,7 +247,7 @@ void MainWindow::visualizeRender() {
     }
   }
   if(!QFile::exists(vectFile)) {
-    sim.decompressFile(vectFile);
+    decompressFile(vectFile + ".gz", vectFile);
     if(!QFile::exists(vectFile)) {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
@@ -312,4 +316,24 @@ void MainWindow::visualizeRender() {
   
   if(vtkFile_d) QFile::remove(vtkFile);
   if(vectFile_d) QFile::remove(vectFile);
+}
+
+bool decompressFile(QString zip_filename , QString filename)
+{
+  QFile file(zip_filename);
+  QFile outfile(filename);
+  if(!file.open(QFile::ReadOnly)) return false;
+  QuaGzipFile gzip;
+  gzip.open(file.handle(), QuaGzipFile::ReadOnly);
+  
+
+  QByteArray uncompressed_data = gzip.readAll();
+ 
+  if(!outfile.open(QIODevice::WriteOnly)) return false;
+  outfile.write(uncompressed_data);
+  file.close();
+  outfile.close();
+  gzip.close();
+  return true;
+   
 }

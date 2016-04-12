@@ -14,7 +14,8 @@ enum cell_boundaries {
   south=4,
   top=5,
   bottom=6,
-  none=7
+  none=7,
+  empty=8
 };
 
 enum wall_boundaries {

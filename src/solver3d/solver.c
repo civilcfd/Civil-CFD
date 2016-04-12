@@ -55,7 +55,7 @@ struct solver_data *solver_init_empty() {
   solver->rho  = 1000;
 
   solver->epsi = 2.5e-3;
-  solver->con = 0.3;
+  solver->con = 0.4;
   solver->dzro = 1.0*solver->rho;
 
   solver->gx   = 0;

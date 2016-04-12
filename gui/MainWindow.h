@@ -14,12 +14,14 @@
 #include "Baffle.h"
 #include "GeometryDisplay.h"
 #include "Render.h"
+#include "InspectDialog.h"
 #include "BoundaryDisplay.h"
 #include "VisualizeDisplay.h"
 #include "Visualize3DDisplay.h"
 #include "SolverDialog.h"
 #include "About.h"
-#include "Inspect.h"
+
+bool decompressFile(QString zip_filename , QString filename);
 
 class MainWindow : public QMainWindow {
   Q_OBJECT

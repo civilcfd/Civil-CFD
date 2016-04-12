@@ -440,13 +440,15 @@ int vof_pressure_sor(struct solver_data *solver, long int i, long int j, long in
 int vof_pressure(struct solver_data *solver) {
   
   long int i,j,k,l,m,n, imax, jmax, kmax, imin, jmin, kmin;
-  double plmn, delp, residual;
+  double plmn, delp, residual, epsi;
   
   double g, del, dp, dv;
   double ax, ux, stabil_limit;
   
   
   solver->p_flag = 0;
+  
+  epsi = solver->epsi * min(1, solver->iter / 20);
   
 #define emf solver->emf
 
@@ -524,17 +526,17 @@ int vof_pressure(struct solver_data *solver) {
           
           /* check if excessive pressure is building near the free surface and artificially release it */
           dp = plmn - delp;
-          dv = solver->delt * ( (1/del) * dp / solver->rho);
+          dv = solver->delt * ( (1/del) * dp / solver->rho) * (i-l + j-m + k-n);
           stabil_limit = solver->con * (min(FV(i,j,k),FV(l,m,n)) / ax)  * del/solver->delt;
           
-          if((i-l + j-m + k-n) * ux > 0)
+          if(dv * ux > 0)
           	stabil_limit = min(max(stabil_limit - fabs(ux), emf), stabil_limit / 2);
           else
           	stabil_limit /= 2;      
           
           if(fabs(dv) > stabil_limit) {
 
-            dp = stabil_limit / (solver->delt * (1/del) / solver->rho);
+            dp = (dp / fabs(dp)) * stabil_limit / (solver->delt * (1/del) / solver->rho);
             
             /* printf("\n*** Excessive pressure gradient from %lf", delp - P(i,j,k)); */
             
@@ -551,9 +553,9 @@ int vof_pressure(struct solver_data *solver) {
           }
           
           delp = delp - P(i,j,k); 
-          if(fabs(delp) / (solver->epsi / max(0.1,FV(i,j,k))) < 0.9) {
-            D(i,j,k) = delp / solver->rho;
-            continue;
+          if(fabs(delp) / (solver->epsi / max(0.1,FV(i,j,k))) < 0.1) {
+            //D(i,j,k) = delp / solver->rho;
+            //continue;
           }
           
           D(i,j,k) = 0;
@@ -570,13 +572,13 @@ int vof_pressure(struct solver_data *solver) {
           
           /* de-foaming */
           if(VOF(i,j,k) < (1-emf)) {
-            /* don't de-foam next to boundaries */
+            /* uncomment to not de-foam next to boundaries *
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
-                 FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {
-              D(i,j,k) = D(i,j,k) + min(solver->epsi, 
+                 FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) { */
+              D(i,j,k) = D(i,j,k) + min(solver->epsi * solver->rho, 
                                     (1.0 - VOF(i,j,k)) / solver->delt) / 10;
-            }
+            //}
           }
           
           delp=-BETA(i,j,k)*D(i,j,k)*PETA(i,j,k);
@@ -585,12 +587,16 @@ int vof_pressure(struct solver_data *solver) {
           if(solver->iter > 100 && solver->iter < 125) delp /= (solver->omg + 0.1);
           
           
-          residual = (fabs(D(i,j,k)) * solver->rho) / (solver->epsi / max(0.1,FV(i,j,k)));
+          residual = (fabs(D(i,j,k)) * solver->rho);          
+          solver->resimax=max(residual,solver->resimax);          
+          residual /= (solver->epsi / max(0.1,FV(i,j,k)));
+          
           if(residual > 1.0) {
             solver->p_flag=1;
-          } else if(residual < 0.5) {
+            solver->resimax =0;
+          } else if(residual < 0.1) {
             /* testing - if it aint broke don't fix it */
-            continue;
+            //continue;
           }
 
         }

@@ -56,7 +56,6 @@ public:
     QPlainTextEdit *ElementNumber;
     QPlainTextEdit *Dims;
     QLabel *label_2;
-    QPlainTextEdit *OutputSize;
     QListWidget *ResultList;
     QFrame *line;
     QLabel *label_5;
@@ -68,6 +67,7 @@ public:
     QPushButton *Clear;
     QPlainTextEdit *Name;
     QLabel *label_9;
+    QPushButton *InspectCell;
     QPushButton *Delete;
     QPushButton *SelectAll;
     QLabel *label_10;
@@ -76,14 +76,12 @@ public:
     QPlainTextEdit *STLFile;
     QLabel *label_4;
     QSpacerItem *horizontalSpacer_3;
-    QLabel *label_8;
     QLabel *label_6;
     QPlainTextEdit *Path;
     QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer_3;
     QLabel *label_3;
     QLabel *label_7;
-    QPushButton *InspectCell;
     QWidget *Models;
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout_4;
@@ -361,15 +359,17 @@ public:
         gridLayout->setContentsMargins(-1, 0, -1, -1);
         ElementNumber = new QPlainTextEdit(Information);
         ElementNumber->setObjectName(QString::fromUtf8("ElementNumber"));
-        ElementNumber->setEnabled(false);
+        ElementNumber->setEnabled(true);
         ElementNumber->setMaximumSize(QSize(16777215, 28));
+        ElementNumber->setReadOnly(true);
 
         gridLayout->addWidget(ElementNumber, 6, 2, 1, 1);
 
         Dims = new QPlainTextEdit(Information);
         Dims->setObjectName(QString::fromUtf8("Dims"));
-        Dims->setEnabled(false);
+        Dims->setEnabled(true);
         Dims->setMaximumSize(QSize(16777215, 28));
+        Dims->setReadOnly(true);
 
         gridLayout->addWidget(Dims, 4, 2, 1, 1);
 
@@ -378,18 +378,11 @@ public:
 
         gridLayout->addWidget(label_2, 1, 1, 1, 1, Qt::AlignRight);
 
-        OutputSize = new QPlainTextEdit(Information);
-        OutputSize->setObjectName(QString::fromUtf8("OutputSize"));
-        OutputSize->setEnabled(false);
-        OutputSize->setMaximumSize(QSize(16777215, 28));
-
-        gridLayout->addWidget(OutputSize, 8, 2, 1, 1);
-
         ResultList = new QListWidget(Information);
         ResultList->setObjectName(QString::fromUtf8("ResultList"));
         ResultList->setSelectionMode(QAbstractItemView::MultiSelection);
 
-        gridLayout->addWidget(ResultList, 11, 2, 6, 1);
+        gridLayout->addWidget(ResultList, 10, 2, 6, 1);
 
         line = new QFrame(Information);
         line->setObjectName(QString::fromUtf8("line"));
@@ -414,18 +407,19 @@ public:
 
         ElementSize = new QPlainTextEdit(Information);
         ElementSize->setObjectName(QString::fromUtf8("ElementSize"));
-        ElementSize->setEnabled(false);
+        ElementSize->setEnabled(true);
         ElementSize->setMaximumSize(QSize(16777215, 28));
+        ElementSize->setReadOnly(true);
 
         gridLayout->addWidget(ElementSize, 5, 2, 1, 1);
 
         verticalSpacer = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout->addItem(verticalSpacer, 14, 3, 1, 1);
+        gridLayout->addItem(verticalSpacer, 13, 3, 1, 1);
 
         verticalSpacer_2 = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout->addItem(verticalSpacer_2, 9, 0, 1, 1);
+        gridLayout->addItem(verticalSpacer_2, 8, 0, 1, 1);
 
         Save = new QPushButton(Information);
         Save->setObjectName(QString::fromUtf8("Save"));
@@ -444,7 +438,7 @@ public:
         Clear->setIcon(icon3);
         Clear->setIconSize(QSize(22, 22));
 
-        gridLayout->addWidget(Clear, 12, 3, 1, 1);
+        gridLayout->addWidget(Clear, 11, 3, 1, 1);
 
         Name = new QPlainTextEdit(Information);
         Name->setObjectName(QString::fromUtf8("Name"));
@@ -456,34 +450,43 @@ public:
         label_9->setObjectName(QString::fromUtf8("label_9"));
         label_9->setMaximumSize(QSize(16777215, 28));
 
-        gridLayout->addWidget(label_9, 10, 0, 1, 2);
+        gridLayout->addWidget(label_9, 9, 0, 1, 2);
+
+        InspectCell = new QPushButton(Information);
+        InspectCell->setObjectName(QString::fromUtf8("InspectCell"));
+        QIcon icon4;
+        icon4.addFile(QString::fromUtf8(":/icons/resources/system-search.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        InspectCell->setIcon(icon4);
+        InspectCell->setIconSize(QSize(22, 22));
+
+        gridLayout->addWidget(InspectCell, 12, 3, 1, 1);
 
         Delete = new QPushButton(Information);
         Delete->setObjectName(QString::fromUtf8("Delete"));
-        QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/icons/resources/edit-delete.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        Delete->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QString::fromUtf8(":/icons/resources/edit-delete.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        Delete->setIcon(icon5);
         Delete->setIconSize(QSize(22, 22));
 
-        gridLayout->addWidget(Delete, 15, 3, 1, 1);
+        gridLayout->addWidget(Delete, 14, 3, 1, 1);
 
         SelectAll = new QPushButton(Information);
         SelectAll->setObjectName(QString::fromUtf8("SelectAll"));
-        QIcon icon5;
-        icon5.addFile(QString::fromUtf8(":/icons/resources/edit-select-all.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        SelectAll->setIcon(icon5);
+        QIcon icon6;
+        icon6.addFile(QString::fromUtf8(":/icons/resources/edit-select-all.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        SelectAll->setIcon(icon6);
         SelectAll->setIconSize(QSize(22, 22));
 
-        gridLayout->addWidget(SelectAll, 11, 3, 1, 1);
+        gridLayout->addWidget(SelectAll, 10, 3, 1, 1);
 
         label_10 = new QLabel(Information);
         label_10->setObjectName(QString::fromUtf8("label_10"));
 
-        gridLayout->addWidget(label_10, 11, 1, 1, 1);
+        gridLayout->addWidget(label_10, 10, 1, 1, 1);
 
         verticalSpacer_4 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Preferred);
 
-        gridLayout->addItem(verticalSpacer_4, 17, 2, 1, 1);
+        gridLayout->addItem(verticalSpacer_4, 16, 2, 1, 1);
 
         label = new QLabel(Information);
         label->setObjectName(QString::fromUtf8("label"));
@@ -492,8 +495,9 @@ public:
 
         STLFile = new QPlainTextEdit(Information);
         STLFile->setObjectName(QString::fromUtf8("STLFile"));
-        STLFile->setEnabled(false);
+        STLFile->setEnabled(true);
         STLFile->setMaximumSize(QSize(16777215, 28));
+        STLFile->setReadOnly(true);
 
         gridLayout->addWidget(STLFile, 7, 2, 1, 1);
 
@@ -506,11 +510,6 @@ public:
 
         gridLayout->addItem(horizontalSpacer_3, 4, 0, 1, 1);
 
-        label_8 = new QLabel(Information);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
-
-        gridLayout->addWidget(label_8, 8, 1, 1, 1);
-
         label_6 = new QLabel(Information);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
@@ -518,7 +517,7 @@ public:
 
         Path = new QPlainTextEdit(Information);
         Path->setObjectName(QString::fromUtf8("Path"));
-        Path->setEnabled(false);
+        Path->setEnabled(true);
         Path->setMaximumSize(QSize(16777215, 28));
         Path->setReadOnly(true);
 
@@ -530,7 +529,7 @@ public:
 
         verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout->addItem(verticalSpacer_3, 16, 3, 1, 1);
+        gridLayout->addItem(verticalSpacer_3, 15, 3, 1, 1);
 
         label_3 = new QLabel(Information);
         label_3->setObjectName(QString::fromUtf8("label_3"));
@@ -542,15 +541,6 @@ public:
         label_7->setObjectName(QString::fromUtf8("label_7"));
 
         gridLayout->addWidget(label_7, 7, 1, 1, 1, Qt::AlignRight);
-
-        InspectCell = new QPushButton(Information);
-        InspectCell->setObjectName(QString::fromUtf8("InspectCell"));
-        InspectCell->setMinimumSize(QSize(0, 38));
-        QIcon icon6;
-        icon6.addFile(QString::fromUtf8(":/icons/resources/system-search.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        InspectCell->setIcon(icon6);
-
-        gridLayout->addWidget(InspectCell, 13, 3, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -1009,7 +999,7 @@ public:
         RemoveSpecialBoundary = new QPushButton(Boundaries);
         RemoveSpecialBoundary->setObjectName(QString::fromUtf8("RemoveSpecialBoundary"));
         RemoveSpecialBoundary->setMaximumSize(QSize(220, 16777215));
-        RemoveSpecialBoundary->setIcon(icon4);
+        RemoveSpecialBoundary->setIcon(icon5);
         RemoveSpecialBoundary->setIconSize(QSize(22, 22));
 
         horizontalLayout->addWidget(RemoveSpecialBoundary);
@@ -1088,7 +1078,7 @@ public:
         RemoveBaffle = new QPushButton(Baffles);
         RemoveBaffle->setObjectName(QString::fromUtf8("RemoveBaffle"));
         RemoveBaffle->setMaximumSize(QSize(220, 16777215));
-        RemoveBaffle->setIcon(icon4);
+        RemoveBaffle->setIcon(icon5);
         RemoveBaffle->setIconSize(QSize(22, 22));
 
         horizontalLayout_2->addWidget(RemoveBaffle);
@@ -1956,16 +1946,15 @@ public:
         Save->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         Clear->setText(QApplication::translate("MainWindow", "Clear Selection", 0, QApplication::UnicodeUTF8));
         label_9->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Results</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+        InspectCell->setText(QApplication::translate("MainWindow", "Inspect Cell", 0, QApplication::UnicodeUTF8));
         Delete->setText(QApplication::translate("MainWindow", "Delete", 0, QApplication::UnicodeUTF8));
         SelectAll->setText(QApplication::translate("MainWindow", "Select All", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("MainWindow", "Timesteps Saved", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "Simulation Name", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("MainWindow", "Mesh Dimensions", 0, QApplication::UnicodeUTF8));
-        label_8->setText(QApplication::translate("MainWindow", "Calculated Output Size", 0, QApplication::UnicodeUTF8));
         label_6->setText(QApplication::translate("MainWindow", "Number of Elements", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Simulation Details</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         label_7->setText(QApplication::translate("MainWindow", "Geometry File", 0, QApplication::UnicodeUTF8));
-        InspectCell->setText(QApplication::translate("MainWindow", "Inspect Cell", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(Information), QApplication::translate("MainWindow", "Information", 0, QApplication::UnicodeUTF8));
         kEpsilon->setText(QApplication::translate("MainWindow", "k-Epsilon", 0, QApplication::UnicodeUTF8));
         label_15->setText(QApplication::translate("MainWindow", "x", 0, QApplication::UnicodeUTF8));

@@ -79,26 +79,32 @@
           <item row="6" column="2">
            <widget class="QPlainTextEdit" name="ElementNumber">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="4" column="2">
            <widget class="QPlainTextEdit" name="Dims">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -150,13 +156,16 @@
           <item row="5" column="2">
            <widget class="QPlainTextEdit" name="ElementSize">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -254,18 +263,18 @@
           </item>
           <item row="12" column="3">
            <widget class="QPushButton" name="InspectCell">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>38</height>
-             </size>
-            </property>
             <property name="text">
              <string>Inspect Cell</string>
             </property>
             <property name="icon">
              <iconset resource="gui.qrc">
               <normaloff>:/icons/resources/system-search.svg</normaloff>:/icons/resources/system-search.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -336,13 +345,16 @@
           <item row="7" column="2">
            <widget class="QPlainTextEdit" name="STLFile">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -379,7 +391,7 @@
           <item row="1" column="2">
            <widget class="QPlainTextEdit" name="Path">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="maximumSize">
              <size>
@@ -1673,7 +1685,7 @@
                <string>Add Special Boundary</string>
               </property>
               <property name="icon">
-               <iconset resource="gui.qrc">
+               <iconset>
                 <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
               </property>
               <property name="iconSize">
@@ -1854,7 +1866,7 @@
                <string>Add Baffle</string>
               </property>
               <property name="icon">
-               <iconset resource="gui.qrc">
+               <iconset>
                 <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
               </property>
               <property name="iconSize">

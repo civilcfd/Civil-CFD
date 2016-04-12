@@ -22,7 +22,6 @@ extern "C" {
 }
 
 bool removeDir(const QString & dirName);
-int vtk_decompress(const QString & f);
 
 class Simulation {
 
@@ -151,7 +150,6 @@ public:
   QString getTrackN(QString str);
   bool deleteTrack(QString t);
   
-  bool decompressFile(QString filename);
 
 private:
   struct solver_data *solver; 

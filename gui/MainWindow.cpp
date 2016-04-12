@@ -233,7 +233,12 @@ void MainWindow::on_InspectCell_clicked() {
   QString t;
   bool ok;
   	
-	if(ui.ResultList->currentItem() == NULL) return;
+	if(ui.ResultList->currentItem() == NULL) {
+    QMessageBox msgBox;
+    msgBox.setText("Please select a timestep from the list of results");
+    msgBox.exec();
+	  return;
+	}
   t = ui.ResultList->currentItem()->text();
 
   t.toDouble(&ok);

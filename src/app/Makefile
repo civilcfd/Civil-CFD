@@ -42,6 +42,14 @@ clean:
 	-rm -f mesh3d
 	-rm -f vofsolver
 	-rm -f solver3d
+	-rm -f inspect_cell
+
+distclean:
+	-rm -f *.o
+	-rm -f mesh3d
+	-rm -f vofsolver
+	-rm -f solver3d
+	-rm -f inspect_cell
 	-cd ../mesh3d && make clean
 	-cd ../solver3d && make clean
 	-rm ../../bin/civil-cfd.app/Contents/MacOS/mesh3d

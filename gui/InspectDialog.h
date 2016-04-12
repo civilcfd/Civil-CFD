@@ -10,7 +10,7 @@
 #include <QDialog>
 #include <QProcess>
 
-#include "ui_inspect.h"
+#include "ui_inspect_cell.h"
 
 #include "Simulation.h"
 
@@ -31,7 +31,7 @@ private slots:
   void on_InspectCell_clicked();
 
 private:
-  Ui::Inspect ui;
+  Ui::InspectDialog ui;
   
   QString timestep;
   QString appPath;

@@ -6,19 +6,20 @@
 
 #include <QMessageBox>
 
-#include "Inspect.h"
+#include "InspectDialog.h"
 
 InspectDialog::InspectDialog(Simulation &sim, QString path, QString t) {
   QString cmd;
+  ui.setupUi(this);
   
   appPath = path;
   timestep = t;
   
-  ui.maxX->text() = "of " + sim.getImax();
-  ui.maxY->text() = "of " + sim.getJmax();
-  ui.maxZ->text() = "of " + sim.getKmax();
+  ui.maxX->setText("of " + sim.getImax());
+  ui.maxY->setText("of " + sim.getJmax());
+  ui.maxZ->setText("of " + sim.getKmax());
+  ui.timestep->setPlainText(t);
   
-  ui.setupUi(this);
 }
 
 void InspectDialog::on_Return_clicked() {

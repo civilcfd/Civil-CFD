@@ -670,7 +670,7 @@ int kE_wall_shear(struct solver_data *solver) {
           }
           
           if(isnan(U(i,j,k))) {
-          #ifdef DEBUG
+          #ifdef DEBUG_1
             printf("nan at cell %ld %ld %ld in wall_shear\n",i,j,k);
           #endif
           }

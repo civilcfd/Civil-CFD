@@ -209,3 +209,38 @@ int vtk_compressed_write_vector_grid(char *filename_vtk, char *dataset_name,
 
   return 0;
 }
+
+int vtk_decompress(const char *cstr) {
+  char buf[1024*1024*16];
+  char filename[1024];
+  char filename_gz[1024];
+  int len, wlen;
+  gzFile *fi;
+  FILE *fp;
+  
+  strncpy(filename, cstr, strlen(cstr) + 1);
+    
+  strncpy(filename_gz, filename, strlen(filename) + 1);
+  strncat(filename_gz, ".gz", 3);
+  
+  fi = gzopen(filename_gz,"r");
+  if(fi == NULL) return 0;
+  
+  fp = fopen(filename,"w");
+  if(fp == NULL) return 0;
+  
+  gzrewind(fi);
+  while(!gzeof(fi))
+  {
+      len  = gzread(fi,buf,sizeof(buf));
+      wlen = fwrite(buf, len, 1, fp);
+      if(len != wlen) {
+        printf("vtk_decompress: error writing to file\n");
+        return 0;
+      }
+  }
+  gzclose(fi);  
+  fclose(fp);
+  
+  return 1;
+}

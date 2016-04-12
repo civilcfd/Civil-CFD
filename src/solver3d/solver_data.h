@@ -56,6 +56,8 @@ struct solver_data {
   double gy;
   double gz;
   
+  double resimax;
+  
   double umax, vmax, wmax;
 
   double epsi; /* pressure iteration convergence criteria */
