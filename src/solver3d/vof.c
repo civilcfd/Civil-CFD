@@ -1236,7 +1236,7 @@ int vof_deltcal(struct solver_data *solver) {
   }
   
   if(solver->iter > 60) delt *= 0.985; 
-  if(solver->iter < 20) delt *= 1.015; 
+  if(solver->iter < 25) delt *= 1.015; 
 
   dv = 0;
   for(i=0; i<IMAX; i++) {
