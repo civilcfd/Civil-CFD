@@ -67,6 +67,8 @@ struct solver_data *solver_init_empty() {
   solver->wmax = 0;
 
   solver->omg  = 1.7;
+  solver->omg_init = 1.8;
+  solver->omg_final = 1.7;
   solver->alpha= 1.0;
 
   solver->t    = 0.0;

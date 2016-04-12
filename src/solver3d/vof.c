@@ -1042,8 +1042,6 @@ int vof_loop(struct solver_data *solver) {
 
   while(solver->t < solver->endt) {
     
-    if(solver->petacal != NULL)
-      solver->petacal(solver);
       
     solver->iter = 0;
     solver->resimax = 0;
@@ -1093,7 +1091,9 @@ int vof_loop(struct solver_data *solver) {
     if(solver->special_boundaries != NULL)
       solver->special_boundaries(solver); 
 
-    // moved petacal from here to start of loop so old N_VOF values are saved
+    if(solver->petacal != NULL)
+      solver->petacal(solver);
+      
     if(solver->deltcal != NULL) {
       if(solver->deltcal(solver) == 0) 
         mesh_copy_data(mesh_n, solver->mesh);
@@ -1119,8 +1119,10 @@ int vof_output(struct solver_data *solver) {
     printf("timestep: %lf | delt: %lf | pressure did not converge\n", solver->t, solver->delt);
   }
   else {
-    printf("timestep: %lf | delt %lf | convergence in %ld iterations. Max residual %lf\nepsi %lf\n", solver->t, solver->delt, solver->iter, solver->resimax, solver->epsi);
+    printf("timestep: %lf | delt %lf | convergence in %ld iterations.\n", solver->t, solver->delt, solver->iter);
   }
+  printf("Max residual %lf | epsi %lf | omega %lf\n", solver->resimax, solver->epsi, solver->omg_final);
+  
   printf("max u, v, w: %lf, %lf, %lf\n",solver->umax,solver->vmax,solver->wmax);  
   
   printf("max nu: %lf\n",solver->nu_max);
@@ -1133,7 +1135,7 @@ int vof_output(struct solver_data *solver) {
 }
 
 int vof_deltcal(struct solver_data *solver) {
-  double delt, dt_U, alpha, dp, dv;
+  double delt, delt_conv, dt_U, alpha, dp, dv;
   int ret = 0;
   double dtvis;
   double mindx;
@@ -1239,6 +1241,7 @@ int vof_deltcal(struct solver_data *solver) {
   if(solver->iter < 25) delt *= 1.015; 
 
   dv = 0;
+  delt_conv = delt * 100;
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {  
@@ -1259,7 +1262,7 @@ int vof_deltcal(struct solver_data *solver) {
         dt_U = solver->con * min(1, min(FV(i,j,k),FV(min(IMAX-1,i+1),j,k)) / AE(i,j,k)) * DELX/(fabs(dv + U(i,j,k)));
       //}
         if(AE(i,j,k) > solver->emf && !isnan(dt_U))
-          delt = min(delt, dt_U);
+          delt_conv = min(delt_conv, dt_U);
 /*
         if((N_VOF(i,j,k) > 7 && N_VOF(i,j+1,k) > 0) || (N_VOF(i,j,k) > 0 && N_VOF(i,j+1,k) > 7)) {
           if(V(i,j,k) > 0) { // && N_VOF(i,j+1,k) > 7) {
@@ -1277,7 +1280,7 @@ int vof_deltcal(struct solver_data *solver) {
         dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k)) * DELY/(fabs(dv + V(i,j,k)));
       //}
         if(AN(i,j,k) > solver->emf && !isnan(dt_U))
-          delt = min(delt, dt_U);
+          delt_conv = min(delt_conv, dt_U);
           /*
         if((N_VOF(i,j,k) > 7 && N_VOF(i,j,k+1) > 0) || (N_VOF(i,j,k) > 0 && N_VOF(i,j,k+1) > 7)) {					
           if(W(i,j,k) > 0) { // && N_VOF(i,j,k+1) > 7) {
@@ -1295,21 +1298,22 @@ int vof_deltcal(struct solver_data *solver) {
         dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
       //}
         if(AT(i,j,k) > solver->emf && !isnan(dt_U))
-          delt = min(delt, dt_U);					
+          delt_conv = min(delt_conv, dt_U);					
 					
 			}
 		}
 	}
+  printf("maximum timestep for convective stability: %lf\n",delt_conv);
+  
+  delt = min(delt, delt_conv);
+  
 	delt = min(delt, 0.8 * dtvis);
    
   if(solver->delt_n != delt) {
-  #ifdef DEBUG
     printf("timestep adjusted from %lf to %lf\n",solver->delt_n,delt);
-  #endif
+
     solver->delt = delt;
-    solver->betacal(solver);
-    if(solver->petacal != NULL)
-      solver->petacal(solver);
+
     if(delt < solver->delt_min) {
       printf("timestep too small to continue.  writing current timestep and exiting...");
       vof_write_timestep(solver);
@@ -1341,6 +1345,10 @@ int vof_deltcal(struct solver_data *solver) {
   solver->epsi = 0.1 * solver->rho * mindx / 
                 (solver->dzro * 0.01 * max(pow(solver->delt * 100, 1.2),0.001));
   
+  solver->omg = solver->omg_init * delt / delt_conv + delt_conv / delt;
+  solver->betacal(solver);
+  if(solver->petacal != NULL)
+    solver->petacal(solver);
   
   return ret;
 }

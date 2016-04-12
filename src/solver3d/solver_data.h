@@ -63,6 +63,8 @@ struct solver_data {
   double epsi; /* pressure iteration convergence criteria */
   double dzro; /* scaling factor for pressure convergence test */
   double omg;  /* over-relaxation factor for pressure iteration */
+  double omg_init; /* starting omg factor */
+  double omg_final; /* omg factor at end of pressure iterations */
   double alpha; /* donor cell fluxing (0 means central differencing */
   
   double vof_height; /* initial fluid level */

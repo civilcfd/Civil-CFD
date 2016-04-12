@@ -440,7 +440,7 @@ int vof_pressure_sor(struct solver_data *solver, long int i, long int j, long in
 int vof_pressure(struct solver_data *solver) {
   
   long int i,j,k,l,m,n, imax, jmax, kmax, imin, jmin, kmin;
-  double plmn, delp, residual, epsi;
+  double plmn, delp, residual, epsi, omg;
   
   double g, del, dp, dv;
   double ax, ux, stabil_limit;
@@ -449,6 +449,7 @@ int vof_pressure(struct solver_data *solver) {
   solver->p_flag = 0;
   
   epsi = solver->epsi * min(1, solver->iter / 20);
+  omg  = solver->omg * (1 - solver->iter / 500) + solver->iter / 500;
   
 #define emf solver->emf
 
@@ -553,10 +554,6 @@ int vof_pressure(struct solver_data *solver) {
           }
           
           delp = delp - P(i,j,k); 
-          if(fabs(delp) / (solver->epsi / max(0.1,FV(i,j,k))) < 0.1) {
-            //D(i,j,k) = delp / solver->rho;
-            //continue;
-          }
           
           D(i,j,k) = 0;
           
@@ -582,6 +579,7 @@ int vof_pressure(struct solver_data *solver) {
           }
           
           delp=-BETA(i,j,k)*D(i,j,k)*PETA(i,j,k);
+          delp= delp * omg / solver->omg;
           
           if(solver->iter > 50 && solver->iter < 75) delp /= (solver->omg - 0.1);
           if(solver->iter > 100 && solver->iter < 125) delp /= (solver->omg + 0.1);
@@ -589,15 +587,12 @@ int vof_pressure(struct solver_data *solver) {
           
           residual = (fabs(D(i,j,k)) * solver->rho);          
           solver->resimax=max(residual,solver->resimax);          
-          residual /= (solver->epsi / max(0.1,FV(i,j,k)));
+          residual /= (epsi / FV(i,j,k));
           
           if(residual > 1.0) {
             solver->p_flag=1;
             solver->resimax =0;
-          } else if(residual < 0.1) {
-            /* testing - if it aint broke don't fix it */
-            //continue;
-          }
+          } 
 
         }
         
@@ -627,7 +622,11 @@ int vof_pressure(struct solver_data *solver) {
     }
   }
 
-
+  if(solver->p_flag == 0) {
+    solver->omg_final = omg;
+    solver->epsi = epsi;
+  }
+  
   return solver->p_flag;
 #undef emf
 }
