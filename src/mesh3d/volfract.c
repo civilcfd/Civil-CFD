@@ -219,7 +219,10 @@ int vertex_qhull_fraction(struct mesh_data *mesh, struct stl_data *stl, long int
 
 	}
 	
+#pragma omp critical(qhull_fraction) 
+{
 	f = qhull_volume(v_list, v_index);
+}
 	
 	if(f == -1.0) {
 		printf("error in qhull_get_volume for cell %ld %ld %ld. ignoring and will set volume to 0.0\n", i, j, k);
@@ -587,8 +590,12 @@ int vertex_pent_fraction(struct mesh_data *mesh, struct stl_data *stl,
        * v_list[4 - 5] are the vertices with the double intersections above
        * vert[3] is the vertex with only a single intersection
        * v_x[2] is the intersection for the above vertex */
+       
+#pragma omp critical(qhull_fraction) 
+{
       f = qhull_get_pent_volume(v_list[0], v_list[1], v_list[2], v_list[3], v_list[4], v_list[5],
                               vert[3], v_x[marker]);
+}
 
       if(f == -1.0) {
         printf("error in qhull_get_pent_volume for cell %ld %ld %ld. ignoring and will set volume to 0.0\n", i, j, k);

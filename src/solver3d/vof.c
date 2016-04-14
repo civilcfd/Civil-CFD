@@ -112,7 +112,7 @@ int vof_betacal(struct solver_data *solver) {
                                     RDY * ( abn * RDY * 0.5 + abs * RDY * 0.5) +
                                     RDZ * ( abt * RDZ * 0.5 + abb * RDZ * 0.5)) / solver->rho;
 
-        xx = xx / FV(i,j,k);
+        xx = xx; /* / FV(i,j,k); */
         BETA(i,j,k) = solver->omg / xx;
 
       }
@@ -465,9 +465,9 @@ int vof_petacal(struct solver_data *solver) {
 
         /* calculate relaxation factor and store it in PETA */
         bpd = 1.0 / PETA(l,m,n) - BETA(l,m,n) * (1.0-PETA(i,j,k)) *
-              amn / FV(l,m,n) * solver->delt/(dmin*dmx) / solver->rho;
+               amn * /* / FV(l,m,n) * */ solver->delt/(dmin*dmx) / solver->rho;
         
-        PETA(l,m,n) = min(1.98/solver->omg, 1.0/bpd);
+        PETA(l,m,n) = min(1.8/solver->omg, 1.0/bpd);
 
       }
     }
@@ -1237,8 +1237,8 @@ int vof_deltcal(struct solver_data *solver) {
     exit(1);
   }
   
-  if(solver->iter > 60) delt *= 0.985; 
-  if(solver->iter < 25) delt *= 1.015; 
+  if(solver->iter > 60) delt *= 0.99; 
+  if(solver->iter < 20) delt *= 1.01; 
 
   dv = 0;
   delt_conv = delt * 100;
@@ -1257,8 +1257,8 @@ int vof_deltcal(struct solver_data *solver) {
         if(i < IMAX-1) dp += solver->gx * solver->rho * DELX;
         if(dp * U(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELX) * dp / solver->rho);
         else dv = 0;
-        dv *= 1.25;
-      */
+        dv *= 1.25; */
+      
         dt_U = solver->con * min(1, min(FV(i,j,k),FV(min(IMAX-1,i+1),j,k)) / AE(i,j,k)) * DELX/(fabs(dv + U(i,j,k)));
       //}
         if(AE(i,j,k) > solver->emf && !isnan(dt_U))
@@ -1275,8 +1275,8 @@ int vof_deltcal(struct solver_data *solver) {
         if(j < JMAX-1) dp += solver->gy * solver->rho * DELY;
         if(dp * V(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELY) * dp / solver->rho); // dv is additive to calc stability limit based on pressure gradient effect on velocity 
         else dv = 0;
-        dv *= 1.25;
-              */
+        dv *= 1.25; */
+              
         dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k)) * DELY/(fabs(dv + V(i,j,k)));
       //}
         if(AN(i,j,k) > solver->emf && !isnan(dt_U))
@@ -1293,8 +1293,8 @@ int vof_deltcal(struct solver_data *solver) {
         if(k < KMAX-1) dp += solver->gz * solver->rho * DELZ;
         if(dp * W(i,j,k) > solver->emf) dv = solver->delt * ( (1/DELZ) * dp / solver->rho); // dv is additive to calc stability limit based on pressure gradient effect on velocity 
         else dv = 0;		
-        dv *= 1.25;		
-      */
+        dv *= 1.25;		*/
+      
         dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
       //}
         if(AT(i,j,k) > solver->emf && !isnan(dt_U))
@@ -1342,10 +1342,11 @@ int vof_deltcal(struct solver_data *solver) {
   /* solver->epsi = 0.0001 / solver->delt; */
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
-  solver->epsi = 0.1 * solver->rho * mindx / 
-                (solver->dzro * 0.01 * max(pow(solver->delt * 100, 1.2),0.001));
+  solver->epsi = 1 * solver->rho * mindx / (solver->delt * solver->dzro);
+                /* (solver->dzro * 0.01 * max(pow(solver->delt * 100, 1.2),0.001)); */
   
-  solver->omg = solver->omg_init * delt / delt_conv + delt_conv / delt;
+  delt_conv = delt_conv * 0.5 / solver->con;
+  solver->omg = solver->omg_init * delt / delt_conv + (1 - delt / delt_conv);
   solver->betacal(solver);
   if(solver->petacal != NULL)
     solver->petacal(solver);

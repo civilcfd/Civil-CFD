@@ -55,7 +55,7 @@ struct solver_data *solver_init_empty() {
   solver->rho  = 1000;
 
   solver->epsi = 2.5e-3;
-  solver->con = 0.4;
+  solver->con = 0.35;
   solver->dzro = 1.0*solver->rho;
 
   solver->gx   = 0;
@@ -67,7 +67,7 @@ struct solver_data *solver_init_empty() {
   solver->wmax = 0;
 
   solver->omg  = 1.7;
-  solver->omg_init = 1.8;
+  solver->omg_init = 1.7;
   solver->omg_final = 1.7;
   solver->alpha= 1.0;
 

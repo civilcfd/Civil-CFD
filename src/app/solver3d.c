@@ -63,6 +63,11 @@ int main(int argc, char *argv[])
   solver->petacal(solver);
 
   if(timestep != 0) {
+    mesh_set_array(solver->mesh, "vof", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "P", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "u", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "v", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "w", 0.0, -1, 0, 0, 0, 0, 0);
     csv_read_U(solver->mesh,timestep);
     csv_read_P(solver->mesh,timestep);
     csv_read_vof(solver->mesh,timestep);

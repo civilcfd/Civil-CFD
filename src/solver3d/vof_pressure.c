@@ -448,7 +448,7 @@ int vof_pressure(struct solver_data *solver) {
   
   solver->p_flag = 0;
   
-  epsi = solver->epsi * min(1, solver->iter / 20);
+  epsi = solver->epsi * min(1, solver->iter / 10);
   omg  = solver->omg * (1 - solver->iter / 500) + solver->iter / 500;
   
 #define emf solver->emf
@@ -565,17 +565,17 @@ int vof_pressure(struct solver_data *solver) {
           D(i,j,k) = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k)) +
               RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k)) +
               RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1)); 
-          D(i,j,k) = D(i,j,k) / FV(i,j,k); 
+          D(i,j,k) = D(i,j,k) /* / FV(i,j,k) */; 
           
           /* de-foaming */
           if(VOF(i,j,k) < (1-emf)) {
-            /* uncomment to not de-foam next to boundaries *
+             //uncomment to not de-foam next to boundaries *
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
-                 FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) { */
+                 FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) { 
               D(i,j,k) = D(i,j,k) + min(solver->epsi * solver->rho, 
-                                    (1.0 - VOF(i,j,k)) / solver->delt) / 10;
-            //}
+                                    0.1 * (1.0 - VOF(i,j,k)) / solver->delt) / 10;
+            }
           }
           
           delp=-BETA(i,j,k)*D(i,j,k)*PETA(i,j,k);
@@ -587,7 +587,7 @@ int vof_pressure(struct solver_data *solver) {
           
           residual = (fabs(D(i,j,k)) * solver->rho);          
           solver->resimax=max(residual,solver->resimax);          
-          residual /= (epsi / FV(i,j,k));
+          residual /= (epsi / /* FV(i,j,k)*/ 1);
           
           if(residual > 1.0) {
             solver->p_flag=1;

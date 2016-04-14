@@ -1313,10 +1313,10 @@ int vof_boundaries(struct solver_data *solver) {
                              RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
                 flg = 1;
                 
-                stabil_limit = solver->con * (min(FV(i,j,k),FV(i+1,j,k)) / AE(i,j,k))  * DELX / solver->delt * 0.8;
-                if(fabs(U(i,j,k)) > stabil_limit && solver->p_flag == 0) {
-                  U(i,j,k) = stabil_limit * U(i,j,k) / fabs(U(i,j,k));
-                }
+                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i+1,j,k)) / AE(i,j,k))  * DELX / solver->delt * 0.8;
+                //if(fabs(U(i,j,k)) > stabil_limit && solver->p_flag == 0) {
+                //  U(i,j,k) = stabil_limit * U(i,j,k) / fabs(U(i,j,k));
+                //}
               }
               break;
             case east:
@@ -1329,10 +1329,10 @@ int vof_boundaries(struct solver_data *solver) {
                                RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
                 flg = 1;
                 
-                stabil_limit = solver->con * (min(FV(i,j,k),FV(i-1,j,k)) / AE(i-1,j,k))  * DELX / solver->delt * 0.8;
-                if(fabs(U(i-1,j,k)) > stabil_limit && solver->p_flag == 0) {
-                  U(i-1,j,k) = stabil_limit * U(i-1,j,k) / fabs(U(i-1,j,k));
-                }
+                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i-1,j,k)) / AE(i-1,j,k))  * DELX / solver->delt * 0.8;
+                //if(fabs(U(i-1,j,k)) > stabil_limit && solver->p_flag == 0) {
+                //  U(i-1,j,k) = stabil_limit * U(i-1,j,k) / fabs(U(i-1,j,k));
+                //}
               }
               break;
             case south:
@@ -1361,10 +1361,10 @@ int vof_boundaries(struct solver_data *solver) {
                                RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
                 flg = 1;
                 
-                stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j-1,k)) / AN(i,j-1,k))  * DELY / solver->delt * 0.8;
-                if(fabs(V(i,j-1,k)) > stabil_limit && solver->p_flag == 0) {
-                  V(i,j-1,k) = stabil_limit * V(i,j-1,k) / fabs(V(i,j-1,k));
-                }
+                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j-1,k)) / AN(i,j-1,k))  * DELY / solver->delt * 0.8;
+                //if(fabs(V(i,j-1,k)) > stabil_limit && solver->p_flag == 0) {
+                //  V(i,j-1,k) = stabil_limit * V(i,j-1,k) / fabs(V(i,j-1,k));
+                //}
               }
               break;                
             case bottom:
@@ -1377,10 +1377,10 @@ int vof_boundaries(struct solver_data *solver) {
                              RDZ * (-1.0 * W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
                 flg = 1;
                 
-                stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j,k+1)) / AT(i,j,k))  * DELZ / solver->delt * 0.8;
-                if(fabs(W(i,j,k)) > stabil_limit && solver->p_flag == 0) {
-                  W(i,j,k) = stabil_limit * W(i,j,k) / fabs(W(i,j,k));
-                }
+                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j,k+1)) / AT(i,j,k))  * DELZ / solver->delt * 0.8;
+                //if(fabs(W(i,j,k)) > stabil_limit && solver->p_flag == 0) {
+                //  W(i,j,k) = stabil_limit * W(i,j,k) / fabs(W(i,j,k));
+                //}
               }
               break;
             case top:
@@ -1393,10 +1393,10 @@ int vof_boundaries(struct solver_data *solver) {
                                RDZ * (W(i,j,k) * AT(i,j,k)) ) / denom;
                 flg = 1;
                 
-                stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j,k-1)) / AT(i,j,k-1))  * DELZ / solver->delt * 0.8;
-                if(fabs(W(i,j,k-1)) > stabil_limit && solver->p_flag == 0) {
-                  W(i,j,k-1) = stabil_limit * W(i,j,k-1) / fabs(W(i,j,k-1));
-                }
+                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j,k-1)) / AT(i,j,k-1))  * DELZ / solver->delt * 0.8;
+                //if(fabs(W(i,j,k-1)) > stabil_limit && solver->p_flag == 0) {
+                //  W(i,j,k-1) = stabil_limit * W(i,j,k-1) / fabs(W(i,j,k-1));
+                //}
               }
               break;  
             case none:
