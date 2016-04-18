@@ -448,7 +448,7 @@ int vof_pressure(struct solver_data *solver) {
   
   solver->p_flag = 0;
   
-  epsi = solver->epsi * min(1, solver->iter / 10);
+  epsi = solver->epsi * max(1, solver->iter / 10);
   omg  = solver->omg * (1 - solver->iter / 500) + solver->iter / 500;
   
 #define emf solver->emf
