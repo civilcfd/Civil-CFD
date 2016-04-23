@@ -118,7 +118,7 @@
           <item row="10" column="2" rowspan="6">
            <widget class="QListWidget" name="ResultList">
             <property name="selectionMode">
-             <enum>QAbstractItemView::MultiSelection</enum>
+             <enum>QAbstractItemView::ExtendedSelection</enum>
             </property>
            </widget>
           </item>

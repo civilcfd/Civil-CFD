@@ -728,10 +728,8 @@ int kE_tau(struct solver_data *solver) {
 					continue;
 				}
 
-				/* testing fabs( ... ) */
         k(i,j,k) = fabs(pow(u_t,2) / sqrt(kE.C_mu));
-                
-        /* testing fabs( ... ) */        
+                  
         E_limit = fabs(kE.C_mu * pow(k(i,j,k), 1.5) / kE.length);
         E(i,j,k) = max(E_limit, fabs(pow(u_t,3) / (d * kE.vonKarman)));
         
