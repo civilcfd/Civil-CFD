@@ -1320,13 +1320,14 @@ int vof_deltcal(struct solver_data *solver) {
       exit(1);
     }
   }
-  
+
+/*   Leaves a ridiculous amount of files on your drive
 #ifdef DEBUG
   if(delt / solver->delt_n < 0.7 && solver->vof_flag != 1) {
     printf("large change in timestep - saving\n");
     vof_write_timestep(solver);
   }
-#endif
+#endif */
   
   /* now adjust alpha */
   alpha = solver->alpha;

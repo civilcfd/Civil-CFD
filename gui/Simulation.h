@@ -70,9 +70,12 @@ public:
   bool setTurbulence(QString model);
 
   QString getRough();
+  QString getLength();
+  QString domainLength();
   QString getLength_scale();
   bool setRough(QString str);
   bool setLength_scale(QString str);
+  bool setLength(QString str);
 
   QString getDelx();
   QString getDely();

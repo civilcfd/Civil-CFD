@@ -99,6 +99,7 @@ private slots:
   void on_earthGravity_clicked();
   void on_water20C_clicked();
   void on_defaultLength_clicked();
+  void on_domainLength_clicked();
   void on_calcRough_clicked();
   void on_SelectAll_clicked();
   void on_Clear_clicked();

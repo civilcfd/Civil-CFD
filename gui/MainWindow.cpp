@@ -393,6 +393,7 @@ void MainWindow::update() {
     ui.kEpsilon->setChecked(true);
     ui.rough->setPlainText(sim.getRough());
     ui.length_scale->setPlainText(sim.getLength_scale());
+    ui.length->setPlainText(sim.getLength());
   }
   toggle();
 
@@ -470,6 +471,7 @@ void MainWindow::write() {
     sim.setTurbulence("kEpsilon");
     sim.setRough(ui.rough->toPlainText());
     sim.setLength_scale(ui.length_scale->toPlainText());
+    sim.setLength(ui.length->toPlainText());
   }
   else {
     sim.setTurbulence("Laminar");
@@ -524,6 +526,7 @@ void MainWindow::write() {
 void MainWindow::toggle() {
   if(ui.kEpsilon->isChecked()) {
     ui.length_scale->setEnabled(true);
+    ui.length->setEnabled(true);
     ui.initialk->setEnabled(true);
     ui.rough->setEnabled(true);
     
@@ -532,12 +535,14 @@ void MainWindow::toggle() {
       sim.setTurbulence("kEpsilon");
       ui.rough->setPlainText(sim.getRough());
       ui.length_scale->setPlainText(sim.getLength_scale());
+      ui.length->setPlainText(sim.getLength());
     }
     
     if(ui.initialk->toPlainText() == "-1") ui.initialk->setPlainText("0.001");
   }
   else {
     ui.length_scale->setEnabled(false);
+    ui.length->setEnabled(false);
     ui.rough->setEnabled(false);
     ui.initialk->setEnabled(false);
   }
@@ -579,6 +584,10 @@ void MainWindow::on_water20C_clicked() {
 
 void MainWindow::on_defaultLength_clicked() {
   ui.length_scale->setPlainText("0.038");
+}
+
+void MainWindow::on_domainLength_clicked() {
+  ui.length->setPlainText(sim.domainLength());
 }
 
 void MainWindow::on_calcRough_clicked() {

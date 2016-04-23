@@ -409,9 +409,6 @@ int solver_set_initial(struct solver_data *solver, char *param, int dims,
 int solver_set_value(struct solver_data *solver, char *param, int dims, 
                    double *vector) {
 
-  #ifdef debug
-    printf("solver_set_value: %s, %d\n",param,dims);
-  #endif
 
   if(solver == NULL || param == NULL || vector == NULL) {
     printf("error: null values passed to solver_set_value\n");

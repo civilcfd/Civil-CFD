@@ -5,12 +5,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <omp.h>
 
 #include "vtk.h"
 #include "vof.h"
 #include "solver.h"
+#include "readfile.h"
 #include "mesh.h"
 #include "csv.h"
 #include "kE.h"
@@ -42,6 +44,113 @@ float EE_n(struct solver_data *solver, long int i,long int j,long int k);
 float EE_n(struct solver_data *solver, long int i,long int j,long int k) { return E_N(i,j,k); } 
 #endif
 
+int kE_set_value(char *param, int dims, 
+                   double *vector) {
+
+
+  if(param == NULL || vector == NULL) {
+    printf("error: null values passed to kE_set_value\n");
+    return(1);
+  }
+
+  if(strcmp(param, "length_scale")==0) {
+    if(dims != 1) {
+      printf("error in source file: length_scale requires 3 arguments\n");
+      return(1);
+    }
+
+    kE.length_scale = vector[0];
+    kE_n.length_scale = kE.length_scale;
+  }
+  else if (strcmp(param, "length")==0) {
+    if(dims != 1) {
+      printf("error in source file: length requires 1 arguments\n");
+      return(1);
+    }
+
+    kE.length = vector[0];
+    kE_n.length = kE.length;
+
+  }
+  else if (strcmp(param, "rough")==0) {
+    if(dims != 1) {
+      printf("error in source file: rough requires 1 arguments\n");
+      return(1);
+    }
+
+    kE.rough = vector[0];
+    kE_n.rough = kE.rough;
+
+  }
+
+	return 0;
+}
+
+int kE_read(char *filename)
+{
+  /* code  to read kE variables
+   * this includes length, length_scale, rough
+   *
+   */
+  FILE *fp;
+
+  char text[1024];
+  char args[4][256];
+  double vector[3];
+
+  char *s;
+  int i, nargs;
+
+  if(filename == NULL) {
+    printf("error: passed null arguments to kE_read\n");
+    return(1);
+  }
+
+  fp = fopen(filename, "r");
+
+  if(fp == NULL) {
+    printf("error: cannot open %s in kE_read\n",filename);
+    return(1);
+  }
+
+  while(!feof(fp)) {
+    if(!fgets(text, sizeof(text), fp))
+    { 
+      if(!feof(fp)) {
+        printf("error: fgets in kE_read\n");
+        return(1);
+      }
+      else break;
+    }
+
+    nargs = read_args(text, 4, args);
+
+    if(nargs > 0) nargs--;
+    for(i = nargs; i < 3; i++) {
+      vector[i] = 0;
+    }
+
+    for(i = 0; i < nargs; i++) {
+      /* sscanf(args[i], "%lf", &vector[i]); */
+      vector[i] = strtod(args[i+1],&s); 
+    }
+
+    #ifdef DEBUG
+      printf("kE_read: read %d args: %s %lf %lf %lf\n", nargs, args[0], 
+             vector[0], vector[1], vector[2]);
+    #endif
+
+    if (args[0][0] != '#' && args[0][0] != 0) 
+      kE_set_value(args[0], i, vector); 
+    args[0][0] = 0;
+  }
+
+  fclose(fp);
+
+  return 0;
+}
+
+/*
 int kE_read(char *filename) {
   FILE *fp;
   char dummy[256];
@@ -65,7 +174,7 @@ int kE_read(char *filename) {
 
   fclose(fp);
   return 0;
-}
+}*/
 
 int kE_write(char *filename) {
   FILE *fp;
@@ -83,6 +192,7 @@ int kE_write(char *filename) {
   }
 
   fprintf(fp,"length_scale %le\n",kE.length_scale);
+  fprintf(fp,"length %le\n",kE.length);
   fprintf(fp,"rough %le\n",kE.rough);
 
   fclose(fp);
@@ -109,6 +219,8 @@ int kE_setup(struct solver_data *solver) {
   kE.sigma_E = kE_n.sigma_E = 1.3;
   kE.vonKarman = kE_n.vonKarman = 0.41;
   kE.length_scale = 0.038;
+  kE.length = min(IMAX * DELX, JMAX * DELY);
+  kE.length = min(kE.length, KMAX * DELZ);
 
   kE.rough = kE_n.rough = 0.00161; /* concrete */
   
@@ -141,11 +253,9 @@ int kE_init(struct solver_data *solver) {
     return 1;
   }
   
-  kE.length = max(IMAX * DELX, JMAX * DELY);
-  kE.length = max(kE.length, KMAX * DELZ);
-  kE.length *= kE.length_scale;
    
   kE_set_internal(solver, 0.0001, 0);
+  kE.length *= kE.length_scale;
  
   return 0;
 }
@@ -213,6 +323,8 @@ int kE_special_boundaries(struct solver_data *solver) {
                                      sb->extent_b[0], sb->extent_b[1], 
                                      sb->value, 0.0001);
           break;
+        case wall:
+        	break;
         }
     }
   }
@@ -276,17 +388,17 @@ int kE_boundaries(struct solver_data *solver) {
 
   /* sets boundaries on k and epsilon
    * does not set boundaries on U, see wall_shear */
-  long int i,j,k, im1, jm1, km1, l, m, n;
-  double d, u_t, wall_n[3], u_c[3], mag, tau;
-  double u_perp_n[3], u_perp_c, u_parr_c, u_parr[3];
-  double E_limit;
+  long int i,j,k, l, m, n;
 
-  const double del[3] = { DELX, DELY, DELZ };
 
 #pragma omp parallel for shared(solver) private(i,j,k)  
   for(i=0; i<IMAX; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
+      
+      	tau_x(i,j,k) = 0;
+      	tau_y(i,j,k) = 0;
+      	tau_z(i,j,k) = 0;
       
         if(i>0 && i<IMAX-1 && j>0 && j<JMAX-1 && k>0 && k<KMAX-1) continue;
         /* set mesh boundaries */
@@ -317,85 +429,8 @@ int kE_boundaries(struct solver_data *solver) {
   }
 
   kE_special_boundaries(solver);
-
-
   
-  /* set internal obstacle boundaries using law of the wall */
-  /* this is done last to ensure that obstacles on edge of mesh get the correct treatment */
-#pragma omp parallel for shared(solver, del) private(i,j,k,im1, jm1, km1, l, m, n, \
-              d, u_t, wall_n, u_c, mag, tau, u_perp_n, u_perp_c, u_parr_c, u_parr, E_limit)  
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
-
-        if(i==0) im1 = i; else im1 = i-1;
-        if(j==0) jm1 = j; else jm1 = j-1;
-        if(k==0) km1 = k; else km1 = k-1;
-
-        if(FV(i,j,k) > (1-solver->emf) || FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf)
-          continue;
-          
-      	if(N_VOF(i,j,k) != 0) continue;
-  
-        /* first adjust delx,dely,delz based on space occupied in cell */
-        wall_n[0] = AE(i,j,k) - AE(im1,j,k);
-        wall_n[1] = AN(i,j,k) - AN(i,jm1,k);
-        wall_n[2] = AT(i,j,k) - AT(i,j,km1);
-
-        mag = vector_magnitude(wall_n);
-        wall_n[0] /= mag;
-        wall_n[1] /= mag;
-        wall_n[2] /= mag;
-
-        d = fabs(wall_n[0]) * del[0] + fabs(wall_n[1]) * del[1] + fabs(wall_n[2]) * del[2];
-        d /= 2;
-        /* d *= FV(i,j,k); */
-
-        u_c[0] = (U(im1,j,k) + U(i,j,k))/2;
-        u_c[1] = (V(i,jm1,k) + V(i,j,k))/2;
-        u_c[2] = (W(i,j,km1) + W(i,j,k))/2;
-
-        /* find velocity component perpendicular to wall normal vector */
-        /* first find parallel component */
-        u_parr_c = inner_product(u_c, wall_n);
-        
-        /* now find parallel vector by multiplying scalar by wall normal */
-        vector_multiply(u_parr, wall_n, u_parr_c); /* u_parr[]   = wall_n[] * u_parr_c */
-        /* now find perpendicular vector by subtracting u_parr from u_c */
-        vector_subtract(u_perp_n, u_c, u_parr);    /* u_perp_n[] = u_c[]    - u_parr[] */
-        
-        /* now normalize u_perp_n */
-        u_perp_c = vector_magnitude(u_perp_n);
-        if(u_perp_c > 0.0001) {
-          u_perp_n[0] /= u_perp_c;
-          u_perp_n[1] /= u_perp_c;
-          u_perp_n[2] /= u_perp_c;
-        
-          u_t = log_law(u_perp_c, d, solver->nu * solver->rho, solver->rho, kE.rough);
-        } else u_t = 0;        
-
-        tau = pow(u_t,2) * solver->rho;
-        
-        tau_x(i,j,k) = tau * u_perp_n[0] * -1.0;
-        tau_y(i,j,k) = tau * u_perp_n[1] * -1.0;
-        tau_z(i,j,k) = tau * u_perp_n[2] * -1.0;
-
-				if(isnan(u_t)) {
-					printf("u_t nan at cell %ld %ld %ld   skipping...\n", i,j,k);
-					continue;
-				}
-
-				/* testing fabs( ... ) */
-        k(i,j,k) = fabs(pow(u_t,2) / sqrt(kE.C_mu));
-                
-        /* testing fabs( ... ) */        
-        E_limit = fabs(kE.C_mu * pow(k(i,j,k), 1.5) / kE.length);
-        E(i,j,k) = max(E_limit, fabs(pow(u_t,3) / (d * kE.vonKarman)));
-
-      }
-    }
-  }
-
+  kE_tau(solver);
 
 	/* free surface boundaries - the free surface acts as a von Neumann boundary */
 	/* also takes care of cells outside of the solution space */
@@ -404,7 +439,7 @@ int kE_boundaries(struct solver_data *solver) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
       
-      	if(FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf) { 
+      	if(FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf || N_VOF(i,j,k) > 6) { 
       		/* at an interior obstacle or empty cell, set k = 0 */
       		k(i,j,k) = 0;
       		E(i,j,k) = 0;
@@ -416,40 +451,36 @@ int kE_boundaries(struct solver_data *solver) {
       		continue;
       	}      	
       	
-      	if(N_VOF(i,j,k) == 0) continue;
+      	if(N_VOF(i,j,k) == 0 || FV(i,j,k) < (1 - solver->emf)) continue;
 
-          l = i;
-          m = j;
-          n = k;
-          switch(N_VOF(i,j,k)) {
-          case east:
-            l=i+1;
-            break;
-          case west:
-            l=i-1;
-            break;
-          case north:
-            m=j+1;
-            break;
-          case south:
-            m=j-1;
-            break;
-          case top:
-            n=k+1;
-            break;
-          case bottom:
-            n=k-1;
-            break;
-          case none:
-            k(i,j,k) = 0;
-            E(i,j,k) = 0;
-        		tau_x(i,j,k) = 0;
-        		tau_y(i,j,k) = 0;
-        		tau_z(i,j,k) = 0;
-        		nu_t(i,j,k) = 0;
-            continue;
-          }
+				l = i;
+				m = j;
+				n = k;
+				switch(N_VOF(i,j,k)) {
+				case east:
+					l=i+1;
+					break;
+				case west:
+					l=i-1;
+					break;
+				case north:
+					m=j+1;
+					break;
+				case south:
+					m=j-1;
+					break;
+				case top:
+					n=k+1;
+					break;
+				case bottom:
+					n=k-1;
+					break;
+				case none:
+				case empty:
+					continue;
+				}
       
+      		/*
           if(N_VOF(l,m,n) != 0 && FV(i,j,k) != 0) {
             k(i,j,k) = 0;
             E(i,j,k) = 0;
@@ -458,14 +489,10 @@ int kE_boundaries(struct solver_data *solver) {
         		tau_z(i,j,k) = 0;
         		nu_t(i,j,k) = 0;
             continue;   		
-          }
-          
-          k(i,j,k) = k(l,m,n);
-          E(i,j,k) = E(l,m,n);
-          nu_t(i,j,k) = nu_t(l,m,n);
-        	tau_x(i,j,k) = 0;
-        	tau_y(i,j,k) = 0;
-        	tau_z(i,j,k) = 0;
+          }*/
+				k(i,j,k) = k(l,m,n);
+				E(i,j,k) = E(l,m,n);
+				nu_t(i,j,k) = nu_t(l,m,n);
       
       }
     }
@@ -631,6 +658,92 @@ int kE_boundary_wall_shear(struct solver_data *solver) {
   return 0;
 }
 
+int kE_tau(struct solver_data *solver) {
+  long int i,j,k, im1, jm1, km1, l, m, n;
+  double d, u_t, wall_n[3], u_c[3], mag, tau;
+  double u_perp_n[3], u_perp_c, u_parr_c, u_parr[3];
+  double E_limit;
+  const double del[3] = { DELX, DELY, DELZ };
+  
+#pragma omp parallel for shared(solver, del) private(i,j,k,im1, jm1, km1, l, m, n, \
+              d, u_t, wall_n, u_c, mag, tau, u_perp_n, u_perp_c, u_parr_c, u_parr, E_limit)  
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {
+      
+        if(FV(i,j,k) > (1-solver->emf) || FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf)
+          continue;
+          
+      	if(N_VOF(i,j,k) > 6) continue;
+
+        im1 = i-1;
+        jm1 = j-1;
+        km1 = k-1;
+  
+        /* first adjust delx,dely,delz based on space occupied in cell */
+        wall_n[0] = AE(i,j,k) - AE(im1,j,k);
+        wall_n[1] = AN(i,j,k) - AN(i,jm1,k);
+        wall_n[2] = AT(i,j,k) - AT(i,j,km1);
+
+        mag = vector_magnitude(wall_n);
+        wall_n[0] /= mag;
+        wall_n[1] /= mag;
+        wall_n[2] /= mag;
+
+        d = fabs(wall_n[0]) * del[0] + fabs(wall_n[1]) * del[1] + fabs(wall_n[2]) * del[2];
+        d /= 2;
+        /* d *= FV(i,j,k); */
+
+        u_c[0] = (U(im1,j,k) + U(i,j,k))/2;
+        u_c[1] = (V(i,jm1,k) + V(i,j,k))/2;
+        u_c[2] = (W(i,j,km1) + W(i,j,k))/2;
+
+        /* find velocity component perpendicular to wall normal vector */
+        /* first find parallel component */
+        u_parr_c = inner_product(u_c, wall_n);
+        
+        /* now find parallel vector by multiplying scalar by wall normal */
+        vector_multiply(u_parr, wall_n, u_parr_c); /* u_parr[]   = wall_n[] * u_parr_c */
+        /* now find perpendicular vector by subtracting u_parr from u_c */
+        vector_subtract(u_perp_n, u_c, u_parr);    /* u_perp_n[] = u_c[]    - u_parr[] */
+        
+        /* now normalize u_perp_n */
+        u_perp_c = vector_magnitude(u_perp_n);
+        if(u_perp_c > 0.0001) {
+          u_perp_n[0] /= u_perp_c;
+          u_perp_n[1] /= u_perp_c;
+          u_perp_n[2] /= u_perp_c;
+        
+          u_t = log_law(u_perp_c, d, solver->nu * solver->rho, solver->rho, kE.rough);
+        } else u_t = 0;        
+
+        tau = pow(u_t,2) * solver->rho;
+        
+        tau_x(i,j,k) = tau * u_perp_n[0] * -1.0;
+        tau_y(i,j,k) = tau * u_perp_n[1] * -1.0;
+        tau_z(i,j,k) = tau * u_perp_n[2] * -1.0;
+
+				if(isnan(u_t)) {
+					printf("u_t nan at cell %ld %ld %ld   skipping...\n", i,j,k);
+					continue;
+				}
+
+				/* testing fabs( ... ) */
+        k(i,j,k) = fabs(pow(u_t,2) / sqrt(kE.C_mu));
+                
+        /* testing fabs( ... ) */        
+        E_limit = fabs(kE.C_mu * pow(k(i,j,k), 1.5) / kE.length);
+        E(i,j,k) = max(E_limit, fabs(pow(u_t,3) / (d * kE.vonKarman)));
+        
+        nu_t(i,j,k) = max(kE.C_mu * pow(k(i,j,k),2) / E(i,j,k),0);
+
+      }
+    }
+  }
+  
+  return 0;
+}
+
 int kE_wall_shear(struct solver_data *solver) {
 
   /* extension of velocity to add/subtract wall shears from velocity variable
@@ -640,7 +753,7 @@ int kE_wall_shear(struct solver_data *solver) {
    * unfortunately, this is cell centered and so will need to be averaged for cells i and i+1 */
   long int i,j,k;
   double ws_u, ws_d, tau_u, tau_d, delv;
-
+  
 #pragma omp parallel for shared(solver) private(i,j,k,ws_u,ws_d,tau_u,tau_d,delv)  
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
@@ -662,19 +775,15 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i+1,j,k)) - (1-AT(i+1,j,k-1)));
         
           delv = 0.5 * (ws_u + ws_d) * solver->delt;
+          U(i,j,k) += delv;
           
-          if(delv * U(i,j,k) > solver->emf) {
+          /* if(delv * U(i,j,k) > solver->emf) {
           	printf("warning: negative U wall shear. i j k delv U(i,j,k) %ld %ld %ld %lf %lf\n", i,j,k, delv, U(i,j,k));
           } else {
             if(fabs(delv) > fabs(U(i,j,k)) && !isnan(delv)) U(i,j,k) = 0;
             else if(fabs(delv) > solver->emf && !isnan(delv)) U(i,j,k) += delv;
-          }
-          
-          if(isnan(U(i,j,k))) {
-          #ifdef DEBUG_1
-            printf("nan at cell %ld %ld %ld in wall_shear\n",i,j,k);
-          #endif
-          }
+          } */
+
         }
 
         if( ( ((FV(i,j,k) > solver->emf && FV(i,j,k) < 1-solver->emf)) ||
@@ -692,13 +801,14 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i,j+1,k)) - (1-AT(i,j+1,k-1)));
         
           delv = 0.5 * (ws_u + ws_d) * solver->delt;
+          V(i,j,k) += delv;
           
-          if(delv * V(i,j,k) > solver->emf) {
+          /*if(delv * V(i,j,k) > solver->emf) {
           	printf("warning: negative U wall shear. i j k delv V(i,j,k) %ld %ld %ld %lf %lf\n", i,j,k, delv, V(i,j,k));
           } else {
             if(fabs(delv) > fabs(V(i,j,k)) && !isnan(delv)) V(i,j,k) = 0;
           	else if(fabs(delv) > solver->emf && !isnan(delv)) V(i,j,k) += delv;
-          }
+          }*/
         }
 
         if( ( ((FV(i,j,k) > solver->emf && FV(i,j,k) < 1-solver->emf)) ||
@@ -716,13 +826,15 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d += tau_d / (solver->rho * DELY) * fabs((1-AN(i,j,k+1)) - (1-AN(i,j-1,k+1)));
         
           delv = 0.5 * (ws_u + ws_d) * solver->delt;
+          W(i,j,k) += delv;
           
+          /*
           if(delv * W(i,j,k) > solver->emf) {
           	printf("warning: negative U wall shear. i j k delv W(i,j,k) %ld %ld %ld %lf %lf\n", i,j,k, delv, W(i,j,k));
           } else {
             if(fabs(delv) > fabs(W(i,j,k)) && !isnan(delv)) W(i,j,k) = 0;
           	else if(fabs(delv) > solver->emf && !isnan(delv)) W(i,j,k) += delv;
-          }          
+          }*/          
                     
         }
 

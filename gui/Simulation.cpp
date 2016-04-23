@@ -141,6 +141,11 @@ int Simulation::load() {
   file.close();
 
 	vof_setup_solver(solver);
+  if(read_mesh(solver->mesh, "meshfile")) {
+    qDebug() << "could not read meshfile";
+    ready=0;
+    return false;
+  }
   if(read_solver(solver, "solverfile")) {
     qDebug() << "could not read solverfile";
     ready=0;
@@ -148,12 +153,6 @@ int Simulation::load() {
   }
   if(solver->turbulence_read("turbulencefile")) {
     qDebug() << "could not read turbulencefile";
-    ready=0;
-    return false;
-  }
-  /* mesh_free(solver->mesh); */
-  if(read_mesh(solver->mesh, "meshfile")) {
-    qDebug() << "could not read meshfile";
     ready=0;
     return false;
   }
@@ -254,6 +253,31 @@ QString Simulation::getLength_scale() {
   else return 0;
 }
 
+QString Simulation::getLength() {
+  double length;
+  struct kE_data *kE;
+  
+  if(kEpsilon()) {
+    kE = (struct kE_data *) solver->mesh->turbulence_model;
+    length = kE->length;
+    return QString::number(length); 
+  }
+
+  else return 0;
+}
+
+QString Simulation::domainLength() {
+	double length;
+
+	if(solver->mesh->delx * solver->mesh->imax < solver->mesh->dely * solver->mesh->jmax) 
+		length = solver->mesh->delx * solver->mesh->imax;
+	else length = solver->mesh->dely * solver->mesh->jmax;
+	if(solver->mesh->delz * solver->mesh->kmax < length) 
+		length = solver->mesh->delz * solver->mesh->kmax;
+	
+	return QString::number(length);
+}
+
 bool Simulation::setGx(QString str) {
   bool ok;
   double conv = str.toDouble(&ok);
@@ -320,6 +344,21 @@ bool Simulation::setLength_scale(QString str) {
     if(kEpsilon()) {
       kE = (struct kE_data *) solver->mesh->turbulence_model;
       kE->length_scale = conv;
+    }
+    else return false;
+  }
+  return ok;
+}
+
+bool Simulation::setLength(QString str) {
+  bool ok;
+  double conv = str.toDouble(&ok);
+  if(ok) {
+    struct kE_data *kE;
+  
+    if(kEpsilon()) {
+      kE = (struct kE_data *) solver->mesh->turbulence_model;
+      kE->length = conv;
     }
     else return false;
   }
