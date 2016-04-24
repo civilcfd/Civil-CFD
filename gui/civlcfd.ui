@@ -2550,125 +2550,6 @@
        <layout class="QGridLayout" name="gridLayout_16">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_15">
-          <item row="1" column="5">
-           <widget class="QPlainTextEdit" name="endt">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>28</height>
-             </size>
-            </property>
-            <property name="plainText">
-             <string>100</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QComboBox" name="t">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>28</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>0</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="4" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_37">
-            <property name="text">
-             <string>End Time</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_36">
-            <property name="text">
-             <string>Start Time</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_35">
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Time</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <spacer name="horizontalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::MinimumExpanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="4" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_39">
-            <property name="text">
-             <string>Write Interval</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <spacer name="verticalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="6">
-           <spacer name="horizontalSpacer_16">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::MinimumExpanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>80</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="2" column="2">
            <spacer name="verticalSpacer_15">
             <property name="orientation">
@@ -2701,25 +2582,41 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_38">
+          <item row="3" column="4" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_39">
             <property name="text">
-             <string>Initial Timestep</string>
+             <string>Write Interval</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
-           <widget class="QPlainTextEdit" name="delt">
-            <property name="maximumSize">
+          <item row="13" column="1">
+           <spacer name="verticalSpacer_14">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>200</width>
-              <height>28</height>
+              <width>20</width>
+              <height>40</height>
              </size>
             </property>
-            <property name="plainText">
-             <string>0.001</string>
+           </spacer>
+          </item>
+          <item row="1" column="6">
+           <spacer name="horizontalSpacer_16">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-           </widget>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>80</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="5" column="2">
            <spacer name="verticalSpacer_16">
@@ -2737,20 +2634,23 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="5">
-           <widget class="QPlainTextEdit" name="writet">
-            <property name="maximumSize">
+          <item row="10" column="2">
+           <spacer name="verticalSpacer_29">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>200</width>
-              <height>28</height>
+              <width>20</width>
+              <height>10</height>
              </size>
             </property>
-            <property name="plainText">
-             <string>1.0</string>
-            </property>
-           </widget>
+           </spacer>
           </item>
-          <item row="6" column="0" colspan="7">
+          <item row="11" column="0" colspan="7">
            <widget class="Line" name="line_6">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -2767,7 +2667,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="12" column="1">
            <spacer name="verticalSpacer_17">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2783,7 +2683,20 @@
             </property>
            </spacer>
           </item>
-          <item row="8" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
+          <item row="3" column="5">
+           <widget class="QPlainTextEdit" name="writet">
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="plainText">
+             <string>1.0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="13" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
            <widget class="QPushButton" name="RunSimulation">
             <property name="minimumSize">
              <size>
@@ -2809,6 +2722,143 @@
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPlainTextEdit" name="delt">
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="plainText">
+             <string>0.001</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_38">
+            <property name="text">
+             <string>Initial Timestep</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer_14">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_47">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Implicit Solver</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="2">
+           <widget class="QRadioButton" name="GMRES">
+            <property name="text">
+             <string>GMRES</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QComboBox" name="t">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>0</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="8" column="2">
+           <widget class="QRadioButton" name="SOR">
+            <property name="text">
+             <string>Sequential Over Relaxation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QPlainTextEdit" name="endt">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="plainText">
+             <string>100</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_35">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Time</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_37">
+            <property name="text">
+             <string>End Time</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_36">
+            <property name="text">
+             <string>Start Time</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="7">
+           <widget class="Line" name="line_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>

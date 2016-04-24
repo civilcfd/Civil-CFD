@@ -149,6 +149,13 @@ void MainWindow::on_Laminar_toggled() {
   toggle();
 }
 
+void MainWindow::on_GMRES_toggled() {
+  toggle();
+}
+
+void MainWindow::on_SOR_toggled() {
+  toggle();
+}
 
 void MainWindow::on_actionSave_triggered() {
   on_Save_clicked();
@@ -395,6 +402,15 @@ void MainWindow::update() {
     ui.length_scale->setPlainText(sim.getLength_scale());
     ui.length->setPlainText(sim.getLength());
   }
+  
+  if(sim.GMRES()) {
+  	ui.GMRES->setChecked(true);
+  	ui.SOR->setChecked(false);
+  } else if(sim.SOR()) {
+  	ui.GMRES->setChecked(false);
+  	ui.SOR->setChecked(true);
+  }
+  
   toggle();
 
   QTreeWidgetItem *item = ui.MeshParameters->topLevelItem(0);
@@ -476,6 +492,14 @@ void MainWindow::write() {
   else {
     sim.setTurbulence("Laminar");
   }
+  
+  if(ui.GMRES->isChecked()) {
+  	sim.setImplicit("GMRES");
+  }
+  else {
+  	sim.setImplicit("SOR");
+  }
+  
   toggle();  
   meshUpdate();  
 

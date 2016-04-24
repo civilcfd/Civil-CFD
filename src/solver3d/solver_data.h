@@ -10,6 +10,7 @@
 #ifndef _SOLVER_DATA_H
 #define _SOLVER_DATA_H
 
+#include <time.h>
 #include "mesh.h"
 
 struct ic_data {
@@ -70,7 +71,7 @@ struct solver_data {
   double vof_height; /* initial fluid level */
   double vof_delay;  /* delay to reach this height */
   
-
+	time_t start_time;
   /*
    * COMMENTED OUT - INCLUDED IN THE MESH DEFINITION
    * KEPT IN CASE I CHANGE MY MIND 

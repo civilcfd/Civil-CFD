@@ -75,6 +75,7 @@ protected:
   vtkSmartPointer<vtkSmartVolumeMapper> volMapper;
 
   vtkSmartPointer<vtkVolume> volume;
+  //vtkSmartPointer<vtkActor> edgeLineActor;
 
 
 };

@@ -69,6 +69,10 @@ public:
   bool kEpsilon();
   bool setTurbulence(QString model);
 
+  bool GMRES();
+  bool SOR();
+  bool setImplicit(QString model);
+  
   QString getRough();
   QString getLength();
   QString domainLength();

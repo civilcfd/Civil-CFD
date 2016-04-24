@@ -24,6 +24,7 @@ VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax) 
 void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double del) {
   
   RemoveVolume(volume);
+//  RemoveActor(edgeLineActor);
   
   if(!QFile::exists(vtkFile)) return;
 
@@ -71,12 +72,14 @@ void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double 
   vtkSmartPointer<vtkColorTransferFunction> color = 
     vtkSmartPointer<vtkColorTransferFunction>::New();
   color->AddRGBPoint(0.0  ,0.5,0.5,0.5);
-  color->AddRGBPoint(1.0,0.5,0.5,0.5);
+  color->AddRGBPoint(0.9	,0.5,0.5,0.5);
+  color->AddRGBPoint(1.0	,0,0,0);
   volumeProperty->SetColor(color);
  
   volume = 
     vtkSmartPointer<vtkVolume>::New();
   volume->SetProperty(volumeProperty);
+	 
 
 //  volumeMapper = vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
   volMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
@@ -93,11 +96,31 @@ void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double 
  
   AddVolume(volume);
 
+
+	/*vtkSmartPointer<vtkContourFilter> edgeLine = vtkSmartPointer<vtkContourFilter>::New();
+	edgeLine->SetInputConnection(volReader->GetOutputPort());
+	edgeLine->SetValue(0,0.01);
+	
+  vtkSmartPointer<vtkPolyDataMapper> edgeLineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	edgeLineActor = NULL;
+	edgeLineActor = vtkSmartPointer<vtkActor>::New();
+ 
+  edgeLineMapper->SetInputConnection(edgeLine->GetOutputPort());
+  edgeLineMapper->AddClippingPlane(planePos);
+  edgeLineMapper->AddClippingPlane(planeNeg);
+  edgeLineActor->SetMapper(edgeLineMapper);
+  edgeLineActor->GetProperty()->SetLineWidth(4);
+  edgeLineActor->GetProperty()->SetColor(0,0,0); 
+  
+  AddActor(edgeLineActor); */
+
+	
   //reset();
 }
 
 void VisualizeDisplay::hideBlock() {
   RemoveVolume(volume);
+//  RemoveActor(edgeLineActor);
 }
 void VisualizeDisplay::hideLegend() {
   	RemoveScalarBar(legend);

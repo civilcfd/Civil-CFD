@@ -112,7 +112,7 @@ int vof_betacal(struct solver_data *solver) {
                                     RDY * ( abn * RDY * 0.5 + abs * RDY * 0.5) +
                                     RDZ * ( abt * RDZ * 0.5 + abb * RDZ * 0.5)) / solver->rho;
 
-        xx = xx; /* / FV(i,j,k); */
+        /* xx = xx / FV(i,j,k); */
         BETA(i,j,k) = solver->omg / xx;
 
       }
@@ -1115,19 +1115,30 @@ int vof_loop(struct solver_data *solver) {
 }
 
 int vof_output(struct solver_data *solver) {
+	time_t current;
+	double elapsed;
+
   if(solver->iter >= solver->niter) {
     printf("timestep: %lf | delt: %lf | pressure did not converge\n", solver->t, solver->delt);
   }
   else {
     printf("timestep: %lf | delt %lf | convergence in %ld iterations.\n", solver->t, solver->delt, solver->iter);
   }
-  printf("Max residual %lf | epsi %lf | omega %lf\n", solver->resimax, solver->epsi, solver->omg_final);
+  printf("Max residual %lf | epsi %lf", solver->resimax, solver->epsi);
+  if(solver->pressure == vof_pressure)
+  	printf(" | omega %lf", solver->omg_final);
+  printf("\n");
   
   printf("max u, v, w: %lf, %lf, %lf\n",solver->umax,solver->vmax,solver->wmax);  
   
   printf("max nu: %lf\n",solver->nu_max);
   
   vof_baffles_output(solver);
+  
+  time(&current);
+  elapsed = difftime(current, solver->start_time);
+  printf("Elapsed time: %.0lf s | Timesteps per second: %lf\n",elapsed,solver->t / elapsed);
+  
   
   printf("\n");
   

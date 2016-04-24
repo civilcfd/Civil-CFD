@@ -13,6 +13,7 @@
 #include "readsolver.h"
 #include "laminar.h"
 #include "kE.h"
+#include "vof.h"
 
 int write_solver(struct solver_data *solver, char *filename) {
   FILE *fp;
@@ -29,6 +30,8 @@ int write_solver(struct solver_data *solver, char *filename) {
     return(1);
   }
 
+	if(solver->pressure == vof_pressure_gmres) fprintf(fp,"gmres 1\n");
+	else if(solver->pressure == vof_pressure) fprintf(fp,"sor 1\n");
 
   fprintf(fp,"gravity %e %e %e\n",solver->gx, solver->gy, solver->gz);
   fprintf(fp,"nu %e\n",solver->nu);

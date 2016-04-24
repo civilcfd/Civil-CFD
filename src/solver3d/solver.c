@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #include "mesh.h"
 #include "readfile.h"
@@ -16,6 +17,7 @@
 #include "readsolver.h"
 #include "laminar.h"
 #include "kE.h"
+#include "vof.h"
 
 struct solver_data *solver_init_empty() {
 
@@ -85,6 +87,8 @@ struct solver_data *solver_init_empty() {
   solver->velocity = NULL;
   solver->vfconv   = NULL;
   solver->petacal  = NULL;
+
+	time(&solver->start_time);
 
   strcpy(solver->ic[0].param,"end");
 
@@ -415,7 +419,13 @@ int solver_set_value(struct solver_data *solver, char *param, int dims,
     return(1);
   }
 
-  if(strcmp(param, "gravity")==0) {
+	if(strcmp(param, "gmres")==0) {
+		solver->pressure = vof_pressure_gmres;
+	}
+	else if(strcmp(param, "sor")==0) {
+		solver->pressure = vof_pressure;
+	}
+  else if(strcmp(param, "gravity")==0) {
     if(dims != 3) {
       printf("error in source file: gravity requires 3 arguments\n");
       return(1);
