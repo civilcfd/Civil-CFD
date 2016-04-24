@@ -52,7 +52,7 @@ int vof_setup_solver(struct solver_data *solver) {
   solver->loop = vof_loop;
   solver->boundaries = vof_boundaries;
   solver->special_boundaries = vof_special_boundaries;
-  solver->pressure = vof_pressure;
+  solver->pressure = vof_pressure_gmres;
   solver->velocity = vof_velocity;
   solver->vfconv = vof_vfconv;
   solver->petacal = vof_petacal;
