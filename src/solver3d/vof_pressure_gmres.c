@@ -16,8 +16,181 @@
 #include "csv.h"
 #include "kE.h"
 #include "track.h"
+#include "vof_boundary.h"
 
 #include "vof_macros.h"
+
+int vof_pressure_gmres_boundary(struct solver_data *solver, Mat A);
+
+int vof_pressure_gmres_boundary(struct solver_data *solver, Mat A) {
+	PetscInt i,j,k,nidx;
+	PetscInt row_idx[2];
+	PetscScalar res[2];
+	PetscScalar dt_rho, dt_rhodx2, dt_rhody2, dt_rhodz2;
+	PetscErrorCode ierr;
+	enum special_boundaries sb;
+	enum wall_boundaries wb;
+
+	dt_rho = solver->delt / solver->rho;
+	dt_rhodx2 = dt_rho / pow(DELX,2);
+	dt_rhody2 = dt_rho / pow(DELY,2);
+	dt_rhodz2 = dt_rho / pow(DELZ,2);
+	
+	for(j=1; j<JMAX-1; j++) {
+    for(k=1; k<KMAX-1; k++) {
+
+      /* west boundary */
+      wb = solver->mesh->wb[0];
+      sb = vof_boundaries_check_inside_sb(solver, j, k, 0);
+      if(sb == fixed_velocity || sb == mass_outflow || 
+      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {   
+      	 
+      	if(N_VOF(1,j,k) != 0 || FV(1,j,k) < solver->emf) continue; 
+      
+      	nidx = mesh_index(solver->mesh,1,j,k);
+      	
+      	row_idx[0] = mesh_index(solver->mesh,0,j,k);
+      	res[0] = 0;
+      	
+      	row_idx[1] = mesh_index(solver->mesh,1,j,k);
+      	res[1] =  dt_rhodx2 *  AE(1,j,k);        
+      	res[1] += dt_rhody2 * (AN(1,j,k) + AN(1,j-1,k)) +
+        				  dt_rhodz2 * (AT(1,j,k) + AT(1,j,k-1));
+      	res[1] *= -1.0;
+        
+    		ierr   = MatSetValues(A,1,&nidx,2,row_idx,res,INSERT_VALUES);CHKERRQ(ierr);
+      }
+
+      /* east boundary */
+      wb = solver->mesh->wb[1];
+      sb = vof_boundaries_check_inside_sb(solver, j, k, 1);
+      if(sb == fixed_velocity || sb == mass_outflow || 
+      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {     
+      	 
+      	if(N_VOF(IMAX-2,j,k) != 0 || FV(IMAX-2,j,k) < solver->emf) continue; 
+      
+      	nidx = mesh_index(solver->mesh,IMAX-2,j,k);
+      	
+      	row_idx[0] = mesh_index(solver->mesh,IMAX-1,j,k);
+      	res[0] = 0;
+      	
+      	row_idx[1] = mesh_index(solver->mesh,IMAX-2,j,k);
+      	res[1] =  dt_rhodx2 *  AE(IMAX-3,j,k);           
+      	res[1] += dt_rhody2 * (AN(IMAX-2,j,k) + AN(IMAX-2,j-1,k)) +
+        				  dt_rhodz2 * (AT(IMAX-2,j,k) + AT(IMAX-2,j,k-1));
+      	res[1] *= -1.0;  
+        
+    		ierr   = MatSetValues(A,1,&nidx,2,row_idx,res,INSERT_VALUES);CHKERRQ(ierr);
+      }      
+      
+    }
+  }
+  
+  /* boundaries on y-axis */
+  for(i=1; i<IMAX-1; i++) {
+    for(k=1; k<KMAX-1; k++) {
+         
+      /* south boundary */
+      wb = solver->mesh->wb[2];
+      sb = vof_boundaries_check_inside_sb(solver, i, k, 2);
+      if(sb == fixed_velocity || sb == mass_outflow || 
+      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {    
+      	 
+      	if(N_VOF(i,1,k) != 0 || FV(i,1,k) < solver->emf) continue;  
+      
+      	nidx = mesh_index(solver->mesh,i,1,k);
+      	
+      	row_idx[0] = mesh_index(solver->mesh,i,0,k);
+      	res[0] = 0;
+      	
+      	row_idx[1] = mesh_index(solver->mesh,i,1,k);
+      	res[1] =  dt_rhody2 *  AN(i,1,k);   
+      	res[1] += dt_rhodx2 * (AE(i,1,k) + AE(i-1,1,k)) + 
+        				  dt_rhodz2 * (AT(i,1,k) + AT(i,1,k-1));
+      	res[1] *= -1.0;     
+        
+    		ierr   = MatSetValues(A,1,&nidx,2,row_idx,res,INSERT_VALUES);CHKERRQ(ierr);
+      }
+ 
+      /* north boundary */
+      wb = solver->mesh->wb[3];
+      sb = vof_boundaries_check_inside_sb(solver, i, k, 3);
+      if(sb == fixed_velocity || sb == mass_outflow || 
+      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {   
+      	 
+      	if(N_VOF(i,JMAX-2,k) != 0 || FV(i,JMAX-2,k) < solver->emf) continue;   
+      
+      	nidx = mesh_index(solver->mesh,i,JMAX-2,k);
+      	
+      	row_idx[0] = mesh_index(solver->mesh,i,JMAX-1,k);
+      	res[0] = 0;
+      	
+      	row_idx[1] = mesh_index(solver->mesh,i,JMAX-2,k);
+      	res[1] =  dt_rhody2 *  AN(i,JMAX-3,k);   
+      	res[1] += dt_rhodx2 * (AE(i,JMAX-2,k) + AE(i-1,JMAX-2,k)) + 
+        				  dt_rhodz2 * (AT(i,JMAX-2,k) + AT(i,JMAX-2,k-1));
+      	res[1] *= -1.0;     
+        
+    		ierr   = MatSetValues(A,1,&nidx,2,row_idx,res,INSERT_VALUES);CHKERRQ(ierr);
+      }    
+    }
+  }
+  
+    
+  /* boundaries on z-axis */
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+   	
+      /* bottom boundary */
+      wb = solver->mesh->wb[4];
+      sb = vof_boundaries_check_inside_sb(solver, i, j, 4);
+      if(sb == fixed_velocity || sb == mass_outflow || 
+      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {  
+      	 
+      	if(N_VOF(i,j,1) != 0 || FV(i,j,1) < solver->emf) continue;   
+      
+      	nidx = mesh_index(solver->mesh,i,j,1);
+      	
+      	row_idx[0] = mesh_index(solver->mesh,i,j,0);
+      	res[0] = 0;
+      	
+      	row_idx[1] = mesh_index(solver->mesh,i,j,1);
+      	res[1] =  dt_rhodz2 *  AT(i,j,1);  
+      	res[1] += dt_rhodx2 * (AE(i,j,1) + AE(i-1,j,1)) + 
+        				  dt_rhody2 * (AN(i,j,1) + AN(i,j-1,1)); 
+      	res[1] = -1.0;   
+        
+    		ierr   = MatSetValues(A,1,&nidx,2,row_idx,res,INSERT_VALUES);CHKERRQ(ierr);
+      } 
+ 
+      /* top boundary */
+      wb = solver->mesh->wb[5];
+      sb = vof_boundaries_check_inside_sb(solver, i, j, 5);
+      if(sb == fixed_velocity || sb == mass_outflow || 
+      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {    
+      	 
+      	if(N_VOF(i,j,KMAX-2) != 0 || FV(i,j,KMAX-2) < solver->emf) continue;   
+      
+      	nidx = mesh_index(solver->mesh,i,j,KMAX-2);
+      	
+      	row_idx[0] = mesh_index(solver->mesh,i,j,KMAX-1);
+      	res[0] = 0;
+      	
+      	row_idx[1] = mesh_index(solver->mesh,i,j,KMAX-2);
+      	res[1] =  dt_rhodz2 *  AT(i,j,KMAX-3);     
+      	res[1] += dt_rhodx2 * (AE(i,j,KMAX-2) + AE(i-1,j,KMAX-2)) + 
+        				  dt_rhody2 * (AN(i,j,KMAX-2) + AN(i,j-1,KMAX-2)); 
+      	res[1] = -1.0;      
+        
+    		ierr   = MatSetValues(A,1,&nidx,2,row_idx,res,INSERT_VALUES);CHKERRQ(ierr);
+      }    
+         	
+   	} 
+  }   
+  
+  return 0;
+
+}
 
 
 int vof_pressure_gmres(struct solver_data *solver) {
@@ -181,6 +354,8 @@ int vof_pressure_gmres(struct solver_data *solver) {
       }
     }
   }
+  
+  /* vof_pressure_gmres_boundary(solver, A); needs fixin */
   
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);

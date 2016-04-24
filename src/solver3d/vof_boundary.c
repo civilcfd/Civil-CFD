@@ -154,7 +154,7 @@ int boundary_hgl(struct solver_data *solver,
         if(FV(i,j,k) < 0.000001) continue;
         
         if(solver->p_flag == 0) {
-          /* must set velocity to a Von Neumann boundary */
+          /* must set velocity to a Neumann boundary */
           
           /* first set U(i,j,k) equal to the next neighboring velocity inside the mesh */
           U(i,j,k) = U(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
