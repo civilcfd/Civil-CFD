@@ -18,7 +18,7 @@
 
 #include "vof_macros.h"
 
-struct mesh_data *mesh_n; /* describes mesh at previous timestep for explicit calcs */
+extern struct mesh_data *mesh_n;
 
 static double *up, *um, *vp, *vm, *wp, *wm;
 

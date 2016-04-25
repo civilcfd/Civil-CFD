@@ -20,6 +20,11 @@
 
 #include "vof_macros.h"
 
+extern struct mesh_data *mesh_n; /* describes mesh at previous timestep for explicit calcs */
+
+int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b);
+int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b);
+
 /* these boundary functions handle dirchelet boundaries for velocity */
 /* these two boundary functions do the same thing in different ways - testing which is best */
 /* The first forces u(n+1) = u* - it won't work in corners the way its currently written but is easily fixed */
@@ -213,14 +218,21 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       if(sb == fixed_velocity || sb == mass_outflow || 
       	 (sb == wall && (wb == slip || wb == no_slip) ) ) {   
       	 
-      	if(N_VOF(1,j,k) != 0 || FV(1,j,k) < solver->emf || AE(0,j,k) < solver->emf) continue; 
-      
+      	if(FV(1,j,k) < solver->emf || AE(0,j,k) < solver->emf) continue; 
+        
       	nidx = mesh_index(solver->mesh,0,j,k);
       	nlmn = mesh_index(solver->mesh,1,j,k);
-      	
-    		ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
-    		ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
-        ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        
+        if(N_VOF(1,j,k) != 0) {
+          /* explicit zero out since this could change */
+          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        } else {           
+          ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        }
       }
 
       /* east boundary */
@@ -229,14 +241,21 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       if(sb == fixed_velocity || sb == mass_outflow || 
       	 (sb == wall && (wb == slip || wb == no_slip) ) ) {     
       	 
-      	if(N_VOF(IMAX-2,j,k) != 0 || FV(IMAX-2,j,k) < solver->emf || AE(IMAX-2,j,k) < solver->emf) continue; 
-      
+      	if(FV(IMAX-2,j,k) < solver->emf || AE(IMAX-2,j,k) < solver->emf) continue; 
+        
       	nidx = mesh_index(solver->mesh,IMAX-1,j,k);
       	nlmn = mesh_index(solver->mesh,IMAX-2,j,k);
-      	
-    		ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
-    		ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
-        ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        
+        if(N_VOF(IMAX-2,j,k) != 0) {
+          /* explicit zero out since this could change */
+          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        } else {        	
+          ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        }
       }      
       
     }
@@ -252,14 +271,21 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       if(sb == fixed_velocity || sb == mass_outflow || 
       	 (sb == wall && (wb == slip || wb == no_slip) ) ) {    
       	 
-      	if(N_VOF(i,1,k) != 0 || FV(i,1,k) < solver->emf || AN(i,0,k) < solver->emf) continue;  
-      
+      	if(FV(i,1,k) < solver->emf || AN(i,0,k) < solver->emf) continue;  
+        
       	nidx = mesh_index(solver->mesh,i,0,k);
       	nlmn = mesh_index(solver->mesh,i,1,k);
-      	
-    		ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
-    		ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
-        ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        
+        if(N_VOF(i,1,k) != 0) {
+          /* explicit zero out since this could change */
+          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        } else {           
+          ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        }
       }
  
       /* north boundary */
@@ -268,14 +294,22 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       if(sb == fixed_velocity || sb == mass_outflow || 
       	 (sb == wall && (wb == slip || wb == no_slip) ) ) {   
       	 
-      	if(N_VOF(i,JMAX-2,k) != 0 || FV(i,JMAX-2,k) < solver->emf || AN(i,JMAX-2,k) < solver->emf) continue;   
-      
+      	if(FV(i,JMAX-2,k) < solver->emf || AN(i,JMAX-2,k) < solver->emf) continue;   
+        
       	nidx = mesh_index(solver->mesh,i,JMAX-1,k);
       	nlmn = mesh_index(solver->mesh,i,JMAX-2,k);
-      	
-    		ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
-    		ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
-        ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        
+        if(N_VOF(i,JMAX-2,k) != 0) {
+          /* explicit zero out since this could change */
+          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        } else {        	
+          ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        }
+   
       }    
     }
   }
@@ -291,14 +325,22 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       if(sb == fixed_velocity || sb == mass_outflow || 
       	 (sb == wall && (wb == slip || wb == no_slip) ) ) {  
       	 
-      	if(N_VOF(i,j,1) != 0 || FV(i,j,1) < solver->emf || AT(i,j,0) < solver->emf) continue;   
-      
+      	if(FV(i,j,1) < solver->emf || AT(i,j,0) < solver->emf) continue;    
+        
       	nidx = mesh_index(solver->mesh,i,j,0);
       	nlmn = mesh_index(solver->mesh,i,j,1);
-      	
-    		ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
-    		ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
-        ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        
+        if(N_VOF(i,j,1) != 0) {
+          /* explicit zero out since this could change */
+          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        } else {           
+          ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        }
+            
       } 
  
       /* top boundary */
@@ -307,14 +349,21 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       if(sb == fixed_velocity || sb == mass_outflow || 
       	 (sb == wall && (wb == slip || wb == no_slip) ) ) {    
       	 
-      	if(N_VOF(i,j,KMAX-2) != 0 || FV(i,j,KMAX-2) < solver->emf || AT(i,j,KMAX-2) < solver->emf) continue;   
-      
+      	if(FV(i,j,KMAX-2) < solver->emf || AT(i,j,KMAX-2) < solver->emf) continue;     
+        
       	nidx = mesh_index(solver->mesh,i,j,KMAX-1);
       	nlmn = mesh_index(solver->mesh,i,j,KMAX-2);
-      	
-    		ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
-    		ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
-        ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        
+        if(N_VOF(i,j,KMAX-2) != 0) {
+          /* explicit zero out since this could change */
+          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        } else {        	
+          ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = MatSetValue(A,nidx,nlmn,-1.0,INSERT_VALUES);CHKERRQ(ierr);
+          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+        }
       }    
          	
    	} 
@@ -324,61 +373,24 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
 
 }
 
-
-int vof_pressure_gmres(struct solver_data *solver) {
+/* this function assembles the matrix for the first run */
+int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
 	PetscInt i,j,k,l,m,n,size;
 	PetscInt  row_idx[7];
 	PetscInt  nidx, nlmn;
-	PetscInt	iter;
 	PetscScalar rhs, dt_rho, dt_rhodx2, dt_rhody2, dt_rhodz2, pijk, dpijk, mpeta;
 	PetscScalar delp;
 	PetscScalar row[7];
 	PetscErrorCode ierr;
-	Vec x, b;
-	Mat A;
-  KSP            ksp;         /* linear solver context */
-  PC             pc;           /* preconditioner context */
-  static int initialize = 0;
   
-	if(!initialize) {
-		PetscInitialize(NULL, NULL, NULL, NULL);
-		initialize = 1;
-	}
-	
 	size = IMAX * JMAX * KMAX;
 	
 	dt_rho = solver->delt / solver->rho;
 	dt_rhodx2 = dt_rho / pow(DELX,2);
 	dt_rhody2 = dt_rho / pow(DELY,2);
 	dt_rhodz2 = dt_rho / pow(DELZ,2);
-	
-	/*
-     Create vectors.  Note that we form 1 vector from scratch and
-     then duplicate as needed.
-  */
-  ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
-  ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
-  ierr = VecSetSizes(x,PETSC_DECIDE,size);CHKERRQ(ierr);
-  ierr = VecSetFromOptions(x);CHKERRQ(ierr);
-  ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
-	
-	  /*
-     Create matrix.  When using MatCreate(), the matrix format can
-     be specified at runtime.
-
-     Performance tuning note:  For problems of substantial size,
-     preallocation of matrix memory is crucial for attaining good
-     performance. See the matrix chapter of the users manual for details.
-  */
-  //ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
-  ierr = MatCreateSeqAIJ(PETSC_COMM_WORLD,size,size,7,NULL,&A);
-  //ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,size,size);CHKERRQ(ierr);
-  //ierr = MatSetFromOptions(A);CHKERRQ(ierr);
-  //ierr = MatSetUp(A);CHKERRQ(ierr);
-  
-  /* Assemble matrix */
-  
-#define emf solver->emf
+ /* Assemble matrix */
+ #define emf solver->emf
 
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
@@ -487,6 +499,188 @@ int vof_pressure_gmres(struct solver_data *solver) {
     }
   }
   
+  return 0;
+}
+
+/* update the matrix */
+int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
+	PetscInt i,j,k,l,m,n,size,a;
+	PetscInt  row_idx[7];
+	PetscInt  nidx, nlmn, ridx;
+	PetscScalar rhs, dt_rho, dt_rhodx2, dt_rhody2, dt_rhodz2, pijk, dpijk, mpeta;
+	PetscScalar delp;
+	PetscScalar row[7];
+	PetscErrorCode ierr;
+  
+	size = IMAX * JMAX * KMAX;
+	
+	dt_rho = solver->delt / solver->rho;
+	dt_rhodx2 = dt_rho / pow(DELX,2);
+	dt_rhody2 = dt_rho / pow(DELY,2);
+	dt_rhodz2 = dt_rho / pow(DELZ,2);
+  
+ /* Update matrix */
+ #define emf solver->emf
+
+  for(i=1; i<IMAX-1; i++) {
+    for(j=1; j<JMAX-1; j++) {
+      for(k=1; k<KMAX-1; k++) {      
+      
+        
+        if(FV(i,j,k)<emf) continue;
+                       
+        row_idx[0] = mesh_index(solver->mesh,i,j,k);   
+        row_idx[1] = mesh_index(solver->mesh,i+1,j,k);  
+        row_idx[2] = mesh_index(solver->mesh,i-1,j,k);  
+        row_idx[3] = mesh_index(solver->mesh,i,j+1,k);
+        row_idx[4] = mesh_index(solver->mesh,i,j-1,k);
+        row_idx[5] = mesh_index(solver->mesh,i,j,k+1);
+        row_idx[6] = mesh_index(solver->mesh,i,j,k-1);
+               
+        if(N_VOF(i,j,k) != 0) {
+          
+          for(a=0;a<7;a++) row[a] = 0;
+        
+          l = i;
+          m = j;
+          n = k;
+          switch(N_VOF(i,j,k)) {
+          case east:
+            l=i+1;
+            ridx = 1;
+            break;
+          case west:
+            l=i-1;
+            ridx = 2;
+            break;
+          case north:
+            m=j+1;
+            ridx = 3;
+            break;
+          case south:
+            m=j-1;
+            ridx = 4;
+            break;
+          case top:
+            n=k+1;
+            ridx = 5;
+            break;
+          case bottom:
+            n=k-1;
+            ridx = 6;
+            break;
+          case none:
+          case empty:
+            if(N_VOF_N(i,j,k) != N_VOF(i,j,k)) {
+              /* zero out cells that recently became empty */
+              ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
+              ierr = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            }            
+            continue;
+          }
+          
+          nidx = mesh_index(solver->mesh,i,j,k);
+          nlmn = mesh_index(solver->mesh,l,m,n);
+          
+          if(N_VOF(l,m,n) != 0) {
+            /* set dP = 0 if there is no interpolation cell */
+            if(N_VOF(l,m,n) != N_VOF_N(l,m,n) || N_VOF(i,j,k) != N_VOF_N(i,j,k)) {
+              row[0] = 1;
+              ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
+              ierr = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            }
+          	continue;
+          }
+          
+          mpeta = 1 - PETA(i,j,k);
+          pijk  = mpeta * P(l,m,n);
+          dpijk = pijk - P(i,j,k);
+          
+          row[0] = 1;
+          row[ridx] = -1.0 * mpeta;
+          
+    			ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
+          ierr = VecSetValue(b,nidx,dpijk,INSERT_VALUES);CHKERRQ(ierr);
+          
+          
+        } 
+        else if(N_VOF_N(i,j,k) != 0) {
+        /* newly minted interior non-void cells */
+        
+        	dpijk = dt_rhodx2 * (AE(i,j,k) + AE(i-1,j,k)) + 
+        				  dt_rhody2 * (AN(i,j,k) + AN(i,j-1,k)) +
+        				  dt_rhodz2 * (AT(i,j,k) + AT(i,j,k-1));
+
+        	
+        	row[0] = dpijk * -1.0;
+        	
+        	row[1] = dt_rhodx2 * AE(i,j,k);
+        	row[2] = dt_rhodx2 * AE(i-1,j,k);
+        
+        	row[3] = dt_rhody2 * AN(i,j,k);
+        	row[4] = dt_rhody2 * AN(i,j-1,k);
+        	
+        	row[5] = dt_rhodz2 * AT(i,j,k);
+        	row[6] = dt_rhodz2 * AT(i,j,k-1);
+        	
+        	nidx = mesh_index(solver->mesh,i,j,k);
+    			ierr   = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
+    			
+    			rhs  = (AE(i,j,k) * U(i,j,k) - AE(i-1,j,k) * U(i-1,j,k)) * RDX;
+    			rhs += (AN(i,j,k) * V(i,j,k) - AN(i,j-1,k) * V(i,j-1,k)) * RDY;
+    			rhs += (AT(i,j,k) * W(i,j,k) - AT(i,j,k-1) * W(i,j,k-1)) * RDZ;     
+    			   	
+        	/* de-foaming */
+          if(VOF(i,j,k) < (1-emf)) {
+             /* uncomment to not de-foam next to boundaries *
+            if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
+                 FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
+                 FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {  */
+             	rhs += min(solver->epsi * solver->rho, 
+                                    0.1 * (1.0 - VOF(i,j,k)) / solver->delt) / 10;
+            /* } */
+          }
+          
+    			ierr   = VecSetValue(b,nidx,rhs,INSERT_VALUES);CHKERRQ(ierr);
+        }
+        
+        
+      }
+    }
+  }
+  
+  return 0;
+}
+
+int vof_pressure_gmres(struct solver_data *solver) {
+	PetscInt i,j,k,l,m,n,size;
+	PetscInt	iter;
+	PetscErrorCode ierr;
+	static Vec x, b;
+	static Mat A;
+  static KSP  ksp;         /* linear solver context */
+  static PC  pc;           /* preconditioner context */
+  static int initialize = 0;
+  
+	if(!initialize) {
+		PetscInitialize(NULL, NULL, NULL, NULL);	
+    
+    ierr = MatCreateSeqAIJ(PETSC_COMM_WORLD,size,size,7,NULL,&A); 
+    ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
+    ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
+    ierr = VecSetSizes(x,PETSC_DECIDE,size);CHKERRQ(ierr);
+    ierr = VecSetFromOptions(x);CHKERRQ(ierr);
+    ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
+    
+    ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
+    
+    vof_pressure_gmres_assemble(solver, A, b);
+		initialize = 1;
+	}
+  else {
+    vof_pressure_gmres_update(solver, A, b);  
+  }
+  
   vof_pressure_gmres_boundary_edge(solver, A, b); 
   
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
@@ -495,32 +689,15 @@ int vof_pressure_gmres(struct solver_data *solver) {
   ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
   ierr = VecAssemblyEnd(b);CHKERRQ(ierr);
   
-    /*
-     Create linear solver context
-  */
-  ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
-  /*
-     Set operators. Here the matrix that defines the linear system
-     also serves as the preconditioning matrix.
-  */
-  ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
-  /*
-     Set linear solver defaults for this problem (optional).
-     - By extracting the KSP and PC contexts from the KSP context,
-       we can then directly call any KSP and PC routines to set
-       various options.
-     - The following four statements are optional; all of these
-       parameters could alternatively be specified at runtime via
-       KSPSetFromOptions();
-  */
-  ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-  ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
-  ierr = KSPSetTolerances(ksp,1e-5,solver->epsi,PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
   
   /*
      Solve linear system
   */
-	ierr = KSPSetType(ksp,KSPGMRES); CHKERRQ(ierr);
+  ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
+  ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
+  ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
+  ierr = KSPSetTolerances(ksp,1e-5,solver->epsi,PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
+  ierr = KSPSetType(ksp,KSPGMRES); CHKERRQ(ierr);
 	/* ierr = KSPMonitorSet(ksp, KSPMonitorDefault, NULL, NULL); Uncomment for verbose residuals */
   ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
   ierr = KSPGetResidualNorm(ksp, &solver->resimax);CHKERRQ(ierr);
@@ -564,9 +741,10 @@ int vof_pressure_gmres(struct solver_data *solver) {
   		}
   	}
   }
+  /* 
   ierr = VecDestroy(&x);CHKERRQ(ierr); 
   ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
-  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
+  ierr = KSPDestroy(&ksp);CHKERRQ(ierr); */
   
   solver->p_flag = 0;
   return 0;
