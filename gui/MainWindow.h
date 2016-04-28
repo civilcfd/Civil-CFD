@@ -107,6 +107,7 @@ private slots:
   
   void on_SOR_toggled();
   void on_GMRES_toggled();
+  void on_parallelGMRES_toggled();
   
 private:
   bool saveNotify();

@@ -228,6 +228,11 @@ bool Simulation::kEpsilon() {
  return false;
 }
 
+bool Simulation::parallelGMRES() {
+	if(solver->pressure == vof_pressure_gmres_mpi) return true;
+	else return false;
+}
+
 bool Simulation::GMRES() {
 	if(solver->pressure == vof_pressure_gmres) return true;
 	else return false;
@@ -241,6 +246,8 @@ bool Simulation::SOR() {
 bool Simulation::setImplicit(QString str) {
   if(str == "GMRES") 
     solver->pressure = vof_pressure_gmres;
+  else if(str == "parallelGMRES") 
+    solver->pressure = vof_pressure_gmres_mpi;
   else solver->pressure = vof_pressure;
   return true; 
 }

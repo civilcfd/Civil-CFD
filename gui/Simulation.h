@@ -70,6 +70,7 @@ public:
   bool setTurbulence(QString model);
 
   bool GMRES();
+  bool parallelGMRES();
   bool SOR();
   bool setImplicit(QString model);
   

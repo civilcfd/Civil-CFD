@@ -881,7 +881,16 @@
              </size>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item row="0" column="1" alignment="Qt::AlignLeft">
@@ -908,7 +917,7 @@
               </widget>
              </item>
              <item row="1" column="1" colspan="4">
-              <widget class="QVTKWidget" name="VTKMesh">
+              <widget class="QVTKWidget" name="VTKMesh" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1157,7 +1166,7 @@
            </widget>
           </item>
           <item row="3" column="1" colspan="9">
-           <widget class="QVTKWidget" name="VTKGeometry"/>
+           <widget class="QVTKWidget" name="VTKGeometry" native="true"/>
           </item>
           <item row="1" column="6" alignment="Qt::AlignRight">
            <widget class="QLabel" name="label_25">
@@ -1741,7 +1750,7 @@
            </layout>
           </item>
           <item row="3" column="1">
-           <widget class="QVTKWidget" name="VTKBoundaries">
+           <widget class="QVTKWidget" name="VTKBoundaries" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -1922,7 +1931,7 @@
            </layout>
           </item>
           <item row="7" column="0">
-           <widget class="QVTKWidget" name="VTKBaffles">
+           <widget class="QVTKWidget" name="VTKBaffles" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -2550,6 +2559,34 @@
        <layout class="QGridLayout" name="gridLayout_16">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_15">
+          <item row="1" column="4" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_37">
+            <property name="text">
+             <string>End Time</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QComboBox" name="t">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <item>
+             <property name="text">
+              <string>0</string>
+             </property>
+            </item>
+           </widget>
+          </item>
           <item row="2" column="2">
            <spacer name="verticalSpacer_15">
             <property name="orientation">
@@ -2589,7 +2626,7 @@
             </property>
            </widget>
           </item>
-          <item row="13" column="1">
+          <item row="14" column="1">
            <spacer name="verticalSpacer_14">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2634,7 +2671,7 @@
             </property>
            </spacer>
           </item>
-          <item row="10" column="2">
+          <item row="11" column="2">
            <spacer name="verticalSpacer_29">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2650,7 +2687,7 @@
             </property>
            </spacer>
           </item>
-          <item row="11" column="0" colspan="7">
+          <item row="12" column="0" colspan="7">
            <widget class="Line" name="line_6">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -2667,7 +2704,7 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="1">
+          <item row="13" column="1">
            <spacer name="verticalSpacer_17">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2696,7 +2733,7 @@
             </property>
            </widget>
           </item>
-          <item row="13" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
+          <item row="14" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
            <widget class="QPushButton" name="RunSimulation">
             <property name="minimumSize">
              <size>
@@ -2774,6 +2811,13 @@
             </property>
            </widget>
           </item>
+          <item row="8" column="2">
+           <widget class="QRadioButton" name="SOR">
+            <property name="text">
+             <string>Sequential Over Relaxation</string>
+            </property>
+           </widget>
+          </item>
           <item row="9" column="2">
            <widget class="QRadioButton" name="GMRES">
             <property name="text">
@@ -2781,31 +2825,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QComboBox" name="t">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>28</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>0</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="8" column="2">
-           <widget class="QRadioButton" name="SOR">
+          <item row="1" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_36">
             <property name="text">
-             <string>Sequential Over Relaxation</string>
+             <string>Start Time</string>
             </property>
            </widget>
           </item>
@@ -2841,25 +2864,49 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="4" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_37">
-            <property name="text">
-             <string>End Time</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_36">
-            <property name="text">
-             <string>Start Time</string>
-            </property>
-           </widget>
-          </item>
           <item row="6" column="0" colspan="7">
            <widget class="Line" name="line_7">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
+           </widget>
+          </item>
+          <item row="10" column="2">
+           <widget class="QRadioButton" name="parallelGMRES">
+            <property name="text">
+             <string>Parallel GMRES</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="4" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_49">
+            <property name="text">
+             <string>Processes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="5">
+           <widget class="QComboBox" name="processes">
+            <item>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>3</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>4</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -3218,7 +3265,7 @@
            </widget>
           </item>
           <item row="13" column="1" rowspan="2" colspan="4">
-           <widget class="QVTKWidget" name="vis"/>
+           <widget class="QVTKWidget" name="vis" native="true"/>
           </item>
           <item row="5" column="3" alignment="Qt::AlignHCenter">
            <widget class="QRadioButton" name="contourK">
@@ -3399,7 +3446,7 @@
            </widget>
           </item>
           <item row="13" column="1" rowspan="2" colspan="4">
-           <widget class="QVTKWidget" name="vis3d"/>
+           <widget class="QVTKWidget" name="vis3d" native="true"/>
           </item>
           <item row="4" column="2">
            <widget class="QLabel" name="origin3dText">

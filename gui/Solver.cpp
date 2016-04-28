@@ -8,7 +8,7 @@
 #include "qcustomplot.h"
 
 
-SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
+SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t, QString prefix) {
   QString cmd;
   bool ok;
 
@@ -56,6 +56,7 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t) {
       cmd = cmd + " " + t;
       mint = t.toDouble();
     }
+    cmd = prefix + " " + cmd;
     process->start(cmd);
   }
   

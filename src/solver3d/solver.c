@@ -422,6 +422,9 @@ int solver_set_value(struct solver_data *solver, char *param, int dims,
 	if(strcmp(param, "gmres")==0) {
 		solver->pressure = vof_pressure_gmres;
 	}
+	else if(strcmp(param, "gmres_mpi")==0) {
+		solver->pressure = vof_pressure_gmres_mpi;
+	}
 	else if(strcmp(param, "sor")==0) {
 		solver->pressure = vof_pressure;
 	}

@@ -92,6 +92,10 @@ int vof_kill_solver(struct solver_data *solver) {
 int vof_betacal(struct solver_data *solver) {
   long int i,j,k;
   double abe, abw, abn, abs, abt, abb, xx;
+  static int omg = 0;
+  
+  if(omg == solver->omg) return 0;
+  else omg = solver->omg;
 
 #define emf solver->emf
 
@@ -1027,14 +1031,12 @@ int vof_loop(struct solver_data *solver) {
   mesh_copy_data(mesh_n, solver->mesh);
     
   if(solver->petacal != NULL)
-    solver->petacal(solver);
+    solver->petacal(solver); 
   
   solver->boundaries(solver);
   if(solver->special_boundaries != NULL)
     solver->special_boundaries(solver);
   
-  if(solver->betacal != NULL)
-    solver->betacal(solver);
 
   /*vof_hydrostatic(solver);*/
   
@@ -1091,8 +1093,6 @@ int vof_loop(struct solver_data *solver) {
     if(solver->special_boundaries != NULL)
       solver->special_boundaries(solver); 
 
-    if(solver->petacal != NULL)
-      solver->petacal(solver);
       
     if(solver->deltcal != NULL) {
       if(solver->deltcal(solver) == 0) 
@@ -1101,6 +1101,10 @@ int vof_loop(struct solver_data *solver) {
         solver->t = t_n;
     }
 
+    if(solver->betacal != NULL)
+      solver->betacal(solver);
+    if(solver->petacal != NULL)
+      solver->petacal(solver);
     /* printf("boundaries\n");
     track_cell(solver, 17,2,1);  */
     solver->output(solver);
@@ -1359,9 +1363,6 @@ int vof_deltcal(struct solver_data *solver) {
   
   delt_conv = delt_conv * 0.5 / solver->con;
   solver->omg = solver->omg_init * delt / delt_conv + (1 - delt / delt_conv);
-  solver->betacal(solver);
-  if(solver->petacal != NULL)
-    solver->petacal(solver);
   
   return ret;
 }

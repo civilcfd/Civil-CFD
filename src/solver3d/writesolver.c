@@ -31,6 +31,7 @@ int write_solver(struct solver_data *solver, char *filename) {
   }
 
 	if(solver->pressure == vof_pressure_gmres) fprintf(fp,"gmres 1\n");
+	else if(solver->pressure == vof_pressure_gmres_mpi) fprintf(fp,"gmres_mpi 1\n");
 	else if(solver->pressure == vof_pressure) fprintf(fp,"sor 1\n");
 
   fprintf(fp,"gravity %e %e %e\n",solver->gx, solver->gy, solver->gz);

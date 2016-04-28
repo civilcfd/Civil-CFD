@@ -57,7 +57,8 @@ struct solver_data {
   double gy;
   double gz;
   
-  double resimax;
+  double resistart; /*initial residual*/
+  double resimax; /*finalresidual */
   
   double umax, vmax, wmax;
 

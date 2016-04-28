@@ -64,6 +64,8 @@ bool MainWindow::saveNotify() {
 }
 
 void MainWindow::on_RunSimulation_clicked() {
+  QString pathPrefix = "";
+
   if(!saveNotify()) return;
 
   if((ui.t->currentText() == "0" || ui.t->currentText() == "") && ui.t->count() > 1) {
@@ -74,7 +76,11 @@ void MainWindow::on_RunSimulation_clicked() {
 	  on_Delete_clicked();  
   }
 
-  solverDialog = new SolverDialog(sim, appPath, ui.t->currentText());
+  if(ui.parallelGMRES->isChecked()) {
+    pathPrefix = "mpirun -np " + ui.processes->currentText();
+  }
+
+  solverDialog = new SolverDialog(sim, appPath, ui.t->currentText(), pathPrefix);
   solverDialog->exec();
 
   delete solverDialog;
@@ -150,6 +156,10 @@ void MainWindow::on_Laminar_toggled() {
 }
 
 void MainWindow::on_GMRES_toggled() {
+  toggle();
+}
+
+void MainWindow::on_parallelGMRES_toggled() {
   toggle();
 }
 
@@ -406,9 +416,15 @@ void MainWindow::update() {
   if(sim.GMRES()) {
   	ui.GMRES->setChecked(true);
   	ui.SOR->setChecked(false);
+  	ui.parallelGMRES->setChecked(false);
+  } else if(sim.parallelGMRES()) {
+  	ui.parallelGMRES->setChecked(true);
+  	ui.SOR->setChecked(false);
+  	ui.GMRES->setChecked(false);
   } else if(sim.SOR()) {
   	ui.GMRES->setChecked(false);
   	ui.SOR->setChecked(true);
+  	ui.parallelGMRES->setChecked(false);
   }
   
   toggle();
@@ -496,7 +512,9 @@ void MainWindow::write() {
   if(ui.GMRES->isChecked()) {
   	sim.setImplicit("GMRES");
   }
-  else {
+  else if(ui.parallelGMRES->isChecked()) {
+    sim.setImplicit("parallelGMRES");
+  } else {
   	sim.setImplicit("SOR");
   }
   

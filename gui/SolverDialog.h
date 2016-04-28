@@ -20,7 +20,7 @@ class SolverDialog : public QDialog {
 
 public:
 
-  SolverDialog(Simulation &sim, QString appPath, QString t);
+  SolverDialog(Simulation &sim, QString appPath, QString t, QString prefix);
 
 private slots:
   void error(QProcess::ProcessError error);
