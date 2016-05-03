@@ -69,6 +69,8 @@
 #define IMAX solver->mesh->imax
 #define JMAX solver->mesh->jmax
 #define KMAX solver->mesh->kmax
+#define ISTART solver->mesh->i_start
+#define IRANGE solver->mesh->i_range
 
 
 /* access functions */

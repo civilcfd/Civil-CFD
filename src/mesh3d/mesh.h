@@ -40,6 +40,7 @@ int mesh_check(struct mesh_data *mesh);
 int mesh_set_value(struct mesh_data *mesh, char *param, int dims, 
                    double *vector);
 
+int mesh_allocate(struct mesh_data *mesh, long int size);
 int mesh_free(struct mesh_data *mesh);
 
 long int mesh_index(struct mesh_data *mesh,

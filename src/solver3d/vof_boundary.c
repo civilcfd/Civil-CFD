@@ -1169,7 +1169,7 @@ int vof_boundaries(struct solver_data *solver) {
         
         
         if(nff > 0 && nff < 8) { /* code applies to free surface */
-
+      
           switch(nff) {
           case west:
             if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i-1,j,  k);
@@ -1215,14 +1215,10 @@ int vof_boundaries(struct solver_data *solver) {
             break;
           case none:
             break;
-          } 
+          }
 
-        	dA = 0;
-        /*
-        	if(i==16 && j == 11 && k==7) {
-        		printf("break\n");
-        	}*/
-        /* TEST SECTION - PRESSURE CORRECTION DISTRIBUTION METHOD */
+        	dA = 0; 
+        	
         	if(N_VOF(i+1,j,k) > 7 && AE(i,j,k) > solver->emf) {
         		if(N_VOF(i-1,j,k) > 7) {		
         			U(i,j,k) = (UN(i,j,k) + UN(i-1,j,k))/2;
@@ -1318,119 +1314,8 @@ int vof_boundaries(struct solver_data *solver) {
 						
 						if(N_VOF(i,j,k-1) > 7 && AT(i,j,k-1) > solver->emf) 
 							W(i,j,k-1)=W(i,j,k-1) - solver->delt* RDZ * delp / (solver->rho);
-					}  /* END TEST SECTION */
+					} 
 
-/*
-          nindex = 0;
-          flg = 0;
-          while(nindex<8) {
-            nindex++;
-
-            switch(nff) {
-            case west:
-              if(N_VOF(i+1,j,k) > 7 && AE(i,j,k) > 0) {
-                dA = (AE(i,j,k) - AE(i-1,j,k));
-                //if(nff == N_VOF(i,j,k) && AE(i-1,j,k) > emf) dA *= VOF(i,j,k);
-                denom = -1.0 * RDX * (AE(i-1,j,k) + dA);
-                U(i,j,k) = ( RDX * (-1.0 * U(i-1,j,k) * AE(i-1,j,k))  +
-                             RDY * (V(i,j,k) * AN(i,j,k) - V(i,j-1,k) * AN(i,j-1,k)) +
-                             RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
-                flg = 1;
-                
-                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i+1,j,k)) / AE(i,j,k))  * DELX / solver->delt * 0.8;
-                //if(fabs(U(i,j,k)) > stabil_limit && solver->p_flag == 0) {
-                //  U(i,j,k) = stabil_limit * U(i,j,k) / fabs(U(i,j,k));
-                //}
-              }
-              break;
-            case east:
-              if(N_VOF(i-1,j,k) > 7 && AE(i-1,j,k) > 0) {
-                dA = (AE(i-1,j,k) - AE(i,j,k));
-                //if(nff == N_VOF(i,j,k) && AE(i,j,k) > emf) dA *= VOF(i,j,k);
-                denom = RDX * (AE(i,j,k) + dA);
-                U(i-1,j,k) = ( RDX * (U(i,j,k) * AE(i,j,k)) +
-                               RDY * (V(i,j,k) * AN(i,j,k) - V(i,j-1,k) * AN(i,j-1,k)) +
-                               RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
-                flg = 1;
-                
-                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i-1,j,k)) / AE(i-1,j,k))  * DELX / solver->delt * 0.8;
-                //if(fabs(U(i-1,j,k)) > stabil_limit && solver->p_flag == 0) {
-                //  U(i-1,j,k) = stabil_limit * U(i-1,j,k) / fabs(U(i-1,j,k));
-                //}
-              }
-              break;
-            case south:
-              if(N_VOF(i,j+1,k) > 7 && AN(i,j,k) > 0) {
-                dA = (AN(i,j,k) - AN(i,j-1,k));
-                //if(nff == N_VOF(i,j,k) && AN(i,j-1,k) > emf) dA *= VOF(i,j,k);
-                denom = -1.0 * RDY * (AN(i,j-1,k) + dA);
-                V(i,j,k) = ( RDX * (U(i,j,k) * AE(i,j,k) - U(i-1,j,k) * AE(i-1,j,k))  +
-                             RDY * (-1.0 * V(i,j-1,k) * AN(i,j-1,k)) +
-                             RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
-                flg = 1;
-                
-                stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j+1,k)) / AN(i,j,k))  * DELY / solver->delt * 0.8;
-                if(fabs(V(i,j,k)) > stabil_limit && solver->p_flag == 0) {
-                  V(i,j,k) = stabil_limit * V(i,j,k) / fabs(V(i,j,k));
-                }
-              }
-              break;
-            case north:
-              if(N_VOF(i,j-1,k) > 7 && AN(i,j-1,k) > 0) {
-                dA = (AN(i,j-1,k) - AN(i,j,k));
-                //if(nff == N_VOF(i,j,k) && AN(i,j,k) > emf) dA *= VOF(i,j,k);
-                denom = RDY * (AN(i,j,k) + dA);
-                V(i,j-1,k) = ( RDX * (U(i,j,k) * AE(i,j,k) - U(i-1,j,k) * AE(i-1,j,k)) +
-                               RDY * (V(i,j,k) * AN(i,j,k)) +
-                               RDZ * (W(i,j,k) * AT(i,j,k) - W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
-                flg = 1;
-                
-                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j-1,k)) / AN(i,j-1,k))  * DELY / solver->delt * 0.8;
-                //if(fabs(V(i,j-1,k)) > stabil_limit && solver->p_flag == 0) {
-                //  V(i,j-1,k) = stabil_limit * V(i,j-1,k) / fabs(V(i,j-1,k));
-                //}
-              }
-              break;                
-            case bottom:
-              if(N_VOF(i,j,k+1) > 7 && AT(i,j,k) > 0) {
-                dA = (AT(i,j,k) - AT(i,j,k-1));
-                //if(nff == N_VOF(i,j,k) && AT(i,j,k-1) > emf) dA *= VOF(i,j,k);
-                denom = -1.0 * RDZ * (AT(i,j,k-1) + dA);
-                W(i,j,k) = ( RDX * (U(i,j,k) * AE(i,j,k) - U(i-1,j,k) * AE(i-1,j,k)) +
-                             RDY * (V(i,j,k) * AN(i,j,k) - V(i,j-1,k) * AN(i,j-1,k)) +
-                             RDZ * (-1.0 * W(i,j,k-1) * AT(i,j,k-1)) ) / denom;
-                flg = 1;
-                
-                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j,k+1)) / AT(i,j,k))  * DELZ / solver->delt * 0.8;
-                //if(fabs(W(i,j,k)) > stabil_limit && solver->p_flag == 0) {
-                //  W(i,j,k) = stabil_limit * W(i,j,k) / fabs(W(i,j,k));
-                //}
-              }
-              break;
-            case top:
-              if(N_VOF(i,j,k-1) > 7 && AT(i,j,k-1) > 0) {
-                dA = (AT(i,j,k-1) - AT(i,j,k));
-                //if(nff == N_VOF(i,j,k) && AT(i,j,k) > emf) dA *= VOF(i,j,k);
-                denom = RDZ * (AT(i,j,k) + dA);
-                W(i,j,k-1) = ( RDX * (U(i,j,k) * AE(i,j,k) - U(i-1,j,k) * AE(i-1,j,k)) +
-                               RDY * (V(i,j,k) * AN(i,j,k) - V(i,j-1,k) * AN(i,j-1,k)) +
-                               RDZ * (W(i,j,k) * AT(i,j,k)) ) / denom;
-                flg = 1;
-                
-                //stabil_limit = solver->con * (min(FV(i,j,k),FV(i,j,k-1)) / AT(i,j,k-1))  * DELZ / solver->delt * 0.8;
-                //if(fabs(W(i,j,k-1)) > stabil_limit && solver->p_flag == 0) {
-                //  W(i,j,k-1) = stabil_limit * W(i,j,k-1) / fabs(W(i,j,k-1));
-                //}
-              }
-              break;  
-            case none:
-              break;               
-            }
-              
-            nff++;
-            if(nff>7) nff = 1; 
-            if(flg == 1) break;
-          } TEST SECTION 2 - original method */
 
 #define emf solver->emf
    /* # set velocities in empty cells adjacent to partial fluid cells */

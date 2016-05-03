@@ -8,6 +8,7 @@
 #include <string.h>
 #include <math.h>
 #include <omp.h>
+#include <petscksp.h>
 
 #include "vtk.h"
 #include "vof.h"
@@ -197,6 +198,15 @@ int kE_write(char *filename) {
 
   fclose(fp);
   return 0;
+}
+
+int kE_broadcast(struct solver_data *solver) {
+	
+	MPI_Bcast(&kE.length, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&kE.length_scale, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&kE.rough, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
+
+	return 0;
 }
 
 int kE_setup(struct solver_data *solver) {

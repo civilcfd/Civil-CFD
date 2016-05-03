@@ -28,6 +28,9 @@ struct solver_data {
 
   struct ic_data ic[16]; /* describe up to 16 initial conditions */
 
+	/* MPI DATA */
+	int rank;
+
   double emf; 
   double emf_c;
 
