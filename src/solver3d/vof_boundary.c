@@ -828,7 +828,7 @@ int vof_boundaries(struct solver_data *solver) {
 #define dim(i,j,k) i+3*(j+k*3)
   const int ndim[3][3] = { {  0,1,1 }, { 1,0,1 }, { 1,1,0 } };
   const int odim[3][3] = { {  1,0,0 }, { 0,1,0 }, { 0,0,1 } };
-  double denom, dv, dA;
+  double denom, dv, dA, delp;
   double stabil_limit, dv_ratio;
   
   
@@ -1160,23 +1160,254 @@ int vof_boundaries(struct solver_data *solver) {
           continue;
         }
 
-        /* this code creates a von neumann boundary at the fluid surface
+        /* this code creates a neumann boundary at the fluid surface
         # ( sort of )
         # it solves the continuity equation for each surface cell
-        # and uses that to set the value for U and V
-        #
-        # if two axis are unknown
-        # then the velocity is arbitrarily copied from one axis
-        # and continuity is used to solve the other axis
-        #
-        # this leads me to question: if we are forcing continuity in
-        # the free surface cell, should we skip the pressure correction? */
+        # and uses that to set the value for U and V */
 
         nff = N_VOF(i,j,k);
         
-#define emf solver->emf
         
         if(nff > 0 && nff < 8) { /* code applies to free surface */
+      
+          switch(nff) {
+          case west:
+            if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i-1,j,  k);
+            if(AN(i,j,k)   > 0 && N_VOF(i,j+1,k) != 0) V(i,  j,k) = V(i-1,j,  k);
+            if(AN(i,j-1,k) > 0 && N_VOF(i,j-1,k) != 0) V(i,j-1,k) = V(i-1,j-1,k);
+            if(AT(i,j,k)   > 0 && N_VOF(i,j,k+1) != 0) W(i,j,k  ) = W(i-1,j,  k);
+            if(AT(i,j,k-1) > 0 && N_VOF(i,j,k-1) != 0) W(i,j,k-1) = W(i-1,j,k-1);
+            break;
+          case east:
+            if(AE(i-1,j,k) > 0 && N_VOF(i-1,j,k) != 0) U(i-1,j,k) = U(i  ,j,  k);
+            if(AN(i,j,k)   > 0 && N_VOF(i,j+1,k) != 0) V(i,  j,k) = V(i+1,j,  k);
+            if(AN(i,j-1,k) > 0 && N_VOF(i,j-1,k) != 0) V(i,j-1,k) = V(i+1,j-1,k);
+            if(AT(i,j,k)   > 0 && N_VOF(i,j,k+1) != 0) W(i,j,k  ) = W(i+1,j,  k);
+            if(AT(i,j,k-1) > 0 && N_VOF(i,j,k-1) != 0) W(i,j,k-1) = W(i+1,j,k-1);
+            break;
+          case south:
+            if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i  ,j-1,k);
+            if(AE(i-1,j,k) > 0 && N_VOF(i-1,j,k) != 0) U(i-1,j,k) = U(i-1,j-1,k);
+            if(AN(i,j,k)   > 0 && N_VOF(i,j+1,k) != 0) V(i,  j,k) = V(i  ,j-1,k);
+            if(AT(i,j,k)   > 0 && N_VOF(i,j,k+1) != 0) W(i,j,k  ) = W(i,  j-1,k);
+            if(AT(i,j,k-1) > 0 && N_VOF(i,j,k-1) != 0) W(i,j,k-1) = W(i,  j-1,k-1);
+            break;          
+          case north:
+            if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i  ,j+1,k);
+            if(AE(i-1,j,k) > 0 && N_VOF(i-1,j,k) != 0) U(i-1,j,k) = U(i-1,j+1,k);
+            if(AN(i,j-1,k) > 0 && N_VOF(i,j-1,k) != 0) V(i,j-1,k) = V(i  ,j  ,k);
+            if(AT(i,j,k)   > 0 && N_VOF(i,j,k+1) != 0) W(i,j,k  ) = W(i,  j+1,k);
+            if(AT(i,j,k-1) > 0 && N_VOF(i,j,k-1) != 0) W(i,j,k-1) = W(i,  j+1,k-1);
+            break;  
+          case bottom:
+            if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i  ,j,  k-1);
+            if(AE(i-1,j,k) > 0 && N_VOF(i-1,j,k) != 0) U(i-1,j,k) = U(i-1,j,  k-1);
+            if(AN(i,j,k)   > 0 && N_VOF(i,j+1,k) != 0) V(i,  j,k) = V(i  ,j,  k-1);
+            if(AN(i,j-1,k) > 0 && N_VOF(i,j-1,k) != 0) V(i,j-1,k) = V(i  ,j-1,k-1);
+            if(AT(i,j,k)   > 0 && N_VOF(i,j,k+1) != 0) W(i,j,k  ) = W(i  ,j,  k-1);
+            break;
+          case top:
+            if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i  ,j,  k+1);
+            if(AE(i-1,j,k) > 0 && N_VOF(i-1,j,k) != 0) U(i-1,j,k) = U(i-1,j,  k+1);
+            if(AN(i,j,k)   > 0 && N_VOF(i,j+1,k) != 0) V(i,  j,k) = V(i  ,j,  k+1);
+            if(AN(i,j-1,k) > 0 && N_VOF(i,j-1,k) != 0) V(i,j-1,k) = V(i  ,j-1,k+1);
+            if(AT(i,j,k-1) > 0 && N_VOF(i,j,k-1) != 0) W(i,j,k-1) = W(i  ,j,  k);
+            break;
+          case none:
+            break;
+          }
+
+        	dA = 0; 
+        	
+        	if(N_VOF(i+1,j,k) > 7 && AE(i,j,k) > solver->emf) {
+        		if(N_VOF(i-1,j,k) > 7) {		
+        			U(i,j,k) = (UN(i,j,k) + UN(i-1,j,k))/2;
+        			U(i-1,j,k) = U(i,j,k);
+        		}
+        		else {
+        			U(i,j,k) = U(i-1,j,k);
+        		}
+        		dA += AE(i,j,k) * pow(RDX,2);
+        	}
+        	
+        	if(N_VOF(i-1,j,k) > 7 && AE(i-1,j,k) > solver->emf) {
+        		if(N_VOF(i+1,j,k) > 7) {
+        			U(i-1,j,k) = (UN(i,j,k) + UN(i-1,j,k))/2;
+        			U(i,j,k) = U(i-1,j,k);
+        		}
+        		else {
+        			U(i-1,j,k) = U(i,j,k);
+        		}
+        		dA += AE(i-1,j,k) * pow(RDX,2);
+        	}
+        
+        	if(N_VOF(i,j+1,k) > 7 && AN(i,j,k) > solver->emf) {
+        		if(N_VOF(i,j-1,k) > 7) {		
+        			V(i,j,k) = (VN(i,j,k) + VN(i,j-1,k))/2;
+        			V(i,j-1,k) = V(i,j,k);
+        		}
+        		else {
+        			V(i,j,k) = V(i,j-1,k);
+        		}
+        		dA += AN(i,j,k) * pow(RDY,2);
+        	}
+        	
+        	if(N_VOF(i,j-1,k) > 7 && AN(i,j-1,k) > solver->emf) {
+        		if(N_VOF(i,j+1,k) > 7) {
+        			V(i,j-1,k) = (VN(i,j,k) + VN(i,j-1,k))/2;
+        			V(i,j,k) = V(i,j-1,k);
+        		}
+        		else {
+        			V(i,j-1,k) = V(i,j,k);
+        		}
+        		dA += AN(i,j-1,k) * pow(RDY,2);
+        	}
+        	
+        
+        	if(N_VOF(i,j,k+1) > 7 && AT(i,j,k) > solver->emf) {
+        		if(N_VOF(i,j,k-1) > 7) {		
+        			W(i,j,k) = (WN(i,j,k) + WN(i,j,k-1))/2;
+        			W(i,j,k-1) = W(i,j,k);
+        		}
+        		else {
+        			W(i,j,k) = W(i,j,k-1);
+        		}
+        		dA += AT(i,j,k) * pow(RDZ,2);
+        	}
+        	
+        	if(N_VOF(i,j,k-1) > 7 && AT(i,j,k-1) > solver->emf) {
+        		if(N_VOF(i,j,k+1) > 7) {
+        			W(i,j,k-1) = (WN(i,j,k) + WN(i,j,k-1))/2;
+        			W(i,j,k) = W(i,j,k-1);
+        		}
+        		else {
+        			W(i,j,k-1) = W(i,j,k);
+        		}
+        		dA += AT(i,j,k-1) * pow(RDZ,2);
+        	}
+        	
+        	if(dA > 0) {
+					
+						dv  = RDX*(AE(i,j,k)*U(i,j,k)-AE(i-1,j,k)*U(i-1,j,k)) +
+								RDY*(AN(i,j,k)*V(i,j,k)-AN(i,j-1,k)*V(i,j-1,k)) +
+								RDZ*(AT(i,j,k)*W(i,j,k)-AT(i,j,k-1)*W(i,j,k-1));
+
+						delp = -1.0 * dv * solver->rho / (dA * solver->delt);
+						delp *= VOF(i,j,k);
+
+						//if(solver->iter > 0) P(i,j,k) += delp;
+
+						if(N_VOF(i+1,j,k) > 7 && AE(i,j,k) > solver->emf) 
+							U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho);
+						
+						if(N_VOF(i-1,j,k) > 7 && AE(i-1,j,k) > solver->emf) 
+							U(i-1,j,k)=U(i-1,j,k) - solver->delt* RDX * delp / (solver->rho);
+
+						if(N_VOF(i,j+1,k) > 7 && AN(i,j,k) > solver->emf) 
+							V(i,j,k)=V(i,j,k) + solver->delt* RDY * delp / (solver->rho);
+						
+						if(N_VOF(i,j-1,k) > 7 && AN(i,j-1,k) > solver->emf) 
+							V(i,j-1,k)=V(i,j-1,k) - solver->delt* RDY * delp / (solver->rho);
+
+						if(N_VOF(i,j,k+1) > 7 && AT(i,j,k) > solver->emf) 
+							W(i,j,k)=W(i,j,k) + solver->delt* RDZ * delp / (solver->rho);
+						
+						if(N_VOF(i,j,k-1) > 7 && AT(i,j,k-1) > solver->emf) 
+							W(i,j,k-1)=W(i,j,k-1) - solver->delt* RDZ * delp / (solver->rho);
+					} 
+
+
+#define emf solver->emf
+   /* # set velocities in empty cells adjacent to partial fluid cells */
+          if(solver->p_flag==0 && solver->iter==0) {
+        
+            if(VOF(i+1,j,k) < emf) {
+              if(VOF(i+1,j+1,k) < emf && AN(i+1,j,k) > emf)
+                V(i+1,j,k) = VOF(i,j,k) * V(i,j,k);
+              if(VOF(i+1,j-1,k) < emf && AN(i+1,j-1,k) > emf)
+                V(i+1,j-1,k) = VOF(i,j,k) * V(i,j-1,k);
+              
+              if(VOF(i+1,j,k+1) < emf && AT(i+1,j,k) > emf)
+                W(i+1,j,k) = VOF(i,j,k) * W(i,j,k);
+              if(VOF(i+1,j,k-1) < emf && AT(i+1,j,k-1) > emf)
+                W(i+1,j,k-1) = VOF(i,j,k) * W(i,j,k-1);
+            }
+           
+            if(VOF(i-1,j,k) < emf) {
+              if(VOF(i-1,j+1,k) < emf && AN(i-1,j,k) > emf)
+                V(i-1,j,k) = VOF(i,j,k) * V(i,j,k);
+              if(VOF(i-1,j-1,k) < emf && AN(i-1,j-1,k) > emf)
+                V(i-1,j-1,k) = VOF(i,j,k) * V(i,j-1,k);
+              
+              if(VOF(i-1,j,k+1) < emf && AT(i-1,j,k) > emf)
+                W(i-1,j,k) = VOF(i,j,k) * W(i,j,k);
+              if(VOF(i-1,j,k-1) < emf && AT(i-1,j,k-1) > emf)
+                W(i-1,j,k-1) = VOF(i,j,k) * W(i,j,k-1);
+            }
+                           
+            if(VOF(i,j+1,k) < emf) {
+              if(VOF(i+1,j+1,k) < emf && AE(i,j+1,k) > emf)
+                U(i,j+1,k) = VOF(i,j,k) * U(i,j,k);
+              if(VOF(i-1,j+1,k) < emf && AE(i-1,j+1,k) > emf)
+                U(i-1,j+1,k) = VOF(i,j,k) * U(i-1,j,k);
+
+              if(VOF(i,j+1,k+1) < emf && AT(i,j+1,k) > emf)
+                W(i,j+1,k) = VOF(i,j,k) * W(i,j,k);
+              if(VOF(i,j+1,k-1) < emf && AT(i-1,j+1,k) > emf)
+                W(i,j+1,k-1) = VOF(i,j,k) * W(i-1,j,k);
+            }
+
+            if(VOF(i,j-1,k) < emf)
+            {
+              if(VOF(i+1,j-1,k) < emf  &&  AE(i,j-1,k) > emf)
+                U(i,j-1,k) = VOF(i,j,k) * U(i,j,k);
+              if(VOF(i-1,j-1,k) < emf  &&  AE(i-1,j-1,k) > emf)
+                U(i-1,j-1,k) = VOF(i,j,k) * U(i-1,j,k);
+             
+              if(VOF(i,j-1,k+1) < emf  &&  AT(i,j-1,k) > emf)
+                W(i,j-1,k) = VOF(i,j,k) * W(i,j,k);
+              if(VOF(i,j-1,k-1) < emf  &&  AT(i,j-1,k-1) > emf)
+                W(i,j-1,k-1) = VOF(i,j,k) * W(i,j,k-1);    
+            
+            }
+            if(VOF(i,j,k+1) < emf)
+            {
+              if(VOF(i+1,j,k+1) < emf && AE(i,j,k+1) > emf)
+                U(i,j,k+1) = VOF(i,j,k) * U(i,j,k);
+              if(VOF(i-1,j,k+1) < emf && AE(i-1,j,k+1) > emf)
+                U(i-1,j,k+1) = VOF(i,j,k) * U(i-1,j,k);
+              
+              if(VOF(i,j+1,k+1) < emf && AN(i,j,k+1) > emf)
+                V(i,j,k+1) = VOF(i,j,k) * V(i,j,k);
+              if(VOF(i,j-1,k+1) < emf && AN(i,j-1,k+1) > emf)
+                V(i,j-1,k+1) = VOF(i,j,k) * V(i,j-1,k);
+            }
+            if(VOF(i,j,k-1) < emf)
+            {
+              if(VOF(i+1,j,k-1) < emf && AE(i,j,k-1) > emf)
+                U(i,j,k-1) = VOF(i,j,k) * U(i,j,k);
+              if(VOF(i-1,j,k-1) < emf && AE(i-1,j,k-1) > emf)
+                U(i-1,j,k-1) = VOF(i,j,k) * U(i-1,j,k);
+              
+              if(VOF(i,j+1,k-1) < emf && AN(i,j,k-1) > emf)
+                V(i,j,k-1) = VOF(i,j,k) * V(i,j,k);
+              if(VOF(i,j-1,k-1) < emf && AN(i,j-1,k-1) > emf)
+                V(i,j-1,k-1) = VOF(i,j,k) * V(i,j-1,k);
+            } 
+          } 
+        }
+      }
+    }
+  }
+
+  vof_vof_height_boundary(solver);
+  vof_baffles(solver);
+  
+  return 0;
+#undef emf
+}
+
+//void vof_boundaries_free_surface_depreciated(struct solver_data *solver) {
 
  /*
           if(AE(i,j,k)   > emf && N_VOF(i+1,j,k) > 7) U(i,j,k)   = U(i-1,j,k) * AE(i-1,j,k) / AE(i,j,k);
@@ -1249,7 +1480,7 @@ int vof_boundaries(struct solver_data *solver) {
             if(nindex > 6) flg = 1;
             
           } */
- 
+ /*
           switch(nff) {
           case west:
             if(AE(i,j,k)   > 0 && N_VOF(i+1,j,k) != 0) U(i,  j,k) = U(i-1,j,  k);
@@ -1409,92 +1640,5 @@ int vof_boundaries(struct solver_data *solver) {
           } 
           
 
-   /* # set velocities in empty cells adjacent to partial fluid cells */
-          if(solver->p_flag==0 && solver->iter==0) {
-        
-            if(VOF(i+1,j,k) < emf) {
-              if(VOF(i+1,j+1,k) < emf && AN(i+1,j,k) > emf)
-                V(i+1,j,k) = VOF(i,j,k) * V(i,j,k);
-              if(VOF(i+1,j-1,k) < emf && AN(i+1,j-1,k) > emf)
-                V(i+1,j-1,k) = VOF(i,j,k) * V(i,j-1,k);
-              
-              if(VOF(i+1,j,k+1) < emf && AT(i+1,j,k) > emf)
-                W(i+1,j,k) = VOF(i,j,k) * W(i,j,k);
-              if(VOF(i+1,j,k-1) < emf && AT(i+1,j,k-1) > emf)
-                W(i+1,j,k-1) = VOF(i,j,k) * W(i,j,k-1);
-            }
-           
-            if(VOF(i-1,j,k) < emf) {
-              if(VOF(i-1,j+1,k) < emf && AN(i-1,j,k) > emf)
-                V(i-1,j,k) = VOF(i,j,k) * V(i,j,k);
-              if(VOF(i-1,j-1,k) < emf && AN(i-1,j-1,k) > emf)
-                V(i-1,j-1,k) = VOF(i,j,k) * V(i,j-1,k);
-              
-              if(VOF(i-1,j,k+1) < emf && AT(i-1,j,k) > emf)
-                W(i-1,j,k) = VOF(i,j,k) * W(i,j,k);
-              if(VOF(i-1,j,k-1) < emf && AT(i-1,j,k-1) > emf)
-                W(i-1,j,k-1) = VOF(i,j,k) * W(i,j,k-1);
-            }
-                           
-            if(VOF(i,j+1,k) < emf) {
-              if(VOF(i+1,j+1,k) < emf && AE(i,j+1,k) > emf)
-                U(i,j+1,k) = VOF(i,j,k) * U(i,j,k);
-              if(VOF(i-1,j+1,k) < emf && AE(i-1,j+1,k) > emf)
-                U(i-1,j+1,k) = VOF(i,j,k) * U(i-1,j,k);
-
-              if(VOF(i,j+1,k+1) < emf && AT(i,j+1,k) > emf)
-                W(i,j+1,k) = VOF(i,j,k) * W(i,j,k);
-              if(VOF(i,j+1,k-1) < emf && AT(i-1,j+1,k) > emf)
-                W(i,j+1,k-1) = VOF(i,j,k) * W(i-1,j,k);
-            }
-
-            if(VOF(i,j-1,k) < emf)
-            {
-              if(VOF(i+1,j-1,k) < emf  &&  AE(i,j-1,k) > emf)
-                U(i,j-1,k) = VOF(i,j,k) * U(i,j,k);
-              if(VOF(i-1,j-1,k) < emf  &&  AE(i-1,j-1,k) > emf)
-                U(i-1,j-1,k) = VOF(i,j,k) * U(i-1,j,k);
-             
-              if(VOF(i,j-1,k+1) < emf  &&  AT(i,j-1,k) > emf)
-                W(i,j-1,k) = VOF(i,j,k) * W(i,j,k);
-              if(VOF(i,j-1,k-1) < emf  &&  AT(i,j-1,k-1) > emf)
-                W(i,j-1,k-1) = VOF(i,j,k) * W(i,j,k-1);    
-            
-            }
-            if(VOF(i,j,k+1) < emf)
-            {
-              if(VOF(i+1,j,k+1) < emf && AE(i,j,k+1) > emf)
-                U(i,j,k+1) = VOF(i,j,k) * U(i,j,k);
-              if(VOF(i-1,j,k+1) < emf && AE(i-1,j,k+1) > emf)
-                U(i-1,j,k+1) = VOF(i,j,k) * U(i-1,j,k);
-              
-              if(VOF(i,j+1,k+1) < emf && AN(i,j,k+1) > emf)
-                V(i,j,k+1) = VOF(i,j,k) * V(i,j,k);
-              if(VOF(i,j-1,k+1) < emf && AN(i,j-1,k+1) > emf)
-                V(i,j-1,k+1) = VOF(i,j,k) * V(i,j-1,k);
-            }
-            if(VOF(i,j,k-1) < emf)
-            {
-              if(VOF(i+1,j,k-1) < emf && AE(i,j,k-1) > emf)
-                U(i,j,k-1) = VOF(i,j,k) * U(i,j,k);
-              if(VOF(i-1,j,k-1) < emf && AE(i-1,j,k-1) > emf)
-                U(i-1,j,k-1) = VOF(i,j,k) * U(i-1,j,k);
-              
-              if(VOF(i,j+1,k-1) < emf && AN(i,j,k-1) > emf)
-                V(i,j,k-1) = VOF(i,j,k) * V(i,j,k);
-              if(VOF(i,j-1,k-1) < emf && AN(i,j-1,k-1) > emf)
-                V(i,j-1,k-1) = VOF(i,j,k) * V(i,j-1,k);
-            } 
-          } 
-        }
-      }
-    }
-  }
-
-  vof_vof_height_boundary(solver);
-  vof_baffles(solver);
-  
-  return 0;
-#undef emf
 }
-
+*/

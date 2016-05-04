@@ -27,7 +27,7 @@ TARGET = ../../bin/gui
 }
 INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10
 !win32 {
-LIBS += -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering -lz -lquazip -lpetsc -lmpi
+LIBS += -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering -lz -lquazip -lcrt1.o -lpetsc -lmpi
 CONFIG += debug x86_64
 }
 win32 {

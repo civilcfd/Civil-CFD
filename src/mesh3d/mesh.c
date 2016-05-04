@@ -619,6 +619,10 @@ int mesh_init_complete(struct mesh_data *mesh) {
     return (1);
   }
 
+	return mesh_allocate(mesh, size);
+}
+
+int mesh_allocate(struct mesh_data *mesh, long int size) {
   /* allocate memory */
   mesh->P = malloc(sizeof(double) * size);
   

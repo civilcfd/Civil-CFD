@@ -35,6 +35,7 @@ struct kE_data {
 };
 
 double log_law(double u, double d, double mu, double rho, double rough);
+int kE_broadcast(struct solver_data *solver);
 int kE_tau(struct solver_data *solver);
 int kE_set_value(char *param, int dims, 
                    double *vector);

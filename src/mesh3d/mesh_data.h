@@ -83,6 +83,10 @@ struct mesh_data {
    * Whereby there will be multiple meshes, stiched together
    */
 
+	/* MPI DATA */
+	long int i_start; /* staring point for this solver, based on rank */
+	long int i_range; /* range based on rank, set by zero ranking process */
+	
   long int imax, jmax, kmax;
   double delx, dely, delz;
   double rdx, rdy, rdz;
