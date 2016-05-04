@@ -773,7 +773,7 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i+1,j,k)) - (1-AT(i+1,j,k-1)));
         
           delv = 0.5 * (ws_u + ws_d) * solver->delt;
-          U(i,j,k) += delv;
+          if(!isnan(delv))  U(i,j,k) += delv;
           
           /* if(delv * U(i,j,k) > solver->emf) {
           	printf("warning: negative U wall shear. i j k delv U(i,j,k) %ld %ld %ld %lf %lf\n", i,j,k, delv, U(i,j,k));
@@ -799,7 +799,7 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i,j+1,k)) - (1-AT(i,j+1,k-1)));
         
           delv = 0.5 * (ws_u + ws_d) * solver->delt;
-          V(i,j,k) += delv;
+          if(!isnan(delv))  V(i,j,k) += delv;
           
           /*if(delv * V(i,j,k) > solver->emf) {
           	printf("warning: negative U wall shear. i j k delv V(i,j,k) %ld %ld %ld %lf %lf\n", i,j,k, delv, V(i,j,k));
@@ -824,7 +824,7 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d += tau_d / (solver->rho * DELY) * fabs((1-AN(i,j,k+1)) - (1-AN(i,j-1,k+1)));
         
           delv = 0.5 * (ws_u + ws_d) * solver->delt;
-          W(i,j,k) += delv;
+          if(!isnan(delv))  W(i,j,k) += delv;
           
           /*
           if(delv * W(i,j,k) > solver->emf) {
