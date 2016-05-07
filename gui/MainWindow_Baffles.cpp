@@ -306,11 +306,11 @@ void MainWindow::on_BaffleTree_itemActivated(QTreeWidgetItem *item, int column) 
     text = item->parent()->text(0);
 
     if(text == "x") {
-      a_1 = (pos ) * sim.getDelx().toDouble();;
+      a_1 = (pos ) * sim.getDelx().toDouble();
       a_2 = extent_a[0] * sim.getDely().toDouble();
       a_3 = extent_a[1] * sim.getDelz().toDouble();
 
-      b_1 = (pos ) * sim.getDelx().toDouble();;
+      b_1 = (pos ) * sim.getDelx().toDouble();
       b_2 = (extent_b[0]-1) * sim.getDely().toDouble();
       b_3 = (extent_b[1]-1) * sim.getDelz().toDouble();
 

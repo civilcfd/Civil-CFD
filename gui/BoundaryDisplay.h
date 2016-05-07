@@ -49,6 +49,9 @@ public:
                      double a_4, double a_5, double a_6, int normal);
   void clearRectangle();
 
+  void update(double delx, double dely, double delz,
+              double imax, double jmax, double kmax,
+              double o_x,  double o_y,  double o_z);
 
 private:
   vtkSmartPointer<vtkPoints> hexPoints;

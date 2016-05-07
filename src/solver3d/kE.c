@@ -454,9 +454,6 @@ int kE_boundaries(struct solver_data *solver) {
       		k(i,j,k) = 0;
       		E(i,j,k) = 0;
       		nu_t(i,j,k) = 0;
-        	tau_x(i,j,k) = 0;
-        	tau_y(i,j,k) = 0;
-        	tau_z(i,j,k) = 0;
       		
       		continue;
       	}      	
@@ -681,7 +678,7 @@ int kE_tau(struct solver_data *solver) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
       
-        if(FV(i,j,k) > (1-solver->emf) || FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf)
+        if(FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf)
           continue;
           
       	if(N_VOF(i,j,k) > 6) continue;
@@ -696,6 +693,9 @@ int kE_tau(struct solver_data *solver) {
         wall_n[2] = AT(i,j,k) - AT(i,j,km1);
 
         mag = vector_magnitude(wall_n);
+        
+        if(mag < solver->emf) continue;
+        
         wall_n[0] /= mag;
         wall_n[1] /= mag;
         wall_n[2] /= mag;
@@ -768,13 +768,15 @@ int kE_wall_shear(struct solver_data *solver) {
       for(k=1; k<KMAX-1; k++) {
 
 
-        if( ( ((FV(i,j,k) > solver->emf)   && (FV(i,j,k) < 1-solver->emf)) ||
+        /* if( ( ((FV(i,j,k) > solver->emf)   && (FV(i,j,k) < 1-solver->emf)) ||
               ((FV(i+1,j,k) > solver->emf) && (FV(i+1,j,k) < 1-solver->emf)) ) &&
-              AE(i,j,k) > solver->emf) { 
+              AE(i,j,k) > solver->emf) { */
           
 
-          tau_u = tau_x(i,j,k);
-          tau_d = tau_x(i+1,j,k);
+        tau_u = tau_x(i,j,k);
+        tau_d = tau_x(i+1,j,k);
+        
+        if(tau_u + tau_d > solver->emf) {
           
           ws_u  = tau_u  / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
           ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
@@ -793,14 +795,16 @@ int kE_wall_shear(struct solver_data *solver) {
           } */
 
         }
-
+/*
         if( ( ((FV(i,j,k) > solver->emf && FV(i,j,k) < 1-solver->emf)) ||
               ((FV(i,j+1,k) > solver->emf && FV(i,j+1,k) < 1-solver->emf)) ) &&
-                AN(i,j,k) > solver->emf) { 
+                AN(i,j,k) > solver->emf) { */
           
 
-          tau_u = tau_y(i,j,k);
-          tau_d = tau_y(i,j+1,k);
+        tau_u = tau_y(i,j,k);
+        tau_d = tau_y(i,j+1,k);
+        
+        if(tau_u + tau_d > solver->emf) {
           
           ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
           ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
@@ -816,16 +820,18 @@ int kE_wall_shear(struct solver_data *solver) {
           } else {
             if(fabs(delv) > fabs(V(i,j,k)) && !isnan(delv)) V(i,j,k) = 0;
           	else if(fabs(delv) > solver->emf && !isnan(delv)) V(i,j,k) += delv;
-          }*/
+          } */
         }
-
+/*
         if( ( ((FV(i,j,k) > solver->emf && FV(i,j,k) < 1-solver->emf)) ||
               ((FV(i,j,k+1) > solver->emf && FV(i,j,k+1) < 1-solver->emf)) ) &&
-                AT(i,j,k) > solver->emf) { 
+                AT(i,j,k) > solver->emf) { */
           
 
-          tau_u = tau_z(i,j,k);
-          tau_d = tau_z(i,j,k+1);
+        tau_u = tau_z(i,j,k);
+        tau_d = tau_z(i,j,k+1);
+        
+        if(tau_u + tau_d > solver->emf) {
           
           ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
           ws_u += tau_u / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
@@ -842,9 +848,9 @@ int kE_wall_shear(struct solver_data *solver) {
           } else {
             if(fabs(delv) > fabs(W(i,j,k)) && !isnan(delv)) W(i,j,k) = 0;
           	else if(fabs(delv) > solver->emf && !isnan(delv)) W(i,j,k) += delv;
-          }*/          
+          }     */    
                     
-        }
+        } 
 
 
       }
@@ -873,6 +879,9 @@ int kE_loop_explicit(struct solver_data *solver) {
         /* exit conditions */
         if(FV(i,j,k) <= (1-solver->emf) || VOF(i,j,k) < solver->emf)
           continue;
+        if(AE(i,j,k) < solver->emf || AE(i-1,j,k) < solver->emf || 
+           AN(i,j,k) < solver->emf || AN(i,j-1,k) < solver->emf ||
+           AT(i,j,k) < solver->emf || AT(i,j,k-1) < solver->emf) continue;
       	if(N_VOF(i,j,k) != 0) continue;
 
 /*    K central difference - Area fractions may need to be fixed *
@@ -1011,8 +1020,8 @@ int kE_loop_explicit(struct solver_data *solver) {
         
         /* TESTING: rescuing k and E from negative / nan values */
                
-        if(isnan(delk) || (k_N(i,j,k) + delk * solver->delt) < 0.0000001) delk = 0;
-        k(i,j,k) = k_N(i,j,k) + delk * solver->delt;
+        if(isnan(delk)) delk = 0;
+        k(i,j,k) = max(k_N(i,j,k) + delk * solver->delt, 0);
         E_limit = kE.C_mu * pow(k(i,j,k), 1.5) / kE.length;
                 
         if(isnan(delE) || (E_N(i,j,k) + delE * solver->delt) < 0.0000001) delE = 0;        

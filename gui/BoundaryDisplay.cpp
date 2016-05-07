@@ -6,6 +6,18 @@
  */
 #include "BoundaryDisplay.h"
 
+void BoundaryDisplay::update(double delx, double dely, double delz,
+              double imax, double jmax, double kmax,
+              double o_x,  double o_y,  double o_z) {
+
+  dx = delx;
+  dy = dely;
+  dz = delz;
+  
+
+  MeshDisplay::update(delx, dely, delz, imax, jmax, kmax, o_x, o_y, o_z);
+}
+              
 BoundaryDisplay::BoundaryDisplay(long int imax, long int jmax, long int kmax, double delx, double dely, double delz, double o_x, double o_y, double o_z) : 
   RenderDisplay(imax,jmax,kmax,delx,dely,delz,o_x,o_y,o_z) {
 
@@ -147,7 +159,7 @@ void BoundaryDisplay::drawRectangle(double a_1, double a_2, double a_3,
   rectangleActor->SetMapper(dataSetMapper);
   
   rectangleActor->GetProperty()->SetDiffuseColor(1,1,0);
-  rectangleActor->GetProperty()->SetOpacity(0.99);
+  rectangleActor->GetProperty()->SetOpacity(1.0);
  
   AddActor(rectangleActor);
  

@@ -54,7 +54,7 @@ void RenderDisplay::connectVTK(QString vtkFile) {
   vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity = 
     vtkSmartPointer<vtkPiecewiseFunction>::New();
   compositeOpacity->AddPoint(0.0,0.0);
-  compositeOpacity->AddPoint(1.0,1.0);
+  compositeOpacity->AddPoint(1.0,0.99);
   volumeProperty->SetScalarOpacity(compositeOpacity); // composite first.
  
   vtkSmartPointer<vtkColorTransferFunction> color = 
