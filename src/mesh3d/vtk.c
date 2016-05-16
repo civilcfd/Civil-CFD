@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
+#include <omp.h>
 
 #include "vtk.h"
 #include "kE.h"
@@ -48,7 +49,7 @@ int vtk_write_n_vof(struct mesh_data *mesh, int timestep)
 int vtk_write_U(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
-
+  
   sprintf(filename, "vtk/U_%d.vtk", timestep);
 
   if(mesh->compress) return vtk_compressed_write_vector_grid(filename, "U", 
@@ -375,7 +376,7 @@ int vtk_write_vector_grid(char *filename, char *dataset_name,
 
   fprintf(fp, "DATASET STRUCTURED_POINTS\n");
   fprintf(fp, "DIMENSIONS %ld %ld %ld\n", ni-1, nj-1, nk-1);
-  fprintf(fp, "ORIGIN %lf %lf %lf\n", oi+di/2, oj+dj/2, ok+dk/2);
+  fprintf(fp, "ORIGIN %lf %lf %lf\n", oi, oj, ok);
   fprintf(fp, "SPACING %lf %lf %lf\n", di, dj, dk);
 
   fprintf(fp, "POINT_DATA %ld\n", (ni-1)*(nj-1)*(nk-1));

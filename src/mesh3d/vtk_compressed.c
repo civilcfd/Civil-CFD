@@ -171,7 +171,7 @@ int vtk_compressed_write_vector_grid(char *filename_vtk, char *dataset_name,
 
   gzprintf(fp, "DATASET STRUCTURED_POINTS\n");
   gzprintf(fp, "DIMENSIONS %ld %ld %ld\n", ni-1, nj-1, nk-1);
-  gzprintf(fp, "ORIGIN %lf %lf %lf\n", oi+di/2, oj+dj/2, ok+dk/2);
+  gzprintf(fp, "ORIGIN %lf %lf %lf\n", oi, oj, ok);
   gzprintf(fp, "SPACING %lf %lf %lf\n", di, dj, dk);
 
   gzprintf(fp, "POINT_DATA %ld\n", (ni-1)*(nj-1)*(nk-1));

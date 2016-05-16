@@ -848,7 +848,7 @@ int kE_wall_shear(struct solver_data *solver) {
           } else {
             if(fabs(delv) > fabs(W(i,j,k)) && !isnan(delv)) W(i,j,k) = 0;
           	else if(fabs(delv) > solver->emf && !isnan(delv)) W(i,j,k) += delv;
-          }     */    
+          }     */ 
                     
         } 
 

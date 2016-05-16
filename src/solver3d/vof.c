@@ -1049,6 +1049,7 @@ int vof_loop(struct solver_data *solver) {
     solver->resimax = 0;
     solver->nu_max = solver->nu;
     solver->delt_n = solver->delt;
+    solver->vchgt  = 0;
 
     solver->velocity(solver);
     
@@ -1132,6 +1133,10 @@ int vof_output(struct solver_data *solver) {
   if(solver->pressure == vof_pressure)
   	printf(" | omega %lf", solver->omg_final);
   printf("\n");
+  
+  if(solver->vchgt > solver->emf) {
+    printf("Fluid volume lost: %lf L | Flow change: %lf L/s\n",solver->vchgt*1000,solver->vchgt*1000/solver->delt);
+  }
   
   printf("max u, v, w: %lf, %lf, %lf\n",solver->umax,solver->vmax,solver->wmax);  
   
