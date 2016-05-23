@@ -1029,7 +1029,9 @@ int vof_loop(struct solver_data *solver) {
 
   
   mesh_copy_data(mesh_n, solver->mesh);
-    
+
+  if(solver->betacal != NULL)
+    solver->betacal(solver);    
   if(solver->petacal != NULL)
     solver->petacal(solver); 
   

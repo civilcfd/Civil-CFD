@@ -254,7 +254,7 @@ int mesh_set_array(struct mesh_data *mesh, char *param, double value,
 }
 
 int mesh_sb_create(struct mesh_data *mesh, int wall, int type, double value, double turbulence) {
-  struct sb_data *item;
+  struct sb_data *item, *sb;
   
   item = malloc(sizeof(struct sb_data));
   if(item == NULL) {
@@ -269,40 +269,57 @@ int mesh_sb_create(struct mesh_data *mesh, int wall, int type, double value, dou
   item->type        = type;
   item->value       = value;
   item->turbulence  = turbulence;
+  item->next        = NULL;
   
-  item->next = mesh->sb[wall];
-  mesh->sb[wall] = item;
+  if(mesh->sb[wall] == NULL) {
+    mesh->sb[wall] = item;
+  }
+  else {
+    for(sb = mesh->sb[wall]; sb != NULL; sb = sb->next) {
+      if(sb->next == NULL) {
+        sb->next = item;
+      }
+    }
+  }
   
   return 0;
 }
 
 int mesh_sb_extent_a(struct mesh_data *mesh, int wall, long int extent_a_1, long int extent_a_2) {
+  struct sb_data *sb;
   
   if(mesh->sb[wall] == NULL) {
     printf("error: attempting to set value on an empty special boundary\n");
     return(1);
   }
   
-  mesh->sb[wall]->extent_a[0] = extent_a_1;
-  mesh->sb[wall]->extent_a[1] = extent_a_2;
+  sb = mesh->sb[wall];
+  while(sb->next != NULL) sb = sb->next;
+  
+  sb->extent_a[0] = extent_a_1;
+  sb->extent_a[1] = extent_a_2;
   
   return 0;
 }
 
 int mesh_sb_extent_b(struct mesh_data *mesh, int wall, long int extent_b_1, long int extent_b_2) {
+  struct sb_data *sb;
   
   if(mesh->sb[wall] == NULL) {
     printf("error: attempting to set value on an empty special boundary\n");
     return(1);
   }
   
-  mesh->sb[wall]->extent_b[0] = extent_b_1;
-  mesh->sb[wall]->extent_b[1] = extent_b_2;
+  sb = mesh->sb[wall];
+  while(sb->next != NULL) sb = sb->next;
+  
+  sb->extent_b[0] = extent_b_1;
+  sb->extent_b[1] = extent_b_2;
   
   return 0;
 }
 int mesh_baffle_create(struct mesh_data *mesh, int axis, int type, double value, long int pos) {
-  struct baffle_data *item;
+  struct baffle_data *item, *baffle;
   
   item = malloc(sizeof(struct baffle_data));
   if(item == NULL) {
@@ -316,36 +333,53 @@ int mesh_baffle_create(struct mesh_data *mesh, int axis, int type, double value,
   item->extent_b[1] = 0;  
   item->type        = type;
   item->value       = value;
-  item->pos  =  pos;
+  item->pos         =  pos;
+  item->next        = NULL;
   
-  item->next = mesh->baffles[axis];
-  mesh->baffles[axis] = item;
+  if(mesh->baffle[axis] == NULL) {
+    mesh->baffle[axis] = item;
+  }
+  else {
+    for(baffle = baffle[axis]; baffle != NULL; baffle = baffle->next) {
+      if(baffle->next == NULL) {
+        baffle->next = item;
+      }
+    }
+  }
   
   return 0;
 }
 
 int mesh_baffle_extent_a(struct mesh_data *mesh, int axis, long int extent_a_1, long int extent_a_2) {
+  struct baffle_data *baffle;
   
   if(mesh->baffles[axis] == NULL) {
     printf("error: attempting to set value on an empty special boundary\n");
     return(1);
   }
   
-  mesh->baffles[axis]->extent_a[0] = extent_a_1;
-  mesh->baffles[axis]->extent_a[1] = extent_a_2;
+  baffle = mesh->baffles[axis];
+  while(baffle->next != NULL) baffle = baffle->next;
+  
+  baffle->extent_a[0] = extent_a_1;
+  baffle->extent_a[1] = extent_a_2;
   
   return 0;
 }
 
 int mesh_baffle_extent_b(struct mesh_data *mesh, int axis, long int extent_b_1, long int extent_b_2) {
+  struct baffle_data *baffle;
   
   if(mesh->baffles[axis] == NULL) {
     printf("error: attempting to set value on an empty special boundary\n");
     return(1);
   }
   
-  mesh->baffles[axis]->extent_b[0] = extent_b_1;
-  mesh->baffles[axis]->extent_b[1] = extent_b_2;
+  baffle = mesh->baffles[axis];
+  while(baffle->next != NULL) baffle = baffle->next;
+  
+  baffle->extent_b[0] = extent_b_1;
+  baffle->extent_b[1] = extent_b_2;
   
   return 0;
 }
@@ -806,7 +840,8 @@ inline long int mesh_index(struct mesh_data *mesh,
 #endif
 {
   /* return i+j*mesh->imax+k*mesh->imax*mesh->jmax; */
-  return i + mesh->imax * (j + k * mesh->jmax);
+  /* return i + mesh->imax * (j + k * mesh->jmax); */
+  return k + mesh->kmax * (j + i * mesh->jmax);
 }
 
 int mesh_fill_vof(struct mesh_data *mesh, double *vector) {

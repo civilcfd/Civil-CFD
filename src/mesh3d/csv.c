@@ -13,6 +13,20 @@
 #include "csv.h"
 #include "../solver3d/kE.h"
 
+#define CELL_INDEX(i,j,k) (k + nk * (j + i * nj))
+
+int csv_read_U_p_vof(struct mesh_data *mesh, double timestep) {
+    /* must zero out before reading since zero values are not stored to save space */
+    mesh_set_array(solver->mesh, "vof", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "P", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "u", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "v", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(solver->mesh, "w", 0.0, -1, 0, 0, 0, 0, 0);
+    csv_read_U(solver->mesh,timestep);
+    csv_read_P(solver->mesh,timestep);
+    csv_read_vof(solver->mesh,timestep);
+}
+
 int csv_read_U(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
@@ -238,6 +252,20 @@ int csv_write_fv(struct mesh_data *mesh, double timestep)
                         mesh->fv);
 
 }
+int csv_read_k(struct mesh_data *mesh, double timestep)
+{
+  char filename[256];
+  struct kE_data *turb;
+  
+  turb = mesh->turbulence_model;
+
+  sprintf(filename, "%4.3lf/k.csv", timestep);
+
+  return csv_read_scalar_grid(filename, 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        turb->k);
+
+}
 int csv_write_k(struct mesh_data *mesh, double timestep)
 {
   char filename[256];
@@ -253,6 +281,20 @@ int csv_write_k(struct mesh_data *mesh, double timestep)
   else return csv_write_scalar_grid(filename, "k", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         turb->k);
+
+}
+int csv_read_E(struct mesh_data *mesh, double timestep)
+{
+  char filename[256];
+  struct kE_data *turb;
+  
+  turb = mesh->turbulence_model;
+
+  sprintf(filename, "%4.3lf/E.csv", timestep);
+
+  return csv_read_scalar_grid(filename, 
+                        mesh->imax, mesh->jmax, mesh->kmax,
+                        turb->E);
 
 }
 int csv_write_E(struct mesh_data *mesh, double timestep)
@@ -315,7 +357,7 @@ long int csv_read_scalar_grid(char *filename,
       break;
     }
 
-    scalars[i + ni * (j + k * nj)] = f;
+    scalars[CELL_INDEX(i,j,k)] = f;
     count++;
   }
 
@@ -366,7 +408,7 @@ long int csv_read_integer_grid(char *filename,
       break;
     }
 
-    scalars[i + ni * (j + k * nj)] = f;
+    scalars[CELL_INDEX(i,j,k)] = f;
     count++;
   }
 
@@ -418,9 +460,9 @@ long int csv_read_vector_grid(char *filename,
       break;
     }
 
-    v0[i + ni * (j + k * nj)] = f;
-    v1[i + ni * (j + k * nj)] = g;
-    v2[i + ni * (j + k * nj)] = h;
+    v0[CELL_INDEX(i,j,k)] = f;
+    v1[CELL_INDEX(i,j,k)] = g;
+    v2[CELL_INDEX(i,j,k)] = h;
     count++;
   }
 
@@ -455,11 +497,11 @@ int csv_write_vector_grid(char *filename, char *dataset_name, long int ni, long 
     for(j=0; j<nj; j++) {
       for(k=0; k<nk; k++) {
         
-        if(fabs(v0[i+ni * (j+ k*nj)]) > emf || fabs(v1[i+ni * (j+ k*nj)]) > emf ||  
-           fabs(v2[i+ni * (j+ k*nj)]) > emf )
+        if(fabs(v0[CELL_INDEX(i,j,k)]) > emf || fabs(v1[CELL_INDEX(i,j,k)]) > emf ||  
+           fabs(v2[CELL_INDEX(i,j,k)]) > emf )
           fprintf(fp, "%ld, %ld, %ld, %lf, %lf, %lf\n", i, j, k, 
-                v0[i + ni * (j + k * nj)], v1[i + ni * (j + k * nj)], 
-                v2[i + ni * (j + k * nj)]); 
+                v0[CELL_INDEX(i,j,k)], v1[CELL_INDEX(i,j,k)], 
+                v2[CELL_INDEX(i,j,k)]); 
      
       }
     }
@@ -496,9 +538,9 @@ int csv_write_scalar_grid(char *filename, char *dataset_name, long int ni, long 
     for(j=0; j<nj; j++) {
       for(k=0; k<nk; k++) {
         
-        if(fabs(scalars[i+ni * (j+ k*nj)]) > emf) 
+        if(fabs(scalars[CELL_INDEX(i,j,k)]) > emf) 
           fprintf(fp, "%ld, %ld, %ld, %10.8lf\n", i, j, k, 
-                scalars[i + ni * (j + k * nj)]); 
+                scalars[CELL_INDEX(i,j,k)]); 
       
       }
     }
@@ -535,7 +577,7 @@ int csv_write_integer_grid(char *filename, char *dataset_name, long int ni, long
       for(k=0; k<nk; k++) {
         
           fprintf(fp, "%ld, %ld, %ld, %d\n", i, j, k, 
-                scalars[i + ni * (j + k * nj)]); 
+                scalars[CELL_INDEX(i,j,k)]); 
       
       }
     }
@@ -580,10 +622,10 @@ int csv_write_scalar_grid_paraview(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
         
-        if(scalars[i+ni * (j+ k*nj)] > emf) 
+        if(scalars[CELL_INDEX(i,j,k)] > emf) 
           fprintf(fp, "%lf,%lf,%lf,%lf\n", di * i + ci,
                 dj * j + cj, dk * k + ck,
-                scalars[i + ni * (j + k * nj)]); 
+                scalars[CELL_INDEX(i,j,k)]); 
       
       }
     }

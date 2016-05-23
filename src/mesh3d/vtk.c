@@ -10,6 +10,8 @@
 #include "vtk.h"
 #include "kE.h"
 
+#define CELL_INDEX(i,j,k) (k + nk * (j + i * nj))
+
 int vtk_write_fv(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
@@ -214,10 +216,10 @@ int vtk_write_scalar_grid(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
-        d = double_swap(scalars[i + ni * (j + k * nj)]);
+        d = double_swap(scalars[CELL_INDEX(i,j,k)]);
         fwrite(&d, sizeof(double), 1, fp)
 #else
-        fprintf(fp, "%4.6lf\n", scalars[i + ni * (j + k * nj)]); 
+        fprintf(fp, "%4.6lf\n", scalars[CELL_INDEX(i,j,k)]); 
 #endif 
       }
     }
@@ -271,10 +273,10 @@ int vtk_write_scalar_magnitude_grid(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
-        d = double_swap(scalars[i + ni * (j + k * nj)]);
+        d = double_swap(scalars[CELL_INDEX(i,j,k)]);
         fwrite(&d, sizeof(double), 1, fp)
 #else
-        fprintf(fp, "%4.6lf\n", fabs(scalars[i + ni * (j + k * nj)])); 
+        fprintf(fp, "%4.6lf\n", fabs(scalars[CELL_INDEX(i,j,k)])); 
 #endif 
       }
     }
@@ -328,10 +330,10 @@ int vtk_write_integer_grid(char *filename, char *dataset_name,
     for(j=0; j<nj; j++) {
       for(i=0; i<ni; i++) {
 #ifdef VTK_BINARY
-        n = int_swap(scalars[i + ni * (j + k * nj)]);
+        n = int_swap(scalars[CELL_INDEX(i,j,k)]);
         fwrite(&n, sizeof(uint32_t), 1, fp)
 #else
-        fprintf(fp, "%d\n", scalars[i + ni * (j + k * nj)]); 
+        fprintf(fp, "%d\n", scalars[CELL_INDEX(i,j,k)]); 
 #endif 
       }
     }
@@ -386,22 +388,22 @@ int vtk_write_vector_grid(char *filename, char *dataset_name,
     for(j=0; j<nj-1; j++) {
       for(i=0; i<ni-1; i++) {
 #ifdef VTK_BINARY
-        d=double_swap(v1[i + ni * (j + k * nj)]);
+        d=double_swap(v1[CELL_INDEX(i,j,k)]);
         fwrite(&d, sizeof(double), 1, fp)
         
-        d=double_swap(v2[i + ni * (j + k * nj)]);
+        d=double_swap(v2[CELL_INDEX(i,j,k)]);
         fwrite(&d, sizeof(double), 1, fp)
         
-        d=double_swap(v3[i + ni * (j + k * nj)]);
+        d=double_swap(v3[CELL_INDEX(i,j,k)]);
         fwrite(&d, sizeof(double), 1, fp)
 #else
-        if( (fabs(v1[i+ni * (j+ k*nj)]) > emf && fabs(v1[i+1 +ni * (j+ k*nj)]) > emf) || 
-            (fabs(v2[i+ni * (j+ k*nj)]) > emf && fabs(v2[i+ni * ((j+1)+ k*nj)]) > emf) ||  
-            (fabs(v3[i+ni * (j+ k*nj)]) > emf && fabs(v3[i+ni * (j+ (k+1)*nj)]) > emf) ) 
+        if( (fabs(v1[CELL_INDEX(i,j,k)]) > emf && fabs(v1[CELL_INDEX(i+1,j,k)]) > emf) || 
+            (fabs(v2[CELL_INDEX(i,j,k)]) > emf && fabs(v2[CELL_INDEX(i,j+1,k)]) > emf) ||  
+            (fabs(v3[CELL_INDEX(i,j,k)]) > emf && fabs(v3[CELL_INDEX(i,j,k+1)]) > emf) ) 
           fprintf(fp, "%4.6lf %4.6lf %4.6lf\n", 
-            (v1[i + ni * (j + k * nj)] + v1[i+1 + ni * (j + k * nj)])/2,
-            (v2[i + ni * (j + k * nj)] + v2[i + ni * ((j+1) + k * nj)])/2,
-            (v3[i + ni * (j + k * nj)] + v3[i + ni * (j + (k+1) * nj)])/2); 
+            (v1[CELL_INDEX(i,j,k)] + v1[CELL_INDEX(i+1,j,k)])/2,
+            (v2[CELL_INDEX(i,j,k)] + v2[CELL_INDEX(i,j+1,k)])/2,
+            (v3[CELL_INDEX(i,j,k)] + v3[CELL_INDEX(i,j,k+1)])/2); 
         else  
           fprintf(fp, "0.0 0.0 0.0\n");
           

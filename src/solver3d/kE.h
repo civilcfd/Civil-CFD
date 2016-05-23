@@ -43,6 +43,7 @@ int kE_init(struct solver_data *solver);
 int kE_loop(struct solver_data *solver);
 int kE_kill(struct solver_data *solver);
 int kE_setup(struct solver_data *solver);
+int kE_load_values(struct solver_data *solver);
 int kE_read(char *filename);
 int kE_write(char *filename);
 int kE_boundaries(struct solver_data *solver);

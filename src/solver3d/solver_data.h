@@ -127,6 +127,7 @@ struct solver_data {
   double (*turbulence_nu)(struct solver_data *solver, long int i, long int j, long int k);
   int (*turbulence_read)(char *filename);
   int (*turbulence_write)(char *filename);
+  int (*turbulence_load_values) (struct solver_data *solver);
 
   /* solution mesh */
 

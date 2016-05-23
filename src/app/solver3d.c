@@ -19,13 +19,17 @@
 int main(int argc, char *argv[])
 {
   struct solver_data *solver;
-  double timestep;
+  double timestep, delt;
   int aborted_run;
-  int rank;
+  int rank, size;
   int ok;
+  int ret = 0;
 
 	PetscInitialize(NULL, NULL, NULL, NULL);
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+  
+  /* 
 	if(rank != 0) {
     solver = solver_init_empty();
     ok = 1;
@@ -37,20 +41,24 @@ int main(int argc, char *argv[])
 	  }
 	  
 	  return 0;
-	}
+	} */
 		
   printf("solver3d: 3d solver to accompany the Civil CFD gui\n");
 
-  /* if (argc<2) {
-    printf("usage: vofsolver <timestep> <delt>\n");
-    return(1);
-  } */
 
   #ifdef DEBUG
     printf("%s %s\n", argv[0], argv[1]);
   #endif
   if (argc > 1) timestep = atof(argv[1]);
   else timestep = 0;
+  if (argc > 2) delt = atof(argv[2]);
+  else delt = -1;
+  
+  if(size > 1) {
+    ret = solver_mpi(solver, timestep, delt);
+    PetscFinalize();
+    return ret;
+  }
   
   aborted_run = 0;
   if (argc > 2) {
@@ -82,24 +90,19 @@ int main(int argc, char *argv[])
   solver->petacal(solver);
 
   if(timestep != 0) {
-    mesh_set_array(solver->mesh, "vof", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "P", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "u", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "v", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "w", 0.0, -1, 0, 0, 0, 0, 0);
-    csv_read_U(solver->mesh,timestep);
-    csv_read_P(solver->mesh,timestep);
-    csv_read_vof(solver->mesh,timestep);
     solver->t = timestep;
+    csv_read_U_p_vof(solver->mesh, timestep);
+    solver->turbulence_load_values(solver);
   }
   else
     solver->write(solver); 
   
   if(aborted_run) return 0;
   
-  if (argc > 2) solver->delt = atof(argv[2]);
+  if (delt > solver->emf) solver->delt = delt;
   
   track_read();
+  solver_mpi_range(solver);
   
   if(solver_run(solver)==1)
     return 1;

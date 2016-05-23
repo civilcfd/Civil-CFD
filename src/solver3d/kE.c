@@ -200,6 +200,15 @@ int kE_write(char *filename) {
   return 0;
 }
 
+int kE_load_values(struct solver_data *solver) {
+  
+  kE_set_internal(solver, 0.0, 0.0);
+  csv_read_k(solver->mesh,solver->t);
+  csv_read_E(solver->mesh,solver->t);
+
+  return 0;
+}
+
 int kE_broadcast(struct solver_data *solver) {
 	
 	MPI_Bcast(&kE.length, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
@@ -218,6 +227,7 @@ int kE_setup(struct solver_data *solver) {
   solver->turbulence_write = kE_write;
   solver->wall_shear = kE_wall_shear;
   solver->turbulence_nu   = kE_nu;
+  solver->turbulence_load_values = kE_load_values;
     
   solver->mesh->turbulence_model = &kE;
   

@@ -4,9 +4,12 @@
 #define CSV_H
 
 #include "mesh.h"
+int csv_read_U_p_vof(struct mesh_data *mesh, double timestep)
 int csv_write_n_vof(struct mesh_data *mesh, double timestep);
 int csv_write_k(struct mesh_data *mesh, double timestep);
+int csv_read_k(struct mesh_data *mesh, double timestep);
 int csv_write_E(struct mesh_data *mesh, double timestep);
+int csv_read_E(struct mesh_data *mesh, double timestep);
 int csv_write_vof(struct mesh_data *mesh, double timestep);
 int csv_read_vof(struct mesh_data *mesh, double timestep);
 int csv_read_n_vof(struct mesh_data *mesh, double timestep);
