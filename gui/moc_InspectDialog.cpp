@@ -30,22 +30,22 @@ static const uint qt_meta_data_InspectDialog[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      14,   44,   50,   50, 0x08,
-      51,   86,   50,   50, 0x08,
-     102,  139,   50,   50, 0x08,
-     145,   50,   50,   50, 0x08,
-     171,   50,   50,   50, 0x08,
-     191,   50,   50,   50, 0x08,
+      21,   15,   14,   14, 0x08,
+      67,   51,   14,   14, 0x08,
+     108,  102,   14,   14, 0x08,
+     145,   14,   14,   14, 0x08,
+     171,   14,   14,   14, 0x08,
+     191,   14,   14,   14, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_InspectDialog[] = {
-    "InspectDialog\0error(QProcess::ProcessError)\0"
-    "error\0\0finished(int,QProcess::ExitStatus)\0"
-    "exitCode,status\0stateChanged(QProcess::ProcessState)\0"
-    "state\0readyReadStandardOutput()\0"
-    "on_Return_clicked()\0on_InspectCell_clicked()\0"
+    "InspectDialog\0\0error\0error(QProcess::ProcessError)\0"
+    "exitCode,status\0finished(int,QProcess::ExitStatus)\0"
+    "state\0stateChanged(QProcess::ProcessState)\0"
+    "readyReadStandardOutput()\0on_Return_clicked()\0"
+    "on_InspectCell_clicked()\0"
 };
 
 void InspectDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

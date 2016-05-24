@@ -17,14 +17,16 @@
 
 int csv_read_U_p_vof(struct mesh_data *mesh, double timestep) {
     /* must zero out before reading since zero values are not stored to save space */
-    mesh_set_array(solver->mesh, "vof", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "P", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "u", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "v", 0.0, -1, 0, 0, 0, 0, 0);
-    mesh_set_array(solver->mesh, "w", 0.0, -1, 0, 0, 0, 0, 0);
-    csv_read_U(solver->mesh,timestep);
-    csv_read_P(solver->mesh,timestep);
-    csv_read_vof(solver->mesh,timestep);
+    mesh_set_array(mesh, "vof", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(mesh, "P", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(mesh, "u", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(mesh, "v", 0.0, -1, 0, 0, 0, 0, 0);
+    mesh_set_array(mesh, "w", 0.0, -1, 0, 0, 0, 0, 0);
+    csv_read_U(mesh,timestep);
+    csv_read_P(mesh,timestep);
+    csv_read_vof(mesh,timestep);
+    
+    return 0;
 }
 
 int csv_read_U(struct mesh_data *mesh, double timestep)

@@ -93,7 +93,7 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
   
   if(kE_check(solver)) kE_broadcast(solver);
   
-  solver->send_all(solver);
+  solver_send_all(solver);
   
   if(solver_run(solver)==1)
     return 1;
@@ -243,17 +243,17 @@ int solver_send_all(struct solver_data *solver) {
 }
 
 int solver_mpi_send(struct solver_data *solver, double *data, int to, long int i_start, long int i_range) {
-	MPI_SEND(data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, to, 1, MPI_COMM_WORLD);
+	MPI_Send(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, to, 1, MPI_COMM_WORLD);
 }
 
 int solver_mpi_recv(struct solver_data *solver, double *data, int from, long int i_start, long int i_range) {
-	MPI_RECV(data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	MPI_Recv(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 }
 
 int solver_mpi_sendrecv(struct solver_data *solver, int to, double *send, long int send_i_start, long int send_i_range, int from, double *recv, long int recv_i_start, long int recv_i_range) {
-	MPI_Sendrecv(send[mesh_index(solver->mesh,send_i_start,0,0)], send_i_range * JMAX * KMAX, 
+	MPI_Sendrecv(&send[mesh_index(solver->mesh,send_i_start,0,0)], send_i_range * JMAX * KMAX, 
                MPI_DOUBLE, to, 1,
-               recv[mesh_index(solver->mesh,recv_i_start,0,0)], recv_i_range * JMAX * KMAX,
+               &recv[mesh_index(solver->mesh,recv_i_start,0,0)], recv_i_range * JMAX * KMAX,
                MPI_DOUBLE, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 }
 

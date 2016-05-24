@@ -30,22 +30,22 @@ static const uint qt_meta_data_RenderDialog[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      13,   43,   49,   49, 0x08,
-      50,   85,   49,   49, 0x08,
-     101,  138,   49,   49, 0x08,
-     144,   49,   49,   49, 0x08,
-     170,   49,   49,   49, 0x08,
-     190,   49,   49,   49, 0x08,
+      20,   14,   13,   13, 0x08,
+      66,   50,   13,   13, 0x08,
+     107,  101,   13,   13, 0x08,
+     144,   13,   13,   13, 0x08,
+     170,   13,   13,   13, 0x08,
+     190,   13,   13,   13, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_RenderDialog[] = {
-    "RenderDialog\0error(QProcess::ProcessError)\0"
-    "error\0\0finished(int,QProcess::ExitStatus)\0"
-    "exitCode,status\0stateChanged(QProcess::ProcessState)\0"
-    "state\0readyReadStandardOutput()\0"
-    "on_Return_clicked()\0on_Stop_clicked()\0"
+    "RenderDialog\0\0error\0error(QProcess::ProcessError)\0"
+    "exitCode,status\0finished(int,QProcess::ExitStatus)\0"
+    "state\0stateChanged(QProcess::ProcessState)\0"
+    "readyReadStandardOutput()\0on_Return_clicked()\0"
+    "on_Stop_clicked()\0"
 };
 
 void RenderDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

@@ -336,11 +336,11 @@ int mesh_baffle_create(struct mesh_data *mesh, int axis, int type, double value,
   item->pos         =  pos;
   item->next        = NULL;
   
-  if(mesh->baffle[axis] == NULL) {
-    mesh->baffle[axis] = item;
+  if(mesh->baffles[axis] == NULL) {
+    mesh->baffles[axis] = item;
   }
   else {
-    for(baffle = baffle[axis]; baffle != NULL; baffle = baffle->next) {
+    for(baffle = mesh->baffles[axis]; baffle != NULL; baffle = baffle->next) {
       if(baffle->next == NULL) {
         baffle->next = item;
       }

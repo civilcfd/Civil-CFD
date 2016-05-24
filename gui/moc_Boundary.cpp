@@ -30,13 +30,13 @@ static const uint qt_meta_data_BoundaryDialog[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      15,   24,   24,   24, 0x08,
+      16,   15,   15,   15, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_BoundaryDialog[] = {
-    "BoundaryDialog\0accept()\0\0"
+    "BoundaryDialog\0\0accept()\0"
 };
 
 void BoundaryDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -104,18 +104,17 @@ static const uint qt_meta_data_SBoundaryDialog[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      16,   25,   25,   25, 0x08,
-      26,   25,   25,   25, 0x08,
-      49,   88,   25,   25, 0x08,
+      17,   16,   16,   16, 0x08,
+      26,   16,   16,   16, 0x08,
+      53,   49,   16,   16, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SBoundaryDialog[] = {
-    "SBoundaryDialog\0accept()\0\0"
-    "on_calculate_clicked()\0"
+    "SBoundaryDialog\0\0accept()\0"
+    "on_calculate_clicked()\0str\0"
     "on_select_currentIndexChanged(QString)\0"
-    "str\0"
 };
 
 void SBoundaryDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

@@ -22,7 +22,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      70,   14, // methods
+      74,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -30,83 +30,87 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      11,   38,   38,   38, 0x08,
-      39,   38,   38,   38, 0x08,
-      62,   38,   38,   38, 0x08,
-      83,   38,   38,   38, 0x08,
-     105,   38,   38,   38, 0x08,
-     129,   38,   38,   38, 0x08,
-     146,   38,   38,   38, 0x08,
-     164,   38,   38,   38, 0x08,
-     190,   38,   38,   38, 0x08,
-     216,   38,   38,   38, 0x08,
-     241,   38,   38,   38, 0x08,
-     267,   38,   38,   38, 0x08,
-     294,   38,   38,   38, 0x08,
-     316,   38,   38,   38, 0x08,
-     337,  395,   38,   38, 0x08,
-     407,   38,   38,   38, 0x08,
-     433,  395,   38,   38, 0x08,
-     489,   38,   38,   38, 0x08,
-     521,  395,   38,   38, 0x08,
-     573,  395,   38,   38, 0x08,
-     623,   38,   38,   38, 0x08,
-     658,   38,   38,   38, 0x08,
-     683,   38,   38,   38, 0x08,
-     707,  395,   38,   38, 0x08,
-     761,   38,   38,   38, 0x08,
-     784,  395,   38,   38, 0x08,
-     834,  395,   38,   38, 0x08,
-     882,   38,   38,   38, 0x08,
-     908,   38,   38,   38, 0x08,
-     933,   38,   38,   38, 0x08,
-     955,   38,   38,   38, 0x08,
-     979,   38,   38,   38, 0x08,
-    1005,   38,   38,   38, 0x08,
-    1031,   38,   38,   38, 0x08,
-    1057,   38,   38,   38, 0x08,
-    1079,   38,   38,   38, 0x08,
-    1099,   38,   38,   38, 0x08,
-    1124,   38,   38,   38, 0x08,
-    1151,   38,   38,   38, 0x08,
-    1178,   38,   38,   38, 0x08,
-    1212,   38,   38,   38, 0x08,
-    1248,   38,   38,   38, 0x08,
-    1269,   38,   38,   38, 0x08,
-    1290,   38,   38,   38, 0x08,
-    1311,   38,   38,   38, 0x08,
-    1334,   38,   38,   38, 0x08,
-    1357,   38,   38,   38, 0x08,
-    1380,   38,   38,   38, 0x08,
-    1410,   38,   38,   38, 0x08,
-    1442,   38,   38,   38, 0x08,
-    1470,   38,   38,   38, 0x08,
-    1500,   38,   38,   38, 0x08,
-    1524,   38,   38,   38, 0x08,
-    1546,   38,   38,   38, 0x08,
-    1568,   38,   38,   38, 0x08,
-    1592,   38,   38,   38, 0x08,
-    1614,   38,   38,   38, 0x08,
-    1638,   38,   38,   38, 0x08,
-    1668,   38,   38,   38, 0x08,
-    1693,   38,   38,   38, 0x08,
-    1721,   38,   38,   38, 0x08,
-    1743,   38,   38,   38, 0x08,
-    1767,   38,   38,   38, 0x08,
-    1797,   38,   38,   38, 0x08,
-    1823,   38,   38,   38, 0x08,
-    1845,   38,   38,   38, 0x08,
-    1872,   38,   38,   38, 0x08,
-    1895,   38,   38,   38, 0x08,
-    1918,   38,   38,   38, 0x08,
-    1937,   38,   38,   38, 0x08,
+      12,   11,   11,   11, 0x08,
+      39,   11,   11,   11, 0x08,
+      62,   11,   11,   11, 0x08,
+      83,   11,   11,   11, 0x08,
+     105,   11,   11,   11, 0x08,
+     129,   11,   11,   11, 0x08,
+     146,   11,   11,   11, 0x08,
+     164,   11,   11,   11, 0x08,
+     190,   11,   11,   11, 0x08,
+     216,   11,   11,   11, 0x08,
+     241,   11,   11,   11, 0x08,
+     267,   11,   11,   11, 0x08,
+     294,   11,   11,   11, 0x08,
+     316,   11,   11,   11, 0x08,
+     349,  337,   11,   11, 0x08,
+     407,   11,   11,   11, 0x08,
+     433,  337,   11,   11, 0x08,
+     489,   11,   11,   11, 0x08,
+     521,  337,   11,   11, 0x08,
+     573,  337,   11,   11, 0x08,
+     623,   11,   11,   11, 0x08,
+     658,   11,   11,   11, 0x08,
+     683,   11,   11,   11, 0x08,
+     707,  337,   11,   11, 0x08,
+     761,   11,   11,   11, 0x08,
+     784,  337,   11,   11, 0x08,
+     834,  337,   11,   11, 0x08,
+     882,   11,   11,   11, 0x08,
+     908,   11,   11,   11, 0x08,
+     933,   11,   11,   11, 0x08,
+     955,   11,   11,   11, 0x08,
+     979,   11,   11,   11, 0x08,
+    1005,   11,   11,   11, 0x08,
+    1031,   11,   11,   11, 0x08,
+    1057,   11,   11,   11, 0x08,
+    1079,   11,   11,   11, 0x08,
+    1099,   11,   11,   11, 0x08,
+    1124,   11,   11,   11, 0x08,
+    1151,   11,   11,   11, 0x08,
+    1178,   11,   11,   11, 0x08,
+    1212,   11,   11,   11, 0x08,
+    1248,   11,   11,   11, 0x08,
+    1269,   11,   11,   11, 0x08,
+    1290,   11,   11,   11, 0x08,
+    1311,   11,   11,   11, 0x08,
+    1334,   11,   11,   11, 0x08,
+    1357,   11,   11,   11, 0x08,
+    1380,   11,   11,   11, 0x08,
+    1410,   11,   11,   11, 0x08,
+    1442,   11,   11,   11, 0x08,
+    1470,   11,   11,   11, 0x08,
+    1500,   11,   11,   11, 0x08,
+    1524,   11,   11,   11, 0x08,
+    1546,   11,   11,   11, 0x08,
+    1568,   11,   11,   11, 0x08,
+    1592,   11,   11,   11, 0x08,
+    1614,   11,   11,   11, 0x08,
+    1638,   11,   11,   11, 0x08,
+    1668,   11,   11,   11, 0x08,
+    1693,   11,   11,   11, 0x08,
+    1721,   11,   11,   11, 0x08,
+    1743,   11,   11,   11, 0x08,
+    1767,   11,   11,   11, 0x08,
+    1797,   11,   11,   11, 0x08,
+    1823,   11,   11,   11, 0x08,
+    1845,   11,   11,   11, 0x08,
+    1872,   11,   11,   11, 0x08,
+    1898,   11,   11,   11, 0x08,
+    1921,   11,   11,   11, 0x08,
+    1944,   11,   11,   11, 0x08,
+    1963,   11,   11,   11, 0x08,
+    1983,   11,   11,   11, 0x08,
+    2000,   11,   11,   11, 0x08,
+    2019,   11,   11,   11, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_MainWindow[] = {
-    "MainWindow\0on_RunSimulation_clicked()\0"
-    "\0on_STLRender_clicked()\0on_STLOpen_clicked()\0"
+    "MainWindow\0\0on_RunSimulation_clicked()\0"
+    "on_STLRender_clicked()\0on_STLOpen_clicked()\0"
     "on_MeshUndo_clicked()\0on_MeshUpdate_clicked()\0"
     "on_New_clicked()\0on_Save_clicked()\0"
     "on_actionOpen_triggered()\0"
@@ -115,8 +119,9 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_actionQuit_triggered()\0"
     "on_actionAbout_triggered()\0"
     "on_kEpsilon_toggled()\0on_Laminar_toggled()\0"
+    "item,column\0"
     "on_MeshParameters_itemDoubleClicked(QTreeWidgetItem*,int)\0"
-    "item,column\0on_EditBoundary_clicked()\0"
+    "on_EditBoundary_clicked()\0"
     "on_BoundaryTree_itemDoubleClicked(QTreeWidgetItem*,int)\0"
     "on_AddSpecialBoundary_clicked()\0"
     "on_BoundaryTree_itemActivated(QTreeWidgetItem*,int)\0"
@@ -157,8 +162,11 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_blockObstacles3d_toggled()\0"
     "on_earthGravity_clicked()\0"
     "on_water20C_clicked()\0on_defaultLength_clicked()\0"
+    "on_domainLength_clicked()\0"
     "on_calcRough_clicked()\0on_SelectAll_clicked()\0"
     "on_Clear_clicked()\0on_Delete_clicked()\0"
+    "on_SOR_toggled()\0on_GMRES_toggled()\0"
+    "on_parallelGMRES_toggled()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -233,10 +241,14 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 63: _t->on_earthGravity_clicked(); break;
         case 64: _t->on_water20C_clicked(); break;
         case 65: _t->on_defaultLength_clicked(); break;
-        case 66: _t->on_calcRough_clicked(); break;
-        case 67: _t->on_SelectAll_clicked(); break;
-        case 68: _t->on_Clear_clicked(); break;
-        case 69: _t->on_Delete_clicked(); break;
+        case 66: _t->on_domainLength_clicked(); break;
+        case 67: _t->on_calcRough_clicked(); break;
+        case 68: _t->on_SelectAll_clicked(); break;
+        case 69: _t->on_Clear_clicked(); break;
+        case 70: _t->on_Delete_clicked(); break;
+        case 71: _t->on_SOR_toggled(); break;
+        case 72: _t->on_GMRES_toggled(); break;
+        case 73: _t->on_parallelGMRES_toggled(); break;
         default: ;
         }
     }
@@ -274,9 +286,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 70)
+        if (_id < 74)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 70;
+        _id -= 74;
     }
     return _id;
 }

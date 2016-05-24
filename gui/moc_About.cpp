@@ -30,13 +30,13 @@ static const uint qt_meta_data_AboutDialog[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      12,   28,   28,   28, 0x08,
+      13,   12,   12,   12, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_AboutDialog[] = {
-    "AboutDialog\0on_OK_clicked()\0\0"
+    "AboutDialog\0\0on_OK_clicked()\0"
 };
 
 void AboutDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

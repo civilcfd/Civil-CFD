@@ -682,7 +682,7 @@ int kE_tau(struct solver_data *solver) {
   double E_limit;
   const double del[3] = { DELX, DELY, DELZ };
   
-#pragma omp parallel for shared(solver, del) private(i,j,k,im1, jm1, km1, l, m, n, \
+#pragma omp parallel for shared(solver) private(i,j,k,im1, jm1, km1, l, m, n, \
               d, u_t, wall_n, u_c, mag, tau, u_perp_n, u_perp_c, u_parr_c, u_parr, E_limit)  
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
@@ -753,7 +753,8 @@ int kE_tau(struct solver_data *solver) {
         E_limit = fabs(kE.C_mu * pow(k(i,j,k), 1.5) / kE.length);
         E(i,j,k) = max(E_limit, fabs(pow(u_t,3) / (d * kE.vonKarman)));
         
-        nu_t(i,j,k) = max(kE.C_mu * pow(k(i,j,k),2) / E(i,j,k),0);
+        /* nu_t(i,j,k) = max(kE.C_mu * pow(k(i,j,k),2) / E(i,j,k),0); */
+        nu_t(i,j,k) = max(tau * d / (u_perp_c*solver->rho),0);
 
       }
     }

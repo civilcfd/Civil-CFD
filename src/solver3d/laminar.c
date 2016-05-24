@@ -9,7 +9,7 @@
 #include "solver.h"
  
 int laminar_read(char *filename) { return 0; }
-int laminar_load_values(char *filename) { return 0; }
+int laminar_load_values(struct solver_data *solver) { return 0; }
 int laminar_write(char *filename) { return 0; }
 
 int laminar_init(struct solver_data *solver) { return 0; }

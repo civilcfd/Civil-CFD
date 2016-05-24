@@ -30,16 +30,15 @@ static const uint qt_meta_data_BaffleDialog[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      13,   22,   22,   22, 0x08,
-      23,   62,   22,   22, 0x08,
+      14,   13,   13,   13, 0x08,
+      27,   23,   13,   13, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_BaffleDialog[] = {
-    "BaffleDialog\0accept()\0\0"
+    "BaffleDialog\0\0accept()\0str\0"
     "on_select_currentIndexChanged(QString)\0"
-    "str\0"
 };
 
 void BaffleDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

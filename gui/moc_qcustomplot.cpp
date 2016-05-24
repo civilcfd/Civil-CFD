@@ -130,19 +130,19 @@ static const uint qt_meta_data_QCPLayer[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-       9,   20, 0x00095009,
-      33,   38, 0x0a095001,
-      46,   52, 0x02095001,
-      56,   65, 0x00095009,
-      86,   94, 0x01095103,
+      22,    9, 0x00095009,
+      41,   33, 0x0a095001,
+      50,   46, 0x02095001,
+      77,   56, 0x00095009,
+      91,   86, 0x01095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPLayer[] = {
-    "QCPLayer\0parentPlot\0QCustomPlot*\0name\0"
-    "QString\0index\0int\0children\0"
-    "QList<QCPLayerable*>\0visible\0bool\0"
+    "QCPLayer\0QCustomPlot*\0parentPlot\0"
+    "QString\0name\0int\0index\0QList<QCPLayerable*>\0"
+    "children\0bool\0visible\0"
 };
 
 void QCPLayer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -232,17 +232,17 @@ static const uint qt_meta_data_QCPLayerable[] = {
        1,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      13,   37,   46,   46, 0x05,
+      23,   14,   13,   13, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      47,   67,   73,   46, 0x0a,
+      58,   52,   47,   13, 0x0a,
 
  // properties: name, type, flags
-      78,   73, 0x01095103,
-      86,   97, 0x00095009,
-     110,  126, 0x00095009,
-      67,  140, 0x0049510b,
-     150,   73, 0x01095103,
+      78,   47, 0x01095103,
+      99,   86, 0x00095009,
+     124,  110, 0x00095009,
+      52,  140, 0x0049510b,
+     150,   47, 0x01095103,
 
  // properties: notify_signal_id
        0,
@@ -255,11 +255,10 @@ static const uint qt_meta_data_QCPLayerable[] = {
 };
 
 static const char qt_meta_stringdata_QCPLayerable[] = {
-    "QCPLayerable\0layerChanged(QCPLayer*)\0"
-    "newLayer\0\0setLayer(QCPLayer*)\0layer\0"
-    "bool\0visible\0parentPlot\0QCustomPlot*\0"
-    "parentLayerable\0QCPLayerable*\0QCPLayer*\0"
-    "antialiased\0"
+    "QCPLayerable\0\0newLayer\0layerChanged(QCPLayer*)\0"
+    "bool\0layer\0setLayer(QCPLayer*)\0visible\0"
+    "QCustomPlot*\0parentPlot\0QCPLayerable*\0"
+    "parentLayerable\0QCPLayer*\0antialiased\0"
 };
 
 void QCPLayerable::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -429,13 +428,13 @@ static const uint qt_meta_data_QCPLayoutElement[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      17,   24, 0x00095009,
-      35,   40, 0x13095001,
-      46,   40, 0x13095103,
-      56,   64, 0x0009510b,
-      73,   64, 0x0009510b,
-      88,  100, 0x15095103,
-     106,  100, 0x15095103,
+      28,   17, 0x00095009,
+      41,   35, 0x13095001,
+      46,   35, 0x13095103,
+      65,   56, 0x0009510b,
+      73,   56, 0x0009510b,
+      94,   88, 0x15095103,
+     106,   88, 0x15095103,
 
  // enums: name, flags, count, data
      118, 0x0,    3,   39,
@@ -449,9 +448,9 @@ static const uint qt_meta_data_QCPLayoutElement[] = {
 };
 
 static const char qt_meta_stringdata_QCPLayoutElement[] = {
-    "QCPLayoutElement\0layout\0QCPLayout*\0"
-    "rect\0QRect\0outerRect\0margins\0QMargins\0"
-    "minimumMargins\0minimumSize\0QSize\0"
+    "QCPLayoutElement\0QCPLayout*\0layout\0"
+    "QRect\0rect\0outerRect\0QMargins\0margins\0"
+    "minimumMargins\0QSize\0minimumSize\0"
     "maximumSize\0UpdatePhase\0upPreparation\0"
     "upMargins\0upLayout\0"
 };
@@ -610,19 +609,19 @@ static const uint qt_meta_data_QCPLayoutGrid[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      14,   23, 0x02095001,
-      27,   23, 0x02095001,
-      39,   60, 0x0009510b,
-      74,   60, 0x0009510b,
-      92,   23, 0x02095103,
-     106,   23, 0x02095103,
+      18,   14, 0x02095001,
+      27,   14, 0x02095001,
+      53,   39, 0x0009510b,
+      74,   39, 0x0009510b,
+      92,   14, 0x02095103,
+     106,   14, 0x02095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPLayoutGrid[] = {
-    "QCPLayoutGrid\0rowCount\0int\0columnCount\0"
-    "columnStretchFactors\0QList<double>\0"
+    "QCPLayoutGrid\0int\0rowCount\0columnCount\0"
+    "QList<double>\0columnStretchFactors\0"
     "rowStretchFactors\0columnSpacing\0"
     "rowSpacing\0"
 };
@@ -825,20 +824,20 @@ static const uint qt_meta_data_QCPGrid[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-       8,   23, 0x01095103,
-      28,   23, 0x01095103,
-      47,   23, 0x01095103,
-      67,   71, 0x4d095103,
-      76,   71, 0x4d095103,
-      87,   71, 0x4d095103,
+      13,    8, 0x01095103,
+      28,    8, 0x01095103,
+      47,    8, 0x01095103,
+      72,   67, 0x4d095103,
+      76,   67, 0x4d095103,
+      87,   67, 0x4d095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPGrid[] = {
-    "QCPGrid\0subGridVisible\0bool\0"
+    "QCPGrid\0bool\0subGridVisible\0"
     "antialiasedSubGrid\0antialiasedZeroLine\0"
-    "pen\0QPen\0subGridPen\0zeroLinePen\0"
+    "QPen\0pen\0subGridPen\0zeroLinePen\0"
 };
 
 void QCPGrid::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -934,72 +933,72 @@ static const uint qt_meta_data_QCPAxis[] = {
        6,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-       8,   23,   23,   23, 0x05,
-      24,   47,   23,   23, 0x05,
-      56,   88,   23,   23, 0x05,
-     106,  143,   23,   23, 0x05,
-     153,  196,   23,   23, 0x05,
-     202,  196,   23,   23, 0x05,
+       9,    8,    8,    8, 0x05,
+      33,   24,    8,    8, 0x05,
+      74,   56,    8,    8, 0x05,
+     116,  106,    8,    8, 0x05,
+     159,  153,    8,    8, 0x05,
+     202,  153,    8,    8, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     246,  279,   23,   23, 0x0a,
-     284,  303,   23,   23, 0x0a,
-     309,  354,   23,   23, 0x0a,
-     370,  413,   23,   23, 0x0a,
+     251,  246,    8,    8, 0x0a,
+     290,  284,    8,    8, 0x0a,
+     325,  309,    8,    8, 0x0a,
+     384,  370,    8,    8, 0x0a,
 
  // properties: name, type, flags
-     427,  436, 0x00095009,
-     445,  454, 0x00095009,
-     143,  467, 0x0049510b,
-     477,  490, 0x06095103,
-     303,  497, 0x0049510b,
-     506,  520, 0x01095103,
-     525,  520, 0x01095103,
-     535,  549, 0x02095103,
-     553,  520, 0x01095103,
-     568,  520, 0x01095103,
-     581,  520, 0x01095103,
-     594,  520, 0x01095103,
-     600,  520, 0x01095103,
-     611,  549, 0x02095103,
-     628,  642, 0x0009510b,
-     652,  666, 0x40095103,
-     672,  687, 0x43095103,
-     694,  490, 0x06095103,
-     712,  726, 0x0009510b,
-     736,  751, 0x0a095103,
-     759,  772, 0x0009510b,
-     785,  751, 0x0a095103,
-     798,  549, 0x02095103,
-     814,  490, 0x06095103,
-     823,  834, 0x0009510b,
-     850,  867, 0x0009510b,
-     884,  549, 0x02095103,
-     897,  549, 0x02095103,
-     911,  549, 0x02095103,
-     924,  549, 0x02095103,
-     940,  549, 0x02095103,
-     957,  965, 0x4d095103,
-     970,  965, 0x4d095103,
-     978,  965, 0x4d095103,
-     989,  666, 0x40095103,
-     999,  687, 0x43095103,
-    1010,  751, 0x0a095103,
-    1016,  549, 0x02095103,
-    1029,  549, 0x02095103,
-    1037,  549, 0x02095103,
-     413, 1044, 0x0049510b,
-     354, 1044, 0x0049510b,
-    1060,  666, 0x40095103,
-    1082,  666, 0x40095103,
-    1100,  687, 0x43095103,
-    1123,  687, 0x43095103,
-    1142,  965, 0x4d095103,
-    1158,  965, 0x4d095103,
-    1174,  965, 0x4d095103,
-    1193, 1205, 0x0009510b,
-    1219, 1205, 0x0009510b,
-    1231, 1236, 0x00095009,
+     436,  427, 0x00095009,
+     458,  445, 0x00095009,
+     106,  467, 0x0049510b,
+     484,  477, 0x06095103,
+     284,  497, 0x0049510b,
+     511,  506, 0x01095103,
+     525,  506, 0x01095103,
+     539,  535, 0x02095103,
+     553,  506, 0x01095103,
+     568,  506, 0x01095103,
+     581,  506, 0x01095103,
+     594,  506, 0x01095103,
+     600,  506, 0x01095103,
+     611,  535, 0x02095103,
+     638,  628, 0x0009510b,
+     658,  652, 0x40095103,
+     679,  672, 0x43095103,
+     694,  477, 0x06095103,
+     722,  712, 0x0009510b,
+     744,  736, 0x0a095103,
+     772,  759, 0x0009510b,
+     785,  736, 0x0a095103,
+     798,  535, 0x02095103,
+     814,  477, 0x06095103,
+     839,  823, 0x0009510b,
+     867,  850, 0x0009510b,
+     884,  535, 0x02095103,
+     897,  535, 0x02095103,
+     911,  535, 0x02095103,
+     924,  535, 0x02095103,
+     940,  535, 0x02095103,
+     962,  957, 0x4d095103,
+     970,  957, 0x4d095103,
+     978,  957, 0x4d095103,
+     989,  652, 0x40095103,
+     999,  672, 0x43095103,
+    1010,  736, 0x0a095103,
+    1016,  535, 0x02095103,
+    1029,  535, 0x02095103,
+    1037,  535, 0x02095103,
+     370, 1044, 0x0049510b,
+     309, 1044, 0x0049510b,
+    1060,  652, 0x40095103,
+    1082,  652, 0x40095103,
+    1100,  672, 0x43095103,
+    1123,  672, 0x43095103,
+    1142,  957, 0x4d095103,
+    1158,  957, 0x4d095103,
+    1174,  957, 0x4d095103,
+    1207, 1193, 0x0009510b,
+    1219, 1193, 0x0009510b,
+    1240, 1231, 0x00095009,
 
  // properties: notify_signal_id
        0,
@@ -1056,10 +1055,10 @@ static const uint qt_meta_data_QCPAxis[] = {
        0,
 
  // enums: name, flags, count, data
-     436, 0x1,    4,  300,
+     427, 0x1,    4,  300,
     1245, 0x1,    4,  308,
-     642, 0x0,    2,  316,
-     726, 0x0,    2,  320,
+     628, 0x0,    2,  316,
+     712, 0x0,    2,  320,
      467, 0x0,    2,  324,
     1255, 0x1,    4,  328,
     1044, 0x1,    4,  336,
@@ -1092,44 +1091,42 @@ static const uint qt_meta_data_QCPAxis[] = {
 };
 
 static const char qt_meta_stringdata_QCPAxis[] = {
-    "QCPAxis\0ticksRequest()\0\0rangeChanged(QCPRange)\0"
-    "newRange\0rangeChanged(QCPRange,QCPRange)\0"
-    "newRange,oldRange\0"
-    "scaleTypeChanged(QCPAxis::ScaleType)\0"
-    "scaleType\0selectionChanged(QCPAxis::SelectableParts)\0"
-    "parts\0selectableChanged(QCPAxis::SelectableParts)\0"
-    "setScaleType(QCPAxis::ScaleType)\0type\0"
-    "setRange(QCPRange)\0range\0"
+    "QCPAxis\0\0ticksRequest()\0newRange\0"
+    "rangeChanged(QCPRange)\0newRange,oldRange\0"
+    "rangeChanged(QCPRange,QCPRange)\0"
+    "scaleType\0scaleTypeChanged(QCPAxis::ScaleType)\0"
+    "parts\0selectionChanged(QCPAxis::SelectableParts)\0"
+    "selectableChanged(QCPAxis::SelectableParts)\0"
+    "type\0setScaleType(QCPAxis::ScaleType)\0"
+    "range\0setRange(QCPRange)\0selectableParts\0"
     "setSelectableParts(QCPAxis::SelectableParts)\0"
-    "selectableParts\0"
-    "setSelectedParts(QCPAxis::SelectableParts)\0"
-    "selectedParts\0axisType\0AxisType\0"
-    "axisRect\0QCPAxisRect*\0ScaleType\0"
-    "scaleLogBase\0double\0QCPRange\0rangeReversed\0"
-    "bool\0autoTicks\0autoTickCount\0int\0"
-    "autoTickLabels\0autoTickStep\0autoSubTicks\0"
-    "ticks\0tickLabels\0tickLabelPadding\0"
-    "tickLabelType\0LabelType\0tickLabelFont\0"
-    "QFont\0tickLabelColor\0QColor\0"
-    "tickLabelRotation\0tickLabelSide\0"
-    "LabelSide\0dateTimeFormat\0QString\0"
-    "dateTimeSpec\0Qt::TimeSpec\0numberFormat\0"
-    "numberPrecision\0tickStep\0tickVector\0"
-    "QVector<double>\0tickVectorLabels\0"
-    "QVector<QString>\0tickLengthIn\0"
-    "tickLengthOut\0subTickCount\0subTickLengthIn\0"
-    "subTickLengthOut\0basePen\0QPen\0tickPen\0"
-    "subTickPen\0labelFont\0labelColor\0label\0"
-    "labelPadding\0padding\0offset\0SelectableParts\0"
-    "selectedTickLabelFont\0selectedLabelFont\0"
-    "selectedTickLabelColor\0selectedLabelColor\0"
-    "selectedBasePen\0selectedTickPen\0"
-    "selectedSubTickPen\0lowerEnding\0"
-    "QCPLineEnding\0upperEnding\0grid\0QCPGrid*\0"
-    "AxisTypes\0SelectablePart\0atLeft\0atRight\0"
-    "atTop\0atBottom\0ltNumber\0ltDateTime\0"
-    "lsInside\0lsOutside\0stLinear\0stLogarithmic\0"
-    "spNone\0spAxis\0spTickLabels\0spAxisLabel\0"
+    "selectedParts\0setSelectedParts(QCPAxis::SelectableParts)\0"
+    "AxisType\0axisType\0QCPAxisRect*\0axisRect\0"
+    "ScaleType\0double\0scaleLogBase\0QCPRange\0"
+    "bool\0rangeReversed\0autoTicks\0int\0"
+    "autoTickCount\0autoTickLabels\0autoTickStep\0"
+    "autoSubTicks\0ticks\0tickLabels\0"
+    "tickLabelPadding\0LabelType\0tickLabelType\0"
+    "QFont\0tickLabelFont\0QColor\0tickLabelColor\0"
+    "tickLabelRotation\0LabelSide\0tickLabelSide\0"
+    "QString\0dateTimeFormat\0Qt::TimeSpec\0"
+    "dateTimeSpec\0numberFormat\0numberPrecision\0"
+    "tickStep\0QVector<double>\0tickVector\0"
+    "QVector<QString>\0tickVectorLabels\0"
+    "tickLengthIn\0tickLengthOut\0subTickCount\0"
+    "subTickLengthIn\0subTickLengthOut\0QPen\0"
+    "basePen\0tickPen\0subTickPen\0labelFont\0"
+    "labelColor\0label\0labelPadding\0padding\0"
+    "offset\0SelectableParts\0selectedTickLabelFont\0"
+    "selectedLabelFont\0selectedTickLabelColor\0"
+    "selectedLabelColor\0selectedBasePen\0"
+    "selectedTickPen\0selectedSubTickPen\0"
+    "QCPLineEnding\0lowerEnding\0upperEnding\0"
+    "QCPGrid*\0grid\0AxisTypes\0SelectablePart\0"
+    "atLeft\0atRight\0atTop\0atBottom\0ltNumber\0"
+    "ltDateTime\0lsInside\0lsOutside\0stLinear\0"
+    "stLogarithmic\0spNone\0spAxis\0spTickLabels\0"
+    "spAxisLabel\0"
 };
 
 void QCPAxis::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -1372,26 +1369,26 @@ static const uint qt_meta_data_QCPAbstractPlottable[] = {
        2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      21,   44,   53,   53, 0x05,
-      54,   78,   53,   53, 0x05,
+      31,   22,   21,   21, 0x05,
+      65,   54,   21,   21, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      89,   78,   53,   53, 0x0a,
-     109,   44,   53,   53, 0x0a,
+      89,   54,   21,   21, 0x0a,
+     109,   22,   21,   21, 0x0a,
 
  // properties: name, type, flags
-     127,  132, 0x0a095103,
-     140,  156, 0x01095103,
-     161,  156, 0x01095103,
-     181,  156, 0x01095103,
-     202,  206, 0x4d095103,
-     211,  206, 0x4d095103,
-     223,  229, 0x42095103,
-     236,  229, 0x42095103,
-     250,  258, 0x0009510b,
-     267,  258, 0x0009510b,
-      78,  156, 0x01495103,
-      44,  156, 0x01495103,
+     135,  127, 0x0a095103,
+     145,  140, 0x01095103,
+     161,  140, 0x01095103,
+     181,  140, 0x01095103,
+     207,  202, 0x4d095103,
+     211,  202, 0x4d095103,
+     230,  223, 0x42095103,
+     236,  223, 0x42095103,
+     259,  250, 0x0009510b,
+     267,  250, 0x0009510b,
+      54,  140, 0x01495103,
+      22,  140, 0x01495103,
 
  // properties: notify_signal_id
        0,
@@ -1411,14 +1408,14 @@ static const uint qt_meta_data_QCPAbstractPlottable[] = {
 };
 
 static const char qt_meta_stringdata_QCPAbstractPlottable[] = {
-    "QCPAbstractPlottable\0selectionChanged(bool)\0"
-    "selected\0\0selectableChanged(bool)\0"
-    "selectable\0setSelectable(bool)\0"
-    "setSelected(bool)\0name\0QString\0"
-    "antialiasedFill\0bool\0antialiasedScatters\0"
-    "antialiasedErrorBars\0pen\0QPen\0selectedPen\0"
-    "brush\0QBrush\0selectedBrush\0keyAxis\0"
-    "QCPAxis*\0valueAxis\0"
+    "QCPAbstractPlottable\0\0selected\0"
+    "selectionChanged(bool)\0selectable\0"
+    "selectableChanged(bool)\0setSelectable(bool)\0"
+    "setSelected(bool)\0QString\0name\0bool\0"
+    "antialiasedFill\0antialiasedScatters\0"
+    "antialiasedErrorBars\0QPen\0pen\0selectedPen\0"
+    "QBrush\0brush\0selectedBrush\0QCPAxis*\0"
+    "keyAxis\0valueAxis\0"
 };
 
 void QCPAbstractPlottable::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -1551,18 +1548,18 @@ static const uint qt_meta_data_QCPAbstractItem[] = {
        2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      16,   39,   48,   48, 0x05,
-      49,   73,   48,   48, 0x05,
+      26,   17,   16,   16, 0x05,
+      60,   49,   16,   16, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      84,   73,   48,   48, 0x0a,
-     104,   39,   48,   48, 0x0a,
+      84,   49,   16,   16, 0x0a,
+     104,   17,   16,   16, 0x0a,
 
  // properties: name, type, flags
-     122,  137, 0x01095103,
-     142,  155, 0x0009510b,
-      73,  137, 0x01495103,
-      39,  137, 0x01495103,
+     127,  122, 0x01095103,
+     155,  142, 0x0009510b,
+      49,  122, 0x01495103,
+      17,  122, 0x01495103,
 
  // properties: notify_signal_id
        0,
@@ -1574,11 +1571,11 @@ static const uint qt_meta_data_QCPAbstractItem[] = {
 };
 
 static const char qt_meta_stringdata_QCPAbstractItem[] = {
-    "QCPAbstractItem\0selectionChanged(bool)\0"
-    "selected\0\0selectableChanged(bool)\0"
-    "selectable\0setSelectable(bool)\0"
-    "setSelected(bool)\0clipToAxisRect\0bool\0"
-    "clipAxisRect\0QCPAxisRect*\0"
+    "QCPAbstractItem\0\0selected\0"
+    "selectionChanged(bool)\0selectable\0"
+    "selectableChanged(bool)\0setSelectable(bool)\0"
+    "setSelected(bool)\0bool\0clipToAxisRect\0"
+    "QCPAxisRect*\0clipAxisRect\0"
 };
 
 void QCPAbstractItem::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -1695,42 +1692,42 @@ static const uint qt_meta_data_QCustomPlot[] = {
       18,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      12,   43,   49,   49, 0x05,
-      50,   43,   49,   49, 0x05,
-      75,   43,   49,   49, 0x05,
-      99,   43,   49,   49, 0x05,
-     126,   43,   49,   49, 0x05,
-     151,  202,   49,   49, 0x05,
-     218,  202,   49,   49, 0x05,
-     275,  316,   49,   49, 0x05,
-     327,  316,   49,   49, 0x05,
-     374,  431,   49,   49, 0x05,
-     447,  431,   49,   49, 0x05,
-     510,  570,   49,   49, 0x05,
-     588,  570,   49,   49, 0x05,
-     654,  693,   49,   49, 0x05,
-     705,  693,   49,   49, 0x05,
-     750,   49,   49,   49, 0x05,
-     775,   49,   49,   49, 0x05,
-     790,   49,   49,   49, 0x05,
+      19,   13,   12,   12, 0x05,
+      50,   13,   12,   12, 0x05,
+      75,   13,   12,   12, 0x05,
+      99,   13,   12,   12, 0x05,
+     126,   13,   12,   12, 0x05,
+     167,  151,   12,   12, 0x05,
+     218,  151,   12,   12, 0x05,
+     286,  275,   12,   12, 0x05,
+     327,  275,   12,   12, 0x05,
+     390,  374,   12,   12, 0x05,
+     447,  374,   12,   12, 0x05,
+     528,  510,   12,   12, 0x05,
+     588,  510,   12,   12, 0x05,
+     666,  654,   12,   12, 0x05,
+     705,  654,   12,   12, 0x05,
+     750,   12,   12,   12, 0x05,
+     775,   12,   12,   12, 0x05,
+     790,   12,   12,   12, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     804,  822,   49,   49, 0x0a,
-     844,   49,   49,   49, 0x2a,
-     858,   49,   49,   49, 0x0a,
-     872,  909,   49,   49, 0x0a,
-     925,   49,   49,   49, 0x2a,
+     826,  804,   12,   12, 0x0a,
+     844,   12,   12,   12, 0x2a,
+     858,   12,   12,   12, 0x0a,
+     888,  872,   12,   12, 0x0a,
+     925,   12,   12,   12, 0x2a,
 
  // properties: name, type, flags
-     934,  943, 0x13095103,
-     949,  960, 0x41095103,
-     968,  985, 0x01095103,
-     990, 1011, 0x0009510b,
-    1031, 1042, 0x00095009,
-    1057,  985, 0x01095103,
-    1082, 1101, 0x02095103,
-    1105,  985, 0x01095103,
-    1126, 1146, 0x0009510b,
+     940,  934, 0x13095103,
+     957,  949, 0x41095103,
+     973,  968, 0x01095103,
+    1010,  990, 0x0009510b,
+    1046, 1031, 0x00095009,
+    1057,  968, 0x01095103,
+    1086, 1082, 0x02095103,
+    1105,  968, 0x01095103,
+    1147, 1126, 0x0009510b,
 
  // enums: name, flags, count, data
     1167, 0x0,    2,  160,
@@ -1743,36 +1740,36 @@ static const uint qt_meta_data_QCustomPlot[] = {
 };
 
 static const char qt_meta_stringdata_QCustomPlot[] = {
-    "QCustomPlot\0mouseDoubleClick(QMouseEvent*)\0"
-    "event\0\0mousePress(QMouseEvent*)\0"
+    "QCustomPlot\0\0event\0mouseDoubleClick(QMouseEvent*)\0"
+    "mousePress(QMouseEvent*)\0"
     "mouseMove(QMouseEvent*)\0"
     "mouseRelease(QMouseEvent*)\0"
-    "mouseWheel(QWheelEvent*)\0"
+    "mouseWheel(QWheelEvent*)\0plottable,event\0"
     "plottableClick(QCPAbstractPlottable*,QMouseEvent*)\0"
-    "plottable,event\0"
     "plottableDoubleClick(QCPAbstractPlottable*,QMouseEvent*)\0"
-    "itemClick(QCPAbstractItem*,QMouseEvent*)\0"
-    "item,event\0itemDoubleClick(QCPAbstractItem*,QMouseEvent*)\0"
-    "axisClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)\0"
+    "item,event\0itemClick(QCPAbstractItem*,QMouseEvent*)\0"
+    "itemDoubleClick(QCPAbstractItem*,QMouseEvent*)\0"
     "axis,part,event\0"
+    "axisClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)\0"
     "axisDoubleClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)\0"
-    "legendClick(QCPLegend*,QCPAbstractLegendItem*,QMouseEvent*)\0"
     "legend,item,event\0"
+    "legendClick(QCPLegend*,QCPAbstractLegendItem*,QMouseEvent*)\0"
     "legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*,QMouseEvent*)\0"
-    "titleClick(QMouseEvent*,QCPPlotTitle*)\0"
-    "event,title\0titleDoubleClick(QMouseEvent*,QCPPlotTitle*)\0"
+    "event,title\0titleClick(QMouseEvent*,QCPPlotTitle*)\0"
+    "titleDoubleClick(QMouseEvent*,QCPPlotTitle*)\0"
     "selectionChangedByUser()\0beforeReplot()\0"
-    "afterReplot()\0rescaleAxes(bool)\0"
-    "onlyVisiblePlottables\0rescaleAxes()\0"
-    "deselectAll()\0replot(QCustomPlot::RefreshPriority)\0"
-    "refreshPriority\0replot()\0viewport\0"
-    "QRect\0background\0QPixmap\0backgroundScaled\0"
-    "bool\0backgroundScaledMode\0Qt::AspectRatioMode\0"
-    "plotLayout\0QCPLayoutGrid*\0"
-    "autoAddPlottableToLegend\0selectionTolerance\0"
-    "int\0noAntialiasingOnDrag\0multiSelectModifier\0"
-    "Qt::KeyboardModifier\0LayerInsertMode\0"
-    "limBelow\0limAbove\0"
+    "afterReplot()\0onlyVisiblePlottables\0"
+    "rescaleAxes(bool)\0rescaleAxes()\0"
+    "deselectAll()\0refreshPriority\0"
+    "replot(QCustomPlot::RefreshPriority)\0"
+    "replot()\0QRect\0viewport\0QPixmap\0"
+    "background\0bool\0backgroundScaled\0"
+    "Qt::AspectRatioMode\0backgroundScaledMode\0"
+    "QCPLayoutGrid*\0plotLayout\0"
+    "autoAddPlottableToLegend\0int\0"
+    "selectionTolerance\0noAntialiasingOnDrag\0"
+    "Qt::KeyboardModifier\0multiSelectModifier\0"
+    "LayerInsertMode\0limBelow\0limAbove\0"
 };
 
 void QCustomPlot::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -2078,20 +2075,20 @@ static const uint qt_meta_data_QCPAxisRect[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      12,   23, 0x41095103,
-      31,   48, 0x01095103,
-      53,   74, 0x0009510b,
-      94,  104, 0x0009510b,
-     121,  104, 0x0009510b,
+      20,   12, 0x41095103,
+      36,   31, 0x01095103,
+      73,   53, 0x0009510b,
+     111,   94, 0x0009510b,
+     121,   94, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPAxisRect[] = {
-    "QCPAxisRect\0background\0QPixmap\0"
-    "backgroundScaled\0bool\0backgroundScaledMode\0"
-    "Qt::AspectRatioMode\0rangeDrag\0"
-    "Qt::Orientations\0rangeZoom\0"
+    "QCPAxisRect\0QPixmap\0background\0bool\0"
+    "backgroundScaled\0Qt::AspectRatioMode\0"
+    "backgroundScaledMode\0Qt::Orientations\0"
+    "rangeDrag\0rangeZoom\0"
 };
 
 void QCPAxisRect::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -2185,21 +2182,21 @@ static const uint qt_meta_data_QCPAbstractLegendItem[] = {
        2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      22,   45,   54,   54, 0x05,
-      55,   79,   54,   54, 0x05,
+      32,   23,   22,   22, 0x05,
+      66,   55,   22,   22, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      90,   79,   54,   54, 0x0a,
-     110,   45,   54,   54, 0x0a,
+      90,   55,   22,   22, 0x0a,
+     110,   23,   22,   22, 0x0a,
 
  // properties: name, type, flags
-     128,  141, 0x00095009,
-     152,  157, 0x40095103,
-     163,  173, 0x43095103,
-     180,  157, 0x40095103,
-     193,  173, 0x43095103,
-      79,  211, 0x01495103,
-      45,  211, 0x01495103,
+     139,  128, 0x00095009,
+     158,  152, 0x40095103,
+     170,  163, 0x43095103,
+     180,  152, 0x40095103,
+     193,  163, 0x43095103,
+      55,  211, 0x01495103,
+      23,  211, 0x01495103,
 
  // properties: notify_signal_id
        0,
@@ -2214,12 +2211,12 @@ static const uint qt_meta_data_QCPAbstractLegendItem[] = {
 };
 
 static const char qt_meta_stringdata_QCPAbstractLegendItem[] = {
-    "QCPAbstractLegendItem\0selectionChanged(bool)\0"
-    "selected\0\0selectableChanged(bool)\0"
-    "selectable\0setSelectable(bool)\0"
-    "setSelected(bool)\0parentLegend\0"
-    "QCPLegend*\0font\0QFont\0textColor\0QColor\0"
-    "selectedFont\0selectedTextColor\0bool\0"
+    "QCPAbstractLegendItem\0\0selected\0"
+    "selectionChanged(bool)\0selectable\0"
+    "selectableChanged(bool)\0setSelectable(bool)\0"
+    "setSelected(bool)\0QCPLegend*\0parentLegend\0"
+    "QFont\0font\0QColor\0textColor\0selectedFont\0"
+    "selectedTextColor\0bool\0"
 };
 
 void QCPAbstractLegendItem::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -2402,28 +2399,28 @@ static const uint qt_meta_data_QCPLegend[] = {
        2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      10,   55,   61,   61, 0x05,
-      62,   55,   61,   61, 0x05,
+      17,   11,   10,   10, 0x05,
+      62,   11,   10,   10, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     108,  144,   61,   61, 0x0a,
-     160,  194,   61,   61, 0x0a,
+     124,  108,   10,   10, 0x0a,
+     174,  160,   10,   10, 0x0a,
 
  // properties: name, type, flags
-     208,  218, 0x4d095103,
-     223,  229, 0x42095103,
-     236,  241, 0x40095103,
-     247,  257, 0x43095103,
-     264,  273, 0x15095103,
-     279,  295, 0x02095103,
-     299,  218, 0x4d095103,
-     144,  313, 0x0049510b,
-     194,  313, 0x0049510b,
-     329,  218, 0x4d095103,
-     347,  218, 0x4d095103,
-     369,  229, 0x42095103,
-     383,  241, 0x40095103,
-     396,  257, 0x43095103,
+     213,  208, 0x4d095103,
+     230,  223, 0x42095103,
+     242,  236, 0x40095103,
+     254,  247, 0x43095103,
+     270,  264, 0x15095103,
+     283,  279, 0x02095103,
+     299,  208, 0x4d095103,
+     108,  313, 0x0049510b,
+     160,  313, 0x0049510b,
+     329,  208, 0x4d095103,
+     347,  208, 0x4d095103,
+     369,  223, 0x42095103,
+     383,  236, 0x40095103,
+     396,  247, 0x43095103,
 
  // properties: notify_signal_id
        0,
@@ -2457,16 +2454,17 @@ static const uint qt_meta_data_QCPLegend[] = {
 };
 
 static const char qt_meta_stringdata_QCPLegend[] = {
-    "QCPLegend\0selectionChanged(QCPLegend::SelectableParts)\0"
-    "parts\0\0selectableChanged(QCPLegend::SelectableParts)\0"
-    "setSelectableParts(SelectableParts)\0"
-    "selectableParts\0setSelectedParts(SelectableParts)\0"
-    "selectedParts\0borderPen\0QPen\0brush\0"
-    "QBrush\0font\0QFont\0textColor\0QColor\0"
-    "iconSize\0QSize\0iconTextPadding\0int\0"
-    "iconBorderPen\0SelectableParts\0"
-    "selectedBorderPen\0selectedIconBorderPen\0"
-    "selectedBrush\0selectedFont\0selectedTextColor\0"
+    "QCPLegend\0\0parts\0"
+    "selectionChanged(QCPLegend::SelectableParts)\0"
+    "selectableChanged(QCPLegend::SelectableParts)\0"
+    "selectableParts\0setSelectableParts(SelectableParts)\0"
+    "selectedParts\0setSelectedParts(SelectableParts)\0"
+    "QPen\0borderPen\0QBrush\0brush\0QFont\0"
+    "font\0QColor\0textColor\0QSize\0iconSize\0"
+    "int\0iconTextPadding\0iconBorderPen\0"
+    "SelectableParts\0selectedBorderPen\0"
+    "selectedIconBorderPen\0selectedBrush\0"
+    "selectedFont\0selectedTextColor\0"
     "SelectablePart\0spNone\0spLegendBox\0"
     "spItems\0"
 };
@@ -2605,21 +2603,21 @@ static const uint qt_meta_data_QCPPlotTitle[] = {
        2,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      13,   36,   45,   45, 0x05,
-      46,   70,   45,   45, 0x05,
+      23,   14,   13,   13, 0x05,
+      57,   46,   13,   13, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      81,   70,   45,   45, 0x0a,
-     101,   36,   45,   45, 0x0a,
+      81,   46,   13,   13, 0x0a,
+     101,   14,   13,   13, 0x0a,
 
  // properties: name, type, flags
-     119,  124, 0x0a095103,
-     132,  137, 0x40095103,
-     143,  153, 0x43095103,
-     160,  137, 0x40095103,
-     173,  153, 0x43095103,
-      70,  191, 0x01495103,
-      36,  191, 0x01495103,
+     127,  119, 0x0a095103,
+     138,  132, 0x40095103,
+     150,  143, 0x43095103,
+     160,  132, 0x40095103,
+     173,  143, 0x43095103,
+      46,  191, 0x01495103,
+      14,  191, 0x01495103,
 
  // properties: notify_signal_id
        0,
@@ -2634,12 +2632,11 @@ static const uint qt_meta_data_QCPPlotTitle[] = {
 };
 
 static const char qt_meta_stringdata_QCPPlotTitle[] = {
-    "QCPPlotTitle\0selectionChanged(bool)\0"
-    "selected\0\0selectableChanged(bool)\0"
-    "selectable\0setSelectable(bool)\0"
-    "setSelected(bool)\0text\0QString\0font\0"
-    "QFont\0textColor\0QColor\0selectedFont\0"
-    "selectedTextColor\0bool\0"
+    "QCPPlotTitle\0\0selected\0selectionChanged(bool)\0"
+    "selectable\0selectableChanged(bool)\0"
+    "setSelectable(bool)\0setSelected(bool)\0"
+    "QString\0text\0QFont\0font\0QColor\0textColor\0"
+    "selectedFont\0selectedTextColor\0bool\0"
 };
 
 void QCPPlotTitle::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -2762,18 +2759,18 @@ static const uint qt_meta_data_QCPColorScaleAxisRectPrivate[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      29,   76,   90,   90, 0x09,
-      91,  139,   90,   90, 0x09,
+      44,   30,   29,   29, 0x09,
+     107,   91,   29,   29, 0x09,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPColorScaleAxisRectPrivate[] = {
-    "QCPColorScaleAxisRectPrivate\0"
+    "QCPColorScaleAxisRectPrivate\0\0"
+    "selectedParts\0"
     "axisSelectionChanged(QCPAxis::SelectableParts)\0"
-    "selectedParts\0\0"
-    "axisSelectableChanged(QCPAxis::SelectableParts)\0"
     "selectableParts\0"
+    "axisSelectableChanged(QCPAxis::SelectableParts)\0"
 };
 
 void QCPColorScaleAxisRectPrivate::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -2841,24 +2838,24 @@ static const uint qt_meta_data_QCPColorScale[] = {
        3,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      14,   41,   50,   50, 0x05,
-      51,   92,   50,   50, 0x05,
-     102,  136,   50,   50, 0x05,
+      24,   15,   14,   14, 0x05,
+      61,   51,   14,   14, 0x05,
+     114,  102,   14,   14, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     148,  171,   50,   50, 0x0a,
-     181,   92,   50,   50, 0x0a,
-     218,  248,   50,   50, 0x0a,
+     158,  148,   14,   14, 0x0a,
+     181,   51,   14,   14, 0x0a,
+     227,  218,   14,   14, 0x0a,
 
  // properties: name, type, flags
-     257,  262, 0x0009510b,
-     171,  280, 0x0049510b,
-     289,  303, 0x0049510b,
-     248,  322, 0x0049510b,
-     339,  345, 0x0a095103,
-     353,  362, 0x02095103,
-     366,  376, 0x01095103,
-     381,  376, 0x01095103,
+     275,  257, 0x0009510b,
+     148,  280, 0x0049510b,
+     308,  289, 0x0049510b,
+     218,  322, 0x0049510b,
+     347,  339, 0x0a095103,
+     357,  353, 0x02095103,
+     371,  366, 0x01095103,
+     381,  366, 0x01095103,
 
  // properties: notify_signal_id
        0,
@@ -2874,16 +2871,17 @@ static const uint qt_meta_data_QCPColorScale[] = {
 };
 
 static const char qt_meta_stringdata_QCPColorScale[] = {
-    "QCPColorScale\0dataRangeChanged(QCPRange)\0"
-    "newRange\0\0dataScaleTypeChanged(QCPAxis::ScaleType)\0"
-    "scaleType\0gradientChanged(QCPColorGradient)\0"
-    "newGradient\0setDataRange(QCPRange)\0"
-    "dataRange\0setDataScaleType(QCPAxis::ScaleType)\0"
-    "setGradient(QCPColorGradient)\0gradient\0"
-    "type\0QCPAxis::AxisType\0QCPRange\0"
-    "dataScaleType\0QCPAxis::ScaleType\0"
-    "QCPColorGradient\0label\0QString\0barWidth\0"
-    "int\0rangeDrag\0bool\0rangeZoom\0"
+    "QCPColorScale\0\0newRange\0"
+    "dataRangeChanged(QCPRange)\0scaleType\0"
+    "dataScaleTypeChanged(QCPAxis::ScaleType)\0"
+    "newGradient\0gradientChanged(QCPColorGradient)\0"
+    "dataRange\0setDataRange(QCPRange)\0"
+    "setDataScaleType(QCPAxis::ScaleType)\0"
+    "gradient\0setGradient(QCPColorGradient)\0"
+    "QCPAxis::AxisType\0type\0QCPRange\0"
+    "QCPAxis::ScaleType\0dataScaleType\0"
+    "QCPColorGradient\0QString\0label\0int\0"
+    "barWidth\0bool\0rangeDrag\0rangeZoom\0"
 };
 
 void QCPColorScale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3027,18 +3025,18 @@ static const uint qt_meta_data_QCPGraph[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-       9,   19, 0x0009510b,
-      29,   42, 0x0009510b,
-      58,   68, 0x0009510b,
-      78,   87, 0x4d095103,
-      92,  105, 0x06095103,
-     112,  131, 0x01095103,
-     136,  153, 0x0009510b,
-     163,  131, 0x01095103,
+      19,    9, 0x0009510b,
+      45,   29, 0x0009510b,
+      68,   58, 0x0009510b,
+      83,   78, 0x4d095103,
+      99,   92, 0x06095103,
+     117,  112, 0x01095103,
+     146,  136, 0x0009510b,
+     163,  112, 0x01095103,
 
  // enums: name, flags, count, data
-      19, 0x0,    6,   46,
-      68, 0x0,    4,   58,
+       9, 0x0,    6,   46,
+      58, 0x0,    4,   58,
 
  // enum data: key, value
      180, uint(QCPGraph::lsNone),
@@ -3056,12 +3054,12 @@ static const uint qt_meta_data_QCPGraph[] = {
 };
 
 static const char qt_meta_stringdata_QCPGraph[] = {
-    "QCPGraph\0lineStyle\0LineStyle\0scatterStyle\0"
-    "QCPScatterStyle\0errorType\0ErrorType\0"
-    "errorPen\0QPen\0errorBarSize\0double\0"
-    "errorBarSkipSymbol\0bool\0channelFillGraph\0"
-    "QCPGraph*\0adaptiveSampling\0lsNone\0"
-    "lsLine\0lsStepLeft\0lsStepRight\0"
+    "QCPGraph\0LineStyle\0lineStyle\0"
+    "QCPScatterStyle\0scatterStyle\0ErrorType\0"
+    "errorType\0QPen\0errorPen\0double\0"
+    "errorBarSize\0bool\0errorBarSkipSymbol\0"
+    "QCPGraph*\0channelFillGraph\0adaptiveSampling\0"
+    "lsNone\0lsLine\0lsStepLeft\0lsStepRight\0"
     "lsStepCenter\0lsImpulse\0etNone\0etKey\0"
     "etValue\0etBoth\0"
 };
@@ -3163,15 +3161,15 @@ static const uint qt_meta_data_QCPCurve[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-       9,   22, 0x0009510b,
-      38,   48, 0x0009510b,
+      25,    9, 0x0009510b,
+      48,   38, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPCurve[] = {
-    "QCPCurve\0scatterStyle\0QCPScatterStyle\0"
-    "lineStyle\0LineStyle\0"
+    "QCPCurve\0QCPScatterStyle\0scatterStyle\0"
+    "LineStyle\0lineStyle\0"
 };
 
 void QCPCurve::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3259,15 +3257,15 @@ static const uint qt_meta_data_QCPBarsGroup[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      13,   25, 0x0009510b,
-      37,   45, 0x06095103,
+      25,   13, 0x0009510b,
+      44,   37, 0x06095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPBarsGroup[] = {
-    "QCPBarsGroup\0spacingType\0SpacingType\0"
-    "spacing\0double\0"
+    "QCPBarsGroup\0SpacingType\0spacingType\0"
+    "double\0spacing\0"
 };
 
 void QCPBarsGroup::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3355,15 +3353,15 @@ static const uint qt_meta_data_QCPBars[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-       8,   14, 0x06095103,
-      21,   31, 0x0009510b,
-      41,   51, 0x0009510b,
-      65,   14, 0x06095103,
-      75,   84, 0x00095009,
-      93,   84, 0x00095009,
+      15,    8, 0x06095103,
+      31,   21, 0x0009510b,
+      55,   41, 0x0009510b,
+      65,    8, 0x06095103,
+      84,   75, 0x00095009,
+      93,   75, 0x00095009,
 
  // enums: name, flags, count, data
-      31, 0x0,    3,   36,
+      21, 0x0,    3,   36,
 
  // enum data: key, value
      102, uint(QCPBars::wtAbsolute),
@@ -3374,9 +3372,9 @@ static const uint qt_meta_data_QCPBars[] = {
 };
 
 static const char qt_meta_stringdata_QCPBars[] = {
-    "QCPBars\0width\0double\0widthType\0WidthType\0"
-    "barsGroup\0QCPBarsGroup*\0baseValue\0"
-    "barBelow\0QCPBars*\0barAbove\0wtAbsolute\0"
+    "QCPBars\0double\0width\0WidthType\0widthType\0"
+    "QCPBarsGroup*\0barsGroup\0baseValue\0"
+    "QCPBars*\0barBelow\0barAbove\0wtAbsolute\0"
     "wtAxisRectRatio\0wtPlotCoords\0"
 };
 
@@ -3471,29 +3469,29 @@ static const uint qt_meta_data_QCPStatisticalBox[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      18,   22, 0x06095103,
-      29,   22, 0x06095103,
-      37,   22, 0x06095103,
-      51,   22, 0x06095103,
-      58,   22, 0x06095103,
-      72,   22, 0x06095103,
-      80,   89, 0x0009510b,
-     105,   22, 0x06095103,
-     111,   22, 0x06095103,
-     124,  135, 0x4d095103,
-     140,  135, 0x4d095103,
-     154,  135, 0x4d095103,
-     164,  177, 0x0009510b,
+      25,   18, 0x06095103,
+      29,   18, 0x06095103,
+      37,   18, 0x06095103,
+      51,   18, 0x06095103,
+      58,   18, 0x06095103,
+      72,   18, 0x06095103,
+      96,   80, 0x0009510b,
+     105,   18, 0x06095103,
+     111,   18, 0x06095103,
+     129,  124, 0x4d095103,
+     140,  124, 0x4d095103,
+     154,  124, 0x4d095103,
+     180,  164, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPStatisticalBox[] = {
-    "QCPStatisticalBox\0key\0double\0minimum\0"
+    "QCPStatisticalBox\0double\0key\0minimum\0"
     "lowerQuartile\0median\0upperQuartile\0"
-    "maximum\0outliers\0QVector<double>\0width\0"
-    "whiskerWidth\0whiskerPen\0QPen\0whiskerBarPen\0"
-    "medianPen\0outlierStyle\0QCPScatterStyle\0"
+    "maximum\0QVector<double>\0outliers\0width\0"
+    "whiskerWidth\0QPen\0whiskerPen\0whiskerBarPen\0"
+    "medianPen\0QCPScatterStyle\0outlierStyle\0"
 };
 
 void QCPStatisticalBox::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3603,25 +3601,25 @@ static const uint qt_meta_data_QCPColorMap[] = {
        3,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      12,   39,   48,   48, 0x05,
-      49,   90,   48,   48, 0x05,
-     100,  134,   48,   48, 0x05,
+      22,   13,   12,   12, 0x05,
+      59,   49,   12,   12, 0x05,
+     112,  100,   12,   12, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     146,  169,   48,   48, 0x0a,
-     179,   90,   48,   48, 0x0a,
-     216,  246,   48,   48, 0x0a,
-     255,  302,   48,   48, 0x0a,
-     326,  367,   48,   48, 0x2a,
-     381,   48,   48,   48, 0x2a,
+     156,  146,   12,   12, 0x0a,
+     179,   49,   12,   12, 0x0a,
+     225,  216,   12,   12, 0x0a,
+     279,  255,   12,   12, 0x0a,
+     340,  326,   12,   12, 0x2a,
+     381,   12,   12,   12, 0x2a,
 
  // properties: name, type, flags
-     169,  400, 0x0049510b,
-     409,  423, 0x0049510b,
-     246,  442, 0x0049510b,
-     459,  471, 0x01095103,
-     476,  471, 0x01095103,
-     490,  501, 0x0009510b,
+     146,  400, 0x0049510b,
+     428,  409, 0x0049510b,
+     216,  442, 0x0049510b,
+     464,  459, 0x01095103,
+     476,  459, 0x01095103,
+     505,  490, 0x0009510b,
 
  // properties: notify_signal_id
        0,
@@ -3635,19 +3633,19 @@ static const uint qt_meta_data_QCPColorMap[] = {
 };
 
 static const char qt_meta_stringdata_QCPColorMap[] = {
-    "QCPColorMap\0dataRangeChanged(QCPRange)\0"
-    "newRange\0\0dataScaleTypeChanged(QCPAxis::ScaleType)\0"
-    "scaleType\0gradientChanged(QCPColorGradient)\0"
-    "newGradient\0setDataRange(QCPRange)\0"
-    "dataRange\0setDataScaleType(QCPAxis::ScaleType)\0"
-    "setGradient(QCPColorGradient)\0gradient\0"
-    "updateLegendIcon(Qt::TransformationMode,QSize)\0"
+    "QCPColorMap\0\0newRange\0dataRangeChanged(QCPRange)\0"
+    "scaleType\0dataScaleTypeChanged(QCPAxis::ScaleType)\0"
+    "newGradient\0gradientChanged(QCPColorGradient)\0"
+    "dataRange\0setDataRange(QCPRange)\0"
+    "setDataScaleType(QCPAxis::ScaleType)\0"
+    "gradient\0setGradient(QCPColorGradient)\0"
     "transformMode,thumbSize\0"
-    "updateLegendIcon(Qt::TransformationMode)\0"
-    "transformMode\0updateLegendIcon()\0"
-    "QCPRange\0dataScaleType\0QCPAxis::ScaleType\0"
-    "QCPColorGradient\0interpolate\0bool\0"
-    "tightBoundary\0colorScale\0QCPColorScale*\0"
+    "updateLegendIcon(Qt::TransformationMode,QSize)\0"
+    "transformMode\0updateLegendIcon(Qt::TransformationMode)\0"
+    "updateLegendIcon()\0QCPRange\0"
+    "QCPAxis::ScaleType\0dataScaleType\0"
+    "QCPColorGradient\0bool\0interpolate\0"
+    "tightBoundary\0QCPColorScale*\0colorScale\0"
 };
 
 void QCPColorMap::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3790,16 +3788,16 @@ static const uint qt_meta_data_QCPFinancial[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      13,   24, 0x0009510b,
-      35,   41, 0x06095103,
-      48,   59, 0x01095103,
-      64,   78, 0x42095103,
-      85,   78, 0x42095103,
-      99,  111, 0x4d095103,
-     116,  111, 0x4d095103,
+      24,   13, 0x0009510b,
+      42,   35, 0x06095103,
+      53,   48, 0x01095103,
+      71,   64, 0x42095103,
+      85,   64, 0x42095103,
+     104,   99, 0x4d095103,
+     116,   99, 0x4d095103,
 
  // enums: name, flags, count, data
-      24, 0x0,    2,   39,
+      13, 0x0,    2,   39,
 
  // enum data: key, value
      128, uint(QCPFinancial::csOhlc),
@@ -3809,10 +3807,11 @@ static const uint qt_meta_data_QCPFinancial[] = {
 };
 
 static const char qt_meta_stringdata_QCPFinancial[] = {
-    "QCPFinancial\0chartStyle\0ChartStyle\0"
-    "width\0double\0twoColored\0bool\0brushPositive\0"
-    "QBrush\0brushNegative\0penPositive\0QPen\0"
-    "penNegative\0csOhlc\0csCandlestick\0"
+    "QCPFinancial\0ChartStyle\0chartStyle\0"
+    "double\0width\0bool\0twoColored\0QBrush\0"
+    "brushPositive\0brushNegative\0QPen\0"
+    "penPositive\0penNegative\0csOhlc\0"
+    "csCandlestick\0"
 };
 
 void QCPFinancial::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -3910,14 +3909,14 @@ static const uint qt_meta_data_QCPItemStraightLine[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      20,   24, 0x4d095103,
-      29,   24, 0x4d095103,
+      25,   20, 0x4d095103,
+      29,   20, 0x4d095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemStraightLine[] = {
-    "QCPItemStraightLine\0pen\0QPen\0selectedPen\0"
+    "QCPItemStraightLine\0QPen\0pen\0selectedPen\0"
 };
 
 void QCPItemStraightLine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4005,17 +4004,17 @@ static const uint qt_meta_data_QCPItemLine[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      12,   16, 0x4d095103,
-      21,   16, 0x4d095103,
-      33,   38, 0x0009510b,
-      52,   38, 0x0009510b,
+      17,   12, 0x4d095103,
+      21,   12, 0x4d095103,
+      47,   33, 0x0009510b,
+      52,   33, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemLine[] = {
-    "QCPItemLine\0pen\0QPen\0selectedPen\0head\0"
-    "QCPLineEnding\0tail\0"
+    "QCPItemLine\0QPen\0pen\0selectedPen\0"
+    "QCPLineEnding\0head\0tail\0"
 };
 
 void QCPItemLine::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4107,17 +4106,17 @@ static const uint qt_meta_data_QCPItemCurve[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      13,   17, 0x4d095103,
-      22,   17, 0x4d095103,
-      34,   39, 0x0009510b,
-      53,   39, 0x0009510b,
+      18,   13, 0x4d095103,
+      22,   13, 0x4d095103,
+      48,   34, 0x0009510b,
+      53,   34, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemCurve[] = {
-    "QCPItemCurve\0pen\0QPen\0selectedPen\0"
-    "head\0QCPLineEnding\0tail\0"
+    "QCPItemCurve\0QPen\0pen\0selectedPen\0"
+    "QCPLineEnding\0head\0tail\0"
 };
 
 void QCPItemCurve::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4209,17 +4208,17 @@ static const uint qt_meta_data_QCPItemRect[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      12,   16, 0x4d095103,
-      21,   16, 0x4d095103,
-      33,   39, 0x42095103,
-      46,   39, 0x42095103,
+      17,   12, 0x4d095103,
+      21,   12, 0x4d095103,
+      40,   33, 0x42095103,
+      46,   33, 0x42095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemRect[] = {
-    "QCPItemRect\0pen\0QPen\0selectedPen\0brush\0"
-    "QBrush\0selectedBrush\0"
+    "QCPItemRect\0QPen\0pen\0selectedPen\0"
+    "QBrush\0brush\0selectedBrush\0"
 };
 
 void QCPItemRect::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4311,30 +4310,30 @@ static const uint qt_meta_data_QCPItemText[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      12,   18, 0x43095103,
-      25,   18, 0x43095103,
-      39,   43, 0x4d095103,
-      48,   43, 0x4d095103,
-      60,   66, 0x42095103,
-      73,   66, 0x42095103,
-      87,   92, 0x40095103,
-      98,   92, 0x40095103,
-     111,  116, 0x0a095103,
-     124,  142, 0x0009510b,
-     156,  142, 0x0009510b,
-     170,  179, 0x06095103,
-     186,  194, 0x0009510b,
+      19,   12, 0x43095103,
+      25,   12, 0x43095103,
+      44,   39, 0x4d095103,
+      48,   39, 0x4d095103,
+      67,   60, 0x42095103,
+      73,   60, 0x42095103,
+      93,   87, 0x40095103,
+      98,   87, 0x40095103,
+     119,  111, 0x0a095103,
+     138,  124, 0x0009510b,
+     156,  124, 0x0009510b,
+     177,  170, 0x06095103,
+     195,  186, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemText[] = {
-    "QCPItemText\0color\0QColor\0selectedColor\0"
-    "pen\0QPen\0selectedPen\0brush\0QBrush\0"
-    "selectedBrush\0font\0QFont\0selectedFont\0"
-    "text\0QString\0positionAlignment\0"
-    "Qt::Alignment\0textAlignment\0rotation\0"
-    "double\0padding\0QMargins\0"
+    "QCPItemText\0QColor\0color\0selectedColor\0"
+    "QPen\0pen\0selectedPen\0QBrush\0brush\0"
+    "selectedBrush\0QFont\0font\0selectedFont\0"
+    "QString\0text\0Qt::Alignment\0positionAlignment\0"
+    "textAlignment\0double\0rotation\0QMargins\0"
+    "padding\0"
 };
 
 void QCPItemText::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4444,17 +4443,17 @@ static const uint qt_meta_data_QCPItemEllipse[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      15,   19, 0x4d095103,
-      24,   19, 0x4d095103,
-      36,   42, 0x42095103,
-      49,   42, 0x42095103,
+      20,   15, 0x4d095103,
+      24,   15, 0x4d095103,
+      43,   36, 0x42095103,
+      49,   36, 0x42095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemEllipse[] = {
-    "QCPItemEllipse\0pen\0QPen\0selectedPen\0"
-    "brush\0QBrush\0selectedBrush\0"
+    "QCPItemEllipse\0QPen\0pen\0selectedPen\0"
+    "QBrush\0brush\0selectedBrush\0"
 };
 
 void QCPItemEllipse::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4546,21 +4545,21 @@ static const uint qt_meta_data_QCPItemPixmap[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      14,   21, 0x41095103,
-      29,   36, 0x01095103,
-      41,   57, 0x00095009,
-      77,   96, 0x00095009,
-     119,  123, 0x4d095103,
-     128,  123, 0x4d095103,
+      22,   14, 0x41095103,
+      34,   29, 0x01095103,
+      61,   41, 0x00095009,
+     100,   77, 0x00095009,
+     124,  119, 0x4d095103,
+     128,  119, 0x4d095103,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemPixmap[] = {
-    "QCPItemPixmap\0pixmap\0QPixmap\0scaled\0"
-    "bool\0aspectRatioMode\0Qt::AspectRatioMode\0"
-    "transformationMode\0Qt::TransformationMode\0"
-    "pen\0QPen\0selectedPen\0"
+    "QCPItemPixmap\0QPixmap\0pixmap\0bool\0"
+    "scaled\0Qt::AspectRatioMode\0aspectRatioMode\0"
+    "Qt::TransformationMode\0transformationMode\0"
+    "QPen\0pen\0selectedPen\0"
 };
 
 void QCPItemPixmap::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -4654,18 +4653,18 @@ static const uint qt_meta_data_QCPItemTracer[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      14,   18, 0x4d095103,
-      23,   18, 0x4d095103,
-      35,   41, 0x42095103,
-      48,   41, 0x42095103,
-      62,   67, 0x06095103,
-      74,   80, 0x0009510b,
-      92,   98, 0x0009510b,
-     108,   67, 0x06095103,
-     117,  131, 0x01095103,
+      19,   14, 0x4d095103,
+      23,   14, 0x4d095103,
+      42,   35, 0x42095103,
+      48,   35, 0x42095103,
+      69,   62, 0x06095103,
+      86,   74, 0x0009510b,
+     102,   92, 0x0009510b,
+     108,   62, 0x06095103,
+     122,  117, 0x01095103,
 
  // enums: name, flags, count, data
-      80, 0x0,    5,   45,
+      74, 0x0,    5,   45,
 
  // enum data: key, value
      136, uint(QCPItemTracer::tsNone),
@@ -4678,10 +4677,10 @@ static const uint qt_meta_data_QCPItemTracer[] = {
 };
 
 static const char qt_meta_stringdata_QCPItemTracer[] = {
-    "QCPItemTracer\0pen\0QPen\0selectedPen\0"
-    "brush\0QBrush\0selectedBrush\0size\0double\0"
-    "style\0TracerStyle\0graph\0QCPGraph*\0"
-    "graphKey\0interpolating\0bool\0tsNone\0"
+    "QCPItemTracer\0QPen\0pen\0selectedPen\0"
+    "QBrush\0brush\0selectedBrush\0double\0"
+    "size\0TracerStyle\0style\0QCPGraph*\0graph\0"
+    "graphKey\0bool\0interpolating\0tsNone\0"
     "tsPlus\0tsCrosshair\0tsCircle\0tsSquare\0"
 };
 
@@ -4784,17 +4783,17 @@ static const uint qt_meta_data_QCPItemBracket[] = {
        0,       // signalCount
 
  // properties: name, type, flags
-      15,   19, 0x4d095103,
-      24,   19, 0x4d095103,
-      36,   43, 0x06095103,
-      50,   56, 0x0009510b,
+      20,   15, 0x4d095103,
+      24,   15, 0x4d095103,
+      43,   36, 0x06095103,
+      63,   50, 0x0009510b,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_QCPItemBracket[] = {
-    "QCPItemBracket\0pen\0QPen\0selectedPen\0"
-    "length\0double\0style\0BracketStyle\0"
+    "QCPItemBracket\0QPen\0pen\0selectedPen\0"
+    "double\0length\0BracketStyle\0style\0"
 };
 
 void QCPItemBracket::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)

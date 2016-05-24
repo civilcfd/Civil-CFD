@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <omp.h>
+#include <string.h>
 
 #include "vtk.h"
 #include "kE.h"
