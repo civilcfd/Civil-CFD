@@ -15,6 +15,8 @@
 #include "csv.h"
 #include "../solver3d/kE.h"
 
+#define CELL_INDEX(i,j,k) (k + nk * (j + i * nj))
+
 int csv_compressed_write_scalar_grid(char *filename_csv, char *dataset_name, long int ni, long int nj, long int nk,
                           double *scalars) {
   gzFile *fp;
@@ -45,9 +47,9 @@ int csv_compressed_write_scalar_grid(char *filename_csv, char *dataset_name, lon
     for(j=0; j<nj; j++) {
       for(k=0; k<nk; k++) {
         
-        if(fabs(scalars[i+ni * (j+ k*nj)]) > emf) 
+        if(fabs(scalars[CELL_INDEX(i,j,k)]) > emf) 
           gzprintf(fp, "%ld, %ld, %ld, %10.8lf\n", i, j, k, 
-                scalars[i + ni * (j + k * nj)]); 
+                scalars[CELL_INDEX(i,j,k)]); 
       
       }
     }
@@ -87,11 +89,11 @@ int csv_compressed_write_vector_grid(char *filename_csv, char *dataset_name, lon
     for(j=0; j<nj; j++) {
       for(k=0; k<nk; k++) {
         
-        if(fabs(v0[i+ni * (j+ k*nj)]) > emf || fabs(v1[i+ni * (j+ k*nj)]) > emf ||  
-           fabs(v2[i+ni * (j+ k*nj)]) > emf )
+        if(fabs(v0[CELL_INDEX(i,j,k)]) > emf || fabs(v1[CELL_INDEX(i,j,k)]) > emf ||  
+           fabs(v2[CELL_INDEX(i,j,k)]) > emf )
           gzprintf(fp, "%ld, %ld, %ld, %lf, %lf, %lf\n", i, j, k, 
-                v0[i + ni * (j + k * nj)], v1[i + ni * (j + k * nj)], 
-                v2[i + ni * (j + k * nj)]); 
+                v0[CELL_INDEX(i,j,k)], v1[CELL_INDEX(i,j,k)], 
+                v2[CELL_INDEX(i,j,k)]); 
      
       }
     }
@@ -131,7 +133,7 @@ int csv_compressed_write_integer_grid(char *filename_csv, char *dataset_name, lo
       for(k=0; k<nk; k++) {
         
           gzprintf(fp, "%ld, %ld, %ld, %d\n", i, j, k, 
-                scalars[i + ni * (j + k * nj)]); 
+                scalars[CELL_INDEX(i,j,k)]); 
       
       }
     }
@@ -192,7 +194,7 @@ long int csv_compressed_read_scalar_grid(char *filename_csv,
       break;
     }
 
-    scalars[i + ni * (j + k * nj)] = f;
+    scalars[CELL_INDEX(i,j,k)] = f;
     count++;
   }
 
@@ -251,7 +253,7 @@ long int csv_compressed_read_integer_grid(char *filename_csv,
       break;
     }
 
-    scalars[i + ni * (j + k * nj)] = f;
+    scalars[CELL_INDEX(i,j,k)] = f;
     count++;
   }
 
@@ -310,9 +312,9 @@ long int csv_compressed_read_vector_grid(char *filename_csv,
       break;
     }
 
-    v0[i + ni * (j + k * nj)] = f;
-    v1[i + ni * (j + k * nj)] = g;
-    v2[i + ni * (j + k * nj)] = h;
+    v0[CELL_INDEX(i,j,k)] = f;
+    v1[CELL_INDEX(i,j,k)] = g;
+    v2[CELL_INDEX(i,j,k)] = h;
     count++;
   }
 

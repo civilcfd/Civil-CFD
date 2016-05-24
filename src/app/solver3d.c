@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
   
   solver->init(solver);
   solver->turbulence_init(solver);
+  if (delt > solver->emf) solver->delt = delt;
   
   if(mesh_load_csv(solver->mesh, 0) == 1) return 1;
   solver_initial_values(solver);
@@ -93,13 +94,13 @@ int main(int argc, char *argv[])
     solver->t = timestep;
     csv_read_U_p_vof(solver->mesh, timestep);
     solver->turbulence_load_values(solver);
+    solver->deltcal(solver);
   }
   else
     solver->write(solver); 
   
   if(aborted_run) return 0;
   
-  if (delt > solver->emf) solver->delt = delt;
   
   track_read();
   solver_mpi_range(solver);

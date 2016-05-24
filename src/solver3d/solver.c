@@ -46,6 +46,7 @@ struct solver_data *solver_init_empty() {
   solver->delt  = 0.001; /* 0.001 based on other solvers, this is generally
                           * a stable delta t for civil engineering
                           * problems */
+  solver->delt_n = solver->delt;
   solver->delt_min = 0.000001;
   
   solver->endt = 200;    /* a good steady state value again for
@@ -77,7 +78,7 @@ struct solver_data *solver_init_empty() {
 
   solver->iter = 0;
   solver->niter= 150;
-  solver->vof_flag = 1;
+  solver->vof_flag = 0;
   solver->p_flag = 0;
 
   solver->loop = NULL;

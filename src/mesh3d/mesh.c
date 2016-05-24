@@ -278,6 +278,7 @@ int mesh_sb_create(struct mesh_data *mesh, int wall, int type, double value, dou
     for(sb = mesh->sb[wall]; sb != NULL; sb = sb->next) {
       if(sb->next == NULL) {
         sb->next = item;
+        return 0;
       }
     }
   }
@@ -343,6 +344,7 @@ int mesh_baffle_create(struct mesh_data *mesh, int axis, int type, double value,
     for(baffle = mesh->baffles[axis]; baffle != NULL; baffle = baffle->next) {
       if(baffle->next == NULL) {
         baffle->next = item;
+        return 0;
       }
     }
   }
