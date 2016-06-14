@@ -11,7 +11,7 @@
 #include "vtk.h"
 #include "kE.h"
 
-#define CELL_INDEX(i,j,k) (k + nk * (j + i * nj))
+#define CELL_INDEX(i,j,k) ((k) + nk * ((j) + (i) * nj))
 
 int vtk_write_fv(struct mesh_data *mesh, int timestep)
 {

@@ -787,7 +787,7 @@ int kE_wall_shear(struct solver_data *solver) {
         tau_u = tau_x(i,j,k);
         tau_d = tau_x(i+1,j,k);
         
-        if(tau_u + tau_d > solver->emf) {
+        if(fabs(tau_u) + fabs(tau_d) > solver->emf) {
           
           ws_u  = tau_u  / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
           ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
@@ -815,7 +815,7 @@ int kE_wall_shear(struct solver_data *solver) {
         tau_u = tau_y(i,j,k);
         tau_d = tau_y(i,j+1,k);
         
-        if(tau_u + tau_d > solver->emf) {
+        if(fabs(tau_u) + fabs(tau_d) > solver->emf) {
           
           ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
           ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
@@ -842,7 +842,7 @@ int kE_wall_shear(struct solver_data *solver) {
         tau_u = tau_z(i,j,k);
         tau_d = tau_z(i,j,k+1);
         
-        if(tau_u + tau_d > solver->emf) {
+        if(fabs(tau_u) + fabs(tau_d) > solver->emf) {
           
           ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
           ws_u += tau_u / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
