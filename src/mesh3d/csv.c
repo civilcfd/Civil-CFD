@@ -13,7 +13,7 @@
 #include "csv.h"
 #include "../solver3d/kE.h"
 
-#define CELL_INDEX(i,j,k) (k + nk * (j + i * nj))
+#define CELL_INDEX(i,j,k) ((k) + nk * ((j) + (i) * nj))
 
 int csv_read_U_p_vof(struct mesh_data *mesh, double timestep) {
     /* must zero out before reading since zero values are not stored to save space */

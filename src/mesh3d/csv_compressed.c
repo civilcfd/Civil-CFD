@@ -14,8 +14,8 @@
 
 #include "csv.h"
 #include "../solver3d/kE.h"
-
-#define CELL_INDEX(i,j,k) (k + nk * (j + i * nj))
+ 
+#define CELL_INDEX(i,j,k) ((k) + nk * ((j) + (i) * nj))
 
 int csv_compressed_write_scalar_grid(char *filename_csv, char *dataset_name, long int ni, long int nj, long int nk,
                           double *scalars) {

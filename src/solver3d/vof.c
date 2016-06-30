@@ -1122,8 +1122,8 @@ int vof_loop(struct solver_data *solver) {
 }
 
 int vof_output(struct solver_data *solver) {
-	time_t current;
-	double elapsed;
+  time_t current;
+  double elapsed;
 
   if(solver->iter >= solver->niter) {
     printf("timestep: %lf | delt: %lf | pressure did not converge\n", solver->t, solver->delt);
@@ -1133,7 +1133,7 @@ int vof_output(struct solver_data *solver) {
   }
   printf("Max residual %lf | epsi %lf", solver->resimax, solver->epsi);
   if(solver->pressure == vof_pressure)
-  	printf(" | omega %lf", solver->omg_final);
+    printf(" | omega %lf", solver->omg_final);
   printf("\n");
   
   if(solver->vchgt > solver->emf) {
@@ -1321,15 +1321,15 @@ int vof_deltcal(struct solver_data *solver) {
       //}
         if(AT(i,j,k) > solver->emf && !isnan(dt_U))
           delt_conv = min(delt_conv, dt_U);					
-					
-			}
-		}
-	}
+          
+      }
+    }
+  }
   printf("maximum timestep for convective stability: %lf\n",delt_conv);
   
   delt = min(delt, delt_conv);
   
-	delt = min(delt, 0.8 * dtvis);
+  delt = min(delt, 0.8 * dtvis);
    
   if(solver->delt_n != delt) {
     printf("timestep adjusted from %lf to %lf\n",solver->delt_n,delt);
@@ -1380,7 +1380,7 @@ int vof_write(struct solver_data *solver) {
     
   if(solver->t >= write_flg) {
   
-		vof_write_timestep(solver);
+    vof_write_timestep(solver);
     
     write_flg = solver->t + solver->writet;
   }
@@ -1389,35 +1389,35 @@ int vof_write(struct solver_data *solver) {
 }
 
 int vof_write_timestep(struct solver_data * solver) {
-	int write_step;
-	
-	write_step = track_add(solver->t);
-	track_write();
-	
-	vtk_write_P(solver->mesh,write_step);
-	vtk_write_U(solver->mesh,write_step);
-	vtk_write_vof(solver->mesh,write_step);
-	vtk_write_n_vof(solver->mesh,write_step);
-	
-	csv_write_P(solver->mesh,solver->t);
-	csv_write_U(solver->mesh,solver->t);
-	csv_write_vof(solver->mesh,solver->t);
-	csv_write_n_vof(solver->mesh,solver->t);
-	
-	if(solver->mesh->turbulence_model != NULL) {
-		vtk_write_k(solver->mesh,write_step);
-		vtk_write_E(solver->mesh,write_step);
-		csv_write_k(solver->mesh,solver->t);
-		csv_write_E(solver->mesh,solver->t);
-	}
-	
-	vof_baffles_write(solver);
-	
-	vof_vorticity(solver);
-	
-	vtk_write_vorticity(solver->mesh,write_step);
-	csv_write_vorticity(solver->mesh,solver->t);
-	
-	return 1;
+  int write_step;
+  
+  write_step = track_add(solver->t);
+  track_write();
+  
+  vtk_write_P(solver->mesh,write_step);
+  vtk_write_U(solver->mesh,write_step);
+  vtk_write_vof(solver->mesh,write_step);
+  vtk_write_n_vof(solver->mesh,write_step);
+  
+  csv_write_P(solver->mesh,solver->t);
+  csv_write_U(solver->mesh,solver->t);
+  csv_write_vof(solver->mesh,solver->t);
+  csv_write_n_vof(solver->mesh,solver->t);
+  
+  if(solver->mesh->turbulence_model != NULL) {
+    vtk_write_k(solver->mesh,write_step);
+    vtk_write_E(solver->mesh,write_step);
+    csv_write_k(solver->mesh,solver->t);
+    csv_write_E(solver->mesh,solver->t);
+  }
+  
+  vof_baffles_write(solver);
+  
+  vof_vorticity(solver);
+  
+  vtk_write_vorticity(solver->mesh,write_step);
+  csv_write_vorticity(solver->mesh,solver->t);
+  
+  return 1;
 }
 
