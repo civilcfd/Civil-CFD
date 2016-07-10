@@ -22,13 +22,11 @@
 int vof_vorticity(struct solver_data *solver) {
   long int i,j,k;
   
-#pragma omp parallel for shared (solver) private(i,j,k) \
-            collapse(3) schedule(dynamic, 100)  
-  for(i=0; i<IMAX; i++) {
+  for(i=0; i<IRANGE; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
         
-        if(i == 0 || i==IMAX-1 || j==0 || j==JMAX-1 || k==0 || k==KMAX-1) {
+        if(i == 0 || i==IRANGE-1 || j==0 || j==JMAX-1 || k==0 || k==KMAX-1) {
           U_OMEGA(i,j,k)=0;
           V_OMEGA(i,j,k)=0;
           W_OMEGA(i,j,k)=0;

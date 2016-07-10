@@ -129,6 +129,9 @@ struct mesh_data *mesh_init_empty() {
   mesh->delx = 0.075;
   mesh->dely = 0.075;
   mesh->delz = 0.075;
+  mesh->rdx = 1.0 / mesh->delx;
+  mesh->rdy = 1.0 / mesh->dely;
+  mesh->rdz = 1.0 / mesh->delz;
 
   mesh->origin[0] = 0;
   mesh->origin[1] = 0;
@@ -418,6 +421,9 @@ int mesh_set_value(struct mesh_data *mesh, char *param, int dims,
     mesh->delx = vector[0];
     mesh->dely = vector[1];
     mesh->delz = vector[2];
+    mesh->rdx = 1.0 / mesh->delx;
+    mesh->rdy = 1.0 / mesh->dely;
+    mesh->rdz = 1.0 / mesh->delz;
   }
   else if (strcmp(param, "inside")==0) {
     if(dims != 3) {
@@ -646,9 +652,8 @@ int mesh_init_complete(struct mesh_data *mesh) {
   
   size = mesh->imax * mesh->jmax * mesh->kmax;
 
-  mesh->rdx = 1.0 / mesh->delx;
-  mesh->rdy = 1.0 / mesh->dely;
-  mesh->rdz = 1.0 / mesh->delz;
+  mesh->i_range = mesh->imax;
+  mesh->i_start = 0;
 
   if(size<=0) {
     printf("error: improper size mesh in mesh_init_complete\n");

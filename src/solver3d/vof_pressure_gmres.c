@@ -5,10 +5,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <omp.h>
 #include <petscksp.h>
 #include <petscmat.h>
+#include <petscsys.h>
 
 #include "vtk.h"
 #include "vof.h"
@@ -32,6 +34,8 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b);
 /* the second sets dp/dx = 0 at the edge */
 int vof_pressure_gmres_boundary(struct solver_data *solver, Mat A);
 int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b);
+int vof_pressure_gmres_write(Mat A, double timestep);
+int vof_pressure_gmres_mpi_range(struct solver_data *solver);
 
 
 int vof_pressure_gmres_boundary(struct solver_data *solver, Mat A) {
@@ -214,56 +218,60 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
     for(k=1; k<KMAX-1; k++) {
 
       /* west boundary */
-      wb = solver->mesh->wb[0];
-      sb = vof_boundaries_check_inside_sb(solver, j, k, 0);
-      if(sb == fixed_velocity || sb == mass_outflow || 
-      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {   
-      	 
-      	if(FV(1,j,k) < solver->emf || AE(0,j,k) < solver->emf) continue; 
-        
-      	nidx = mesh_index(solver->mesh,0,j,k);
-      	nlmn = mesh_index(solver->mesh,1,j,k);
-        
-        if(N_VOF(1,j,k) != 0) {
-          /* explicit zero out since this could change */
-          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-        } else {           
-          ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+      if(ISTART == 0) {
+        wb = solver->mesh->wb[0];
+        sb = vof_boundaries_check_inside_sb(solver, j, k, 0);
+        if(sb == fixed_velocity || sb == mass_outflow || 
+          (sb == wall && (wb == slip || wb == no_slip) ) ) {   
+          
+          if(FV(1,j,k) < solver->emf || AE(0,j,k) < solver->emf) continue; 
+          
+          nidx = mesh_index(solver->mesh,0,j,k);
+          nlmn = mesh_index(solver->mesh,1,j,k);
+          
+          if(N_VOF(1,j,k) != 0) {
+            /* explicit zero out since this could change */
+            ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          } else {           
+            ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          }
         }
       }
 
       /* east boundary */
-      wb = solver->mesh->wb[1];
-      sb = vof_boundaries_check_inside_sb(solver, j, k, 1);
-      if(sb == fixed_velocity || sb == mass_outflow || 
-      	 (sb == wall && (wb == slip || wb == no_slip) ) ) {     
-      	 
-      	if(FV(IMAX-2,j,k) < solver->emf || AE(IMAX-2,j,k) < solver->emf) continue; 
-        
-      	nidx = mesh_index(solver->mesh,IMAX-1,j,k);
-      	nlmn = mesh_index(solver->mesh,IMAX-2,j,k);
-        
-        if(N_VOF(IMAX-2,j,k) != 0) {
-          /* explicit zero out since this could change */
-          ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-        } else {        	
-          ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-        }
-      }      
+      if(ISTART + IRANGE == IMAX) {
+        wb = solver->mesh->wb[1];
+        sb = vof_boundaries_check_inside_sb(solver, j, k, 1);
+        if(sb == fixed_velocity || sb == mass_outflow || 
+          (sb == wall && (wb == slip || wb == no_slip) ) ) {     
+          
+          if(FV(IRANGE-2,j,k) < solver->emf || AE(IRANGE-2,j,k) < solver->emf) continue; 
+          
+          nidx = mesh_index(solver->mesh,IMAX-1,j,k);
+          nlmn = mesh_index(solver->mesh,IMAX-2,j,k);
+          
+          if(N_VOF(IRANGE-2,j,k) != 0) {
+            /* explicit zero out since this could change */
+            ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          } else {        	
+            ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
+            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          }
+        }      
+      }
       
     }
   }
   
   /* boundaries on y-axis */
-  for(i=1; i<IMAX-1; i++) {
+  for(i=1; i<IRANGE-1; i++) {
     for(k=1; k<KMAX-1; k++) {
          
       /* south boundary */
@@ -274,8 +282,8 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       	 
       	if(FV(i,1,k) < solver->emf || AN(i,0,k) < solver->emf) continue;  
         
-      	nidx = mesh_index(solver->mesh,i,0,k);
-      	nlmn = mesh_index(solver->mesh,i,1,k);
+      	nidx = mesh_index(solver->mesh,i+ISTART,0,k);
+      	nlmn = mesh_index(solver->mesh,i+ISTART,1,k);
         
         if(N_VOF(i,1,k) != 0) {
           /* explicit zero out since this could change */
@@ -297,8 +305,8 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       	 
       	if(FV(i,JMAX-2,k) < solver->emf || AN(i,JMAX-2,k) < solver->emf) continue;   
         
-      	nidx = mesh_index(solver->mesh,i,JMAX-1,k);
-      	nlmn = mesh_index(solver->mesh,i,JMAX-2,k);
+      	nidx = mesh_index(solver->mesh,i+ISTART,JMAX-1,k);
+      	nlmn = mesh_index(solver->mesh,i+ISTART,JMAX-2,k);
         
         if(N_VOF(i,JMAX-2,k) != 0) {
           /* explicit zero out since this could change */
@@ -317,7 +325,7 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
   
     
   /* boundaries on z-axis */
-  for(i=1; i<IMAX-1; i++) {
+  for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
    	
       /* bottom boundary */
@@ -328,8 +336,8 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       	 
       	if(FV(i,j,1) < solver->emf || AT(i,j,0) < solver->emf) continue;    
         
-      	nidx = mesh_index(solver->mesh,i,j,0);
-      	nlmn = mesh_index(solver->mesh,i,j,1);
+      	nidx = mesh_index(solver->mesh,i+ISTART,j,0);
+      	nlmn = mesh_index(solver->mesh,i+ISTART,j,1);
         
         if(N_VOF(i,j,1) != 0) {
           /* explicit zero out since this could change */
@@ -352,8 +360,8 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
       	 
       	if(FV(i,j,KMAX-2) < solver->emf || AT(i,j,KMAX-2) < solver->emf) continue;     
         
-      	nidx = mesh_index(solver->mesh,i,j,KMAX-1);
-      	nlmn = mesh_index(solver->mesh,i,j,KMAX-2);
+      	nidx = mesh_index(solver->mesh,i+ISTART,j,KMAX-1);
+      	nlmn = mesh_index(solver->mesh,i+ISTART,j,KMAX-2);
         
         if(N_VOF(i,j,KMAX-2) != 0) {
           /* explicit zero out since this could change */
@@ -383,6 +391,7 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
 	PetscScalar r_rhodx2, r_rhody2, r_rhodz2;
 	PetscScalar row[7];
 	PetscErrorCode ierr;
+  long int range;
 	
 	dt_rho = solver->delt / solver->rho;
 	dt_rhodx2 = dt_rho / pow(DELX,2);
@@ -395,20 +404,22 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
  /* Assemble matrix */
  #define emf solver->emf
 
-  for(i=1; i<IMAX-1; i++) {
+ range=vof_pressure_gmres_mpi_range(solver);
+
+  for(i=1; i<range; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {      
       
         
         if(FV(i,j,k)<emf) continue;
                        
-        row_idx[0] = mesh_index(solver->mesh,i,j,k);   
-        row_idx[1] = mesh_index(solver->mesh,i+1,j,k);  
-        row_idx[2] = mesh_index(solver->mesh,i-1,j,k);  
-        row_idx[3] = mesh_index(solver->mesh,i,j+1,k);
-        row_idx[4] = mesh_index(solver->mesh,i,j-1,k);
-        row_idx[5] = mesh_index(solver->mesh,i,j,k+1);
-        row_idx[6] = mesh_index(solver->mesh,i,j,k-1);
+        row_idx[0] = mesh_index(solver->mesh,i+ISTART,j,k);   
+        row_idx[1] = mesh_index(solver->mesh,i+1+ISTART,j,k);  
+        row_idx[2] = mesh_index(solver->mesh,i-1+ISTART,j,k);  
+        row_idx[3] = mesh_index(solver->mesh,i+ISTART,j+1,k);
+        row_idx[4] = mesh_index(solver->mesh,i+ISTART,j-1,k);
+        row_idx[5] = mesh_index(solver->mesh,i+ISTART,j,k+1);
+        row_idx[6] = mesh_index(solver->mesh,i+ISTART,j,k-1);
                
         if(N_VOF(i,j,k) != 0) {
         
@@ -444,14 +455,14 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
             break;
           case none:
           default: 
-            nidx = mesh_index(solver->mesh,i,j,k);
+            nidx = mesh_index(solver->mesh,i+ISTART,j,k);
             ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
             ierr = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
             continue;
           }
           
-          nidx = mesh_index(solver->mesh,i,j,k);
-          nlmn = mesh_index(solver->mesh,l,m,n);
+          nidx = mesh_index(solver->mesh,i+ISTART,j,k);
+          nlmn = mesh_index(solver->mesh,l+ISTART,m,n);
           
           if(N_VOF(l,m,n) != 0) {
             row[0] = 1 / (solver->rho * solver->delt);
@@ -493,7 +504,7 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
         	row[5] = r_rhodz2 * AT(i,j,k);
         	row[6] = r_rhodz2 * AT(i,j,k-1);
         	
-        	nidx = mesh_index(solver->mesh,i,j,k);
+        	nidx = mesh_index(solver->mesh,i+ISTART,j,k);
     			ierr   = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
     			
     			rhs  = (AE(i,j,k) * U(i,j,k) - AE(i-1,j,k) * U(i-1,j,k)) * RDX;
@@ -533,6 +544,7 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
 	PetscScalar r_rhodx2, r_rhody2, r_rhodz2;
 	PetscScalar row[7];
 	PetscErrorCode ierr;
+  long int range;
 	
 	dt_rho = solver->delt / solver->rho;
 	dt_rhodx2 = dt_rho / pow(DELX,2);
@@ -544,21 +556,23 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
 	r_rhodz2 = 1/solver->rho * 1/pow(DELZ,2);
  /* Assemble matrix */
  #define emf solver->emf
+  
+ range=vof_pressure_gmres_mpi_range(solver);
 
-  for(i=1; i<IMAX-1; i++) {
+  for(i=1; i<range; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {      
       
         
         if(FV(i,j,k)<emf) continue;
                        
-        row_idx[0] = mesh_index(solver->mesh,i,j,k);   
-        row_idx[1] = mesh_index(solver->mesh,i+1,j,k);  
-        row_idx[2] = mesh_index(solver->mesh,i-1,j,k);  
-        row_idx[3] = mesh_index(solver->mesh,i,j+1,k);
-        row_idx[4] = mesh_index(solver->mesh,i,j-1,k);
-        row_idx[5] = mesh_index(solver->mesh,i,j,k+1);
-        row_idx[6] = mesh_index(solver->mesh,i,j,k-1);
+        row_idx[0] = mesh_index(solver->mesh,i+ISTART,j,k);   
+        row_idx[1] = mesh_index(solver->mesh,i+1+ISTART,j,k);  
+        row_idx[2] = mesh_index(solver->mesh,i-1+ISTART,j,k);  
+        row_idx[3] = mesh_index(solver->mesh,i+ISTART,j+1,k);
+        row_idx[4] = mesh_index(solver->mesh,i+ISTART,j-1,k);
+        row_idx[5] = mesh_index(solver->mesh,i+ISTART,j,k+1);
+        row_idx[6] = mesh_index(solver->mesh,i+ISTART,j,k-1);
                
         if(N_VOF(i,j,k) != 0) {
         
@@ -595,14 +609,14 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
           case none:
           default: 
             if(N_VOF_N(i,j,k) == N_VOF(i,j,k)) continue;
-            nidx = mesh_index(solver->mesh,i,j,k);
+            nidx = mesh_index(solver->mesh,i+ISTART,j,k);
             ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
             ierr = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
             continue;
           }
           
-          nidx = mesh_index(solver->mesh,i,j,k);
-          nlmn = mesh_index(solver->mesh,l,m,n);
+          nidx = mesh_index(solver->mesh,i+ISTART,j,k);
+          nlmn = mesh_index(solver->mesh,l+ISTART,m,n);
           
           if(N_VOF(l,m,n) != 0) {
             row[0] = 1 / (solver->rho * solver->delt);
@@ -645,7 +659,7 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
         	row[5] = r_rhodz2 * AT(i,j,k);
         	row[6] = r_rhodz2 * AT(i,j,k-1);
         	
-        	nidx = mesh_index(solver->mesh,i,j,k);
+        	nidx = mesh_index(solver->mesh,i+ISTART,j,k);
     			ierr   = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
     			
     			rhs  = (AE(i,j,k) * U(i,j,k) - AE(i-1,j,k) * U(i-1,j,k)) * RDX;
@@ -669,7 +683,7 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
         }
         else {
     			
-        	nidx = mesh_index(solver->mesh,i,j,k);
+        	nidx = mesh_index(solver->mesh,i+ISTART,j,k);
     			rhs  = (AE(i,j,k) * U(i,j,k) - AE(i-1,j,k) * U(i-1,j,k)) * RDX;
     			rhs += (AN(i,j,k) * V(i,j,k) - AN(i,j-1,k) * V(i,j-1,k)) * RDY;
     			rhs += (AT(i,j,k) * W(i,j,k) - AT(i,j,k-1) * W(i,j,k-1)) * RDZ;     
@@ -737,6 +751,8 @@ int vof_pressure_gmres(struct solver_data *solver) {
   
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+  /* vof_pressure_gmres_write(A,solver->t); */
   
   ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
   ierr = VecAssemblyEnd(b);CHKERRQ(ierr);
@@ -800,6 +816,17 @@ int vof_pressure_gmres(struct solver_data *solver) {
 
 }
 
+int vof_pressure_gmres_mpi_range(struct solver_data *solver) {
+  int range;
+
+  range = IRANGE - 1;
+  if(solver->rank < solver->size - 1 && solver->rank > 0) {
+    range--;
+  }
+
+  return range;
+}
+
 int vof_pressure_gmres_mpi(struct solver_data *solver) {
 	PetscInt i,j,k,n,size;
 	PetscInt	iter;
@@ -813,56 +840,51 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   static int initialize = 0;
   int rank;
   int ok = 1;
+  int range;
+  int Istart, Iend;
+  int Cstart, Cend;
   
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-	
-	if(!rank) {
-	  MPI_Bcast(&ok, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	}
-	
-	
-	
+  range = vof_pressure_gmres_mpi_range(solver);
+
 	if(!initialize) {
-    MPI_Bcast(&IMAX, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&JMAX, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&KMAX, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&solver->rho, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&solver->niter, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	    
 	  size = IMAX * JMAX * KMAX;
-    /*
-    ierr = MatCreateMPIAIJ(PETSC_COMM_WORLD,PETSC_DECIDE,PETSC_DECIDE,size,size,
-                            7,PETSC_NULL,7,PETSC_NULL,&A);CHKERRQ(ierr); */
+    
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
-    ierr = MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,size,size);CHKERRQ(ierr);
+    ierr = MatSetSizes(A,range * JMAX * KMAX,range * JMAX * KMAX,size,size);CHKERRQ(ierr);
     ierr = MatSetType(A,MATMPIAIJ);CHKERRQ(ierr);
     ierr = MatMPIAIJSetPreallocation(A, 7, PETSC_NULL, 7, PETSC_NULL);CHKERRQ(ierr);
-    ierr = VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,size,&x);CHKERRQ(ierr);
-    ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
+    ierr = MatGetOwnershipRange(A,&Istart,&Iend);
+    ierr = MatGetOwnershipRangeColumn(A,&Cstart,&Cend);
+    ierr = VecCreateMPI(PETSC_COMM_WORLD,range * JMAX * KMAX,size,&x);CHKERRQ(ierr);
+    ierr = VecCreateMPI(PETSC_COMM_WORLD,range * JMAX * KMAX,size,&b);CHKERRQ(ierr);
     
     ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
     ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
     ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
     ierr = KSPSetType(ksp,KSPGMRES); CHKERRQ(ierr);
     
-    if(!rank) vof_pressure_gmres_assemble(solver, A, b);
+    vof_pressure_gmres_assemble(solver, A, b);
 		initialize = 1;
+
+    printf("Built matrix with range: %d to %d on proc %d and preferred range %d\n",Istart, Iend, rank, range * JMAX * KMAX);
+    printf("Column range: %d to %d on proc %d\n\n",Cstart,Cend,rank);
 	}
   else {
-    if(!rank) vof_pressure_gmres_update(solver, A, b);  
+    vof_pressure_gmres_update(solver, A, b);  
   }
   
-  if(!rank) vof_pressure_gmres_boundary_edge(solver, A, b); 
+  vof_pressure_gmres_boundary_edge(solver, A, b); 
   
   ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
   ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+  /* vof_pressure_gmres_write(A,solver->t); */
   
   ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
   ierr = VecAssemblyEnd(b);CHKERRQ(ierr);
   
   
-	MPI_Bcast(&solver->epsi, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&solver->delt, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   /*
      Solve linear system
   */
@@ -871,24 +893,18 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
 	//ierr = KSPMonitorSet(ksp, KSPMonitorDefault, NULL, NULL); 
   ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
   
-  ierr = VecScatterCreateToZero(x,&ctx,&w);CHKERRQ(ierr);
+  /*ierr = VecScatterCreateToAll(x,&ctx,&w);CHKERRQ(ierr);
   ierr = VecScatterBegin(ctx,x,w,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
   ierr = VecScatterEnd(ctx,x,w,INSERT_VALUES,SCATTER_FORWARD);CHKERRQ(ierr);
-  ierr = VecScatterDestroy(&ctx);CHKERRQ(ierr);
-  
-  if(rank != 0) return 0;
+  ierr = VecScatterDestroy(&ctx);CHKERRQ(ierr);*/
   
   ierr = KSPGetResidualNorm(ksp, &solver->resimax);CHKERRQ(ierr);
   ierr = KSPGetIterationNumber(ksp, &iter);CHKERRQ(ierr);
   solver->iter = iter;
-
-  /*
-     View solver info; we could instead use the option -ksp_view to
-     print this info to the screen at the conclusion of KSPSolve().
-  */
-  //ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); 
   
-  for(i=1; i<IMAX-1; i++) {
+  /* range = IRANGE;
+  if(range + solver->mesh->i_start == IMAX) range--; */
+  for(i=1; i<range; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {      
       
@@ -897,12 +913,12 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
 
         if(VOF(i,j,k) < emf) continue;
         
-        n = mesh_index(solver->mesh,i,j,k);
-        ierr = VecGetValues(w,1,&n,&delp); CHKERRQ(ierr);
+        n = mesh_index(solver->mesh,i+ISTART,j,k);
+        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
         
         P(i,j,k) += delp;
 
-        if(AE(i,j,k) > emf && i < IMAX-1)
+        if(AE(i,j,k) > emf && i+ISTART < IMAX-1)
           U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
         if(AE(i-1,j,k) > emf && i > 0)
           U(i-1,j,k)=U(i-1,j,k) - solver->delt* RDX * delp / (solver->rho /* AE(i-1,j,k) */);
@@ -920,7 +936,48 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   	}
   }
   
-  ierr = VecDestroy(&w);CHKERRQ(ierr); 
+  /* boundary edges */
+  for(j=1; j<JMAX-1; j++) {
+    for(k=1; k<KMAX-1; k++) {      
+        
+      i = range - 1;
+      solver->mesh->delu_downstream[KMAX * j + k] = 0;
+      if(FV(i,j,k)>emf && VOF(i,j,k) > emf) {
+
+        n = mesh_index(solver->mesh,i+ISTART,j,k);
+        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
+        
+        if(AE(i,j,k) > emf && i+ISTART < IMAX-2)
+          solver->mesh->delu_downstream[KMAX * j + k] = solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
+      }
+
+      i = 1;
+      solver->mesh->delu_upstream[KMAX * j + k] = 0;
+      if(FV(i,j,k)>emf && VOF(i,j,k) > emf) {
+
+        n = mesh_index(solver->mesh,i+ISTART,j,k);
+        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
+        
+        if(AE(i-1,j,k) > emf && i+ISTART > 1)
+          solver->mesh->delu_upstream[KMAX * j + k] = -1 * solver->delt* RDX * delp / (solver->rho /* AE(i-1,j,k) */);
+
+      }     
+    }
+  }
+
+  solver_sendrecv_delu(solver);
+
+  for(j=1; j<JMAX-1; j++) {
+    for(k=1; k<KMAX-1; k++) {      
+      i = range - 1;
+      U(i,j,k) += solver->mesh->delu_downstream[KMAX * j + k];
+
+      i = 0;
+      U(i,j,k) += solver->mesh->delu_upstream[KMAX * j + k];
+    }
+  }
+
+  //ierr = VecDestroy(&w);CHKERRQ(ierr); 
   /* ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
   ierr = KSPDestroy(&ksp);CHKERRQ(ierr);  */
   
@@ -928,4 +985,16 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   solver->p_flag = 0;
   return 0;
 
+}
+
+int vof_pressure_gmres_write(Mat A, double timestep) 
+{
+  PetscViewer viewer;
+  char filename[256];
+
+  sprintf(filename,"%4.3lfMat",timestep);
+
+  PetscViewerASCIIOpen(PETSC_COMM_WORLD, filename, &viewer);
+  MatView(A, viewer);
+  PetscViewerDestroy(&viewer);
 }

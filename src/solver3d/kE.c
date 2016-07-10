@@ -18,6 +18,7 @@
 #include "csv.h"
 #include "kE.h"
 #include "vof_boundary.h"
+#include "solver_mpi.h"
  
 #include "vof_macros.h" 
 #include "vector_macros.h"
@@ -150,32 +151,6 @@ int kE_read(char *filename)
 
   return 0;
 }
-
-/*
-int kE_read(char *filename) {
-  FILE *fp;
-  char dummy[256];
-
-  if(filename == NULL) {
-    printf("error: passed null arguments to kE_read\n");
-    return(1);
-  }
-
-  fp = fopen(filename, "r");
-
-  if(fp == NULL) {
-    printf("error: cannot open %s in kE_read\n",filename);
-    return(1);
-  }
-
-  fscanf(fp,"length_scale %le",&kE.length_scale);
-  
-  fscanf(fp,"%s %le",dummy,&kE.rough);
-  kE_n.rough = kE.rough;
-
-  fclose(fp);
-  return 0;
-}*/
 
 int kE_write(char *filename) {
   FILE *fp;
@@ -358,8 +333,7 @@ int kE_set_internal(struct solver_data *solver, double k, double E) {
   
   E_limit = kE.C_mu * pow(k, 1.5) / kE.length;
 
-#pragma omp parallel for shared(solver,k,E,E_limit) private(l,m,n)  
-  for(l=0; l<IMAX; l++) {
+  for(l=0; l<IRANGE; l++) {
     for(m=0; m<JMAX; m++) {
       for(n=0; n<KMAX; n++) {
         k(l,m,n) = k;
@@ -383,9 +357,8 @@ int kE_set_internal(struct solver_data *solver, double k, double E) {
 
 int kE_copy(struct solver_data *solver) {
   long int l,m,n;
-
-#pragma omp parallel for shared(solver) private(l,m,n)   
-  for(l=0; l<IMAX; l++) {
+ 
+  for(l=0; l<IRANGE; l++) {
     for(m=0; m<JMAX; m++) {
       for(n=0; n<KMAX; n++) {
         k_N(l,m,n) = k(l,m,n);
@@ -406,44 +379,57 @@ double kE_nu(struct solver_data *solver, long int i, long int j, long int k) {
 
 int kE_boundaries(struct solver_data *solver) {
 
-  /* sets boundaries on k and epsilon
-   * does not set boundaries on U, see wall_shear */
+  /* sets neumann boundaries on k and epsilon */
   long int i,j,k, l, m, n;
 
+  for(i=0; i<IRANGE; i++) {
+    for(j=0; j<JMAX; j++) {
+      k(i,j,0) = k(i,j,1);
+      k(i,j,KMAX-1) = k(i,j,KMAX-2);
 
-#pragma omp parallel for shared(solver) private(i,j,k)  
-  for(i=0; i<IMAX; i++) {
+      E(i,j,0) = E(i,j,1);
+      E(i,j,KMAX-1) = E(i,j,KMAX-2);
+
+      nu_t(i,j,0) = nu_t(i,j,1);
+      nu_t(i,j,KMAX-1) = nu_t(i,j,KMAX-2);
+
+    }
+  }
+  for(i=0; i<IRANGE; i++) {
+    for(k=0; k<KMAX; k++) {
+      k(i,0,k) = k(i,1,k);
+      k(i,JMAX-1,k) = k(i,JMAX-2,k);
+
+      E(i,0,k) = E(i,1,k);
+      E(i,JMAX-1,k) = E(i,JMAX-2,k);
+
+      nu_t(i,0,k) = nu_t(i,1,k);
+      nu_t(i,JMAX-1,k) = nu_t(i,JMAX-2,k);
+
+    }
+  }
+  for(j=0; j<JMAX; j++) {
+    for(k=0; k<KMAX; k++) {
+      if(solver->mesh->i_start == 0) {
+        k(0,j,k) = k(1,j,k);
+        E(0,j,k) = E(1,j,k);
+        nu_t(0,j,k) = nu_t(1,j,k);
+      } else if(solver->mesh->i_start + solver->mesh->i_range == IMAX) {
+        k(IMAX-1,j,k) = k(IMAX-2,j,k);
+        E(IMAX-1,j,k) = E(IMAX-2,j,k);
+        nu_t(IMAX-1,j,k) = nu_t(IMAX-2,j,k);
+      }
+
+    }
+  }
+
+  for(i=0; i<IRANGE; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
       
       	tau_x(i,j,k) = 0;
       	tau_y(i,j,k) = 0;
       	tau_z(i,j,k) = 0;
-      
-        if(i>0 && i<IMAX-1 && j>0 && j<JMAX-1 && k>0 && k<KMAX-1) continue;
-        /* set mesh boundaries */
-        k(0,j,k) = k(1,j,k);
-        k(IMAX-1,j,k) = k(IMAX-2,j,k);
-        E(0,j,k) = E(1,j,k);
-        E(IMAX-1,j,k) = E(IMAX-2,j,k);
-        nu_t(0,j,k) = nu_t(1,j,k);
-        nu_t(IMAX-1,j,k) = nu_t(IMAX-2,j,k);
-
-        k(i,0,k) = k(i,1,k);
-        k(i,JMAX-1,k) = k(i,JMAX-2,k);
-        E(i,0,k) = E(i,1,k);
-        E(i,JMAX-1,k) = E(i,JMAX-2,k);
-        nu_t(i,0,k) = nu_t(i,1,k);
-        nu_t(i,JMAX-1,k) = nu_t(i,JMAX-2,k);
-        
-
-        k(i,j,0) = k(i,j,1);
-        k(i,j,KMAX-1) = k(i,j,KMAX-2);
-        E(i,j,0) = E(i,j,1);
-        E(i,j,KMAX-1) = E(i,j,KMAX-2);
-        nu_t(i,j,0) = nu_t(i,j,1);
-        nu_t(i,j,KMAX-1) = nu_t(i,j,KMAX-2);
-
       }
     }
   }
@@ -454,13 +440,11 @@ int kE_boundaries(struct solver_data *solver) {
 
 	/* free surface boundaries - the free surface acts as a von Neumann boundary */
 	/* also takes care of cells outside of the solution space */
-	/* ADDED 10/26 */
-  for(i=1; i<IMAX-1; i++) {
+  for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
       
       	if(FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf || N_VOF(i,j,k) > 6) { 
-      		/* at an interior obstacle or empty cell, set k = 0 */
       		k(i,j,k) = 0;
       		E(i,j,k) = 0;
       		nu_t(i,j,k) = 0;
@@ -496,17 +480,7 @@ int kE_boundaries(struct solver_data *solver) {
 				case empty:
 					continue;
 				}
-      
-      		/*
-          if(N_VOF(l,m,n) != 0 && FV(i,j,k) != 0) {
-            k(i,j,k) = 0;
-            E(i,j,k) = 0;
-        		tau_x(i,j,k) = 0;
-        		tau_y(i,j,k) = 0;
-        		tau_z(i,j,k) = 0;
-        		nu_t(i,j,k) = 0;
-            continue;   		
-          }*/
+
 				k(i,j,k) = k(l,m,n);
 				E(i,j,k) = E(l,m,n);
 				nu_t(i,j,k) = nu_t(l,m,n);
@@ -589,102 +563,14 @@ inline double log_law(double u, double d, double mu, double rho, double rough)
   return u_t;
 }
 
-/*************************************
-NEEDS TO BE FIXED - Only iterates on one wall
-
-Currently not used in the solver.  Only obstacles apply shear
-*************************************/
-int kE_boundary_wall_shear(struct solver_data *solver) {
-
-  /* extension of velocity to add/subtract wall shears from velocity variable
-   * wall shear from south wall on U = 2 * nu * u / (dy^2 * AE) * (1 - AS)  if laminar 
-   * for turbulent, we can calculate u* based on k (k = u* ^2 / C)
-   * and then tau from u*.  Wall stress = 1/rho * tau/dy 
-   * unfortunately, this is cell centered and so will need to be averaged for cells i and i+1 */
-  long int i,j,k;
-  double ws_u, ws_d, tau_u, tau_d;
-
-
-  i = 0;
-    for(j=0; j<JMAX; j++) {
-      for(k=0; k<KMAX; k++) {
-
-
-        if( ( ((FV(i,j,k) > solver->emf)   && (FV(i,j,k) < 1-solver->emf)) ||
-              ((FV(i+1,j,k) > solver->emf) && (FV(i+1,j,k) < 1-solver->emf)) ) &&
-              AE(i,j,k) > solver->emf) { 
-          
-
-          tau_u = tau_x(i,j,k);
-          tau_d = tau_x(i+1,j,k);
-          
-          ws_u  = tau_u  / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
-          ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
-          
-          ws_d  = tau_d / (solver->rho * DELY) * fabs((1-AN(i+1,j,k)) - (1-AN(i+1,j-1,k)));
-          ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i+1,j,k)) - (1-AT(i+1,j,k-1)));
-        
-          U(i,j,k) += 0.5 * (ws_u + ws_d) * solver->delt;
-          
-          if(isnan(U(i,j,k))) {
-          #ifdef DEBUG
-            printf("nan at cell %ld %ld %ld in wall_shear\n",i,j,k);
-          #endif
-          }
-        }
-
-        if( ( ((FV(i,j,k) > solver->emf && FV(i,j,k) < 1-solver->emf)) ||
-              ((FV(i,j+1,k) > solver->emf && FV(i,j+1,k) < 1-solver->emf)) ) &&
-                AN(i,j,k) > solver->emf) { 
-          
-
-          tau_u = tau_y(i,j,k);
-          tau_d = tau_y(i,j+1,k);
-          
-          ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
-          ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
-          
-          ws_d  = tau_d / (solver->rho * DELX) * fabs((1-AE(i,j+1,k)) - (1-AE(i-1,j+1,k)));
-          ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i,j+1,k)) - (1-AT(i,j+1,k-1)));
-        
-          V(i,j,k) += 0.5 * (ws_u + ws_d) * solver->delt;
-        }
-
-        if( ( ((FV(i,j,k) > solver->emf && FV(i,j,k) < 1-solver->emf)) ||
-              ((FV(i,j,k+1) > solver->emf && FV(i,j,k+1) < 1-solver->emf)) ) &&
-                AT(i,j,k) > solver->emf) { 
-          
-
-          tau_u = tau_z(i,j,k);
-          tau_d = tau_z(i,j,k+1);
-          
-          ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
-          ws_u += tau_u / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
-          
-          ws_d  = tau_d / (solver->rho * DELX) * fabs((1-AE(i,j,k+1)) - (1-AE(i-1,j,k+1)));
-          ws_d += tau_d / (solver->rho * DELY) * fabs((1-AN(i,j,k+1)) - (1-AN(i,j-1,k+1)));
-        
-          W(i,j,k) += 0.5 * (ws_u + ws_d) * solver->delt;
-        }
-
-
-      }
-    }
-  
-
-  return 0;
-}
-
 int kE_tau(struct solver_data *solver) {
-  long int i,j,k, im1, jm1, km1, l, m, n;
+  long int i,j,k, im1, jm1, km1;
   double d, u_t, wall_n[3], u_c[3], mag, tau;
   double u_perp_n[3], u_perp_c, u_parr_c, u_parr[3];
   double E_limit;
   const double del[3] = { DELX, DELY, DELZ };
   
-#pragma omp parallel for shared(solver) private(i,j,k,im1, jm1, km1, l, m, n, \
-              d, u_t, wall_n, u_c, mag, tau, u_perp_n, u_perp_c, u_parr_c, u_parr, E_limit)  
-  for(i=1; i<IMAX-1; i++) {
+  for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
       
@@ -772,9 +658,8 @@ int kE_wall_shear(struct solver_data *solver) {
    * unfortunately, this is cell centered and so will need to be averaged for cells i and i+1 */
   long int i,j,k;
   double ws_u, ws_d, tau_u, tau_d, delv;
-  
-#pragma omp parallel for shared(solver) private(i,j,k,ws_u,ws_d,tau_u,tau_d,delv)  
-  for(i=1; i<IMAX-1; i++) {
+   
+  for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
 
@@ -883,7 +768,7 @@ int kE_loop_explicit(struct solver_data *solver) {
               delk, delE, Production, Diffusion_k, Diffusion_E, nu_t, nu_eff, E_limit, \
               AEdkdx, ANdkdy, ATdkdz, AEdEdx, ANdEdy, ATdEdz, \
               dvdx, dudy, dudz, dwdx, dvdz, dwdy)  
-  for(i=1; i<IMAX-1; i++) {
+  for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
 
@@ -979,7 +864,7 @@ int kE_loop_explicit(struct solver_data *solver) {
                   fabs((W(i,j,k) + W(i,j,k-1)) / 2) * ATdkdz ) +
                 Production + Diffusion_k - E_N(i,j,k);
 
-/* E central difference *
+/* E central difference *`
         AEdEdx = 0.5 * (AE(i,j,k) + AE(i-1,j,k)) * RDX * 
                  ( (E_N(i+1,j,k) + E_N(i,j,k)) - (E_N(i,j,k) + E_N(i-1,j,k)) ) / 2;
         ANdEdy = 0.5 * (AN(i,j,k) + AN(i,j-1,k)) * RDY * 
@@ -1029,7 +914,6 @@ int kE_loop_explicit(struct solver_data *solver) {
                   ( kE.C1E * Production - kE.C2E * E_N(i,j,k)) +
                Diffusion_E;
         
-        /* TESTING: rescuing k and E from negative / nan values */
                
         if(isnan(delk)) delk = 0;
         k(i,j,k) = max(k_N(i,j,k) + delk * solver->delt, 0);
@@ -1039,17 +923,6 @@ int kE_loop_explicit(struct solver_data *solver) {
         E(i,j,k) = max(E_limit, E_N(i,j,k) + delE * solver->delt);
         nu_t(i,j,k) = max(kE.C_mu * pow(k(i,j,k),2) / E(i,j,k),0);
 
-#ifdef DEBUG
-        if(E(i,j,k) < 0) {
-          /* printf("warning: negative E at cell %ld %ld %ld\n",i,j,k);
-          printf("k %e   E %e\n",k(i,j,k),E(i,j,k)); */
-        }
-        if(nu_t(i,j,k) > 0.1) {
-          /* printf("warning: very high viscocity at cell %ld %ld %ld\n",i,j,k);
-          printf("k %e   E %e\n",k(i,j,k),E(i,j,k)); */
-        } 
-#endif
-
       }
     }
   }
@@ -1057,194 +930,12 @@ int kE_loop_explicit(struct solver_data *solver) {
   kE_boundaries(solver);
   kE_copy(solver);
 
-  return 0;
-}
-
-int kE_loop(struct solver_data *solver) {
-  /* calculate k, E and nut at each timestep */
-  /* implicit method */
-
-  double delk, delE, Production, Diffusion_k, Diffusion_E, nu_t, nu_eff;
-  double AEdkdx, ANdkdy, ATdkdz, AEdEdx, ANdEdy, ATdEdz;
-  double dvdx, dudy, dudz, dwdx, dvdz, dwdy;
-  long int i,j,k;
-  double res;
-  int iter = 0;
-  double k_i, E_i;
-  double relax; 
-  const int niter = 500;
-  
-  do {
-   
-  if(iter > niter) {
-    printf("turbulence did not converge. final residual %lf\n", res);
-    break;
-  }
-  res = 0.0; 
-  
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
-
-        /* exit conditions */
-        if(FV(i,j,k) <= (1-solver->emf) || VOF(i,j,k) < solver->emf)
-          continue;
-          
-        if(N_VOF(i,j,k) != 0) continue;
-
-/*    K central difference - Area fractions may need to be fixed */
-        AEdkdx = 0.5 * (AE(i,j,k) + AE(i-1,j,k)) * RDX * 
-                 ( (k(i+1,j,k) + k(i,j,k)) - (k(i,j,k) + k(i-1,j,k)) ) / 2;
-        ANdkdy = 0.5 * (AN(i,j,k) + AN(i,j-1,k)) * RDY *
-                 ( (k(i,j+1,k) + k(i,j,k)) - (k(i,j,k) + k(i,j-1,k)) ) / 2;
-        ATdkdz = 0.5 * (AT(i,j,k) + AT(i,j,k-1)) * RDZ *
-                 ( (k(i,j,k+1) + k(i,j,k)) - (k(i,j,k) + k(i,j,k-1)) ) / 2; 
-
-/*    K upstream *
-        AEdkdx = AE(i,j,k) * RDX * 
-                 (k(i,j,k) - k(i-1,j,k));
-        ANdkdy = AN(i,j,k) * RDY *
-                 ( (k(i,j+1,k) + k(i,j,k)) - (k(i,j,k) + k(i,j-1,k)) ) / 2;
-        ATdkdz = AT(i,j,k) * RDZ *
-                 ( (k(i,j,k+1) + k(i,j,k)) - (k(i,j,k) + k(i,j,k-1)) ) / 2; */
-                 
-        nu_t = kE.C_mu * pow(k(i,j,k),2) / E(i,j,k);
-        nu_eff = nu_t + solver->nu / kE.sigma_k;
-        nu_eff = max(nu_eff, solver->nu);
-
-        /* Diffusion_k = (1.0 / FV(i,j,k)) * 
-                    ( RDX * (nu_eff * AEdkdx) +
-                      RDY * (nu_eff * ANdkdy) +
-                      RDZ * (nu_eff * ATdkdz)); */
-        Diffusion_k = pow(RDX,2) * ( AE(i,  j,k) * (k(i+1,j,k) - k(i,j,k)) - 
-                                     AE(i-1,j,k) * (k(i  ,j,k) - k(i-1,j,k)) );
-        Diffusion_k +=pow(RDY,2) * ( AN(i,  j,k) * (k(i,j+1,k) - k(i,j,k)) - 
-                                     AN(i,j-1,k) * (k(i  ,j,k) - k(i,j-1,k)) );
-        Diffusion_k +=pow(RDZ,2) * ( AT(i,  j,k) * (k(i,j,k+1) - k(i,j,k)) - 
-                                     AT(i,j,k-1) * (k(i  ,j,k) - k(i,j,k-1)) );
-        Diffusion_k *= nu_eff * (1.0 / FV(i,j,k));
-
-        dvdx = (V(i+1,j,k) + V(i+1,j-1,k) + V(i,j,k) + V(i,j-1,k))/4 - 
-               (V(i-1,j,k) + V(i-1,j-1,k) + V(i,j,k) + V(i,j-1,k))/4;
-        dvdx *= RDX;
-
-        dudy = (U(i,j+1,k) + U(i-1,j+1,k) + U(i,j,k) + U(i-1,j,k))/4 -
-               (U(i,j-1,k) + U(i-1,j-1,k) + U(i,j,k) + U(i-1,j,k))/4;
-        dudy *= RDY;
-
-        dudz = (U(i,j,k+1) + U(i-1,j,k+1) + U(i,j,k) + U(i-1,j,k))/4 -
-               (U(i,j,k-1) + U(i-1,j,k-1) + U(i,j,k) + U(i-1,j,k))/4;
-        dudz *= RDZ;
-
-        dwdx = (W(i+1,j,k) + W(i+1,j,k-1) + W(i,j,k) + W(i,j,k-1))/4 -
-               (W(i-1,j,k) + W(i-1,j,k-1) + W(i,j,k) + W(i,j,k-1))/4;
-        dwdx *= RDX;
-
-        dvdz = (V(i,j,k+1) + V(i,j-1,k+1) + V(i,j,k) + V(i,j-1,k))/4 -
-               (V(i,j,k-1) + V(i,j-1,k-1) + V(i,j,k) + V(i,j-1,k))/4;
-        dvdz *= RDZ;
-
-        dwdy = (W(i,j+1,k) + W(i,j+1,k-1) + W(i,j,k) + W(i,j,k-1))/4 -
-               (W(i,j-1,k) + W(i,j-1,k-1) + W(i,j,k) + W(i,j,k-1))/4;
-        dwdy *= RDY;
-        
-        Production = nu_t * (1.0 / FV(i,j,k)) * 
-                     ( 2 * AE(i,j,k) * pow((U(i,j,k) - U(i-1,j,k)) * RDX, 2) +
-                       2 * AN(i,j,k) * pow((V(i,j,k) - V(i,j-1,k)) * RDY, 2) +
-                       2 * AT(i,j,k) * pow((W(i,j,k) - W(i,j,k-1)) * RDZ, 2) +
-                       (dvdx + dudy) * (AE(i,j,k) * dvdx + AN(i,j,k) * dudy) +
-                       (dudz + dwdx) * (AT(i,j,k) * dudz + AE(i,j,k) * dwdx) +
-                       (dvdz + dwdy) * (AT(i,j,k) * dvdz + AN(i,j,k) * dwdy) );
-
-        delk = ( -1.0 / FV(i,j,k)) * 
-                ( ((U(i,j,k) + U(i-1,j,k)) / 2) * AEdkdx + 
-                  ((V(i,j,k) + V(i,j-1,k)) / 2) * ANdkdy + 
-                  ((W(i,j,k) + W(i,j,k-1)) / 2) * ATdkdz ) +
-                Production + Diffusion_k - E(i,j,k);
-
-/* E central difference */
-        AEdEdx = 0.5 * (AE(i,j,k) + AE(i-1,j,k)) * RDX * 
-                 ( (E(i+1,j,k) + E(i,j,k)) - (E(i,j,k) + E(i-1,j,k)) ) / 2;
-        ANdEdy = 0.5 * (AN(i,j,k) + AN(i,j-1,k)) * RDY * 
-                 ( (E(i,j+1,k) + E(i,j,k)) - (E(i,j,k) + E(i,j-1,k)) ) / 2;
-        ATdEdz = 0.5 * (AT(i,j,k) + AT(i,j,k-1)) * RDZ *
-                 ( (E(i,j,k+1) + E(i,j,k)) - (E(i,j,k) + E(i,j,k-1)) ) / 2; 
-                 
-/* E upstream 
-        AEdEdx = AE(i,j,k) * RDX * 
-                 ( E(i,j,k) - E(i-1,j,k) ) ;
-        ANdEdy = AN(i,j,k) * RDY * 
-                 ( (E(i,j+1,k) + E(i,j,k)) - (E(i,j,k) + E(i,j-1,k)) ) / 2;
-        ATdEdz = AT(i,j,k) * RDZ *
-                 ( (E(i,j,k+1) + E(i,j,k)) - (E(i,j,k) + E(i,j,k-1)) ) / 2; */
-                 
-        nu_eff = nu_t + solver->nu / kE.sigma_E;
-        nu_eff = max(nu_eff, solver->nu);
-
-        /************************************************ 
-          Diffusion term is wrong.  Should match viscocity term of momentum equation. FIX 
-           Should be the second derivative, and work out to something like
-           us - 2C + ds 
-           Also fix for k *
-        Diffusion_E = (1.0 / FV(i,j,k)) * 
-                    ( RDX * (nu_eff * AEdEdx) +
-                      RDY * (nu_eff * ANdEdy) +
-                      RDZ * (nu_eff * ATdEdz)); */
-
-        Diffusion_E = pow(RDX,2) * ( AE(i,  j,k) * (E(i+1,j,k) - E(i,j,k)) - 
-                                     AE(i-1,j,k) * (E(i  ,j,k) - E(i-1,j,k)) );
-        Diffusion_E +=pow(RDY,2) * ( AN(i,  j,k) * (E(i,j+1,k) - E(i,j,k)) - 
-                                     AN(i,j-1,k) * (E(i  ,j,k) - E(i,j-1,k)) );
-        Diffusion_E +=pow(RDZ,2) * ( AT(i,  j,k) * (E(i,j,k+1) - E(i,j,k)) - 
-                                     AT(i,j,k-1) * (E(i  ,j,k) - E(i,j,k-1)) );
-        Diffusion_E *= nu_eff * (1.0 / FV(i,j,k));
-                      
-        delE = ( -1.0 / FV(i,j,k)) *
-                ( ((U(i,j,k) + U(i-1,j,k)) / 2) * AEdEdx + 
-                  ((V(i,j,k) + V(i,j-1,k)) / 2) * ANdEdy + 
-                  ((W(i,j,k) + W(i,j,k-1)) / 2) * ATdEdz ) +
-               ( E(i,j,k) / k(i,j,k) ) * 
-                  ( kE.C1E * Production - kE.C2E * E(i,j,k)) +
-               Diffusion_E;
-
-        k_i = k(i,j,k);
-        E_i = E(i,j,k);
-
-        k(i,j,k) = k_N(i,j,k) + delk * solver->delt;
-        E(i,j,k) = E_N(i,j,k) + delE * solver->delt;
-
-        res = max(fabs(k_i-k(i,j,k)),res);
-        res = max(fabs(E_i-E(i,j,k)),res);
-        
-        /* under relaxation */
-        /* relax = 0.5 * (pow(DELX,2) * pow(DELY,2) * pow(DELZ,2)) / 
-                       (nu_eff * (pow(DELX,2) + pow(DELY,2) + pow(DELZ,2)) ); */
-        relax = 0.5;
-        k(i,j,k) = k_i + (k(i,j,k) - k_i) * relax;
-        E(i,j,k) = E_i + (E(i,j,k) - E_i) * relax;
-        nu_t(i,j,k) = max(kE.C_mu * pow(k(i,j,k),2) / E(i,j,k),0);
-
-        /* if(E(i,j,k) < 0) {
-          printf("warning: negative E at cell %ld %ld %ld\n",i,j,k);
-        } */
-
-      }
-    }
-  }
-
-
-  iter++;
-  } while(res > 1e-9);
-
-  if(iter < niter) {
-    printf("turbulence converged in %d iterations. final residual: %e\n", iter, res);
-  }
-
-  kE_boundaries(solver);
-  kE_copy(solver);
+  solver_sendrecv_edge(solver, kE.k);
+  solver_sendrecv_edge(solver, kE.E);
 
   return 0;
 }
+
 int kE_kill(struct solver_data *solver) {
 
   free(kE.k);

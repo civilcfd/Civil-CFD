@@ -121,6 +121,7 @@ struct mesh_data {
   /* Calculated outputs describing fluid properties */
   double *P, *D;
   double *u, *v, *w;
+  double *delu_upstream, *delu_downstream;
   double *u_omega, *v_omega, *w_omega; /* vorticity */
 
   /* Volume of Fluid in each cell */

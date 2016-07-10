@@ -199,7 +199,7 @@ int baffle_k(struct solver_data *solver,
   double delp, v_prime;
   double sgn = 1.0;
   
-  baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
   
   if(value < 0.01) {
     return 0;
@@ -268,7 +268,7 @@ int baffle_slip(struct solver_data *solver,
 
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
   
-  baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
   
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
@@ -297,7 +297,7 @@ int baffle_flow(struct solver_data *solver,
 
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
   
-  baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
   
   *value = 0;
   
@@ -330,7 +330,7 @@ int baffle_swirl(struct solver_data *solver,
   double count;
   double swirl, u_ave, v_ave, w_ave;
   
-  baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
   
   *value = 0;
   
@@ -394,7 +394,7 @@ int baffle_velocity_dev(struct solver_data *solver,
   double count;
   double v_ave, v_dev;
   
-  baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
   
   *value = 0;
     
@@ -498,6 +498,8 @@ int baffle_setup(struct solver_data *solver, int x, long int pos,
   case 0:
     *imin = pos;
     *imax = pos;
+
+    if(*imin < ISTART || *imin > ISTART + IRANGE) return 1;
     break;
   case 1:
     *jmin = pos;
@@ -529,5 +531,11 @@ int baffle_setup(struct solver_data *solver, int x, long int pos,
     *jmax = min(JMAX-2,max_2);   
     break;   
   }
+
+  *imin = *imin - ISTART;
+  *imin = max(*imin, 0);
+  *imax = *imax - ISTART;
+  *imax = min(*imax, IRANGE);
+
   return 0;
 }

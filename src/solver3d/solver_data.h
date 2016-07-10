@@ -11,6 +11,7 @@
 #define _SOLVER_DATA_H
 
 #include <time.h>
+#include <mpi.h>
 #include "mesh.h"
 
 struct ic_data {
@@ -30,6 +31,9 @@ struct solver_data {
 
 	/* MPI DATA */
 	int rank;
+  int size;
+  MPI_Comm comm_upstream;
+  MPI_Comm comm_downstream;
 
   double emf; 
   double emf_c;

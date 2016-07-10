@@ -21,6 +21,10 @@
 #include "vof.h"
 #include "mesh_mpi.h"
 #include "vof_macros.h"
+#include "solver_mpi.h"
+#include "vof_mpi.h"
+#include "csv.h"
+#include "track.h"
 
 int solver_mpi_range(struct solver_data *solver) {
   long int range, start;
@@ -32,23 +36,59 @@ int solver_mpi_range(struct solver_data *solver) {
   range = (IMAX + (size - 1)) / size;
   start = range * rank;
   start -= 1;
-  start = min(start, 0);
-  range += 1;
+  start = max(start, 0);
+  range += 2;
   if(start + range > IMAX) range = IMAX - start;
+  if(!rank) range--;
   solver->mesh->i_range = range;
   solver->mesh->i_start = start;
+
+  return 0;
+}
+
+int solver_mpi_init_comm(struct solver_data *solver) {
+  int colour;
+  
+  if(solver->rank % 2 == 0) { /* even rank */
+    colour = solver->rank;
+
+    if(solver->rank + 1 < solver->size)
+      MPI_Comm_split(MPI_COMM_WORLD, colour, solver->rank, &solver->comm_downstream);
+    else 
+      MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, solver->rank, &solver->comm_downstream);
+
+    colour--;
+    if(colour > 0)
+      MPI_Comm_split(MPI_COMM_WORLD, colour, solver->rank, &solver->comm_upstream);
+    else
+      MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, solver->rank, &solver->comm_upstream);
+
+  } else {
+    colour = solver->rank - 1;
+
+    MPI_Comm_split(MPI_COMM_WORLD, colour, solver->rank, &solver->comm_upstream);
+    
+    colour++;
+    if(solver->rank + 1 < solver->size)
+      MPI_Comm_split(MPI_COMM_WORLD, colour, solver->rank, &solver->comm_downstream);
+    else 
+      MPI_Comm_split(MPI_COMM_WORLD, MPI_UNDEFINED, solver->rank, &solver->comm_downstream);
+
+  }
+
+  return 0;
+
 }
 
 int solver_mpi(struct solver_data *solver, double timestep, double delt)
 {
-  long int range, start;
   int size, rank;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   
   if(rank > 0) {
-    if(solver_mpi_high_rank(solver)) {
+    if(solver_mpi_high_rank(solver, timestep)) {
       return 1;
     }
     return 0;
@@ -56,13 +96,17 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
   
   solver = solver_init_empty();
   if(solver == NULL) return 1;
+  solver->rank = rank;
+  solver->size = size;
+  solver_mpi_init_comm(solver);
 
-  vof_setup_solver(solver);
+  vof_mpi_setup_solver(solver);
   
   if(solver_load(solver, "solverfile", "meshfile", "initials")==1)
     return 1;
 
-  if(solver_init_complete(solver)==1)
+  solver_mpi_range(solver);
+  if(solver_mpi_init_complete(solver)==1)
     return 1;
 
   if(solver->turbulence_read != NULL) solver->turbulence_read("turbulencefile");
@@ -79,21 +123,17 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
     csv_read_U_p_vof(solver->mesh, timestep);
     solver->turbulence_load_values(solver);
   }
-  else
-    solver->write(solver); 
   
   if (delt > solver->emf) solver->delt = delt;
-  
-  track_read();
   
   solver_broadcast_all(solver);
   mesh_broadcast_all(solver->mesh);
   
-  solver_mpi_range(solver);
-  
   if(kE_check(solver)) kE_broadcast(solver);
   
   solver_send_all(solver);
+  if(timestep < solver->emf) solver->write(solver);
+  track_read();
   
   if(solver_run(solver)==1)
     return 1;
@@ -102,8 +142,7 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
 
 }
 
-int solver_mpi_high_rank(struct solver_data *solver) {
-  long int range, start;
+int solver_mpi_high_rank(struct solver_data *solver, double timestep) {
   int size, rank;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -111,20 +150,23 @@ int solver_mpi_high_rank(struct solver_data *solver) {
 
   solver = solver_init_empty();
   if(solver == NULL) return 1;
+  solver->rank = rank;
+  solver->size = size;
+  solver_mpi_init_comm(solver);
   
-  vof_setup_solver(solver);
+  vof_mpi_setup_solver(solver);
   
   solver_broadcast_all(solver);
   mesh_broadcast_all(solver->mesh);
+  solver_mpi_range(solver);
   
   if(solver_check(solver) == 1) {
     return(1);
   }
   solver->ready = 1;
   
-  solver_mpi_range(solver);
-  
-  mesh_mpi_init_complete(solver->mesh, range, start);
+  if(solver_mpi_init_complete(solver)==1)
+    return 1;
   
   if(kE_check(solver)) kE_broadcast(solver);
   
@@ -132,6 +174,7 @@ int solver_mpi_high_rank(struct solver_data *solver) {
   solver->turbulence_init(solver);
   
   solver_recv_all(solver);
+  if(timestep < solver->emf) solver->write(solver);
   
   if(solver_run(solver)==1)
     return 1;
@@ -139,6 +182,21 @@ int solver_mpi_high_rank(struct solver_data *solver) {
   return(0);
 }
 
+int solver_mpi_init_complete(struct solver_data *solver) {
+
+  if(solver_check(solver) == 1) {
+    return(1);
+  }
+
+  if(mesh_mpi_init_complete(solver->mesh, solver->rank) == 1) {
+    return(1);
+  }
+
+  solver->ready = 1;
+
+  return 0;
+
+}
 
 int solver_recv_all(struct solver_data *solver) {
   struct kE_data *kE;
@@ -157,61 +215,122 @@ int solver_recv_all(struct solver_data *solver) {
     kE = solver->mesh->turbulence_model;
     solver_mpi_recv(solver, kE->k, 0, 0, IRANGE);
   }
+
+  return 0;
 }
 
-int solver_send_recv_edge(struct solver_data *solver) {
-  /* each process will send it's eastern most edge to the next process */
-  long int range, start, rank;
-  int size, n;
-  struct kE_data *kE;
+int solver_sendrecv_edge(struct solver_data *solver, double *data) {
+  /* each process will communicate its eastern edge with the next process' western edge */
+  /* TODO: instead of sendrecv, do series of non-blocking sends followed by receives for faster execution */
+  int rank;
+  int size;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   if(!rank) {
-    solver_mpi_send(solver, solver->mesh->vof, 1, IRANGE-1, 1);
-    solver_mpi_send(solver, solver->mesh->P, 1, IRANGE-1, 1);
-    solver_mpi_send(solver, solver->mesh->u, 1, IRANGE-1, 1);
-    solver_mpi_send(solver, solver->mesh->v, 1, IRANGE-1, 1);
-    solver_mpi_send(solver, solver->mesh->w, 1, IRANGE-1, 1);		
-    if(kE_check(solver))  {
-      kE = solver->mesh->turbulence_model;
-      solver_mpi_send(solver, kE->k, 1, IRANGE-1, 1);		
-    }
+    solver_mpi_sendrecv(solver, rank + 1, data, IRANGE-2, 1,
+                                rank + 1, data, IRANGE-1, 1);
   } else if(rank + 1 < size) {  
     /* internal cases */
-    solver_mpi_sendrecv(solver, rank + 1, solver->mesh->vof, IRANGE-1, 1, 
-                                rank - 1, solver->mesh->vof, 0, 1);
-    solver_mpi_sendrecv(solver, rank + 1, solver->mesh->P, IRANGE-1, 1, 
-                                rank - 1, solver->mesh->P, 0, 1);
-    solver_mpi_sendrecv(solver, rank + 1, solver->mesh->u, IRANGE-1, 1, 
-                                rank - 1, solver->mesh->u, 0, 1);
-    solver_mpi_sendrecv(solver, rank + 1, solver->mesh->v, IRANGE-1, 1, 
-                                rank - 1, solver->mesh->v, 0, 1);
-    solver_mpi_sendrecv(solver, rank + 1, solver->mesh->w, IRANGE-1, 1, 
-                                rank - 1, solver->mesh->w, 0, 1);
-    if(kE_check(solver))  {
-      kE = solver->mesh->turbulence_model;
-      solver_mpi_sendrecv(solver, rank + 1, kE->k, IRANGE-1, 1, 
-                                  rank - 1, kE->k, 0, 1);
-    }
+    solver_mpi_sendrecv(solver, rank - 1, data, 1, 1, 
+                                rank - 1, data, 0, 1);
+    solver_mpi_sendrecv(solver, rank + 1, data, IRANGE-2, 1,
+                                rank + 1, data, IRANGE-1, 1);
    } else {
-    solver_mpi_recv(solver, solver->mesh->vof, rank - 1, 0, 1);	
-    solver_mpi_recv(solver, solver->mesh->P, rank - 1, 0, 1);	
-    solver_mpi_recv(solver, solver->mesh->u, rank - 1, 0, 1);	
-    solver_mpi_recv(solver, solver->mesh->v, rank - 1, 0, 1);	
-    solver_mpi_recv(solver, solver->mesh->w, rank - 1, 0, 1);	
-    if(kE_check(solver))  {
-      kE = solver->mesh->turbulence_model;
-      solver_mpi_recv(solver, kE->k, rank - 1, 0, 1);	
-    }
+    solver_mpi_sendrecv(solver, rank - 1, data, 1, 1, 
+                                rank - 1, data, 0, 1);
    }
   
+   return 0;
+}
+
+int solver_sum_edge(struct solver_data *solver, double *data) {
+  int rank;
+  int size;
+
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  if(!rank) {
+    solver_mpi_sum(solver, data, solver->comm_downstream, IRANGE-2, 1);
+    solver_mpi_recv(solver, data, rank+1, IRANGE-1, 1);
+  } else if(rank + 1 < size) {  
+    /* internal cases */
+    if(rank % 2) { /* odd valued cases */
+      solver_mpi_sum(solver, data, solver->comm_upstream, 0, 1);
+      solver_mpi_sum(solver, data, solver->comm_downstream, IRANGE-2, 1);
+    } else {
+      solver_mpi_sum(solver, data, solver->comm_downstream, IRANGE-2, 1);
+      solver_mpi_sum(solver, data, solver->comm_upstream, 0, 1);
+    }
+
+    solver_mpi_send(solver, data, rank-1, 1, 1);
+    solver_mpi_recv(solver, data, rank+1, IRANGE-1, 1);
+   } else {
+    solver_mpi_sum(solver, data, solver->comm_upstream, 0, 1);
+    solver_mpi_send(solver, data, rank-1, 1, 1);
+   }
+  
+   return 0;
+}
+
+int solver_sendrecv_delu(struct solver_data *solver) {
+  double *ds = solver->mesh->delu_downstream;
+  double *us = solver->mesh->delu_upstream;
+
+  if(!solver->rank) {
+    solver_mpi_sendrecv_replace(solver, ds, 0, 1, 1, 1);
+  } else if(solver->rank + 1 < solver->size) {
+    solver_mpi_sendrecv_replace(solver, us, 0, 1, solver->rank - 1, solver->rank - 1);
+    solver_mpi_sendrecv_replace(solver, ds, 0, 1, solver->rank + 1, solver->rank + 1);
+  } else {
+    solver_mpi_sendrecv_replace(solver, us, 0, 1, solver->rank - 1, solver->rank - 1);
+  }
+
+  return 0;
+}
+
+int solver_sendrecv_edge_int(struct solver_data *solver, int *data) {
+  /* each process will communicate its eastern edge with the next process' western edge */
+  /* TODO: instead of sendrecv, do series of non-blocking sends followed by receives for faster execution */
+  int rank;
+  int size;
+
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  if(!rank) {
+    solver_mpi_sendrecv_int(solver, rank + 1, data, IRANGE-2, 1,
+                                 rank + 1, data, IRANGE-1, 1);
+  } else if(rank + 1 < size) {  
+    /* internal cases */
+    solver_mpi_sendrecv_int(solver, rank - 1, data, 1, 1, 
+                                rank - 1, data, 0, 1);
+    solver_mpi_sendrecv_int(solver, rank + 1, data, IRANGE-2, 1,
+                                rank + 1, data, IRANGE-1, 1);
+   } else {
+    solver_mpi_sendrecv_int(solver, rank - 1, data, 1, 1, 
+                                    rank - 1, data, 0, 1);
+   }
+
+  return 0; 
+}
+
+int solver_mpi_gather(struct solver_data *solver, double *data) {
+  long int range;
+  range = (IMAX + (solver->size - 1)) / solver->size;
+  range *= JMAX; 
+  range *= KMAX;
+
+  MPI_Gather(data, range, MPI_DOUBLE, data, range, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  return 0;
 }
 
 int solver_send_all(struct solver_data *solver) {
-  long int range, start, rank;
-  int size, n;
+  long int range, start;
+  int size, rank, n;
   struct kE_data *kE;
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -222,32 +341,39 @@ int solver_send_all(struct solver_data *solver) {
   for(n=0; n<size; n++) {
     start = range * n;
     start -= 1;	
+    start = max(start, 0);
     
-    if(start + range + 1 > IMAX) range = IMAX - start - 1;
+    if(start + range + 2 > IMAX) range = IMAX - start - 2;
     
-    solver_mpi_send(solver, solver->mesh->fv, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->ae, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->an, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->at, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->vof, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->P, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->u, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->v, n, start, range + 1);
-    solver_mpi_send(solver, solver->mesh->w, n, start, range + 1);
+    solver_mpi_send(solver, solver->mesh->fv, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->ae, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->an, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->at, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->vof, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->P, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->u, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->v, n, start, range + 2);
+    solver_mpi_send(solver, solver->mesh->w, n, start, range + 2);
     
     if(kE_check(solver))  {
       kE = solver->mesh->turbulence_model;
-      solver_mpi_send(solver, kE->k, n, start, range + 1);
+      solver_mpi_send(solver, kE->k, n, start, range + 2);
     }
   }
+
+  return 0;
 }
 
 int solver_mpi_send(struct solver_data *solver, double *data, int to, long int i_start, long int i_range) {
   MPI_Send(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, to, 1, MPI_COMM_WORLD);
+
+  return 0;
 }
 
 int solver_mpi_recv(struct solver_data *solver, double *data, int from, long int i_start, long int i_range) {
   MPI_Recv(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+  return 0;
 }
 
 int solver_mpi_sendrecv(struct solver_data *solver, int to, double *send, long int send_i_start, long int send_i_range, int from, double *recv, long int recv_i_start, long int recv_i_range) {
@@ -255,10 +381,52 @@ int solver_mpi_sendrecv(struct solver_data *solver, int to, double *send, long i
                MPI_DOUBLE, to, 1,
                &recv[mesh_index(solver->mesh,recv_i_start,0,0)], recv_i_range * JMAX * KMAX,
                MPI_DOUBLE, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  
+  return 0;
+}
+
+int solver_mpi_sendrecv_replace(struct solver_data *solver, double *data, long int start, long int range, int to, int from) {
+  MPI_Sendrecv_replace(&data[mesh_index(solver->mesh,start,0,0)], 
+                       range * JMAX * KMAX, MPI_DOUBLE, to, 1, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  
+  return 0;
+}
+
+int solver_mpi_sendrecv_int(struct solver_data *solver, int to, int *send, long int send_i_start, long int send_i_range, int from, int *recv, long int recv_i_start, long int recv_i_range) {
+  MPI_Sendrecv(&send[mesh_index(solver->mesh,send_i_start,0,0)], send_i_range * JMAX * KMAX, 
+               MPI_INT, to, 1,
+               &recv[mesh_index(solver->mesh,recv_i_start,0,0)], recv_i_range * JMAX * KMAX,
+               MPI_INT, from, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+  return 0;
+}
+
+int solver_mpi_sum(struct solver_data *solver, double *data, MPI_Comm comm, long int i_start, long int i_range) {
+  MPI_Allreduce(&data[mesh_index(solver->mesh,i_start,0,0)], &data[mesh_index(solver->mesh,i_start,0,0)], i_range*JMAX*KMAX, MPI_DOUBLE, MPI_SUM, comm);
+
+  return 0;
+}
+
+double solver_mpi_max(struct solver_data *solver, double x) {
+  double ret;
+
+  if(solver->size == 1) return x;
+
+  MPI_Allreduce(&x, &ret, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+  return ret;
+}
+
+double solver_mpi_min(struct solver_data *solver, double x) {
+  double ret;
+
+  if(solver->size == 1) return x;
+
+  MPI_Allreduce(&x, &ret, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+  return ret;
 }
 
 int solver_broadcast_all(struct solver_data *solver) {
-  int rank, ic, turb, autot;
+  int rank, turb, autot;
   
   MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
   

@@ -15,33 +15,21 @@
 #include "kE.h"
 #include "track.h"
 #include "vof_macros.h"
+#include "solver_mpi.h"
+
 
 int main(int argc, char *argv[])
 {
-  struct solver_data *solver;
+  struct solver_data *solver = NULL;
   double timestep, delt;
   int aborted_run;
   int rank, size;
-  int ok;
   int ret = 0;
 
 	PetscInitialize(NULL, NULL, NULL, NULL);
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
   
-  /* 
-	if(rank != 0) {
-    solver = solver_init_empty();
-    ok = 1;
-	    
-	  while(ok) {
-	    MPI_Bcast(&ok, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	    //printf("Rank %d received %d\n",rank,ok);
-	    vof_pressure_gmres_mpi(solver);
-	  }
-	  
-	  return 0;
-	} */
 		
   printf("solver3d: 3d solver to accompany the Civil CFD gui\n");
 
@@ -71,6 +59,8 @@ int main(int argc, char *argv[])
 
   solver = solver_init_empty();
   if(solver == NULL) return 1;
+  solver->size = 1;
+  solver->rank = 1;
 
   vof_setup_solver(solver);
   
