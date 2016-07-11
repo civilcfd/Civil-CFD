@@ -213,6 +213,13 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
 	PetscErrorCode ierr;
 	enum special_boundaries sb;
 	enum wall_boundaries wb;
+  int offset;
+  double *vec;
+  long int range;
+	
+  if(!solver->rank) offset = 0;
+  else offset=1;
+  ierr = VecGetArray(b,&vec); CHKERRQ(ierr);
 
 	for(j=1; j<JMAX-1; j++) {
     for(k=1; k<KMAX-1; k++) {
@@ -233,11 +240,13 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
             /* explicit zero out since this could change */
             ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
             ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            vec[mesh_index(solver->mesh,0,j,k)] = 0;
+            //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           } else {           
             ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
             ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            vec[mesh_index(solver->mesh,0,j,k)] = 0;
           }
         }
       }
@@ -258,11 +267,13 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
             /* explicit zero out since this could change */
             ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
             ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            vec[mesh_index(solver->mesh,IRANGE-2,j,k)] = 0;
           } else {        	
             ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
             ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            vec[mesh_index(solver->mesh,IRANGE-2,j,k)] = 0;
           }
         }      
       }
@@ -289,11 +300,13 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
           /* explicit zero out since this could change */
           ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,0,k)] = 0;
         } else {           
           ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,0,k)] = 0;
         }
       }
  
@@ -312,11 +325,13 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
           /* explicit zero out since this could change */
           ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,JMAX-1,k)] = 0;
         } else {        	
           ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,JMAX-1,k)] = 0;
         }
    
       }    
@@ -343,11 +358,13 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
           /* explicit zero out since this could change */
           ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,0)] = 0;
         } else {           
           ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,0)] = 0;
         }
             
       } 
@@ -367,16 +384,19 @@ int vof_pressure_gmres_boundary_edge(struct solver_data *solver, Mat A, Vec b) {
           /* explicit zero out since this could change */
           ierr   = MatSetValue(A,nidx,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,KMAX-1)] = 0;
         } else {        	
           ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
           ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-          ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,KMAX-1)] = 0;
         }
       }    
          	
    	} 
   }   
+  VecRestoreArray(b,&vec);
   
   return 0;
 
@@ -544,8 +564,14 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
 	PetscScalar r_rhodx2, r_rhody2, r_rhodz2;
 	PetscScalar row[7];
 	PetscErrorCode ierr;
+  int offset;
+  double *vec;
   long int range;
 	
+  if(!solver->rank) offset = 0;
+  else offset=1;
+  ierr = VecGetArray(b,&vec); CHKERRQ(ierr);
+
 	dt_rho = solver->delt / solver->rho;
 	dt_rhodx2 = dt_rho / pow(DELX,2);
 	dt_rhody2 = dt_rho / pow(DELY,2);
@@ -611,7 +637,8 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
             if(N_VOF_N(i,j,k) == N_VOF(i,j,k)) continue;
             nidx = mesh_index(solver->mesh,i+ISTART,j,k);
             ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
-            ierr = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            //ierr = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
+            vec[mesh_index(solver->mesh,i-offset,j,k)] = 0;
             continue;
           }
           
@@ -623,7 +650,8 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
             dpijk = 0 - P(i,j,k);
             dpijk /= (solver->rho * solver->delt);
             ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
-            ierr = VecSetValue(b,nidx,dpijk,INSERT_VALUES);CHKERRQ(ierr);
+            //ierr = VecSetValue(b,nidx,dpijk,INSERT_VALUES);CHKERRQ(ierr);
+            vec[mesh_index(solver->mesh,i-offset,j,k)] = dpijk;
           	continue;
           }
           
@@ -636,7 +664,8 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
           row[ridx] = -1.0 * mpeta / (solver->rho * solver->delt);
           
     			ierr = MatSetValues(A,1,&nidx,7,row_idx,row,INSERT_VALUES);CHKERRQ(ierr);
-          ierr = VecSetValue(b,nidx,dpijk,INSERT_VALUES);CHKERRQ(ierr);
+          //ierr = VecSetValue(b,nidx,dpijk,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,k)] = dpijk;
           
           
         }
@@ -679,7 +708,8 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
           
           rhs /= solver->delt;
           
-    			ierr   = VecSetValue(b,nidx,rhs,INSERT_VALUES);CHKERRQ(ierr);
+    			//ierr   = VecSetValue(b,nidx,rhs,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,k)] = rhs;
         }
         else {
     			
@@ -701,13 +731,15 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
           
           rhs /= solver->delt;
           
-    			ierr   = VecSetValue(b,nidx,rhs,INSERT_VALUES);CHKERRQ(ierr);
+    			//ierr   = VecSetValue(b,nidx,rhs,INSERT_VALUES);CHKERRQ(ierr);
+          vec[mesh_index(solver->mesh,i-offset,j,k)] = rhs;
         }
         
         
       }
     }
   }
+  VecRestoreArray(b,&vec);
   
   return 0;
 }
@@ -820,10 +852,6 @@ int vof_pressure_gmres_mpi_range(struct solver_data *solver) {
   int range;
 
   range = IRANGE - 1;
-  if(solver->rank < solver->size - 1 && solver->rank > 0) {
-    range--;
-  }
-
   return range;
 }
 
@@ -839,13 +867,17 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   static PC  pc;           /* preconditioner context */
   static int initialize = 0;
   int rank;
-  int ok = 1;
+  int offset = 1;
   int range;
   int Istart, Iend;
   int Cstart, Cend;
+  double *results;
   
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
   range = vof_pressure_gmres_mpi_range(solver);
+  if(solver->rank < solver->size - 1 && solver->rank > 0) {
+    range--;
+  }
 
 	if(!initialize) {
 	  size = IMAX * JMAX * KMAX;
@@ -853,11 +885,14 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
     ierr = MatSetSizes(A,range * JMAX * KMAX,range * JMAX * KMAX,size,size);CHKERRQ(ierr);
     ierr = MatSetType(A,MATMPIAIJ);CHKERRQ(ierr);
-    ierr = MatMPIAIJSetPreallocation(A, 7, PETSC_NULL, 7, PETSC_NULL);CHKERRQ(ierr);
+    ierr = MatSetOption(A,MAT_IGNORE_OFF_PROC_ENTRIES,PETSC_TRUE);CHKERRQ(ierr);
+    ierr = MatMPIAIJSetPreallocation(A, 7, PETSC_NULL, 3, PETSC_NULL);CHKERRQ(ierr);
     ierr = MatGetOwnershipRange(A,&Istart,&Iend);
     ierr = MatGetOwnershipRangeColumn(A,&Cstart,&Cend);
     ierr = VecCreateMPI(PETSC_COMM_WORLD,range * JMAX * KMAX,size,&x);CHKERRQ(ierr);
+    ierr = VecSetOption(x, VEC_IGNORE_OFF_PROC_ENTRIES, PETSC_TRUE);CHKERRQ(ierr);
     ierr = VecCreateMPI(PETSC_COMM_WORLD,range * JMAX * KMAX,size,&b);CHKERRQ(ierr);
+    ierr = VecSetOption(b, VEC_IGNORE_OFF_PROC_ENTRIES, PETSC_TRUE);CHKERRQ(ierr);
     
     ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
     ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
@@ -902,8 +937,9 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   ierr = KSPGetIterationNumber(ksp, &iter);CHKERRQ(ierr);
   solver->iter = iter;
   
-  /* range = IRANGE;
-  if(range + solver->mesh->i_start == IMAX) range--; */
+  range = vof_pressure_gmres_mpi_range(solver);
+  if(!rank) offset = 0;
+  VecGetArray(x,&results);
   for(i=1; i<range; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {      
@@ -913,8 +949,10 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
 
         if(VOF(i,j,k) < emf) continue;
         
-        n = mesh_index(solver->mesh,i+ISTART,j,k);
-        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
+        /* n = mesh_index(solver->mesh,i+ISTART,j,k);
+        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr); */  
+        delp = results[mesh_index(solver->mesh,i-offset,j,k)]; 
+
         
         P(i,j,k) += delp;
 
@@ -944,8 +982,9 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
       solver->mesh->delu_downstream[KMAX * j + k] = 0;
       if(FV(i,j,k)>emf && VOF(i,j,k) > emf) {
 
-        n = mesh_index(solver->mesh,i+ISTART,j,k);
-        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
+        /*n = mesh_index(solver->mesh,i+ISTART,j,k);
+        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);*/
+        delp = results[mesh_index(solver->mesh,i-offset,j,k)]; 
         
         if(AE(i,j,k) > emf && i+ISTART < IMAX-2)
           solver->mesh->delu_downstream[KMAX * j + k] = solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
@@ -955,8 +994,9 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
       solver->mesh->delu_upstream[KMAX * j + k] = 0;
       if(FV(i,j,k)>emf && VOF(i,j,k) > emf) {
 
-        n = mesh_index(solver->mesh,i+ISTART,j,k);
-        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
+        /*n = mesh_index(solver->mesh,i+ISTART,j,k);
+        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);*/
+        delp = results[mesh_index(solver->mesh,i-offset,j,k)]; 
         
         if(AE(i-1,j,k) > emf && i+ISTART > 1)
           solver->mesh->delu_upstream[KMAX * j + k] = -1 * solver->delt* RDX * delp / (solver->rho /* AE(i-1,j,k) */);
@@ -964,6 +1004,7 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
       }     
     }
   }
+  VecRestoreArray(x,&results);
 
   solver_sendrecv_delu(solver);
 

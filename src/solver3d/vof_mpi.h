@@ -17,6 +17,7 @@ int vof_mpi_boundaries(struct solver_data *solver);
 int vof_mpi_special_boundaries(struct solver_data *solver);
 int vof_mpi_pressure(struct solver_data *solver);
 int vof_mpi_velocity(struct solver_data *solver);
+int vof_mpi_velocity_upwind(struct solver_data *solver);
 int vof_mpi_vfconv(struct solver_data *solver);
 int vof_mpi_petacal(struct solver_data *solver);
 int vof_mpi_hydrostatic(struct solver_data *solver);

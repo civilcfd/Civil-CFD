@@ -7,14 +7,19 @@
 #include <string.h>
 #include <math.h>
 #include <petscksp.h>
+#include <mpi.h>
 
 #include "stack.h"
 #include "mesh.h"
 #include "mesh_mpi.h"
 #include "csv.h"
 
-int mesh_mpi_init_complete(struct mesh_data *mesh, int rank) {
-  long int size;
+int mesh_mpi_init_complete(struct mesh_data *mesh) {
+  long int space;
+  int size, rank;
+
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   if(mesh == NULL) {
     printf("error: null mesh passed to mesh_mpi_init_complete\n");
@@ -27,10 +32,11 @@ int mesh_mpi_init_complete(struct mesh_data *mesh, int rank) {
     return (1);
   }
   
-  if(!rank) size = mesh->imax * mesh->jmax * mesh->kmax;
-  else size = mesh->i_range * mesh->jmax * mesh->kmax;
+  if(!rank) space = (mesh->imax + size) * mesh->jmax * mesh->kmax; /* pads end of alloc for even gathers */
+  else if(rank < size - 1) space = mesh->i_range * mesh->jmax * mesh->kmax;
+  else space = (mesh->i_range + size) * mesh->jmax * mesh->kmax;
 
-  if(size<=0) {
+  if(space<=0) {
     printf("error: improper size mesh in mesh_mpi_init_complete\n");
     return (1);
   }
@@ -49,7 +55,7 @@ int mesh_mpi_init_complete(struct mesh_data *mesh, int rank) {
     return(1);
   }
 
-	mesh_allocate(mesh, size);
+	mesh_allocate(mesh, space);
   return 0;
 }
 
@@ -108,7 +114,7 @@ struct mesh_data *mesh_mpi_init_copy(struct mesh_data *mesh_source) {
 
   mesh->ready = mesh_source->ready;
 
-  if(mesh_mpi_init_complete(mesh, 1) == 1) {
+  if(mesh_mpi_init_complete(mesh) == 1) {
     free(mesh);
     return NULL;
   }

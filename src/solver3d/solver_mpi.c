@@ -188,7 +188,7 @@ int solver_mpi_init_complete(struct solver_data *solver) {
     return(1);
   }
 
-  if(mesh_mpi_init_complete(solver->mesh, solver->rank) == 1) {
+  if(mesh_mpi_init_complete(solver->mesh) == 1) {
     return(1);
   }
 
@@ -221,9 +221,9 @@ int solver_recv_all(struct solver_data *solver) {
 
 int solver_sendrecv_edge(struct solver_data *solver, double *data) {
   /* each process will communicate its eastern edge with the next process' western edge */
-  /* TODO: instead of sendrecv, do series of non-blocking sends followed by receives for faster execution */
   int rank;
   int size;
+  MPI_Request requests[4];
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -233,10 +233,16 @@ int solver_sendrecv_edge(struct solver_data *solver, double *data) {
                                 rank + 1, data, IRANGE-1, 1);
   } else if(rank + 1 < size) {  
     /* internal cases */
-    solver_mpi_sendrecv(solver, rank - 1, data, 1, 1, 
+    solver_mpi_isend(solver, data, rank-1, 1, 1, &requests[0]);
+    solver_mpi_isend(solver, data, rank+1, IRANGE-2, 1, &requests[1]);
+    solver_mpi_irecv(solver, data, rank-1, 0, 1, &requests[2]);
+    solver_mpi_irecv(solver, data, rank+1, IRANGE-1, 1, &requests[3]);
+    MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
+
+    /* solver_mpi_sendrecv(solver, rank - 1, data, 1, 1, 
                                 rank - 1, data, 0, 1);
     solver_mpi_sendrecv(solver, rank + 1, data, IRANGE-2, 1,
-                                rank + 1, data, IRANGE-1, 1);
+                                rank + 1, data, IRANGE-1, 1); */
    } else {
     solver_mpi_sendrecv(solver, rank - 1, data, 1, 1, 
                                 rank - 1, data, 0, 1);
@@ -282,8 +288,14 @@ int solver_sendrecv_delu(struct solver_data *solver) {
   if(!solver->rank) {
     solver_mpi_sendrecv_replace(solver, ds, 0, 1, 1, 1);
   } else if(solver->rank + 1 < solver->size) {
-    solver_mpi_sendrecv_replace(solver, us, 0, 1, solver->rank - 1, solver->rank - 1);
-    solver_mpi_sendrecv_replace(solver, ds, 0, 1, solver->rank + 1, solver->rank + 1);
+    if(solver->rank % 2) { /* odd valued cases */ 
+      solver_mpi_sendrecv_replace(solver, us, 0, 1, solver->rank - 1, solver->rank - 1);
+      solver_mpi_sendrecv_replace(solver, ds, 0, 1, solver->rank + 1, solver->rank + 1);
+    } else
+    {
+      solver_mpi_sendrecv_replace(solver, ds, 0, 1, solver->rank + 1, solver->rank + 1);
+      solver_mpi_sendrecv_replace(solver, us, 0, 1, solver->rank - 1, solver->rank - 1);
+    }
   } else {
     solver_mpi_sendrecv_replace(solver, us, 0, 1, solver->rank - 1, solver->rank - 1);
   }
@@ -296,6 +308,7 @@ int solver_sendrecv_edge_int(struct solver_data *solver, int *data) {
   /* TODO: instead of sendrecv, do series of non-blocking sends followed by receives for faster execution */
   int rank;
   int size;
+  MPI_Request requests[4];
 
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -305,16 +318,33 @@ int solver_sendrecv_edge_int(struct solver_data *solver, int *data) {
                                  rank + 1, data, IRANGE-1, 1);
   } else if(rank + 1 < size) {  
     /* internal cases */
+    solver_mpi_isend_int(solver, data, rank-1, 1, 1, &requests[0]);
+    solver_mpi_isend_int(solver, data, rank+1, IRANGE-2, 1, &requests[1]);
+    solver_mpi_irecv_int(solver, data, rank-1, 0, 1, &requests[2]);
+    solver_mpi_irecv_int(solver, data, rank+1, IRANGE-1, 1, &requests[3]);
+    MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
+    /* internal cases *
     solver_mpi_sendrecv_int(solver, rank - 1, data, 1, 1, 
                                 rank - 1, data, 0, 1);
     solver_mpi_sendrecv_int(solver, rank + 1, data, IRANGE-2, 1,
-                                rank + 1, data, IRANGE-1, 1);
+                                rank + 1, data, IRANGE-1, 1); */
    } else {
     solver_mpi_sendrecv_int(solver, rank - 1, data, 1, 1, 
                                     rank - 1, data, 0, 1);
    }
 
   return 0; 
+}
+
+int solver_mpi_gather_int(struct solver_data *solver, int *data) {
+  long int range;
+  range = (IMAX + (solver->size - 1)) / solver->size;
+  range *= JMAX; 
+  range *= KMAX;
+
+  MPI_Gather(data, range, MPI_INT, data, range, MPI_INT, 0, MPI_COMM_WORLD);
+
+  return 0;
 }
 
 int solver_mpi_gather(struct solver_data *solver, double *data) {
@@ -338,7 +368,7 @@ int solver_send_all(struct solver_data *solver) {
   
   range = (IMAX + (size - 1)) / size;
   
-  for(n=0; n<size; n++) {
+  for(n=1; n<size; n++) {
     start = range * n;
     start -= 1;	
     start = max(start, 0);
@@ -360,6 +390,30 @@ int solver_send_all(struct solver_data *solver) {
       solver_mpi_send(solver, kE->k, n, start, range + 2);
     }
   }
+
+  return 0;
+}
+
+int solver_mpi_isend_int(struct solver_data *solver, int *data, int to, long int i_start, long int i_range, MPI_Request *request) {
+  MPI_Isend(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_INT, to, 1, MPI_COMM_WORLD, request);
+
+  return 0;
+}
+
+int solver_mpi_irecv_int(struct solver_data *solver, int *data, int from, long int i_start, long int i_range, MPI_Request *request) {
+  MPI_Irecv(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_INT, from, 1, MPI_COMM_WORLD, request);
+
+  return 0;
+}
+
+int solver_mpi_isend(struct solver_data *solver, double *data, int to, long int i_start, long int i_range, MPI_Request *request) {
+  MPI_Isend(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, to, 1, MPI_COMM_WORLD, request);
+
+  return 0;
+}
+
+int solver_mpi_irecv(struct solver_data *solver, double *data, int from, long int i_start, long int i_range, MPI_Request *request) {
+  MPI_Irecv(&data[mesh_index(solver->mesh,i_start,0,0)], i_range * JMAX * KMAX, MPI_DOUBLE, from, 1, MPI_COMM_WORLD, request);
 
   return 0;
 }
