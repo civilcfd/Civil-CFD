@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
   int ret = 0;
 
 	PetscInitialize(NULL, NULL, NULL, NULL);
+  PetscOptionsSetValue("-log_summary","true");
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
   
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
   solver = solver_init_empty();
   if(solver == NULL) return 1;
   solver->size = 1;
-  solver->rank = 1;
+  solver->rank = 0;
 
   vof_setup_solver(solver);
   

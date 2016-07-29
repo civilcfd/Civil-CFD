@@ -977,8 +977,13 @@ int vof_deltcal(struct solver_data *solver) {
     exit(1);
   }
   
-  if(solver->iter > 60) delt *= 0.99; 
-  if(solver->iter < 20) delt *= 1.01; 
+  if(solver->pressure == vof_pressure_gmres) {
+    if(solver->iter > 150) delt *= 0.975; 
+    if(solver->iter < 100) delt *= 1.025; 
+  } else {
+    if(solver->iter > 60) delt *= 0.99; 
+    if(solver->iter < 20) delt *= 1.01; 
+  }
 
   dv = 0;
   delt_conv = delt * 100;

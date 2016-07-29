@@ -46,6 +46,11 @@ float EE_n(struct solver_data *solver, long int i,long int j,long int k);
 float EE_n(struct solver_data *solver, long int i,long int j,long int k) { return E_N(i,j,k); } 
 #endif
 
+int kE_length() {
+  kE.length = kE.length_scale * kE.raw_length;
+  kE_n.length = kE.length;
+}
+
 int kE_set_value(char *param, int dims, 
                    double *vector) {
 
@@ -63,6 +68,7 @@ int kE_set_value(char *param, int dims,
 
     kE.length_scale = vector[0];
     kE_n.length_scale = kE.length_scale;
+    kE_length();
   }
   else if (strcmp(param, "length")==0) {
     if(dims != 1) {
@@ -70,8 +76,9 @@ int kE_set_value(char *param, int dims,
       return(1);
     }
 
-    kE.length = vector[0];
-    kE_n.length = kE.length;
+    kE.raw_length = vector[0];
+    kE_n.raw_length = kE.raw_length;
+    kE_length();
 
   }
   else if (strcmp(param, "rough")==0) {
@@ -168,7 +175,7 @@ int kE_write(char *filename) {
   }
 
   fprintf(fp,"length_scale %le\n",kE.length_scale);
-  fprintf(fp,"length %le\n",kE.length);
+  fprintf(fp,"length %le\n",kE.raw_length);
   fprintf(fp,"rough %le\n",kE.rough);
 
   fclose(fp);
@@ -186,9 +193,10 @@ int kE_load_values(struct solver_data *solver) {
 
 int kE_broadcast(struct solver_data *solver) {
 	
-	MPI_Bcast(&kE.length, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&kE.raw_length, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&kE.length_scale, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&kE.rough, 1, MPI_LONG_INT, 0, MPI_COMM_WORLD);
+  kE_length();
 
 	return 0;
 }
@@ -214,8 +222,9 @@ int kE_setup(struct solver_data *solver) {
   kE.sigma_E = kE_n.sigma_E = 1.3;
   kE.vonKarman = kE_n.vonKarman = 0.41;
   kE.length_scale = 0.038;
-  kE.length = min(IMAX * DELX, JMAX * DELY);
-  kE.length = min(kE.length, KMAX * DELZ);
+  kE.raw_length = min(IMAX * DELX, JMAX * DELY);
+  kE.raw_length = min(kE.length, KMAX * DELZ);
+  kE_length();
 
   kE.rough = kE_n.rough = 0.00161; /* concrete */
   
@@ -223,7 +232,10 @@ int kE_setup(struct solver_data *solver) {
 }
 
 int kE_init(struct solver_data *solver) {
-  long int size = IMAX * JMAX * KMAX;
+  long int size;
+  
+  if(!solver->rank) size = IMAX * JMAX * KMAX;
+  else size = IRANGE * JMAX * KMAX;
 
   kE.k = malloc(sizeof(double) * size);
   kE.E = malloc(sizeof(double) * size);
@@ -248,9 +260,10 @@ int kE_init(struct solver_data *solver) {
     return 1;
   }
   
-   
-  kE_set_internal(solver, 0.0001, 0);
-  kE.length *= kE.length_scale;
+  if(!solver->rank) {
+    kE_set_internal(solver, 0.0001, 0);
+  }
+  kE_length();
  
   return 0;
 }
@@ -328,12 +341,15 @@ int kE_special_boundaries(struct solver_data *solver) {
 }
 
 int kE_set_internal(struct solver_data *solver, double k, double E) {
-  long int l,m,n;
+  long int l,m,n,irange;
   double E_limit;
   
   E_limit = kE.C_mu * pow(k, 1.5) / kE.length;
 
-  for(l=0; l<IRANGE; l++) {
+  if(!solver->rank) irange = IMAX;
+  else irange = IRANGE;
+
+  for(l=0; l<irange; l++) {
     for(m=0; m<JMAX; m++) {
       for(n=0; n<KMAX; n++) {
         k(l,m,n) = k;
@@ -344,12 +360,14 @@ int kE_set_internal(struct solver_data *solver, double k, double E) {
         tau_y(l,m,n) = 0;
         tau_z(l,m,n) = 0;
         
-        nu_t(l,m,n) = 0;
+        //nu_t(l,m,n) = 0;
+        
+        nu_t(l,m,n) = max(kE.C_mu * pow(k(l,m,n),2) / E(l,m,n),0);
       }
     }
   }
       
-  kE_boundaries(solver);
+  //kE_boundaries(solver);
   kE_copy(solver);
   
   return 0;
@@ -410,14 +428,14 @@ int kE_boundaries(struct solver_data *solver) {
   }
   for(j=0; j<JMAX; j++) {
     for(k=0; k<KMAX; k++) {
-      if(solver->mesh->i_start == 0) {
+      if(ISTART == 0) {
         k(0,j,k) = k(1,j,k);
         E(0,j,k) = E(1,j,k);
         nu_t(0,j,k) = nu_t(1,j,k);
-      } else if(solver->mesh->i_start + solver->mesh->i_range == IMAX) {
-        k(IMAX-1,j,k) = k(IMAX-2,j,k);
-        E(IMAX-1,j,k) = E(IMAX-2,j,k);
-        nu_t(IMAX-1,j,k) = nu_t(IMAX-2,j,k);
+      } else if(ISTART + IRANGE == IMAX) {
+        k(IRANGE-1,j,k) = k(IRANGE-2,j,k);
+        E(IRANGE-1,j,k) = E(IRANGE-2,j,k);
+        nu_t(IRANGE-1,j,k) = nu_t(IRANGE-2,j,k);
       }
 
     }
@@ -570,9 +588,9 @@ int kE_tau(struct solver_data *solver) {
   double E_limit;
   const double del[3] = { DELX, DELY, DELZ };
   
-  for(i=1; i<IRANGE-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {
+  for(i=1; i<IRANGE; i++) {
+    for(j=1; j<JMAX; j++) {
+      for(k=1; k<KMAX; k++) {
       
         if(FV(i,j,k) < solver->emf || VOF(i,j,k) < solver->emf)
           continue;
@@ -764,10 +782,6 @@ int kE_loop_explicit(struct solver_data *solver) {
   double dvdx, dudy, dudz, dwdx, dvdz, dwdy;
   long int i,j,k;
   
-#pragma omp parallel for shared(solver) private(i,j,k, \
-              delk, delE, Production, Diffusion_k, Diffusion_E, nu_t, nu_eff, E_limit, \
-              AEdkdx, ANdkdy, ATdkdz, AEdEdx, ANdEdy, ATdEdz, \
-              dvdx, dudy, dudz, dwdx, dvdz, dwdy)  
   for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
       for(k=1; k<KMAX-1; k++) {
@@ -928,10 +942,12 @@ int kE_loop_explicit(struct solver_data *solver) {
   }
 
   kE_boundaries(solver);
-  kE_copy(solver);
 
   solver_sendrecv_edge(solver, kE.k);
   solver_sendrecv_edge(solver, kE.E);
+  solver_sendrecv_edge(solver, kE.nu_t);
+
+  kE_copy(solver);
 
   return 0;
 }

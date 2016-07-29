@@ -116,7 +116,7 @@ int sboundary_setup(struct solver_data *solver, int x, long int *imin, long int 
   *imin = *imin - ISTART;
   *imin = max(*imin, 0);
   *imax = *imax - ISTART;
-  *imax = min(*imax, IRANGE);
+  *imax = min(*imax, IRANGE-1);
 
   return 0;
 }

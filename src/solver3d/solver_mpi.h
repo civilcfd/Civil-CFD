@@ -22,9 +22,8 @@ int solver_mpi_sendrecv_int(struct solver_data *solver, int to, int *send, long 
 int solver_broadcast_all(struct solver_data *solver);
 double solver_mpi_max(struct solver_data *solver, double x);
 double solver_mpi_min(struct solver_data *solver, double x); 
-int solver_sum_edge(struct solver_data *solver, double *data);
 int solver_mpi_init_comm(struct solver_data *solver);
-int solver_mpi_sum(struct solver_data *solver, double *data, MPI_Comm comm, long int i_start, long int i_range);
+double solver_mpi_sum(struct solver_data *solver, double x);
 int solver_sendrecv_delu(struct solver_data *solver);
 int solver_mpi_sendrecv_replace(struct solver_data *solver, double *data, long int start, long int range, int to, int from);
 int solver_mpi_init_complete(struct solver_data *solver);

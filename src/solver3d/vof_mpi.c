@@ -1051,6 +1051,7 @@ int vof_mpi_write(struct solver_data *solver) {
 int vof_mpi_write_timestep(struct solver_data * solver) {
   int write_step;
   static int first_iter = 1;
+  struct kE_data *kE;
   
   solver_mpi_gather(solver, solver->mesh->P);
   solver_mpi_gather(solver, solver->mesh->u);
@@ -1058,6 +1059,12 @@ int vof_mpi_write_timestep(struct solver_data * solver) {
   solver_mpi_gather(solver, solver->mesh->w);
   solver_mpi_gather(solver, solver->mesh->vof);
   solver_mpi_gather_int(solver, solver->mesh->n_vof);
+
+  if(solver->mesh->turbulence_model != NULL) {
+    kE = solver->mesh->turbulence_model;
+    solver_mpi_gather(solver, kE->k);
+    solver_mpi_gather(solver, kE->E);
+  }
 
   if(!solver->rank) {
     write_step = track_add(solver->t);

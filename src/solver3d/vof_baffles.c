@@ -16,6 +16,7 @@
 #include "kE.h"
 #include "vof_boundary.h"
 #include "vof_baffles.h"
+#include "solver_mpi.h"
 
 #include "vof_macros.h"
 
@@ -28,6 +29,8 @@ int vof_baffles_output(struct solver_data *solver) {
   int x;
   int flow_count = 0;
   int swirl_count = 0;
+
+  if(solver->rank != 0) return 0;
   
   for(x=0; x < 3; x++) {
     for(baffle = solver->mesh->baffles[x]; baffle != NULL; baffle = baffle->next) {    
@@ -62,6 +65,8 @@ int vof_baffles_write(struct solver_data *solver) {
   struct baffle_data *baffle;
   int x, count=0, flow_count=0, swirl_count=0, v_count=0;
   
+  if(solver->rank != 0) return 0;
+
   if(solver->t < 0.000001) {
     fp = fopen("baffles.csv", "w"); 
     if(fp == NULL) {
@@ -297,7 +302,10 @@ int baffle_flow(struct solver_data *solver,
 
   long int i, j, k, imin, jmin, kmin, imax, jmax, kmax;
   
-  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) {
+    *value = solver_mpi_sum(solver, 0);
+    return 0;
+  }
   
   *value = 0;
   
@@ -319,6 +327,8 @@ int baffle_flow(struct solver_data *solver,
     }
   }
 
+  *value = solver_mpi_sum(solver, *value);
+
   return 0;
 }
 
@@ -330,8 +340,14 @@ int baffle_swirl(struct solver_data *solver,
   double count;
   double swirl, u_ave, v_ave, w_ave;
   
-  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) return 0;
-  
+  if(baffle_setup(solver, x, pos, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2)) {
+    swirl = solver_mpi_sum(solver, 0);
+    count = solver_mpi_sum(solver, 0);
+    *value = swirl / count;
+    if(isnan(*value)) *value = 0;
+    return 0;
+  }
+
   *value = 0;
   
   imin = max(imin-1,0);
@@ -381,7 +397,10 @@ int baffle_swirl(struct solver_data *solver,
     }
   }
   
+  swirl = solver_mpi_sum(solver, swirl);
+  count = solver_mpi_sum(solver, count);
   *value = swirl / count;
+  if(isnan(*value)) *value = 0;
   
   return 0;
 }
@@ -513,29 +532,29 @@ int baffle_setup(struct solver_data *solver, int x, long int pos,
 
   switch(x) {
   case 0:
-    *jmin = min_1;
+    *jmin = max(1,min_1);
     *jmax = min(JMAX-2,max_1);
-    *kmin = min_2;
+    *kmin = max(1,min_2);
     *kmax = min(KMAX-2,max_2);    
     break;
   case 1:
-    *imin = min_1;
+    *imin = max(1,min_1);
     *imax = min(IMAX-2,max_1);
-    *kmin = min_2;
+    *kmin = max(1,min_2);
     *kmax = min(KMAX-2,max_2);   
     break;    
   case 2:
-    *imin = min_1;
+    *imin = max(1,min_1);
     *imax = min(IMAX-2,max_1);
-    *jmin = min_2;
+    *jmin = max(1,min_2);
     *jmax = min(JMAX-2,max_2);   
     break;   
   }
 
   *imin = *imin - ISTART;
-  *imin = max(*imin, 0);
+  *imin = max(*imin, 1);
   *imax = *imax - ISTART;
-  *imax = min(*imax, IRANGE);
+  *imax = min(*imax, IRANGE-2);
 
   return 0;
 }

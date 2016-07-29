@@ -214,6 +214,9 @@ int solver_recv_all(struct solver_data *solver) {
   if(kE_check(solver))  {
     kE = solver->mesh->turbulence_model;
     solver_mpi_recv(solver, kE->k, 0, 0, IRANGE);
+    solver_mpi_recv(solver, kE->E, 0, 0, IRANGE);
+    solver_mpi_recv(solver, kE->nu_t, 0, 0, IRANGE);
+    kE_copy(solver);
   }
 
   return 0;
@@ -246,36 +249,6 @@ int solver_sendrecv_edge(struct solver_data *solver, double *data) {
    } else {
     solver_mpi_sendrecv(solver, rank - 1, data, 1, 1, 
                                 rank - 1, data, 0, 1);
-   }
-  
-   return 0;
-}
-
-int solver_sum_edge(struct solver_data *solver, double *data) {
-  int rank;
-  int size;
-
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-  if(!rank) {
-    solver_mpi_sum(solver, data, solver->comm_downstream, IRANGE-2, 1);
-    solver_mpi_recv(solver, data, rank+1, IRANGE-1, 1);
-  } else if(rank + 1 < size) {  
-    /* internal cases */
-    if(rank % 2) { /* odd valued cases */
-      solver_mpi_sum(solver, data, solver->comm_upstream, 0, 1);
-      solver_mpi_sum(solver, data, solver->comm_downstream, IRANGE-2, 1);
-    } else {
-      solver_mpi_sum(solver, data, solver->comm_downstream, IRANGE-2, 1);
-      solver_mpi_sum(solver, data, solver->comm_upstream, 0, 1);
-    }
-
-    solver_mpi_send(solver, data, rank-1, 1, 1);
-    solver_mpi_recv(solver, data, rank+1, IRANGE-1, 1);
-   } else {
-    solver_mpi_sum(solver, data, solver->comm_upstream, 0, 1);
-    solver_mpi_send(solver, data, rank-1, 1, 1);
    }
   
    return 0;
@@ -388,6 +361,8 @@ int solver_send_all(struct solver_data *solver) {
     if(kE_check(solver))  {
       kE = solver->mesh->turbulence_model;
       solver_mpi_send(solver, kE->k, n, start, range + 2);
+      solver_mpi_send(solver, kE->E, n, start, range + 2);
+      solver_mpi_send(solver, kE->nu_t, n, start, range + 2);
     }
   }
 
@@ -455,10 +430,13 @@ int solver_mpi_sendrecv_int(struct solver_data *solver, int to, int *send, long 
   return 0;
 }
 
-int solver_mpi_sum(struct solver_data *solver, double *data, MPI_Comm comm, long int i_start, long int i_range) {
-  MPI_Allreduce(&data[mesh_index(solver->mesh,i_start,0,0)], &data[mesh_index(solver->mesh,i_start,0,0)], i_range*JMAX*KMAX, MPI_DOUBLE, MPI_SUM, comm);
+double solver_mpi_sum(struct solver_data *solver, double x) {
+  double ret;
 
-  return 0;
+  if(solver->size == 1) return x;
+
+  MPI_Allreduce(&x, &ret, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  return ret;
 }
 
 double solver_mpi_max(struct solver_data *solver, double x) {

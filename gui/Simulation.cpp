@@ -283,7 +283,7 @@ QString Simulation::getLength() {
   
   if(kEpsilon()) {
     kE = (struct kE_data *) solver->mesh->turbulence_model;
-    length = kE->length;
+    length = kE->raw_length;
     return QString::number(length); 
   }
 
@@ -382,7 +382,7 @@ bool Simulation::setLength(QString str) {
   
     if(kEpsilon()) {
       kE = (struct kE_data *) solver->mesh->turbulence_model;
-      kE->length = conv;
+      kE->raw_length = conv;
     }
     else return false;
   }
