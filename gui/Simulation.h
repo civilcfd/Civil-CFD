@@ -9,6 +9,8 @@
 #include <QDir>
 #include <QFileInfo>
 
+#include <mpi.h>
+
 extern "C" {
 #include "solver.h"
 #include "readfile.h"

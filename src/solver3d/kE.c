@@ -9,6 +9,7 @@
 #include <math.h>
 #include <omp.h>
 #include <petscksp.h>
+#include <libxml/xmlwriter.h>
 
 #include "vtk.h"
 #include "vof.h"
@@ -157,6 +158,21 @@ int kE_read(char *filename)
   }
 
   fclose(fp);
+
+  return 0;
+}
+
+int kE_write_xml(void *writer_ptr) {
+  xmlTextWriterPtr writer = (xmlTextWriterPtr) writer_ptr;
+
+
+  xmlTextWriterStartElement(writer, BAD_CAST "Turbulence");
+
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "length_scale", "%e", kE.length_scale);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "length", "%e", kE.raw_length);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "rough", "%e", kE.rough);  
+
+  xmlTextWriterEndElement(writer);
 
   return 0;
 }

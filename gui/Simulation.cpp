@@ -96,6 +96,9 @@ int Simulation::save() {
     ready=0;
     return false;
   }
+  // TESTING
+  write_solver_xml(solver, "solver.xml");
+  // TESTING
   if(solver->turbulence_write("turbulencefile")) {
     qDebug() << "could not write turbulencefile";
     ready=0;
@@ -151,6 +154,7 @@ int Simulation::load() {
     ready=0;
     return false;
   }
+  read_solver_xml(solver, "solver.xml");
   if(solver->turbulence_read("turbulencefile")) {
     qDebug() << "could not read turbulencefile";
     ready=0;
