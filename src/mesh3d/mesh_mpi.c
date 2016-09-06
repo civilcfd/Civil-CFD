@@ -14,6 +14,20 @@
 #include "mesh_mpi.h"
 #include "csv.h"
 
+long int mesh_mpi_space(struct mesh_data *mesh) {
+  /* tells malloc functions how much space to allow */
+  long int space;
+  int size, rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  if(!rank) space = (mesh->imax + size) * mesh->jmax * mesh->kmax; /* pads end of alloc for even gathers */
+  else if(rank < size - 1) space = mesh->i_range * mesh->jmax * mesh->kmax;
+  else space = (mesh->i_range + size) * mesh->jmax * mesh->kmax;
+
+  return space;
+}
+
 int mesh_mpi_init_complete(struct mesh_data *mesh) {
   long int space;
   int size, rank;
@@ -32,9 +46,7 @@ int mesh_mpi_init_complete(struct mesh_data *mesh) {
     return (1);
   }
   
-  if(!rank) space = (mesh->imax + size) * mesh->jmax * mesh->kmax; /* pads end of alloc for even gathers */
-  else if(rank < size - 1) space = mesh->i_range * mesh->jmax * mesh->kmax;
-  else space = (mesh->i_range + size) * mesh->jmax * mesh->kmax;
+  space = mesh_mpi_space(mesh);
 
   if(space<=0) {
     printf("error: improper size mesh in mesh_mpi_init_complete\n");

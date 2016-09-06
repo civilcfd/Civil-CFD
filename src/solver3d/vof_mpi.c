@@ -37,7 +37,7 @@ int vof_mpi_setup_solver(struct solver_data *solver) {
   solver->special_boundaries = vof_special_boundaries;
   solver->pressure = vof_pressure_gmres_mpi;
   solver->velocity = vof_mpi_velocity_upwind;
-  solver->vfconv = vof_mpi_vfconv;
+  solver->convect = vof_mpi_convect; //_depreciated;
   solver->petacal = vof_mpi_petacal;
   solver->betacal = vof_mpi_betacal;
   solver->deltcal = vof_mpi_deltcal;
@@ -541,7 +541,7 @@ int vof_mpi_loop(struct solver_data *solver) {
 
     solver->turbulence_loop(solver);
 
-    solver->vfconv(solver);
+    solver->convect(solver);
     
     solver->boundaries(solver);
     if(solver->special_boundaries != NULL)
@@ -738,7 +738,7 @@ int vof_mpi_deltcal(struct solver_data *solver) {
           
         if(delt_conv < 0.0001) {
 
-          printf("deltconv low\n");
+          printf("");
 
         }
       }

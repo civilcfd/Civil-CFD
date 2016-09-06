@@ -80,29 +80,6 @@ struct solver_data {
   double vof_delay;  /* delay to reach this height */
   
 	time_t start_time;
-  /*
-   * COMMENTED OUT - INCLUDED IN THE MESH DEFINITION
-   * KEPT IN CASE I CHANGE MY MIND 
-   *
-
-  double *peta; 
-  
-  int nvrm;       * number of void regions *
-  double *volvr;  * void region volume *
-  double *nvr;    * void region labels *
-  double *pvr;    * void region pressure *
-
-  double *u;  
-  double *v;
-  double *w;
-
-  double *P;
-
-  double *vof;
-  double *nvof;
-  double *peta;
-  double *tanth;
-  */
 
   double t;
 
@@ -116,7 +93,7 @@ struct solver_data {
   int (*special_boundaries)(struct solver_data *solver);
   int (*pressure)(struct solver_data *solver);
   int (*velocity)(struct solver_data *solver);
-  int (*vfconv)(struct solver_data *solver);
+  int (*convect)(struct solver_data *solver);
   int (*petacal)(struct solver_data *solver);
   int (*betacal)(struct solver_data *solver);
   int (*deltcal)(struct solver_data *solver);

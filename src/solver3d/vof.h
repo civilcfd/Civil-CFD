@@ -17,7 +17,7 @@ int vof_boundaries(struct solver_data *solver);
 int vof_special_boundaries(struct solver_data *solver);
 int vof_pressure(struct solver_data *solver);
 int vof_velocity(struct solver_data *solver);
-int vof_vfconv(struct solver_data *solver);
+int vof_convect(struct solver_data *solver);
 int vof_petacal(struct solver_data *solver);
 int vof_hydrostatic(struct solver_data *solver);
 int vof_betacal(struct solver_data *solver);

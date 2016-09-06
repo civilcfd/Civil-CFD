@@ -7,6 +7,7 @@
 #define MESH_MPI_H
 
 
+long int mesh_mpi_space(struct mesh_data *solver);
 int mesh_broadcast_all(struct mesh_data *mesh);
 int mesh_broadcast_constants(struct mesh_data *mesh);
 int mesh_broadcast_special_boundaries(struct mesh_data *mesh);

@@ -898,7 +898,7 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
     ierr = KSPSetUp(ksp); CHKERRQ(ierr);
     //ierr = KSPSetType(ksp,KSPGMRES); CHKERRQ(ierr);
 
-    ierr = KSPSetTolerances(ksp,.001,PETSC_DEFAULT,PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
+    ierr = KSPSetTolerances(ksp,.001,solver->epsi/(solver->rho * solver->delt),PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
     //ierr = PCASMGetSubKSP(pc,&nlocal,&first,&subksp);CHKERRQ(ierr);
     ierr = PCBJacobiGetSubKSP(pc,&nlocal,&first,&subksp);CHKERRQ(ierr);
     for (i=0; i<nlocal; i++) {
@@ -908,7 +908,7 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
       ierr = KSPSetTolerances(subksp[i],.001,solver->epsi/(solver->rho * solver->delt),PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
     }
 
-    printf("Built matrix with range: %d to %d on proc %d and preferred range %ld\n",Istart, Iend, solver->rank, range * JMAX * KMAX);
+    printf("Built matrix with range: %d to %d on proc %d\n",Istart, Iend, solver->rank);
 
 	}
   else {

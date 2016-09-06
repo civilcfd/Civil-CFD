@@ -236,8 +236,7 @@ int kE_setup(struct solver_data *solver) {
 int kE_init(struct solver_data *solver) {
   long int size;
   
-  if(!solver->rank) size = IMAX * JMAX * KMAX;
-  else size = IRANGE * JMAX * KMAX;
+  size = mesh_mpi_space(solver->mesh);
 
   kE.k = malloc(sizeof(double) * size);
   kE.E = malloc(sizeof(double) * size);

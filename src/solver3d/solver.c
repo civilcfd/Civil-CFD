@@ -86,7 +86,7 @@ struct solver_data *solver_init_empty() {
   solver->special_boundaries = NULL;
   solver->pressure = NULL;
   solver->velocity = NULL;
-  solver->vfconv   = NULL;
+  solver->convect   = NULL;
   solver->petacal  = NULL;
 
 	time(&solver->start_time);
