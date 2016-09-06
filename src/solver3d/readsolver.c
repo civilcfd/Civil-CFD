@@ -9,11 +9,35 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include <libxml/xpath.h>
+
 #include "solver.h"
 #include "readsolver.h"
 #include "laminar.h"
 #include "kE.h"
 #include "readfile.h"
+
+int read_solver_xml(struct solver_data *solver, char *filename) {
+  xmlXPathContext *xpathCtx;
+  xmlXPathObject  *xpathObj;
+  xmlNode *node;
+  xmlDoc *doc;
+  double vector[3];
+
+  xmlInitParser();
+  LIBXML_TEST_VERSION
+ 
+  doc = xmlParseFile(filename);
+  xpathCtx = xmlXPathNewContext(doc);
+
+  xpathObj = xmlXPathEvalExpression( (xmlChar*) "/Case/Solver/Methods/nu", xpathCtx);
+  node = xpathObj->nodesetval->nodeTab[0];
+  vector[0] = atof(xmlNodeGetContent(node));
+
+  printf("nu: %lf\n",vector[0]);
+
+  return 0;
+}
 
 int read_solver(struct solver_data *solver, char *filename)
 {

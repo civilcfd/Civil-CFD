@@ -48,6 +48,7 @@ int kE_setup(struct solver_data *solver);
 int kE_load_values(struct solver_data *solver);
 int kE_read(char *filename);
 int kE_write(char *filename);
+int kE_write_xml(void *writer_ptr);
 int kE_boundaries(struct solver_data *solver);
 int kE_special_boundaries(struct solver_data *solver);
 int kE_copy(struct solver_data *solver);

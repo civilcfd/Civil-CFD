@@ -7,12 +7,119 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <libxml/encoding.h>
+#include <libxml/xmlwriter.h>
 
 #include "readfile.h"
 #include "mesh.h"
 
 const char *wall_names[] = { "west", "east", "south", "north", "bottom", "top" };
 const char *axis_names[] = { "x", "y", "z" };
+const char *wb_names[] = { "slip", "no_slip", "zero_gradient"};
+const char *sb_names[] = { "fixed_velocity", "mass_outflow", "hgl", "weir", "wall"};
+const char *baffle_names[] = { "flow", "barrier", "k", "swirl_angle", "v_deviation"};
+const char *extent_a_names[] = { "j", "i", "i"};
+const char *extent_b_names[] = { "k", "k", "j"};
+
+
+int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
+  int i, n;
+  struct sb_data *sb;
+  struct baffle_data *baffle;
+  char buf[256];
+  
+  xmlTextWriterStartElement(writer, BAD_CAST "Mesh");
+
+  xmlTextWriterStartElement(writer, BAD_CAST "Cells");
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "imax", "%e", mesh->imax);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "jmax", "%e", mesh->jmax);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "kmax", "%e", mesh->kmax);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "delx", "%e", mesh->delx);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "dely", "%e", mesh->dely); 
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "delz", "%e", mesh->delz); 
+  xmlTextWriterEndElement(writer);
+
+  xmlTextWriterStartElement(writer, BAD_CAST "Inside");
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "x", "%e", mesh->inside[0]);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "y", "%e", mesh->inside[1]);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "z", "%e", mesh->inside[2]); 
+  xmlTextWriterEndElement(writer);
+
+  xmlTextWriterStartElement(writer, BAD_CAST "Origin");
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "x", "%e", mesh->origin[0]);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "y", "%e", mesh->origin[1]);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "z", "%e", mesh->origin[2]); 
+  xmlTextWriterEndElement(writer);
+ 
+  xmlTextWriterStartElement(writer, BAD_CAST "Boundaries");
+  for(i=0; i<6; i++) {
+    xmlTextWriterWriteFormatElement(writer, BAD_CAST wall_names[i], "%s", wb_names[mesh->wb[i]]);  
+  }
+  xmlTextWriterEndElement(writer);
+
+  xmlTextWriterStartElement(writer, BAD_CAST "Special_Boundaries");
+  for(i=0; i<6; i++) {
+    n = 0;
+    sb = mesh->sb[i];
+    
+    xmlTextWriterStartElement(writer, BAD_CAST wall_names[i]);
+    while(sb != NULL) {    
+      sprintf(buf, "%d", n); n++;
+      xmlTextWriterStartElement(writer, BAD_CAST buf);
+
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST "type", "%s", sb_names[sb->type]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST "value", "%e", sb->value); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST "turbulence", "%e", sb->turbulence); 
+
+      xmlTextWriterStartElement(writer, BAD_CAST "Extent");
+      xmlTextWriterStartElement(writer, BAD_CAST "From");
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", sb->extent_a[0]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", sb->extent_b[0]); 
+      xmlTextWriterEndElement(writer);
+      xmlTextWriterStartElement(writer, BAD_CAST "To");
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", sb->extent_a[1]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", sb->extent_b[1]); 
+      xmlTextWriterEndElement(writer);
+
+      xmlTextWriterEndElement(writer);
+      sb = sb->next;
+    }
+    xmlTextWriterEndElement(writer);
+  }
+  
+  xmlTextWriterStartElement(writer, BAD_CAST "Baffles");
+  for(i=0; i<3; i++) {
+    n = 0;
+    baffle = mesh->baffles[i];
+    
+    xmlTextWriterStartElement(writer, BAD_CAST wall_names[i]);
+    while(baffle != NULL) {
+      sprintf(buf, "%d", n); n++;
+      xmlTextWriterStartElement(writer, BAD_CAST buf);
+
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST "type", "%s", baffle_names[baffle->type]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST "value", "%e", baffle->value); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST "pos", "%ld", baffle->pos); 
+
+      xmlTextWriterStartElement(writer, BAD_CAST "Extent");
+      xmlTextWriterStartElement(writer, BAD_CAST "From");
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", baffle->extent_a[0]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", baffle->extent_b[0]); 
+      xmlTextWriterEndElement(writer);
+      xmlTextWriterStartElement(writer, BAD_CAST "To");
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", baffle->extent_a[1]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", baffle->extent_b[1]); 
+      xmlTextWriterEndElement(writer);
+
+      baffle = baffle->next;
+    }
+    xmlTextWriterEndElement(writer);
+  }
+  
+  xmlTextWriterEndElement(writer);
+  
+  return 0;
+}
 
 int write_mesh(struct mesh_data *mesh, char *filename) {
   FILE *fp;
