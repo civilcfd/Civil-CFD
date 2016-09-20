@@ -27,7 +27,11 @@ int main(int argc, char *argv[])
   int ret = 0;
 
 	PetscInitialize(NULL, NULL, NULL, NULL);
-  PetscOptionsSetValue("-log_summary","true");
+#ifdef _WIN32
+	PetscOptionsSetValue(NULL, "-log_summary", "true");
+#else
+	PetscOptionsSetValue("-log_summary","true");
+#endif
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
   

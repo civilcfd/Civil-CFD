@@ -851,7 +851,7 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   }
 
 	if(!initialize) {
-    PetscLogBegin();
+    //PetscLogBegin();
 	  size = IMAX * JMAX * KMAX;
     
     ierr = MatCreate(PETSC_COMM_WORLD,&A);CHKERRQ(ierr);
