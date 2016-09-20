@@ -28,7 +28,7 @@ int read_solver_xml(struct solver_data *solver, char *filename) {
   LIBXML_TEST_VERSION
  
   doc = xmlParseFile(filename);
-  if(doc === NULL) {
+  if(doc == NULL) {
     printf("Could not open %s\n",filename);
     return 1;
   }
