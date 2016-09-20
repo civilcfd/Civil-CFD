@@ -1,7 +1,7 @@
 TARGET = ../../lib/libmesh3d.a
 LIBS = -lm -lqhull 
 CC = gcc
-CFLAGS = -g -I /usr/include/mpi -I /usr/include/petsc -I /usr/local/include -I /opt/local/include -I ../solver3d -I ../mesh3d -Wall -DDEBUG -fopenmp -O0
+CFLAGS = -g -I /usr/include/mpi -I /usr/include/petsc -I /usr/local/include -I /opt/local/include -I ../solver3d -I /usr/include/libxml2 -I ../mesh3d -Wall -DDEBUG -fopenmp -O0
 
 .PHONY: default all clean
 

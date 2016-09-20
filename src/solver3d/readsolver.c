@@ -28,13 +28,29 @@ int read_solver_xml(struct solver_data *solver, char *filename) {
   LIBXML_TEST_VERSION
  
   doc = xmlParseFile(filename);
+  if(doc === NULL) {
+    printf("Could not open %s\n",filename);
+    return 1;
+  }
+
   xpathCtx = xmlXPathNewContext(doc);
+  if(doc == NULL) {
+    printf("Could not create xpath context\n");
+    return 1;
+  }
 
   xpathObj = xmlXPathEvalExpression( (xmlChar*) "/Case/Solver/Methods/nu", xpathCtx);
-  node = xpathObj->nodesetval->nodeTab[0];
-  vector[0] = atof(xmlNodeGetContent(node));
+  if(xpathObj == NULL) {
+    printf("Could not evaluate nu\n");
+  }
+  else {
+    node = xpathObj->nodesetval->nodeTab[0];
+    vector[0] = atof(xmlNodeGetContent(node));
 
-  printf("nu: %lf\n",vector[0]);
+    printf("nu: %lf\n",vector[0]);
+
+  }
+
 
   return 0;
 }

@@ -14,9 +14,9 @@ QMAKE_LINK = clang-omp++
 QMAKE_LINK_SHLIB = clang-omp++
 }
 unix:!macx {
-QMAKE_CXX = g++
-QMAKE_LINK = g++
-QMAKE_LINK_SHLIB = g++
+QMAKE_CXX = mpic++
+QMAKE_LINK = mpic++
+QMAKE_LINK_SHLIB = mpic++
 }
 win32 {
 RC_FILE = civilcfd.rc
@@ -25,9 +25,9 @@ QMAKE_LINK = link.exe
 QMAKE_LINK_SHLIB = link.exe
 TARGET = ../../bin/gui
 }
-INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/qt4 /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10 /usr/include/vtk-5.10
+INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/qt4 /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10 /usr/include/vtk-5.10 /usr/include/mpi /usr/include/petsc /usr/local/include /usr/include/libxml2
 !win32 {
-LIBS += -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering -lz -lquazip -lpetsc -lmpi
+LIBS += -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering -lz -lquazip -lpetsc -lmpi -lxml2
 CONFIG += debug x86_64
 }
 win32 {

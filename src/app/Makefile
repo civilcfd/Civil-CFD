@@ -1,6 +1,6 @@
-LIBS = -L/usr/local/lib -L/opt/local/lib -L../../lib -L/usr/local/Cellar/lzlib/1.7/lib -lsolver3d -lmesh3d -lm -lqhull -fopenmp -lz -lpetsc -lmpi -g
+LIBS = -L/usr/local/lib -L/opt/local/lib -L../../lib -L/usr/local/Cellar/lzlib/1.7/lib -lsolver3d -lmesh3d -lm -lqhull -fopenmp -lz -lpetsc -lmpi -lxml2 -g
 CC = gcc
-CFLAGS = -g -I /usr/include/mpi -I /usr/include/petsc -I /opt/local/include -I ../mesh3d -I ../solver3d -Wall -DDEBUG -O0 -fopenmp
+CFLAGS = -g -I /usr/include/mpi -I /usr/include/petsc -I /opt/local/include -I ../mesh3d -I ../solver3d -I /usr/include/libxml2  -Wall -DDEBUG -O0 -fopenmp
 
 .PHONY: default all clean
 
