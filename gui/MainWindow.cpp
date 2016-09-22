@@ -77,8 +77,13 @@ void MainWindow::on_RunSimulation_clicked() {
   }
 
   if(ui.parallelGMRES->isChecked()) {
-    pathPrefix = "mpirun -np " + ui.processes->currentText();
-  }
+#ifdef _WIN32
+    pathPrefix = "mpiexec.exe -n ";
+#else
+    pathPrefix = "mpirun -np ";
+#endif
+    pathPrefix +=  ui.processes->currentText();
+  }	
 
   solverDialog = new SolverDialog(sim, appPath, ui.t->currentText(), pathPrefix);
   solverDialog->exec();

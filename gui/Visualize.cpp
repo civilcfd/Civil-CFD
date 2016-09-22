@@ -320,18 +320,17 @@ void MainWindow::visualizeRender() {
 
 bool decompressFile(QString zip_filename , QString filename)
 {
-  QFile file(zip_filename);
   QFile outfile(filename);
-  if(!file.open(QFile::ReadOnly)) return false;
-  QuaGzipFile gzip;
-  gzip.open(file.handle(), QuaGzipFile::ReadOnly);
   
-
+  QuaGzipFile gzip(zip_filename);
+  
+  if(!gzip.open(QIODevice::ReadOnly)) {
+	return false;  
+  } 
   QByteArray uncompressed_data = gzip.readAll();
  
   if(!outfile.open(QIODevice::WriteOnly)) return false;
   outfile.write(uncompressed_data);
-  file.close();
   outfile.close();
   gzip.close();
   return true;
