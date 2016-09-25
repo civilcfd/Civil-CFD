@@ -7,20 +7,29 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <libxml/encoding.h>
-#include <libxml/xmlwriter.h>
 
 #include "readfile.h"
 #include "mesh.h"
 
 const char *wall_names[] = { "west", "east", "south", "north", "bottom", "top" };
 const char *axis_names[] = { "x", "y", "z" };
-const char *wb_names[] = { "slip", "no_slip", "zero_gradient"};
-const char *sb_names[] = { "fixed_velocity", "mass_outflow", "hgl", "weir", "wall"};
-const char *baffle_names[] = { "flow", "barrier", "k", "swirl_angle", "v_deviation"};
+const char *wb_names[] = { "slip", "no_slip", "zero_gradient", "end"};
+const char *sb_names[] = { "fixed_velocity", "mass_outflow", "hgl", "weir", "wall", "end"};
+const char *baffle_names[] = { "flow", "barrier", "k", "swirl_angle", "v_deviation", "end"};
 const char *extent_a_names[] = { "j", "i", "i"};
 const char *extent_b_names[] = { "k", "k", "j"};
+  
+int string_index(char **str, char *str2) {
+  int i=0;
 
+  while(1) {
+    if(!strcmp(str[i], "end")) break;
+    if(!strcmp(str[i], str2)) return i;
+    i++;
+  }
+
+  return -1;
+}
 
 int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
   int i, n;
@@ -31,9 +40,9 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
   xmlTextWriterStartElement(writer, BAD_CAST "Mesh");
 
   xmlTextWriterStartElement(writer, BAD_CAST "Cells");
-  xmlTextWriterWriteFormatElement(writer, BAD_CAST "imax", "%e", mesh->imax);  
-  xmlTextWriterWriteFormatElement(writer, BAD_CAST "jmax", "%e", mesh->jmax);  
-  xmlTextWriterWriteFormatElement(writer, BAD_CAST "kmax", "%e", mesh->kmax);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "imax", "%ld", mesh->imax);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "jmax", "%ld", mesh->jmax);  
+  xmlTextWriterWriteFormatElement(writer, BAD_CAST "kmax", "%ld", mesh->kmax);  
   xmlTextWriterWriteFormatElement(writer, BAD_CAST "delx", "%e", mesh->delx);  
   xmlTextWriterWriteFormatElement(writer, BAD_CAST "dely", "%e", mesh->dely); 
   xmlTextWriterWriteFormatElement(writer, BAD_CAST "delz", "%e", mesh->delz); 
@@ -86,13 +95,14 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
     }
     xmlTextWriterEndElement(writer);
   }
+  xmlTextWriterEndElement(writer);
   
   xmlTextWriterStartElement(writer, BAD_CAST "Baffles");
   for(i=0; i<3; i++) {
     n = 0;
     baffle = mesh->baffles[i];
     
-    xmlTextWriterStartElement(writer, BAD_CAST wall_names[i]);
+    xmlTextWriterStartElement(writer, BAD_CAST axis_names[i]);
     while(baffle != NULL) {
       sprintf(buf, "%d", n); n++;
       xmlTextWriterStartElement(writer, BAD_CAST buf);
@@ -110,14 +120,16 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
       xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", baffle->extent_a[1]); 
       xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", baffle->extent_b[1]); 
       xmlTextWriterEndElement(writer);
+      xmlTextWriterEndElement(writer);
 
       baffle = baffle->next;
+      xmlTextWriterEndElement(writer);
     }
     xmlTextWriterEndElement(writer);
   }
-  
   xmlTextWriterEndElement(writer);
   
+  xmlTextWriterEndElement(writer);
   return 0;
 }
 
@@ -179,6 +191,66 @@ int write_mesh(struct mesh_data *mesh, char *filename) {
   return 0;
 }
 
+
+int read_mesh_xml(struct mesh_data *mesh, char *filename)
+{
+  xmlXPathContext *xpathCtx;
+  xmlDoc *doc;
+  double vector[3];
+  char path[256], buf[256];
+  int i, n;
+
+  xmlInitParser();
+  LIBXML_TEST_VERSION
+ 
+  doc = xmlParseFile(filename);
+  if(doc == NULL) {
+    printf("Could not open %s\n",filename);
+    return 1;
+  }
+
+  xpathCtx = xmlXPathNewContext(doc);
+  if(doc == NULL) {
+    printf("Could not create xpath context\n");
+    return 1;
+  }
+
+  /* read imax, jmax, kmax */
+  if(read_xmlpath_double_vector(vector, "/Case/Solver/Mesh/Cells", "imax", "jmax", "kmax", xpathCtx)) {
+    mesh_set_value(mesh, "cells", 3, vector);
+  }
+
+  /* read delx, dely, delz */
+  if(read_xmlpath_double_vector(vector, "/Case/Solver/Mesh/Cells", "delx", "dely", "delz", xpathCtx)) {
+    mesh_set_value(mesh, "del", 3, vector);
+  }
+
+  /* read inside */
+  if(read_xmlpath_double_vector(vector, "/Case/Solver/Mesh/Inside", "x", "y", "z", xpathCtx)) {
+    mesh_set_value(mesh, "inside", 3, vector);
+  }
+
+  /* read origin */
+  if(read_xmlpath_double_vector(vector, "/Case/Solver/Mesh/Origin", "x", "y", "z", xpathCtx)) {
+    mesh_set_value(mesh, "origin", 3, vector);
+  }
+
+  /* read boundaries */
+  for(i=0; i<6; i++) {
+    sprintf(path, "/Case/Solver/Mesh/Boundaries/%s", wall_names[i]);
+    if(read_xmlpath_str(buf, path, xpathCtx)) {
+      n = string_index(wb_names, buf);
+      if(n > -1) {
+        printf("Read %s: %s\n", path, buf);
+        vector[0] = n;
+        sprintf(buf, "wall_%s", wall_names[i]);
+        mesh_set_value(mesh, buf, 1, vector);
+      }
+    }
+  }
+
+  return 0;
+}
 
 int read_mesh(struct mesh_data *mesh, char *filename)
 {
@@ -495,3 +567,93 @@ char* strtok_r(
     return ret;
 }
 #endif
+
+
+int read_xmlpath_double(double *x, char *path, xmlXPathContext *xpathCtx) {
+  xmlXPathObject  *xpathObj;
+  xmlNode *node;
+
+  xpathObj = xmlXPathEvalExpression( (xmlChar*) path, xpathCtx);
+  if(xpathObj == NULL) {
+    return 0;
+  }
+  else if(xmlXPathNodeSetIsEmpty(xpathObj->nodesetval)) {
+    return 0;
+  }
+  else {
+    node = xpathObj->nodesetval->nodeTab[0];
+    *x = atof(xmlNodeGetContent(node));
+
+    return 1;
+
+  }
+}
+
+int read_xmlpath_double_vector(double *vector, char *path, char *x, char *y, char *z, xmlXPathContext *xpathCtx) {
+  xmlXPathObject  *xpathObj;
+  xmlNode *node;
+  char buf[1024];
+  int flag;
+
+  flag = 0;
+  sprintf(buf, "%s/%s", path, x);
+  if(!read_xmlpath_double(&vector[0], buf, xpathCtx)) {
+    printf("Could not evaluate %s\n", buf);
+    vector[0] = 0;
+  }
+  else flag = 1;
+
+  sprintf(buf, "%s/%s", path, y);
+  if(!read_xmlpath_double(&vector[1], buf, xpathCtx)) {
+    printf("Could not evaluate %s\n", buf);
+    vector[1] = 0;
+  }
+
+  else flag = 1;
+  sprintf(buf, "%s/%s", path, z);
+  if(!read_xmlpath_double(&vector[2], buf, xpathCtx)) {
+    printf("Could not evaluate %s\n", buf);
+    vector[2] = 0;
+  }
+  else flag = 1;
+
+  if(flag) {
+    printf("Read %s: %lf %lf %lf\n", path, vector[0], vector[1], vector[2]);
+  }
+
+  return flag;
+}
+
+int read_xmlpath_int(int *x, char *path, xmlXPathContext *xpathCtx) {
+  xmlXPathObject  *xpathObj;
+  xmlNode *node;
+
+  xpathObj = xmlXPathEvalExpression( (xmlChar*) path, xpathCtx);
+  if(xpathObj == NULL) {
+    return 0;
+  }
+  else {
+    node = xpathObj->nodesetval->nodeTab[0];
+    *x = atoi(xmlNodeGetContent(node));
+
+    return 1;
+
+  }
+}
+int read_xmlpath_str(char *str, char *path, xmlXPathContext *xpathCtx) {
+  xmlXPathObject  *xpathObj;
+  xmlNode *node;
+
+  xpathObj = xmlXPathEvalExpression( (xmlChar*) path, xpathCtx);
+  if(xpathObj == NULL) {
+    return 0;
+  }
+  else {
+    node = xpathObj->nodesetval->nodeTab[0];
+    strncpy(str, xmlNodeGetContent(node), strlen(xmlNodeGetContent(node)));
+    str[strlen(xmlNodeGetContent(node))] = 0;
+
+    return 1;
+
+  }
+}

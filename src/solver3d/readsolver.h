@@ -1,6 +1,6 @@
 /* readsolver.h
  *
- * header filef or file i/o for solver_data
+ * header for file i/o for solver_data
  */
 
 #ifndef _READSOLVER_H
@@ -11,5 +11,6 @@
 int read_solver(struct solver_data *solver, char *filename);
 int read_solver_xml(struct solver_data *solver, char *filename);
 int read_initial(struct solver_data *solver, char *filename);
+int read_initial_xml(struct solver_data *solver, char *filename);
 
 #endif

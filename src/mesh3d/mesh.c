@@ -393,7 +393,7 @@ int mesh_set_value(struct mesh_data *mesh, char *param, int dims,
                    double *vector) {
   int wall, axis;
 
-  #ifdef debug
+  #ifdef DEBUG
     printf("mesh_set_value: %s, %d\n",param,dims);
   #endif
 

@@ -144,17 +144,20 @@ int Simulation::load() {
   file.close();
 
 	vof_setup_solver(solver);
-  if(read_mesh(solver->mesh, "meshfile")) {
+  /*if(read_mesh(solver->mesh, "meshfile")) {
     qDebug() << "could not read meshfile";
     ready=0;
     return false;
-  }
-  if(read_solver(solver, "solverfile")) {
+  }*/
+  /* if(read_solver(solver, "solverfile")) {
     qDebug() << "could not read solverfile";
     ready=0;
     return false;
-  }
+  }*/
+
+  read_mesh_xml(solver->mesh, "solver.xml");
   read_solver_xml(solver, "solver.xml");
+
   if(solver->turbulence_read("turbulencefile")) {
     qDebug() << "could not read turbulencefile";
     ready=0;
@@ -163,11 +166,12 @@ int Simulation::load() {
   
   
   strcpy(solver->ic[0].param,"end");
-  if(read_initial(solver, "initials")) {
+  /* if(read_initial(solver, "initials")) {
     qDebug() << "could not read initials";
     ready=0;
     return false;
-  }
+  } */
+  read_initial_xml(solver, "solver.xml");
 
 	track_empty();
   track_read();

@@ -101,9 +101,9 @@ int write_solver_xml(struct solver_data *solver, char *filename) {
   rc = xmlTextWriterEndElement(writer);
 
   if(solver->deltcal == NULL)
-    rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "deltcal", "%d", 0);
+    rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "autot", "%d", 0);
   else
-    rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "deltcal", "%d", 1);
+    rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "autot", "%d", 1);
   
   if(kE_check(solver)) 
     rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "turbulence", "%s", "kE");
@@ -129,7 +129,7 @@ int write_solver_xml(struct solver_data *solver, char *filename) {
 int write_initial_xml(struct solver_data *solver, xmlTextWriterPtr writer) {
   double velocity[3], inside[3];
   double value;
-  int n = 0;
+  int n = 1;
   char buf[256]; 
  
   xmlTextWriterStartElement(writer, BAD_CAST "Initial");
@@ -150,7 +150,7 @@ int write_initial_xml(struct solver_data *solver, xmlTextWriterPtr writer) {
   while(solver_get_initial_vector(solver, "inside", inside) != 1); // make sure we start at the first instance
   xmlTextWriterStartElement(writer, BAD_CAST "Inside");
   while(solver_get_initial_vector(solver, "inside", inside) != 1) {
-    sprintf(buf, "%d", n); n++;
+    sprintf(buf, "Point%d", n); n++;
     xmlTextWriterStartElement(writer, BAD_CAST buf);
     xmlTextWriterWriteFormatElement(writer, BAD_CAST "x", "%e", inside[0]);
     xmlTextWriterWriteFormatElement(writer, BAD_CAST "y", "%e", inside[1]);
