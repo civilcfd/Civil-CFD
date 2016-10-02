@@ -61,7 +61,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="Information">
        <attribute name="title">
@@ -2557,6 +2557,38 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="3">
+           <spacer name="horizontalSpacer_15">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="2">
+           <spacer name="verticalSpacer_16">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="1" column="2">
            <widget class="QComboBox" name="t">
             <property name="sizePolicy">
@@ -2594,42 +2626,6 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="3">
-           <spacer name="horizontalSpacer_15">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="4" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_39">
-            <property name="text">
-             <string>Write Interval</string>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="1">
-           <spacer name="verticalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="1" column="6">
            <spacer name="horizontalSpacer_16">
             <property name="orientation">
@@ -2646,23 +2642,27 @@
             </property>
            </spacer>
           </item>
-          <item row="5" column="2">
-           <spacer name="verticalSpacer_16">
+          <item row="3" column="4" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_39">
+            <property name="text">
+             <string>Write Interval</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1">
+           <spacer name="verticalSpacer_14">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>10</height>
+              <height>40</height>
              </size>
             </property>
            </spacer>
           </item>
-          <item row="11" column="2">
+          <item row="9" column="2">
            <spacer name="verticalSpacer_29">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2678,7 +2678,7 @@
             </property>
            </spacer>
           </item>
-          <item row="12" column="0" colspan="7">
+          <item row="10" column="0" colspan="7">
            <widget class="Line" name="line_6">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -2695,7 +2695,7 @@
             </property>
            </widget>
           </item>
-          <item row="13" column="1">
+          <item row="11" column="1">
            <spacer name="verticalSpacer_17">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2724,7 +2724,7 @@
             </property>
            </widget>
           </item>
-          <item row="14" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
+          <item row="12" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
            <widget class="QPushButton" name="RunSimulation">
             <property name="minimumSize">
              <size>
@@ -2802,20 +2802,6 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="2">
-           <widget class="QRadioButton" name="SOR">
-            <property name="text">
-             <string>Sequential Over Relaxation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="2">
-           <widget class="QRadioButton" name="GMRES">
-            <property name="text">
-             <string>GMRES</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1" alignment="Qt::AlignRight">
            <widget class="QLabel" name="label_36">
             <property name="text">
@@ -2862,21 +2848,14 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="2">
-           <widget class="QRadioButton" name="parallelGMRES">
-            <property name="text">
-             <string>Parallel GMRES</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="4" alignment="Qt::AlignRight">
+          <item row="8" column="1">
            <widget class="QLabel" name="label_49">
             <property name="text">
              <string>Processes</string>
             </property>
            </widget>
           </item>
-          <item row="10" column="5">
+          <item row="8" column="2">
            <widget class="QComboBox" name="processes">
             <item>
              <property name="text">

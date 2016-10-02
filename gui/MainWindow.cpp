@@ -76,14 +76,13 @@ void MainWindow::on_RunSimulation_clicked() {
 	  on_Delete_clicked();  
   }
 
-  if(ui.parallelGMRES->isChecked()) {
 #ifdef _WIN32
-    pathPrefix = "mpiexec.exe -n ";
+  pathPrefix = "mpiexec.exe -n ";
 #else
-    pathPrefix = "mpirun -np ";
+  pathPrefix = "mpirun -np ";
 #endif
-    pathPrefix +=  ui.processes->currentText();
-  }	
+  pathPrefix +=  ui.processes->currentText();
+
 
   solverDialog = new SolverDialog(sim, appPath, ui.t->currentText(), pathPrefix);
   solverDialog->exec();
@@ -157,18 +156,6 @@ void MainWindow::on_kEpsilon_toggled() {
 }
 
 void MainWindow::on_Laminar_toggled() {
-  toggle();
-}
-
-void MainWindow::on_GMRES_toggled() {
-  toggle();
-}
-
-void MainWindow::on_parallelGMRES_toggled() {
-  toggle();
-}
-
-void MainWindow::on_SOR_toggled() {
   toggle();
 }
 
@@ -417,21 +404,7 @@ void MainWindow::update() {
     ui.length_scale->setPlainText(sim.getLength_scale());
     ui.length->setPlainText(sim.getLength());
   }
-  
-  if(sim.GMRES()) {
-  	ui.GMRES->setChecked(true);
-  	ui.SOR->setChecked(false);
-  	ui.parallelGMRES->setChecked(false);
-  } else if(sim.parallelGMRES()) {
-  	ui.parallelGMRES->setChecked(true);
-  	ui.SOR->setChecked(false);
-  	ui.GMRES->setChecked(false);
-  } else if(sim.SOR()) {
-  	ui.GMRES->setChecked(false);
-  	ui.SOR->setChecked(true);
-  	ui.parallelGMRES->setChecked(false);
-  }
-  
+    
   toggle();
 
   QTreeWidgetItem *item = ui.MeshParameters->topLevelItem(0);
@@ -513,16 +486,7 @@ void MainWindow::write() {
   else {
     sim.setTurbulence("Laminar");
   }
-  
-  if(ui.GMRES->isChecked()) {
-  	sim.setImplicit("GMRES");
-  }
-  else if(ui.parallelGMRES->isChecked()) {
-    sim.setImplicit("parallelGMRES");
-  } else {
-  	sim.setImplicit("SOR");
-  }
-  
+    
   toggle();  
   meshUpdate();  
 

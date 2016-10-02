@@ -22,7 +22,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      74,   14, // methods
+      71,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -101,9 +101,6 @@ static const uint qt_meta_data_MainWindow[] = {
     1921,   11,   11,   11, 0x08,
     1944,   11,   11,   11, 0x08,
     1963,   11,   11,   11, 0x08,
-    1983,   11,   11,   11, 0x08,
-    2000,   11,   11,   11, 0x08,
-    2019,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -165,8 +162,6 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_domainLength_clicked()\0"
     "on_calcRough_clicked()\0on_SelectAll_clicked()\0"
     "on_Clear_clicked()\0on_Delete_clicked()\0"
-    "on_SOR_toggled()\0on_GMRES_toggled()\0"
-    "on_parallelGMRES_toggled()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -246,9 +241,6 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 68: _t->on_SelectAll_clicked(); break;
         case 69: _t->on_Clear_clicked(); break;
         case 70: _t->on_Delete_clicked(); break;
-        case 71: _t->on_SOR_toggled(); break;
-        case 72: _t->on_GMRES_toggled(); break;
-        case 73: _t->on_parallelGMRES_toggled(); break;
         default: ;
         }
     }
@@ -286,9 +278,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 74)
+        if (_id < 71)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 74;
+        _id -= 71;
     }
     return _id;
 }

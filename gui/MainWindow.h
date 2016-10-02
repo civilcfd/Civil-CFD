@@ -104,11 +104,7 @@ private slots:
   void on_SelectAll_clicked();
   void on_Clear_clicked();
   void on_Delete_clicked();
-  
-  void on_SOR_toggled();
-  void on_GMRES_toggled();
-  void on_parallelGMRES_toggled();
-  
+    
 private:
   bool saveNotify();
   void editBoundary(QTreeWidgetItem *item);
