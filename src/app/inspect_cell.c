@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     return 1;
   }
   solver_initial_values(solver);
-  solver->petacal(solver);
+  solver->nvof(solver);
 
   csv_read_U(solver->mesh,timestep);
   csv_read_P(solver->mesh,timestep);

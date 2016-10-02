@@ -37,8 +37,7 @@ int vof_mpi_setup_solver(struct solver_data *solver) {
   solver->pressure = vof_pressure_gmres_mpi;
   solver->velocity = vof_mpi_velocity_upwind;
   solver->convect = vof_mpi_convect; //_depreciated;
-  solver->petacal = vof_mpi_nvof;
-  solver->betacal = NULL;
+  solver->nvof = vof_mpi_nvof;
   solver->deltcal = vof_mpi_deltcal;
   solver->write = vof_mpi_write;
   solver->output = vof_mpi_output;
@@ -68,10 +67,8 @@ int vof_mpi_loop(struct solver_data *solver) {
   
   mesh_mpi_copy_data(mesh_n, solver->mesh);
 
-  if(solver->betacal != NULL)
-    solver->betacal(solver);    
-  if(solver->petacal != NULL)
-    solver->petacal(solver); 
+  if(solver->nvof != NULL)
+    solver->nvof(solver); 
   solver_sendrecv_edge_int(solver, solver->mesh->n_vof);
   
   solver->boundaries(solver);
@@ -143,10 +140,8 @@ int vof_mpi_loop(struct solver_data *solver) {
         solver->t = t_n;
     }
 
-    if(solver->betacal != NULL)
-      solver->betacal(solver);
-    if(solver->petacal != NULL)
-      solver->petacal(solver);
+    if(solver->nvof != NULL)
+      solver->nvof(solver);
     solver_sendrecv_edge_int(solver, solver->mesh->n_vof);
 
     solver->output(solver);

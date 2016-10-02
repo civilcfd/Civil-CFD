@@ -94,8 +94,7 @@ struct solver_data {
   int (*pressure)(struct solver_data *solver);
   int (*velocity)(struct solver_data *solver);
   int (*convect)(struct solver_data *solver);
-  int (*petacal)(struct solver_data *solver);
-  int (*betacal)(struct solver_data *solver);
+  int (*nvof)(struct solver_data *solver);
   int (*deltcal)(struct solver_data *solver);
   int (*write)(struct solver_data *solver);
   int (*output)(struct solver_data *solver);

@@ -91,7 +91,6 @@ int vof_mpi_nvof(struct solver_data *solver) {
   for(i=1; i<IRANGE-1; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
-        PETA(i,j,k) = 1.0;
         N_VOF(i,j,k) = none;
         if(j==0 || k==0 || j==JMAX-1 || k==KMAX-1 || FV(i,j,k) == 0)
           N_VOF(i,j,k) = 0;

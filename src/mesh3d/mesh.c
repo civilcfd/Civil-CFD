@@ -88,7 +88,6 @@ int mesh_copy_data(struct mesh_data *mesh, struct mesh_data *mesh_source) {
   }
   
   memcpy(mesh->P, mesh_source->P, size * sizeof(double));
-  memcpy(mesh->D, mesh_source->D, size * sizeof(double));
   memcpy(mesh->u, mesh_source->u, size * sizeof(double));
   memcpy(mesh->v, mesh_source->v, size * sizeof(double));
   memcpy(mesh->w, mesh_source->w, size * sizeof(double));
@@ -104,10 +103,6 @@ int mesh_copy_data(struct mesh_data *mesh, struct mesh_data *mesh_source) {
   memcpy(mesh->ae, mesh_source->ae, size * sizeof(double));
   memcpy(mesh->an, mesh_source->an, size * sizeof(double));
   memcpy(mesh->at, mesh_source->at, size * sizeof(double));
-
-  memcpy(mesh->peta, mesh_source->peta, size * sizeof(double));
-  memcpy(mesh->tanth, mesh_source->tanth, size * sizeof(double));
-  memcpy(mesh->beta, mesh_source->beta, size * sizeof(double));
 
   return 0;
 }
@@ -149,7 +144,7 @@ struct mesh_data *mesh_init_empty() {
     if(i<3) mesh->baffles[i] = NULL;
   }
 
-  mesh->P = NULL; mesh->D = NULL;
+  mesh->P = NULL; 
   mesh->u = NULL;
   mesh->v = NULL;
   mesh->w = NULL;
@@ -164,10 +159,6 @@ struct mesh_data *mesh_init_empty() {
   mesh->ae = NULL;
   mesh->an = NULL;
   mesh->at = NULL;
-
-  mesh->peta = NULL;
-  mesh->beta = NULL;
-  mesh->tanth = NULL;
 
   mesh->turbulence_model = NULL;
   mesh->nut = NULL;
@@ -226,7 +217,6 @@ int mesh_set_array(struct mesh_data *mesh, char *param, double value,
 
   if(strcmp(param, "vof") == 0) p = mesh->vof;
   else if(strcmp(param, "P") == 0) p = mesh->P;
-  else if(strcmp(param, "D") == 0) p = mesh->D;
   else if(strcmp(param, "u") == 0) p = mesh->u;
   else if(strcmp(param, "v") == 0) p = mesh->v;
   else if(strcmp(param, "w") == 0) p = mesh->w;
@@ -237,8 +227,6 @@ int mesh_set_array(struct mesh_data *mesh, char *param, double value,
   else if(strcmp(param, "ae") == 0) p = mesh->ae;
   else if(strcmp(param, "an") == 0) p = mesh->an;
   else if(strcmp(param, "at") == 0) p = mesh->at;
-  else if(strcmp(param, "peta") == 0) p = mesh->peta;
-  else if(strcmp(param, "beta") == 0) p = mesh->beta;
   else if(strcmp(param, "nut") == 0) p = mesh->nut;
   else {
     printf("warning: mesh_set_array could not recognize param %s\n",param);
@@ -672,13 +660,6 @@ int mesh_allocate(struct mesh_data *mesh, long int size) {
     return (1);
   }
   
-  mesh->D = malloc(sizeof(double) * size);
-  
-  if(mesh->D == NULL) {
-    printf("error: memory could not be allocated for D in mesh_init_complete\n");
-    return (1);
-  }
-
   mesh->u = malloc(sizeof(double) * size);
 
   if(mesh->u == NULL) {
@@ -764,27 +745,6 @@ int mesh_allocate(struct mesh_data *mesh, long int size) {
     return(1);
   }
 
-  mesh->peta = malloc(sizeof(double) * size);
-
-  if(mesh->peta == NULL) {
-    printf("error: memory could not be allocated for peta in mesh_init_complete\n");
-    return(1);
-  }
-
-  mesh->tanth = malloc(sizeof(double) * size);
-
-  if(mesh->tanth == NULL) {
-    printf("error: memory could not be allocated for tanth in mesh_init_complete\n");
-    return(1);
-  }
-
-  mesh->beta = malloc(sizeof(double) * size);
-
-  if(mesh->beta == NULL) {
-    printf("error: memory could not be allocated for beta in mesh_init_complete\n");
-    return(1);
-  }
-
   mesh->nut  = malloc(sizeof(double) * size);
    if(mesh->nut == NULL) {
     printf("error: memory could not be allocated for nut in mesh_init_complete\n");
@@ -800,7 +760,6 @@ int mesh_free(struct mesh_data *mesh) {
   struct sb_data *sb_free;
 
   free(mesh->P);
-  free(mesh->D);
   free(mesh->u);
   free(mesh->v);
   free(mesh->w);
@@ -815,10 +774,6 @@ int mesh_free(struct mesh_data *mesh) {
   free(mesh->ae);
   free(mesh->an);
   free(mesh->at);
-
-  free(mesh->peta);
-  free(mesh->tanth);
-  free(mesh->beta);
   
   free(mesh->nut);
 

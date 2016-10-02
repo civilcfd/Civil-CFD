@@ -148,7 +148,6 @@ int mesh_mpi_copy_data(struct mesh_data *mesh, struct mesh_data *mesh_source) {
   }
   
   memcpy(mesh->P, mesh_source->P, size * sizeof(double));
-  memcpy(mesh->D, mesh_source->D, size * sizeof(double));
   memcpy(mesh->u, mesh_source->u, size * sizeof(double));
   memcpy(mesh->v, mesh_source->v, size * sizeof(double));
   memcpy(mesh->w, mesh_source->w, size * sizeof(double));
@@ -164,10 +163,6 @@ int mesh_mpi_copy_data(struct mesh_data *mesh, struct mesh_data *mesh_source) {
   memcpy(mesh->ae, mesh_source->ae, size * sizeof(double));
   memcpy(mesh->an, mesh_source->an, size * sizeof(double));
   memcpy(mesh->at, mesh_source->at, size * sizeof(double));
-
-  memcpy(mesh->peta, mesh_source->peta, size * sizeof(double));
-  memcpy(mesh->tanth, mesh_source->tanth, size * sizeof(double));
-  memcpy(mesh->beta, mesh_source->beta, size * sizeof(double));
 
   return 0;
 }
