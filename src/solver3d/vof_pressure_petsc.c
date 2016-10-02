@@ -13,7 +13,6 @@
 #include <petscsys.h>
 
 #include "vtk.h"
-#include "vof.h"
 #include "solver.h"
 #include "solver_mpi.h"
 #include "mesh.h"
@@ -21,6 +20,7 @@
 #include "kE.h"
 #include "track.h"
 #include "vof_boundary.h"
+#include "vof_mpi.h"
 
 #include "vof_macros.h"
 
@@ -392,10 +392,11 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
 	PetscInt i,j,k,l,m,n,a;
 	PetscInt  row_idx[7];
 	PetscInt  nidx, ridx;
-	PetscScalar rhs, pijk, dpijk, mpeta;
+	PetscScalar rhs, pijk, dpijk;
 	PetscScalar r_rhodx2, r_rhody2, r_rhodz2;
 	PetscScalar row[7];
 	PetscErrorCode ierr;
+  double mpeta;
 	
 	r_rhodx2 = 1/solver->rho * 1/pow(DELX,2);
 	r_rhody2 = 1/solver->rho * 1/pow(DELY,2);
@@ -476,7 +477,7 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
           	continue;
           }
           
-          mpeta = 1 - PETA(i,j,k);
+          mpeta = 1.0 - surface_interpolate(solver,i,j,k);
           pijk  = mpeta * P(l,m,n);
           dpijk = pijk - P(i,j,k);
           dpijk /= (solver->rho * solver->delt);
@@ -630,7 +631,7 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
           	continue;
           }
           
-          mpeta = 1 - PETA(i,j,k);
+          mpeta = 1 - surface_interpolate(solver,i,j,k);
           pijk  = mpeta * P(l,m,n);
           dpijk = pijk - P(i,j,k);
           dpijk /= (solver->rho * solver->delt);

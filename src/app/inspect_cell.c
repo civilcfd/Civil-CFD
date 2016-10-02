@@ -4,7 +4,6 @@
 
 #include "solver_data.h"
 #include "solver.h"
-#include "vof.h"
 #include "intersections.h"
 #include "mesh.h"
 #include "readfile.h"
@@ -14,6 +13,7 @@
 #include "kE.h"
 #include "track.h"
 #include "vof_macros.h"
+#include "vof_mpi.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   solver = solver_init_empty();
   if(solver == NULL) return 1;
 
-  vof_setup_solver(solver);
+  vof_mpi_setup_solver(solver);
   
   if(solver_load(solver, "solverfile", "meshfile", "initials")==1) {
     fflush(stdout);

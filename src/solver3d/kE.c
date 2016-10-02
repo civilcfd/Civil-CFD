@@ -12,7 +12,6 @@
 #include <libxml/xmlwriter.h>
 
 #include "vtk.h"
-#include "vof.h"
 #include "solver.h"
 #include "readfile.h"
 #include "mesh.h"

@@ -4,8 +4,8 @@ CFLAGS = -g -I /usr/include/mpi -I /usr/include/petsc -I /opt/local/include -I .
 
 .PHONY: default all clean
 
-default: mesh3d vofsolver solver3d inspect_cell
-all: mesh3d vofsolver solver3d inspect_cell
+default: mesh3d solver3d inspect_cell
+all: mesh3d solver3d inspect_cell
 
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 HEADERS = $(wildcard *.h)
@@ -24,9 +24,6 @@ libsolver3d:
 mesh3d: clean libmesh3d libsolver3d mesh3d.o
 	$(CC) mesh3d.o -Wall $(LIBS) -o ../../bin/$@
 	test -d ../../bin/civil-cfd.app/Contents/MacOS && cp ../../bin/$@ ../../bin/civil-cfd.app/Contents/MacOS
-
-vofsolver: clean libmesh3d libsolver3d vofsolver.o
-	$(CC) vofsolver.o -Wall $(LIBS) -o ../../bin/$@
   
 inspect_cell: clean libmesh3d libsolver3d inspect_cell.o
 	$(CC) inspect_cell.o -Wall $(LIBS) -o ../../bin/$@

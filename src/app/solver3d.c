@@ -5,7 +5,6 @@
 
 #include "solver_data.h"
 #include "solver.h"
-#include "vof.h"
 #include "intersections.h"
 #include "mesh.h"
 #include "readfile.h"
@@ -22,7 +21,6 @@ int main(int argc, char *argv[])
 {
   struct solver_data *solver = NULL;
   double timestep, delt;
-  int aborted_run;
   int rank, size;
   int ret = 0;
 
@@ -52,56 +50,10 @@ int main(int argc, char *argv[])
     PetscFinalize();
     return ret;
   }
-  
-  aborted_run = 0;
-  if (argc > 2) {
-    if(strcmp(argv[2], "abort") == 0) {
-      aborted_run = 1;
-      timestep = 0;
-      printf("this run will be aborted after writing timestep 0\n");
-    }
+  else {
+    printf("error: Run must be invoked using mpirun/mpiexec with at least 2 processes\n");
   }
 
-  solver = solver_init_empty();
-  if(solver == NULL) return 1;
-  solver->size = 1;
-  solver->rank = 0;
-
-  vof_setup_solver(solver);
-  
-  if(solver_load(solver, "solverfile", "meshfile", "initials")==1)
-    return 1;
-
-  if(solver_init_complete(solver)==1)
-    return 1;
-
-  if(solver->turbulence_read != NULL) solver->turbulence_read("turbulencefile");
-  
-  solver->init(solver);
-  solver->turbulence_init(solver);
-  if (delt > solver->emf) solver->delt = delt;
-  
-  if(mesh_load_csv(solver->mesh, 0) == 1) return 1;
-  solver_initial_values(solver);
-  solver->petacal(solver);
-
-  if(timestep != 0) {
-    solver->t = timestep;
-    csv_read_U_p_vof(solver->mesh, timestep);
-    solver->turbulence_load_values(solver);
-    solver->deltcal(solver);
-  }
-  else
-    solver->write(solver); 
-  
-  if(aborted_run) return 0;
-  
-  
-  track_read();
-  solver_mpi_range(solver);
-  
-  if(solver_run(solver)==1)
-    return 1;
 
   return(0);
 }

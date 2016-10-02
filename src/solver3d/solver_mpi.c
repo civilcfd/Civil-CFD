@@ -18,7 +18,6 @@
 #include "readsolver.h"
 #include "laminar.h"
 #include "kE.h"
-#include "vof.h"
 #include "mesh_mpi.h"
 #include "vof_macros.h"
 #include "solver_mpi.h"
