@@ -783,8 +783,8 @@ public:
         widget->setObjectName(QString::fromUtf8("widget"));
         widget->setMinimumSize(QSize(500, 0));
         gridLayout_7 = new QGridLayout(widget);
-        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         gridLayout_7->setContentsMargins(0, 0, 0, 0);
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         MeshUndo = new QPushButton(widget);
         MeshUndo->setObjectName(QString::fromUtf8("MeshUndo"));
         MeshUndo->setMaximumSize(QSize(160, 16777215));
@@ -1973,7 +1973,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 950, 22));
+        menubar->setGeometry(QRect(0, 0, 950, 25));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuHelp = new QMenu(menubar);
@@ -1995,7 +1995,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(7);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -2209,7 +2209,6 @@ public:
         label_49->setText(QApplication::translate("MainWindow", "Processes", 0, QApplication::UnicodeUTF8));
         processes->clear();
         processes->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "1", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "2", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "3", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "4", 0, QApplication::UnicodeUTF8)
