@@ -12,7 +12,6 @@
 #include <petscsys.h>
  
 #include "vtk.h"
-#include "vof.h"
 #include "vof_mpi.h"
 #include "vof_boundary.h"
 #include "solver.h"

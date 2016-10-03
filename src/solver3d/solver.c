@@ -16,8 +16,8 @@
 #include "solver.h"
 #include "readsolver.h"
 #include "laminar.h"
+#include "vof_mpi.h"
 #include "kE.h"
-#include "vof.h"
 
 struct solver_data *solver_init_empty() {
 
@@ -87,7 +87,6 @@ struct solver_data *solver_init_empty() {
   solver->pressure = NULL;
   solver->velocity = NULL;
   solver->convect   = NULL;
-  solver->petacal  = NULL;
 
 	time(&solver->start_time);
 
@@ -425,9 +424,6 @@ int solver_set_value(struct solver_data *solver, char *param, int dims,
 	}
 	else if(strcmp(param, "gmres_mpi")==0) {
 		solver->pressure = vof_pressure_gmres_mpi;
-	}
-	else if(strcmp(param, "sor")==0) {
-		solver->pressure = vof_pressure;
 	}
   else if(strcmp(param, "gravity")==0) {
     if(dims != 3) {

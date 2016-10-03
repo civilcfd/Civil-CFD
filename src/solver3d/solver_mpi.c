@@ -18,7 +18,6 @@
 #include "readsolver.h"
 #include "laminar.h"
 #include "kE.h"
-#include "vof.h"
 #include "mesh_mpi.h"
 #include "vof_macros.h"
 #include "solver_mpi.h"
@@ -116,7 +115,7 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
   
   if(mesh_load_csv(solver->mesh, 0) == 1) return 1;
   solver_initial_values(solver);
-  solver->petacal(solver);
+  solver->nvof(solver);
 
   if(timestep > solver->emf) {
     solver->t = timestep;

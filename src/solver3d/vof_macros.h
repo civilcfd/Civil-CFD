@@ -24,8 +24,6 @@
 #define WN(i, j, k) mesh_n->w[mesh_index(mesh_n, i, j, k)]
 #define P(i, j, k) solver->mesh->P[mesh_index(solver->mesh, i, j, k)]
 #define PN(i, j, k) mesh_n->P[mesh_index(mesh_n, i, j, k)]
-#define D(i, j, k) solver->mesh->D[mesh_index(solver->mesh, i, j, k)]
-#define DN(i, j, k) mesh_n->D[mesh_index(mesh_n, i, j, k)]
 
 #define VOF(i, j, k) solver->mesh->vof[mesh_index(solver->mesh, i, j, k)]
 #define VOF_N(i, j, k) mesh_n->vof[mesh_index(mesh_n, i, j, k)]
@@ -52,10 +50,6 @@
 #undef AT
 #endif
 #define AT(i, j, k) solver->mesh->at[mesh_index(solver->mesh, i, j, k)]
-
-#define PETA(i, j, k) solver->mesh->peta[mesh_index(solver->mesh, i, j, k)]
-#define BETA(i, j, k) solver->mesh->beta[mesh_index(solver->mesh, i, j, k)]
-#define TANTH(i, j, k) solver->mesh->tanth[mesh_index(solver->mesh, i, j, k)]
 
 #define NUT(i, j, k) solver->mesh->nut[mesh_index(solver->mesh, i, j, k)]
 #define NUT_N(i, j, k)  mesh_n->nut[mesh_index(solver->mesh, i, j, k)]
@@ -89,7 +83,6 @@ float ae(struct solver_data *solver, long int i,long int j,long int k);
 float an(struct solver_data *solver, long int i,long int j,long int k);
 float at(struct solver_data *solver, long int i,long int j,long int k);
 float fv(struct solver_data *solver, long int i,long int j,long int k);
-float peta(struct solver_data *solver, long int i,long int j,long int k);
 float debug_d(struct solver_data *solver, long int i,long int j,long int k);
 void track_cell(struct solver_data *solver, long int i,long int j,long int k);
 #endif

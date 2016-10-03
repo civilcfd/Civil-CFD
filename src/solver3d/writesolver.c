@@ -12,12 +12,12 @@
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 
+#include "vof_mpi.h"
 #include "writesolver.h"
 #include "solver.h"
 #include "readsolver.h"
 #include "laminar.h"
 #include "kE.h"
-#include "vof.h"
 #include "../mesh3d/readfile.h"
 
 
@@ -84,7 +84,6 @@ int write_solver_xml(struct solver_data *solver, char *filename) {
 
 	if(solver->pressure == vof_pressure_gmres) sprintf(buf,"gmres");
 	else if(solver->pressure == vof_pressure_gmres_mpi) sprintf(buf,"gmres_mpi");
-	else if(solver->pressure == vof_pressure) sprintf(buf,"sor");
 
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "implicit", "%s", buf);
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "nu", "%e", solver->nu);
@@ -185,7 +184,6 @@ int write_solver(struct solver_data *solver, char *filename) {
 
 	if(solver->pressure == vof_pressure_gmres) fprintf(fp,"gmres 1\n");
 	else if(solver->pressure == vof_pressure_gmres_mpi) fprintf(fp,"gmres_mpi 1\n");
-	else if(solver->pressure == vof_pressure) fprintf(fp,"sor 1\n");
 
   fprintf(fp,"gravity %e %e %e\n",solver->gx, solver->gy, solver->gz);
   fprintf(fp,"nu %e\n",solver->nu);

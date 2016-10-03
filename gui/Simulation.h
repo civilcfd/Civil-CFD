@@ -18,7 +18,7 @@ extern "C" {
 #include "writesolver.h"
 #include "kE.h"
 #include "laminar.h"
-#include "vof.h"
+#include "vof_mpi.h"
 #include "track.h"
 #include "vtk.h"
 }

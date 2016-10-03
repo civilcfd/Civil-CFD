@@ -143,7 +143,7 @@ int Simulation::load() {
   stlFilename = in.readLine();
   file.close();
 
-	vof_setup_solver(solver);
+	vof_mpi_setup_solver(solver);
   /*if(read_mesh(solver->mesh, "meshfile")) {
     qDebug() << "could not read meshfile";
     ready=0;
@@ -242,21 +242,19 @@ bool Simulation::parallelGMRES() {
 }
 
 bool Simulation::GMRES() {
-	if(solver->pressure == vof_pressure_gmres) return true;
-	else return false;
+	return false;
 }
 
 bool Simulation::SOR() {
-	if(solver->pressure == vof_pressure) return true;
-	else return false;
+	return false;
 }
 
 bool Simulation::setImplicit(QString str) {
   if(str == "GMRES") 
-    solver->pressure = vof_pressure_gmres;
+    solver->pressure = vof_pressure_gmres_mpi;
   else if(str == "parallelGMRES") 
     solver->pressure = vof_pressure_gmres_mpi;
-  else solver->pressure = vof_pressure;
+  else solver->pressure = vof_pressure_gmres_mpi;
   return true; 
 }
 
@@ -856,7 +854,7 @@ bool Simulation::setDelt(QString str) {
 
 void Simulation::setAutot(bool autot) {
 
-  if(autot) solver->deltcal = vof_deltcal;
+  if(autot) solver->deltcal = vof_mpi_deltcal;
   else solver->deltcal = NULL;
 }
 

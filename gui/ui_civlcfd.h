@@ -214,13 +214,13 @@ public:
     QGridLayout *gridLayout_16;
     QGridLayout *gridLayout_15;
     QLabel *label_37;
+    QSpacerItem *horizontalSpacer_15;
+    QSpacerItem *verticalSpacer_16;
     QComboBox *t;
     QSpacerItem *verticalSpacer_15;
-    QSpacerItem *horizontalSpacer_15;
+    QSpacerItem *horizontalSpacer_16;
     QLabel *label_39;
     QSpacerItem *verticalSpacer_14;
-    QSpacerItem *horizontalSpacer_16;
-    QSpacerItem *verticalSpacer_16;
     QSpacerItem *verticalSpacer_29;
     QFrame *line_6;
     QCheckBox *autot;
@@ -231,13 +231,10 @@ public:
     QLabel *label_38;
     QSpacerItem *horizontalSpacer_14;
     QLabel *label_47;
-    QRadioButton *SOR;
-    QRadioButton *GMRES;
     QLabel *label_36;
     QPlainTextEdit *endt;
     QLabel *label_35;
     QFrame *line_7;
-    QRadioButton *parallelGMRES;
     QLabel *label_49;
     QComboBox *processes;
     QWidget *Visualize;
@@ -783,8 +780,8 @@ public:
         widget->setObjectName(QString::fromUtf8("widget"));
         widget->setMinimumSize(QSize(500, 0));
         gridLayout_7 = new QGridLayout(widget);
-        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         gridLayout_7->setContentsMargins(0, 0, 0, 0);
+        gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         MeshUndo = new QPushButton(widget);
         MeshUndo->setObjectName(QString::fromUtf8("MeshUndo"));
         MeshUndo->setMaximumSize(QSize(160, 16777215));
@@ -1373,6 +1370,14 @@ public:
 
         gridLayout_15->addWidget(label_37, 1, 4, 1, 1, Qt::AlignRight);
 
+        horizontalSpacer_15 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        gridLayout_15->addItem(horizontalSpacer_15, 1, 3, 1, 1);
+
+        verticalSpacer_16 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        gridLayout_15->addItem(verticalSpacer_16, 5, 2, 1, 1);
+
         t = new QComboBox(Simulate);
         t->setObjectName(QString::fromUtf8("t"));
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -1388,9 +1393,9 @@ public:
 
         gridLayout_15->addItem(verticalSpacer_15, 2, 2, 1, 1);
 
-        horizontalSpacer_15 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer_16 = new QSpacerItem(80, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
-        gridLayout_15->addItem(horizontalSpacer_15, 1, 3, 1, 1);
+        gridLayout_15->addItem(horizontalSpacer_16, 1, 6, 1, 1);
 
         label_39 = new QLabel(Simulate);
         label_39->setObjectName(QString::fromUtf8("label_39"));
@@ -1399,26 +1404,18 @@ public:
 
         verticalSpacer_14 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout_15->addItem(verticalSpacer_14, 14, 1, 1, 1);
-
-        horizontalSpacer_16 = new QSpacerItem(80, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-
-        gridLayout_15->addItem(horizontalSpacer_16, 1, 6, 1, 1);
-
-        verticalSpacer_16 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout_15->addItem(verticalSpacer_16, 5, 2, 1, 1);
+        gridLayout_15->addItem(verticalSpacer_14, 12, 1, 1, 1);
 
         verticalSpacer_29 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout_15->addItem(verticalSpacer_29, 11, 2, 1, 1);
+        gridLayout_15->addItem(verticalSpacer_29, 9, 2, 1, 1);
 
         line_6 = new QFrame(Simulate);
         line_6->setObjectName(QString::fromUtf8("line_6"));
         line_6->setFrameShape(QFrame::HLine);
         line_6->setFrameShadow(QFrame::Sunken);
 
-        gridLayout_15->addWidget(line_6, 12, 0, 1, 7);
+        gridLayout_15->addWidget(line_6, 10, 0, 1, 7);
 
         autot = new QCheckBox(Simulate);
         autot->setObjectName(QString::fromUtf8("autot"));
@@ -1428,7 +1425,7 @@ public:
 
         verticalSpacer_17 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Maximum);
 
-        gridLayout_15->addItem(verticalSpacer_17, 13, 1, 1, 1);
+        gridLayout_15->addItem(verticalSpacer_17, 11, 1, 1, 1);
 
         writet = new QPlainTextEdit(Simulate);
         writet->setObjectName(QString::fromUtf8("writet"));
@@ -1443,7 +1440,7 @@ public:
         RunSimulation->setIcon(icon13);
         RunSimulation->setIconSize(QSize(24, 24));
 
-        gridLayout_15->addWidget(RunSimulation, 14, 5, 1, 2, Qt::AlignRight|Qt::AlignTop);
+        gridLayout_15->addWidget(RunSimulation, 12, 5, 1, 2, Qt::AlignRight|Qt::AlignTop);
 
         delt = new QPlainTextEdit(Simulate);
         delt->setObjectName(QString::fromUtf8("delt"));
@@ -1465,16 +1462,6 @@ public:
         label_47->setFont(font);
 
         gridLayout_15->addWidget(label_47, 7, 0, 1, 1);
-
-        SOR = new QRadioButton(Simulate);
-        SOR->setObjectName(QString::fromUtf8("SOR"));
-
-        gridLayout_15->addWidget(SOR, 8, 2, 1, 1);
-
-        GMRES = new QRadioButton(Simulate);
-        GMRES->setObjectName(QString::fromUtf8("GMRES"));
-
-        gridLayout_15->addWidget(GMRES, 9, 2, 1, 1);
 
         label_36 = new QLabel(Simulate);
         label_36->setObjectName(QString::fromUtf8("label_36"));
@@ -1502,20 +1489,15 @@ public:
 
         gridLayout_15->addWidget(line_7, 6, 0, 1, 7);
 
-        parallelGMRES = new QRadioButton(Simulate);
-        parallelGMRES->setObjectName(QString::fromUtf8("parallelGMRES"));
-
-        gridLayout_15->addWidget(parallelGMRES, 10, 2, 1, 1);
-
         label_49 = new QLabel(Simulate);
         label_49->setObjectName(QString::fromUtf8("label_49"));
 
-        gridLayout_15->addWidget(label_49, 10, 4, 1, 1, Qt::AlignRight);
+        gridLayout_15->addWidget(label_49, 8, 1, 1, 1);
 
         processes = new QComboBox(Simulate);
         processes->setObjectName(QString::fromUtf8("processes"));
 
-        gridLayout_15->addWidget(processes, 10, 5, 1, 1);
+        gridLayout_15->addWidget(processes, 8, 2, 1, 1);
 
 
         gridLayout_16->addLayout(gridLayout_15, 0, 0, 1, 1);
@@ -1973,7 +1955,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 950, 22));
+        menubar->setGeometry(QRect(0, 0, 950, 25));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuHelp = new QMenu(menubar);
@@ -2200,16 +2182,12 @@ public:
         delt->setPlainText(QApplication::translate("MainWindow", "0.001", 0, QApplication::UnicodeUTF8));
         label_38->setText(QApplication::translate("MainWindow", "Initial Timestep", 0, QApplication::UnicodeUTF8));
         label_47->setText(QApplication::translate("MainWindow", "Implicit Solver", 0, QApplication::UnicodeUTF8));
-        SOR->setText(QApplication::translate("MainWindow", "Sequential Over Relaxation", 0, QApplication::UnicodeUTF8));
-        GMRES->setText(QApplication::translate("MainWindow", "GMRES", 0, QApplication::UnicodeUTF8));
         label_36->setText(QApplication::translate("MainWindow", "Start Time", 0, QApplication::UnicodeUTF8));
         endt->setPlainText(QApplication::translate("MainWindow", "100", 0, QApplication::UnicodeUTF8));
         label_35->setText(QApplication::translate("MainWindow", "Time", 0, QApplication::UnicodeUTF8));
-        parallelGMRES->setText(QApplication::translate("MainWindow", "Parallel GMRES", 0, QApplication::UnicodeUTF8));
         label_49->setText(QApplication::translate("MainWindow", "Processes", 0, QApplication::UnicodeUTF8));
         processes->clear();
         processes->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "1", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "2", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "3", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "4", 0, QApplication::UnicodeUTF8)

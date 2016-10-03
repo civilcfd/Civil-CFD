@@ -11,7 +11,6 @@
 #include <mpi.h>
  
 #include "vtk.h"
-#include "vof.h"
 #include "vof_mpi.h"
 #include "vof_boundary.h"
 #include "solver.h"
@@ -32,7 +31,7 @@ int vof_mpi_velocity_upwind(struct solver_data *solver) {
   double vel[3][27];
   double af[3][27];
   double vis[3];
-  double Flux, Viscocity, Q_C, Q_W, H_vel, upwind, sum_fv, delp, delv, resi, nu;
+  double Flux, Viscocity, Q_C, Q_W, H_vel, upwind, sum_fv, delp, delv, nu;
 
   long int i,j,k;
   int n,m,o;
@@ -232,19 +231,6 @@ int vof_mpi_velocity_upwind(struct solver_data *solver) {
           sum_fv = (FV(i,j,k) + FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           delp   = (P(i,j,k)  -  P(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           if(FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < 0.000001) delp=0; /* ADDED 2/27/16 testing */
-          resi   = (DN(i,j,k)  +  DN(i+odim[n][0],j+odim[n][1],k+odim[n][2])) / 2;
-          switch(n) {
-          case 0:
-            resi  *= UN(i,j,k);
-            break;
-          case 1:
-            resi *= VN(i,j,k);
-            break;
-          case 2:
-            resi *= WN(i,j,k);
-            break;
-          }
-          if(solver->t < solver->emf || solver->iter > solver->niter || solver->p_flag==1 ) resi = 0.0;
 
           Flux = (Q_C + Q_W) / sum_fv;
           
@@ -263,7 +249,7 @@ int vof_mpi_velocity_upwind(struct solver_data *solver) {
 
           delv = solver->delt * ( /*(sum_fv/2) * */ (1/del[n]) * delp / solver->rho +
                  solver->gx * odim[n][0] + solver->gy * odim[n][1] + solver->gz * odim[n][2] -
-                 Flux + Viscocity /* - resi /solver->rho */ );  /* uncomment to use residual as volume source */
+                 Flux + Viscocity ); 
 
           /* if(fabs(delv) < solver->epsi * solver->dzro * solver->delt / (solver->rho * del[n]))
             delv = 0; uncomment to eliminate spurious velocity currents */
@@ -296,7 +282,7 @@ int vof_mpi_velocity(struct solver_data *solver) {
   double vel[3][27];
   double af[3][27];
   double vis[3];
-  double Flux, Viscocity, Q_C, Q_W, H_vel, CD, upwind, sum_fv, delp, delv, resi, nu;
+  double Flux, Viscocity, Q_C, Q_W, H_vel, CD, upwind, sum_fv, delp, delv, nu;
 
   long int i,j,k;
   int n,m,o;
@@ -510,19 +496,7 @@ int vof_mpi_velocity(struct solver_data *solver) {
           sum_fv = (FV(i,j,k) + FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           delp   = (P(i,j,k)  -  P(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           if(FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < 0.000001) delp=0; /* ADDED 2/27/16 testing */
-          resi   = (DN(i,j,k)  +  DN(i+odim[n][0],j+odim[n][1],k+odim[n][2])) / 2;
-          switch(n) {
-          case 0:
-            resi  *= UN(i,j,k);
-            break;
-          case 1:
-            resi *= VN(i,j,k);
-            break;
-          case 2:
-            resi *= WN(i,j,k);
-            break;
-          }
-          if(solver->t < solver->emf || solver->iter > solver->niter || solver->p_flag==1 ) resi = 0.0;
+          
 
           Flux = (Q_C + Q_W) / sum_fv;
           
@@ -541,7 +515,7 @@ int vof_mpi_velocity(struct solver_data *solver) {
 
           delv = solver->delt * ( /*(sum_fv/2) * */ (1/del[n]) * delp / solver->rho +
                  solver->gx * odim[n][0] + solver->gy * odim[n][1] + solver->gz * odim[n][2] -
-                 Flux + Viscocity /* - resi /solver->rho */ );  /* uncomment to use residual as volume source */
+                 Flux + Viscocity ); 
 
           /* if(fabs(delv) < solver->epsi * solver->dzro * solver->delt / (solver->rho * del[n]))
             delv = 0; uncomment to eliminate spurious velocity currents */
@@ -574,7 +548,7 @@ int vof_velocity(struct solver_data *solver) {
   double vel[3][27];
   double af[3][27];
   double vis[3];
-  double Flux, Viscocity, Q_C, Q_W, H_vel, CD, upwind, sum_fv, delp, delv, resi, nu;
+  double Flux, Viscocity, Q_C, Q_W, H_vel, CD, upwind, sum_fv, delp, delv, nu;
 
   long int i,j,k;
   int n,m,o;
@@ -591,7 +565,7 @@ int vof_velocity(struct solver_data *solver) {
 
 #pragma omp parallel for shared (solver) \
             private(i,j,k,vel,af,vis,Flux,Viscocity,Q_C,Q_W,H_vel,CD,upwind,sum_fv,delp, \
-                    delv,resi,nu,n,m,o,ro_p1,ro_m1,ro_mp1,ro_mm1,ro_nmm1) \
+                    delv,nu,n,m,o,ro_p1,ro_m1,ro_mp1,ro_mm1,ro_nmm1) \
             collapse(3) schedule(static)
   for(i=1; i<IMAX-1; i++) {
     for(j=1; j<JMAX-1; j++) {
@@ -792,20 +766,7 @@ int vof_velocity(struct solver_data *solver) {
           sum_fv = (FV(i,j,k) + FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           delp   = (P(i,j,k)  -  P(i+odim[n][0],j+odim[n][1],k+odim[n][2]));
           if(FV(i+odim[n][0],j+odim[n][1],k+odim[n][2]) < 0.000001) delp=0; /* ADDED 2/27/16 testing */
-          resi   = (DN(i,j,k)  +  DN(i+odim[n][0],j+odim[n][1],k+odim[n][2])) / 2;
-          switch(n) {
-          case 0:
-            resi  *= UN(i,j,k);
-            break;
-          case 1:
-            resi *= VN(i,j,k);
-            break;
-          case 2:
-            resi *= WN(i,j,k);
-            break;
-          }
-          if(solver->t < solver->emf || solver->iter > solver->niter || solver->p_flag==1 ) resi = 0.0;
-
+          
           Flux = (Q_C + Q_W) / sum_fv;
           
           if(solver->turbulence_nu != NULL) {
@@ -823,7 +784,7 @@ int vof_velocity(struct solver_data *solver) {
 
           delv = solver->delt * ( /*(sum_fv/2) * */ (1/del[n]) * delp / solver->rho +
                  solver->gx * odim[n][0] + solver->gy * odim[n][1] + solver->gz * odim[n][2] -
-                 Flux + Viscocity /* - resi /solver->rho */ );  /* uncomment to use residual as volume source */
+                 Flux + Viscocity );  
 
           /* if(fabs(delv) < solver->epsi * solver->dzro * solver->delt / (solver->rho * del[n]))
             delv = 0; uncomment to eliminate spurious velocity currents */

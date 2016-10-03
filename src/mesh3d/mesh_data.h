@@ -119,7 +119,7 @@ struct mesh_data {
    * 3D arrays. */
 
   /* Calculated outputs describing fluid properties */
-  double *P, *D;
+  double *P;
   double *u, *v, *w;
   double *delu_upstream, *delu_downstream;
   double *u_omega, *v_omega, *w_omega; /* vorticity */
@@ -137,8 +137,6 @@ struct mesh_data {
   double *fv;
   double *ae, *an, *at;
   
-  /* Coefficients used in calculations */
-  double *peta, *tanth, *beta;
   
   /* Turbulence model declared void to allow flexibility
    * since different models use different variables 

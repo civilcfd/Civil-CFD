@@ -9,7 +9,7 @@
 #include <omp.h>
  
 #include "vtk.h"
-#include "vof.h"
+#include "vof_mpi.h"
 #include "solver.h"
 #include "mesh.h"
 #include "csv.h"
