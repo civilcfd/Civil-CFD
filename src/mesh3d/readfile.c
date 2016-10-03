@@ -68,12 +68,12 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
 
   xmlTextWriterStartElement(writer, BAD_CAST "Special_Boundaries");
   for(i=0; i<6; i++) {
-    n = 0;
+    n = 1;
     sb = mesh->sb[i];
     
     xmlTextWriterStartElement(writer, BAD_CAST wall_names[i]);
     while(sb != NULL) {    
-      sprintf(buf, "%d", n); n++;
+      sprintf(buf, "Special_Boundary%d", n); n++;
       xmlTextWriterStartElement(writer, BAD_CAST buf);
 
       xmlTextWriterWriteFormatElement(writer, BAD_CAST "type", "%s", sb_names[sb->type]); 
@@ -99,12 +99,12 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
   
   xmlTextWriterStartElement(writer, BAD_CAST "Baffles");
   for(i=0; i<3; i++) {
-    n = 0;
+    n = 1;
     baffle = mesh->baffles[i];
     
     xmlTextWriterStartElement(writer, BAD_CAST axis_names[i]);
     while(baffle != NULL) {
-      sprintf(buf, "%d", n); n++;
+      sprintf(buf, "Baffle%d", n); n++;
       xmlTextWriterStartElement(writer, BAD_CAST buf);
 
       xmlTextWriterWriteFormatElement(writer, BAD_CAST "type", "%s", baffle_names[baffle->type]); 
@@ -197,7 +197,7 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
   xmlXPathContext *xpathCtx;
   xmlDoc *doc;
   double vector[3];
-  char path[256], buf[256];
+  char path[256], buf[256], prefix[256];
   int i, n;
 
   xmlInitParser();
@@ -238,6 +238,20 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
   /* read boundaries */
   for(i=0; i<6; i++) {
     sprintf(path, "/Case/Solver/Mesh/Boundaries/%s", wall_names[i]);
+    if(read_xmlpath_str(buf, path, xpathCtx)) {
+      n = string_index(wb_names, buf);
+      if(n > -1) {
+        printf("Read %s: %s\n", path, buf);
+        vector[0] = n;
+        sprintf(buf, "wall_%s", wall_names[i]);
+        mesh_set_value(mesh, buf, 1, vector);
+      }
+    }
+  }
+
+  /* read special boundaries */
+  for(i=0; i<6; i++) {
+    sprintf(prefix, "/Case/Solver/Mesh/Special_Boundaries/%s", wall_names[i]);
     if(read_xmlpath_str(buf, path, xpathCtx)) {
       n = string_index(wb_names, buf);
       if(n > -1) {
