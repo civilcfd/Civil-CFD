@@ -255,8 +255,9 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
 
   /* read special boundaries */
   for(i=0; i<6; i++) {
-    j = 1;
+    j = 0;
     while(1) {
+      j++;
       sprintf(prefix, "/Case/Solver/Mesh/Special_Boundaries/%s/Special_Boundary%d", wall_names[i],j);
       sprintf(path, "%s/type", prefix);
 
@@ -302,14 +303,14 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
         }
       }
       else break;
-      j++;
     }
   }
 
   /* read baffles */
   for(i=0; i<3; i++) {
-    j = 1;
+    j = 0;
     while(1) {
+      j++;
       sprintf(prefix, "/Case/Solver/Mesh/Baffles/%s/Baffle%d", axis_names[i],j);
       sprintf(path, "%s/type", prefix);
 
@@ -355,7 +356,6 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
         }
       }
       else break;
-      j++;
     }
   }
 
