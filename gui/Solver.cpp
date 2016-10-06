@@ -108,6 +108,9 @@ void SolverDialog::on_Stop_clicked() {
 
 void SolverDialog::readyReadStandardOutput() {
   QString str = process->readAllStandardOutput(); 
+  
+  if(stopped == true) return;
+
   ui.output->appendPlainText(str);
   int n;
   bool ok;
@@ -115,7 +118,6 @@ void SolverDialog::readyReadStandardOutput() {
 
   QFont legendFont;
   
-  if(stopped == true) return;
 
   if(str.contains("timestep") || str.contains("delt")) {
 
