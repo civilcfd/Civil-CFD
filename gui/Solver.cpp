@@ -115,6 +115,8 @@ void SolverDialog::readyReadStandardOutput() {
 
   QFont legendFont;
   
+  if(stopped == true) return;
+
   if(str.contains("timestep") || str.contains("delt")) {
 
     QStringList list = str.split(" ");
