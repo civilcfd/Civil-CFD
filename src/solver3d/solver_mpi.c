@@ -108,7 +108,7 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
   if(solver_mpi_init_complete(solver)==1)
     return 1;
 
-  if(solver->turbulence_read != NULL) solver->turbulence_read("turbulencefile");
+  if(solver->turbulence_read != NULL) solver->turbulence_read("solver.xml");
   
   solver->init(solver);
   solver->turbulence_init(solver);

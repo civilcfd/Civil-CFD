@@ -10,6 +10,7 @@
 #include <omp.h>
 #include <petscksp.h>
 #include <libxml/xmlwriter.h>
+#include <libxml/xpath.h>
 
 #include "vtk.h"
 #include "solver.h"
@@ -64,7 +65,7 @@ int kE_set_value(char *param, int dims,
 
   if(strcmp(param, "length_scale")==0) {
     if(dims != 1) {
-      printf("error in source file: length_scale requires 3 arguments\n");
+      printf("error in source file: length_scale requires 1 arguments\n");
       return(1);
     }
 
@@ -95,6 +96,47 @@ int kE_set_value(char *param, int dims,
   }
 
 	return 0;
+}
+
+int kE_read_xml(char *filename) {
+  const char *kE_properties_double[] = {"length_scale", "length", "rough", "end" };
+  xmlXPathContext *xpathCtx;
+  xmlDoc *doc;
+  double vector[3];
+  char buf[256];
+  int i;
+
+  xmlInitParser();
+  LIBXML_TEST_VERSION
+ 
+  doc = xmlParseFile(filename);
+  if(doc == NULL) {
+    printf("Could not open %s\n",filename);
+    return 1;
+  }
+
+  xpathCtx = xmlXPathNewContext(doc);
+  if(doc == NULL) {
+    printf("Could not create xpath context\n");
+    return 1;
+  }
+
+  i = 0;
+  while(strcmp("end", kE_properties_double[i]) != 0) {
+    sprintf(buf, "/Case/Solver/Turbulence/%s", kE_properties_double[i]);
+
+    if(!read_xmlpath_double(&vector[0], buf, xpathCtx)) {
+      printf("Could not evaluate %s\n", kE_properties_double[i]);
+    }
+    else {
+      printf("Read %s: %lf\n", buf, vector[0]);
+      kE_set_value(kE_properties_double[i], 1, vector);
+    }
+ 
+    i++;
+  }
+
+  return 0;
 }
 
 int kE_read(char *filename)
@@ -223,7 +265,7 @@ int kE_setup(struct solver_data *solver) {
   solver->turbulence_init = kE_init;
   solver->turbulence_loop = kE_loop_explicit;
   solver->turbulence_kill = kE_kill;
-  solver->turbulence_read = kE_read;
+  solver->turbulence_read = kE_read_xml;
   solver->turbulence_write = kE_write;
   solver->wall_shear = kE_wall_shear;
   solver->turbulence_nu   = kE_nu;

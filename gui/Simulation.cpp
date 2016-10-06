@@ -133,11 +133,7 @@ int Simulation::load() {
   read_mesh_xml(solver->mesh, "solver.xml");
   read_solver_xml(solver, "solver.xml");
 
-  if(solver->turbulence_read("turbulencefile")) {
-    qDebug() << "could not read turbulencefile";
-    ready=0;
-    return false;
-  }
+  solver->turbulence_read("solver.xml");
   
   
   strcpy(solver->ic[0].param,"end");
