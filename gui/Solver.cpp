@@ -239,7 +239,8 @@ void SolverDialog::finished(int exitCode, QProcess::ExitStatus status) {
   }
   
   if(exitCode == 1) {
-    ui.status->setText("Process failed");
+    if(stopped == false) ui.status->setText("Process failed");
+    else ui.status->setText("Stopped by user");
   }
 
   ui.Return->setEnabled(true);
