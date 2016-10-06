@@ -56,7 +56,7 @@ int vof_mpi_init_solver(struct solver_data *solver) {
 
 int vof_mpi_kill_solver(struct solver_data *solver) {
   mesh_free(solver->mesh);
-  PetscFinalize();
+  PetscEnd();
 
   exit(0);
 }
@@ -293,6 +293,7 @@ int vof_mpi_deltcal(struct solver_data *solver) {
       }
     }    
     vof_mpi_write_timestep(solver);
+    PetscEnd();
     exit(1);
   }
   

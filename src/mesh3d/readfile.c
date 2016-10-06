@@ -15,9 +15,11 @@ const char *wall_names[] = { "west", "east", "south", "north", "bottom", "top" }
 const char *axis_names[] = { "x", "y", "z" };
 const char *wb_names[] = { "slip", "no_slip", "zero_gradient", "end"};
 const char *sb_names[] = { "fixed_velocity", "mass_outflow", "hgl", "weir", "wall", "end"};
+const char *sb_extent_a_names[] = { "j", "j", "i", "i", "i", "i"};
+const char *sb_extent_b_names[] = { "k", "k", "k", "k", "j", "j"};
 const char *baffle_names[] = { "flow", "barrier", "k", "swirl_angle", "v_deviation", "end"};
-const char *extent_a_names[] = { "j", "i", "i"};
-const char *extent_b_names[] = { "k", "k", "j"};
+const char *baffle_extent_a_names[] = { "j", "i", "i"};
+const char *baffle_extent_b_names[] = { "k", "k", "j"};
   
 int string_index(char **str, char *str2) {
   int i=0;
@@ -82,12 +84,13 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
 
       xmlTextWriterStartElement(writer, BAD_CAST "Extent");
       xmlTextWriterStartElement(writer, BAD_CAST "From");
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", sb->extent_a[0]); 
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", sb->extent_b[0]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST sb_extent_a_names[i], "%ld", sb->extent_a[0]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST sb_extent_b_names[i], "%ld", sb->extent_b[0]); 
       xmlTextWriterEndElement(writer);
       xmlTextWriterStartElement(writer, BAD_CAST "To");
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", sb->extent_a[1]); 
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", sb->extent_b[1]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST sb_extent_a_names[i], "%ld", sb->extent_a[1]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST sb_extent_b_names[i], "%ld", sb->extent_b[1]); 
+      xmlTextWriterEndElement(writer);
       xmlTextWriterEndElement(writer);
 
       xmlTextWriterEndElement(writer);
@@ -113,12 +116,12 @@ int write_mesh_xml(struct mesh_data *mesh, xmlTextWriterPtr writer) {
 
       xmlTextWriterStartElement(writer, BAD_CAST "Extent");
       xmlTextWriterStartElement(writer, BAD_CAST "From");
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", baffle->extent_a[0]); 
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", baffle->extent_b[0]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST baffle_extent_a_names[i], "%ld", baffle->extent_a[0]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST baffle_extent_b_names[i], "%ld", baffle->extent_b[0]); 
       xmlTextWriterEndElement(writer);
       xmlTextWriterStartElement(writer, BAD_CAST "To");
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_a_names[i], "%ld", baffle->extent_a[1]); 
-      xmlTextWriterWriteFormatElement(writer, BAD_CAST extent_b_names[i], "%ld", baffle->extent_b[1]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST baffle_extent_a_names[i], "%ld", baffle->extent_a[1]); 
+      xmlTextWriterWriteFormatElement(writer, BAD_CAST baffle_extent_b_names[i], "%ld", baffle->extent_b[1]); 
       xmlTextWriterEndElement(writer);
       xmlTextWriterEndElement(writer);
 
@@ -198,7 +201,8 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
   xmlDoc *doc;
   double vector[3];
   char path[256], buf[256], prefix[256];
-  int i, n;
+  double extent_a[3], extent_b[3];
+  int i, j, n;
 
   xmlInitParser();
   LIBXML_TEST_VERSION
@@ -251,15 +255,107 @@ int read_mesh_xml(struct mesh_data *mesh, char *filename)
 
   /* read special boundaries */
   for(i=0; i<6; i++) {
-    sprintf(prefix, "/Case/Solver/Mesh/Special_Boundaries/%s", wall_names[i]);
-    if(read_xmlpath_str(buf, path, xpathCtx)) {
-      n = string_index(wb_names, buf);
-      if(n > -1) {
-        printf("Read %s: %s\n", path, buf);
-        vector[0] = n;
-        sprintf(buf, "wall_%s", wall_names[i]);
-        mesh_set_value(mesh, buf, 1, vector);
+    j = 1;
+    while(1) {
+      sprintf(prefix, "/Case/Solver/Mesh/Special_Boundaries/%s/Special_Boundary%d", wall_names[i],j);
+      sprintf(path, "%s/type", prefix);
+
+      if(read_xmlpath_str(buf, path, xpathCtx)) {
+        n = string_index(sb_names, buf);
+        if(n > -1) {
+          vector[0] = n;
+
+          sprintf(path,"%s/value",prefix);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          vector[1] = strtod(buf, NULL);
+
+          sprintf(path,"%s/turbulence",prefix);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          vector[2] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/From/%s",prefix,sb_extent_a_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_a[0] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/From/%s",prefix,sb_extent_b_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_b[0] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/To/%s",prefix,sb_extent_a_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_a[1] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/To/%s",prefix,sb_extent_b_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_b[1] = strtod(buf, NULL);
+
+
+          printf("Read %s\n", prefix);
+          sprintf(buf, "sb_%s", wall_names[i]);
+          mesh_set_value(mesh, buf, 3, vector);
+
+          sprintf(buf, "sbextent_a_%s", wall_names[i]);
+          mesh_set_value(mesh, buf, 2, extent_a);
+
+          sprintf(buf, "sbextent_b_%s", wall_names[i]);
+          mesh_set_value(mesh, buf, 2, extent_b);
+        }
       }
+      else break;
+      j++;
+    }
+  }
+
+  /* read baffles */
+  for(i=0; i<3; i++) {
+    j = 1;
+    while(1) {
+      sprintf(prefix, "/Case/Solver/Mesh/Baffles/%s/Baffle%d", axis_names[i],j);
+      sprintf(path, "%s/type", prefix);
+
+      if(read_xmlpath_str(buf, path, xpathCtx)) {
+        n = string_index(baffle_names, buf);
+        if(n > -1) {
+          vector[0] = n;
+
+          sprintf(path,"%s/value",prefix);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          vector[1] = strtod(buf, NULL);
+
+          sprintf(path,"%s/pos",prefix);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          vector[2] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/From/%s",prefix,baffle_extent_a_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_a[0] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/From/%s",prefix,baffle_extent_b_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_b[0] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/To/%s",prefix,baffle_extent_a_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_a[1] = strtod(buf, NULL);
+
+          sprintf(path,"%s/Extent/To/%s",prefix,baffle_extent_b_names[i]);
+          if(!read_xmlpath_str(buf, path, xpathCtx)) continue;
+          extent_b[1] = strtod(buf, NULL);
+
+
+          printf("Read %s\n", prefix);
+          sprintf(buf, "baffle_%s", axis_names[i]);
+          mesh_set_value(mesh, buf, 3, vector);
+
+          sprintf(buf, "baffle_extent_a_%s", axis_names[i]);
+          mesh_set_value(mesh, buf, 2, extent_a);
+
+          sprintf(buf, "baffle_extent_b_%s", axis_names[i]);
+          mesh_set_value(mesh, buf, 2, extent_b);
+        }
+      }
+      else break;
+      j++;
     }
   }
 
@@ -646,6 +742,9 @@ int read_xmlpath_int(int *x, char *path, xmlXPathContext *xpathCtx) {
   if(xpathObj == NULL) {
     return 0;
   }
+  else if(xmlXPathNodeSetIsEmpty(xpathObj->nodesetval)) {
+    return 0;
+  }
   else {
     node = xpathObj->nodesetval->nodeTab[0];
     *x = atoi(xmlNodeGetContent(node));
@@ -660,6 +759,9 @@ int read_xmlpath_str(char *str, char *path, xmlXPathContext *xpathCtx) {
 
   xpathObj = xmlXPathEvalExpression( (xmlChar*) path, xpathCtx);
   if(xpathObj == NULL) {
+    return 0;
+  }
+  else if(xmlXPathNodeSetIsEmpty(xpathObj->nodesetval)) {
     return 0;
   }
   else {

@@ -15,7 +15,7 @@ int solver_init_complete(struct solver_data *solver);
 
 int solver_check(struct solver_data *solver);
 
-int solver_load(struct solver_data *solver, char *solverfile, char *meshfile, char *initial);
+int solver_load(struct solver_data *solver, char *solverfile);
 
 int solver_run(struct solver_data *solver);
 

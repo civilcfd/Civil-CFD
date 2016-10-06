@@ -107,18 +107,13 @@ struct solver_data *solver_init_empty() {
   return solver;
 }
 
-int solver_load(struct solver_data *solver, char *solverfile, char *meshfile, char *initial) {
+int solver_load(struct solver_data *solver, char *solverfile) {
 
  /* loads the solver and mesh into memory from file */
 
-  if(read_mesh(solver->mesh, meshfile) == 1)
-    return 1;
-
-  if(read_solver(solver, solverfile) == 1)
-    return 1;
-  
-  if(read_initial(solver, initial) == 1)
-    return 1;
+  if(read_mesh_xml(solver->mesh, solverfile) == 1) return 1;
+  if(read_solver_xml(solver, solverfile) == 1) return 1;
+  if(read_initial_xml(solver, solverfile) == 1) return 1;
 
   return 0;
 }

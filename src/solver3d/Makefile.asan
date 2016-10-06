@@ -1,7 +1,7 @@
 TARGET = ../../lib/libsolver3d.a
 LIBS = -L../../lib -lmesh3d -lm -lqhull
 CC = gcc
-CFLAGS = -fsanitize=address -g -I /usr/include/mpi -I /usr/include/petsc  -I /usr/local/include -I /opt/local/include -I ../mesh3d -Wall -DDEBUG -fopenmp 
+CFLAGS = -fsanitize=address -g -I /usr/include/mpi -I /usr/include/petsc  -I /usr/local/include -I /usr/include/libxml2   -I /opt/local/include -I ../mesh3d -Wall -DDEBUG -fopenmp 
 
 .PHONY: default all clean
 

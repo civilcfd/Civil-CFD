@@ -98,22 +98,7 @@ int Simulation::save() {
   }
   // TESTING
   write_solver_xml(solver, "solver.xml");
-  // TESTING
-  if(solver->turbulence_write("turbulencefile")) {
-    qDebug() << "could not write turbulencefile";
-    ready=0;
-    return false;
-  } 
-  if(write_mesh(solver->mesh,"meshfile")) {
-    qDebug() << "could not write meshfile";
-    ready=0;
-    return false;
-  }  
-  if(write_initial(solver,"initials")) {
-    qDebug() << "could not write initials";
-    ready=0;
-    return false;
-  }
+
   
   track_write();
 
@@ -144,16 +129,6 @@ int Simulation::load() {
   file.close();
 
 	vof_mpi_setup_solver(solver);
-  /*if(read_mesh(solver->mesh, "meshfile")) {
-    qDebug() << "could not read meshfile";
-    ready=0;
-    return false;
-  }*/
-  /* if(read_solver(solver, "solverfile")) {
-    qDebug() << "could not read solverfile";
-    ready=0;
-    return false;
-  }*/
 
   read_mesh_xml(solver->mesh, "solver.xml");
   read_solver_xml(solver, "solver.xml");

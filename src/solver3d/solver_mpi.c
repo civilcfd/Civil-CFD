@@ -101,7 +101,7 @@ int solver_mpi(struct solver_data *solver, double timestep, double delt)
 
   vof_mpi_setup_solver(solver);
   
-  if(solver_load(solver, "solverfile", "meshfile", "initials")==1)
+  if(solver_load(solver, "solver.xml")==1)
     return 1;
 
   solver_mpi_range(solver);

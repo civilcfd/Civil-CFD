@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
   vof_mpi_setup_solver(solver);
   
-  if(solver_load(solver, "solverfile", "meshfile", "initials")==1) {
+  if(solver_load(solver, "solver.xml")==1) {
     fflush(stdout);
     fclose(nullOut);  
     CROSS_DUP2(stdoutBackupFd, STDOUT_FILENO);

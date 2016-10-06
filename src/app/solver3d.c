@@ -24,12 +24,12 @@ int main(int argc, char *argv[])
   int rank, size;
   int ret = 0;
 
-	PetscInitialize(NULL, NULL, NULL, NULL);
+	PetscInitialize(NULL, NULL, NULL, NULL);/*
 #ifdef _WIN32
 	PetscOptionsSetValue(NULL, "-log_summary", "true");
 #else
 	PetscOptionsSetValue("-log_summary","true");
-#endif
+#endif*/
 	MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
   
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
   
   if(size > 1) {
     ret = solver_mpi(solver, timestep, delt);
-    PetscFinalize();
+    PetscEnd();
     return ret;
   }
   else {
