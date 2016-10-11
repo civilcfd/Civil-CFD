@@ -26,6 +26,27 @@
 
 struct mesh_data *mesh_n; /* describes mesh at previous timestep for explicit calcs */
 
+#ifdef DEBUG
+float u(struct solver_data *solver, long int i,long int j,long int k) { return U(i,j,k); }
+float v(struct solver_data *solver, long int i,long int j,long int k) { return V(i,j,k); }
+float w(struct solver_data *solver, long int i,long int j,long int k) { return W(i,j,k); }
+float un(struct solver_data *solver, long int i,long int j,long int k) { return UN(i,j,k); }
+float vn(struct solver_data *solver, long int i,long int j,long int k) { return VN(i,j,k); }
+float wn(struct solver_data *solver, long int i,long int j,long int k) { return WN(i,j,k); }
+float pp(struct solver_data *solver, long int i,long int j,long int k) { return P(i,j,k); }
+float vof(struct solver_data *solver, long int i,long int j,long int k) { return VOF(i,j,k); }
+float n_vof(struct solver_data *solver, long int i,long int j,long int k) { return N_VOF(i,j,k); }
+float ae(struct solver_data *solver, long int i,long int j,long int k) { return AE(i,j,k); }
+float an(struct solver_data *solver, long int i,long int j,long int k) { return AN(i,j,k); }
+float at(struct solver_data *solver, long int i,long int j,long int k) { return AT(i,j,k); }
+float fv(struct solver_data *solver, long int i,long int j,long int k) { return FV(i,j,k); }
+
+void track_cell(struct solver_data *solver, long int i,long int j,long int k) {
+  printf("U(e/n/t) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i,j,k),V(i,j,k),W(i,j,k));
+  printf("U(w/s/b) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i-1,j,k),V(i,j-1,k),W(i,j,k-1));  
+  printf("P: %lf    VOF: %lf    N_VOF: %d\n",P(i,j,k),VOF(i,j,k),N_VOF(i,j,k));
+}
+#endif
 
 int vof_mpi_setup_solver(struct solver_data *solver) {
   

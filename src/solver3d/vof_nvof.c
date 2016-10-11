@@ -80,14 +80,32 @@ double surface_interpolate(struct solver_data *solver, long int i, long int j, l
 }
 
 int vof_mpi_nvof(struct solver_data *solver) {
-  long int i,j,k,l,m,n,ii,jj,kk;
-  int mobs, inf, infcr, iobs;
-  double vf, fxm, fxp, fym, fyp, fzm, fzp; 
-  double vfxm, vfxp, vfym, vfyp, vfzm, vfzp;
+  long int i,j,k;
+  int norm[6][3] = { {  1, 0, 0 },
+                     { -1, 0, 0 },
+                     {  0, 1, 0 },
+                     {  0,-1, 0 },
+                     {  0, 0, 1 },
+                     {  0, 0,-1 }};
+  int g[6];
+  int l,m,n,x,obs;
+  double score[6] = { 0,0,0,0,0,0 };
+  double mult[3][3] = { { 0.7, 0.9, 0.7 }, 
+                        { 0.9, 1.0, 0.9 },
+                        { 0.7, 0.9, 0.7 } };
+  double top_score = 0;
+  double lvof[6];
 
+#define emf solver->emf
+#define emf_c solver->emf_c
 
-  const double nemf = -1.0 * emf; 
- 
+  g[0] = solver->gx;
+  g[1] = solver->gx * -1;
+  g[2] = solver->gy;
+  g[3] = solver->gy * -1;
+  g[4] = solver->gz;
+  g[5] = solver->gz * -1;
+
   for(i=1; i<IRANGE-1; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {
@@ -128,7 +146,7 @@ int vof_mpi_nvof(struct solver_data *solver) {
         }
 
         if(VOF(i,j,k) < emf) {
-          N_VOF(i,j,k) = 8;
+          N_VOF(i,j,k) = 8; 
           continue;
         }
   
@@ -137,147 +155,97 @@ int vof_mpi_nvof(struct solver_data *solver) {
           continue;
         }
 
+
+        /* iterate on all sides and check if we are bounded by either an obstacle or fluid for all cells, if so NVOF=0 */
+        obs = 0;
+        for(n=0; n<6; n++) {
+          lvof[n] = VOF(i,j,k);
+          score[n] = 0;
+
+          switch(n) {
+          case 0:
+            if (AE(i,j,k) >emf) lvof[n] = VOF(i+norm[n][0], j+norm[n][1], k+norm[n][2]);
+            break; 
+          case 1:
+            if (AE(i-1,j,k) >emf) lvof[n] = VOF(i+norm[n][0], j+norm[n][1], k+norm[n][2]);
+            break; 
+          case 2:
+            if (AN(i,j,k) >emf) lvof[n] = VOF(i+norm[n][0], j+norm[n][1], k+norm[n][2]);
+            break; 
+          case 3:
+            if (AN(i,j-1,k) >emf) lvof[n] = VOF(i+norm[n][0], j+norm[n][1], k+norm[n][2]);
+            break; 
+          case 4:
+            if (AT(i,j,k) >emf) lvof[n] = VOF(i+norm[n][0], j+norm[n][1], k+norm[n][2]);
+            break; 
+          case 5:
+            if (AT(i,j,k-1) >emf) lvof[n] = VOF(i+norm[n][0], j+norm[n][1], k+norm[n][2]);
+            break; 
+          default:
+            continue;
+          }
+          
+          if(FV(i+norm[n][0], j+norm[n][1], k+norm[n][2]) < emf && g[n] < emf) {
+            obs++;
+          }
+          else if(lvof[n] > emf) {
+            obs++;
+          }
+        }
+        if(obs == n) N_VOF(i,j,k) = 0;
+
         if(N_VOF(i,j,k) == 0) continue;
 
-        /*# now calculate the partial derivatives of F
-        # this code calculates how much F changes in each axis
-        # the goal is to determine where the free surface lies
-        # and the slope of the free surface */
+        top_score = emf;
+        for(x=0; x<6; x++) {
+          l = norm[x][0]; m = norm[x][1]; n = norm[x][2];
+
+          if(x < 2) {
+            for(m=-1; m<=1; m++) {
+              for(n=-1; n<=1; n++) {
+                score[x] += VOF(l+i,m+j,n+k) * mult[m+1][n+1];
+              }
+            }
+
+            if(score[x] > top_score && VOF(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf) {
+              if(FV(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf || g[x] > emf) {
+                N_VOF(i,j,k) = x+1;
+                top_score = score[x];
+              }
+            }
+          }
+          else if(x < 4) {
+            for(l=-1; l<=1; l++) {
+              for(n=-1; n<=1; n++) {
+                score[x] += VOF(l+i,m+j,n+k)  * mult[l+1][n+1];
+              }
+            }
+
+            if(score[x] > top_score && VOF(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf) {
+              if(FV(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf || g[x] > emf) {
+                N_VOF(i,j,k) = x+1;
+                top_score = score[x];
+              }
+            }
+          }
+          else {
+            for(l=-1; l<=1; l++) {
+              for(m=-1; m<=1; m++) {
+                score[x] += VOF(l+i,m+j,n+k)  * mult[l+1][m+1];
+              }
+            }
+            if(score[x] > top_score && VOF(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf) {
+              if(FV(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf || g[x] > emf) {
+                N_VOF(i,j,k) = x+1;
+                top_score = score[x];
+              }
+            }
+          }
+
+        }
+          
+
                
-               fxm=VOF(i,j,k);
-               fxp=VOF(i,j,k);
-               fym=VOF(i,j,k);
-               fyp=VOF(i,j,k);
-               fzm=VOF(i,j,k);
-               fzp=VOF(i,j,k);
-
-               if (AE(i-1,j,k)>emf) fxm=VOF(i-1,j,k);
-               if (AE(i,j,k)>emf)   fxp=VOF(i+1,j,k);
-
-               if (AN(i,j-1,k)>emf) fym=VOF(i,j-1,k);
-               if (AN(i,j,k)>emf)   fyp=VOF(i,j+1,k);
-
-               if (AT(i,j,k-1)>emf) fzm=VOF(i,j,k-1);
-               if (AT(i,j,k)>emf)   fzp=VOF(i,j,k+1);
-
-               mobs=1;
-               inf=1;
-               iobs=1;
-               vf=0.0;
-
-               vfxm=0.0;
-               vfxp=0.0;
-
-               for (kk=1;kk<4;kk++)
-                {
-                  n=k-2+kk;
-                  for (jj=1;jj<4;jj++)
-                    {
-                       m=j-2+jj;
-                       vfxm=vfxm+VOF(i-1,m,n);
-                       vfxp=vfxp+VOF(i+1,m,n);
-                    }
-                }
-
-               if (FV(i-1,j,k)==0.0 && solver->gx > nemf) iobs=2;
-               mobs=mobs+(iobs-1);
-               if ((iobs!=2)&&(fxm>=emf))
-                 {
-                    inf=inf+1;
-                    if (vfxm>vf) N_VOF(i,j,k)=west;
-                    if (N_VOF(i,j,k)==west) vf=vfxm;
-                 }
-
-               iobs=1;
-               if (FV(i+1,j,k)==0.0 && solver->gx < emf) iobs=2;
-               mobs=mobs+(iobs-1);
-               if ((iobs!=2)&&(fxp>=emf))
-                 {
-                    inf=inf+1;
-                    if (vfxp>vf) N_VOF(i,j,k)=east;
-                    if (N_VOF(i,j,k)==east) vf=vfxp;
-                 }
-               iobs=1;
-                                /* z-axis **/
-               vfzm=0.0;
-               vfzp=0.0;
-               for (ii=1;ii<4;ii++)
-                 {
-                   l=i-2+ii;
-                   for (jj=1;jj<4;jj++)
-                     {
-                       m=j-2+jj;
-                       vfzm=vfzm+VOF(l,m,k-1);
-                       vfzp=vfzp+VOF(l,m,k+1);
-                     }
-                 }
-/*
-       if(i==241 && j==48 && k==42) {
-          printf("break\n");
-        }  */
-        
-               if (FV(i,j,k-1)==0.0 && solver->gz > nemf) iobs=2; 
-               mobs=mobs+(iobs-1);
-               if ((iobs!=2)&&(fzm>=emf))
-                 {
-                   inf=inf+1;
-                   if (vfzm>vf) N_VOF(i,j,k)=bottom;
-                   if (N_VOF(i,j,k)==bottom) vf=vfzm;
-                 }
-               iobs=1;
-
-               if (FV(i,j,k+1)==0.0 && solver->gz < emf) iobs=2;
-               mobs=mobs+(iobs-1);
-               if ((iobs!=2)&&(fzp>=emf))
-                 {
-                   inf=inf+1;
-                   if (vfzp>vf) N_VOF(i,j,k)=top;
-                   if (N_VOF(i,j,k)==top) vf=vfzp;
-                 }
-               iobs=1;
-                                /*y-axis**/
-
-               vfym=0.0;
-               vfyp=0.0;
-
-               for (kk=1;kk<4;kk++)
-                 {
-                   n=k-2+kk;
-                   for (ii=1;ii<4;ii++)
-                     {
-                       l=i-2+ii;
-                       vfym=vfym+VOF(l,j-1,n); 
-                       vfyp=vfyp+VOF(l,j+1,n);
-                     }
-                 }
-
-               if (FV(i,j-1,k)==0.0  && solver->gy > nemf) iobs=2;
-               mobs=mobs+(iobs-1);
-               if ((iobs!=2)&&(fym>=emf))
-                 {
-                   inf=inf+1;
-                   if (vfym>vf) N_VOF(i,j,k)=south;
-                   if (N_VOF(i,j,k)==south) vf=vfym;
-                 }
-               iobs=1;
-
-               if (FV(i,j+1,k)==0.0  && solver->gy < emf) iobs=2;
-               mobs=mobs+(iobs-1);
-               if ((iobs!=2)&&(fyp>=emf))
-                 {
-                   inf=inf+1;
-                   if (vfyp>vf) N_VOF(i,j,k)=north;
-                   if (N_VOF(i,j,k)==north) vf=vfyp;
-                 }
-               iobs=1;
-
-              
-               /* check if it is not a free surface, but is bounded by an obstacle */
-               /* essentially we have fluid in each direction that isn't an obstacle */
-               infcr=8-mobs;
-               if ((inf==infcr)&&(infcr>1)) N_VOF(i,j,k)=0; 
-               
-
       }
     }
   }
