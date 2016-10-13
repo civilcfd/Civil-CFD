@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  if(solver->turbulence_read != NULL) solver->turbulence_read("turbulencefile");
+  if(solver->turbulence_read != NULL) solver->turbulence_read("solver.xml");
   
   solver->init(solver);
   solver->turbulence_init(solver);

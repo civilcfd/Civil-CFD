@@ -237,11 +237,11 @@ int vof_mpi_deltcal(struct solver_data *solver) {
       for(k=1; k<KMAX-1; k++) {        
         if(isnan(U(i,j,k)) || isnan(V(i,j,k)) || isnan(W(i,j,k))) {
           nan_flag = 1;
-          printf("divide by zero error in cell %ld %ld %ld | ",i,j,k);
+          if(!solver->rank) printf("divide by zero error in cell %ld %ld %ld | ",i,j,k);
           if(isnan(U(i,j,k))) printf("east");
           if(isnan(V(i,j,k))) printf("north");
           if(isnan(W(i,j,k))) printf("top");
-          printf(" of cell\nwriting previous timestep and exiting\n");
+          if(!solver->rank) printf(" of cell\nwriting previous timestep and exiting\n");
         }
       
 #ifdef DEBUG
@@ -347,7 +347,7 @@ int vof_mpi_deltcal(struct solver_data *solver) {
     }
   }
 
-  printf("maximum timestep for convective stability: %lf\n",delt_conv);
+  if(!solver->rank) printf("maximum timestep for convective stability: %lf\n",delt_conv);
   
   delt = min(delt, delt_conv);
   delt = min(delt, 0.8 * dtvis);
@@ -355,12 +355,12 @@ int vof_mpi_deltcal(struct solver_data *solver) {
   delt = solver_mpi_min(solver, delt);
    
   if(solver->delt_n != delt) {
-    printf("timestep adjusted from %lf to %lf\n",solver->delt_n,delt);
+    if(!solver->rank) printf("timestep adjusted from %lf to %lf\n",solver->delt_n,delt);
 
     solver->delt = delt;
 
     if(delt < solver->delt_min) {
-      printf("timestep too small to continue.  writing current timestep and exiting...");
+      if(!solver->rank) printf("timestep too small to continue.  writing current timestep and exiting...");
       vof_mpi_write_timestep(solver);
       vof_mpi_kill_solver(solver);
     }
