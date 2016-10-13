@@ -33,7 +33,6 @@ extern struct mesh_data *mesh_n; /* describes mesh at previous timestep for expl
 
 enum special_boundaries vof_boundaries_check_inside_sb(struct solver_data *solver, long int a, long int b,
                                  int x) {
-  int i;
   struct sb_data *sb;
   
   switch(x) {
@@ -169,32 +168,30 @@ int boundary_hgl(struct solver_data *solver,
       for(k = kmax-1; k > kmin-1; k--) {
         
         if(FV(i,j,k) < 0.000001) continue;
+      
+        /* must set velocity to a Neumann boundary */
         
-        if(solver->p_flag == 0) {
-          /* must set velocity to a Neumann boundary */
-          
-          /* first set U(i,j,k) equal to the next neighboring velocity inside the mesh */
-          U(i,j,k) = U(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
-          V(i,j,k) = V(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
-          W(i,j,k) = W(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
-          
-          /* now correct for east / north / top boundary */
-          switch(x) {
-          case 1:
-            U(i,j,k) = U(i-2,j,k);
-            U(i-1,j,k) = U(i-2,j,k); 
-            break;
-          case 3:
-            V(i,j,k) = V(i,j-2,k);
-            V(i,j-1,k) = V(i,j-2,k);
-            break;
-          case 5:
-            W(i,j,k) = W(i,j,k-2);
-            W(i,j,k-1) = W(i,j,k-2);
-            break;
-          }
-
+        /* first set U(i,j,k) equal to the next neighboring velocity inside the mesh */
+        U(i,j,k) = U(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
+        V(i,j,k) = V(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
+        W(i,j,k) = W(i+coplanar[0], j+coplanar[1], k+coplanar[2]);
+        
+        /* now correct for east / north / top boundary */
+        switch(x) {
+        case 1:
+          U(i,j,k) = U(i-2,j,k);
+          U(i-1,j,k) = U(i-2,j,k); 
+          break;
+        case 3:
+          V(i,j,k) = V(i,j-2,k);
+          V(i,j-1,k) = V(i,j-2,k);
+          break;
+        case 5:
+          W(i,j,k) = W(i,j,k-2);
+          W(i,j,k-1) = W(i,j,k-2);
+          break;
         }
+
         
         height = k * mesh->delz;
         if(value - height >= mesh->delz - solver->emf) {
@@ -214,9 +211,7 @@ int boundary_hgl(struct solver_data *solver,
         }
         /* VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (VOF(i,j,k) + VOF(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2; */
         VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = VOF(i,j,k); 
-     
-        if(solver->p_flag != 0) continue; 
-        
+             
         /* ADDED 01/10/2014 */
         if(mesh->vof[mesh_index(mesh,i,j,k)] == 1.0) {
           mesh->P[mesh_index(mesh,i,j,k)] = 
@@ -712,14 +707,11 @@ int vof_special_boundaries(struct solver_data *solver) {
 
 int vof_boundaries(struct solver_data *solver) {
 
-  long int i,j,k,l,m,n;
-  int bm[6], bmtot, nindex, flg;
+  long int i,j,k;
+  int bm[6], bmtot;
   enum cell_boundaries nff;
 #define dim(i,j,k) i+3*(j+k*3)
-  const int ndim[3][3] = { {  0,1,1 }, { 1,0,1 }, { 1,1,0 } };
-  const int odim[3][3] = { {  1,0,0 }, { 0,1,0 }, { 0,0,1 } };
-  double denom, dv, dA, delp;
-  double stabil_limit, dv_ratio;
+  double dv, dA, delp;
   
   
   /* first boundaries on x-axis */
@@ -744,19 +736,15 @@ int vof_boundaries(struct solver_data *solver) {
             W(0,j,k) = -1.0 * W(1,j,k);  
             break;
           case zero_gradient:
-            if(solver->p_flag == 0) {
                 /* zero gradient means that velocity at boundary is equal to interior velocity */
-              U(0,j,k) = U(1,j,k);  
-              V(0,j,k) = V(1,j,k);  
-              W(0,j,k) = W(1,j,k);
-            }
+            U(0,j,k) = U(1,j,k);  
+            V(0,j,k) = V(1,j,k);  
+            W(0,j,k) = W(1,j,k);
             break;       
           }
         }
       
-        if(solver->p_flag == 0) {
-          P(0,j,k) = P(1,j,k);
-        }
+        P(0,j,k) = P(1,j,k);
         VOF(0,j,k) = VOF(1,j,k);
       }
       
@@ -780,20 +768,16 @@ int vof_boundaries(struct solver_data *solver) {
             W(IRANGE-1,j,k) = -1.0 * W(IRANGE-2,j,k);
             break;
           case zero_gradient:
-            if(solver->p_flag == 0) {
                 /* zero gradient means that velocity at boundary is equal to interior velocity */
-              U(IRANGE-1,j,k) = U(IRANGE-3,j,k);
-              U(IRANGE-2,j,k) = U(IRANGE-1,j,k);
-              V(IRANGE-1,j,k) = V(IRANGE-2,j,k);
-              W(IRANGE-1,j,k) = W(IRANGE-2,j,k);
-            }
+            U(IRANGE-1,j,k) = U(IRANGE-3,j,k);
+            U(IRANGE-2,j,k) = U(IRANGE-1,j,k);
+            V(IRANGE-1,j,k) = V(IRANGE-2,j,k);
+            W(IRANGE-1,j,k) = W(IRANGE-2,j,k);
             break;       
           }
         }    
       
-        if(solver->p_flag == 0) {
-          P(IRANGE-1,j,k) = P(IRANGE-2,j,k);
-        }
+        P(IRANGE-1,j,k) = P(IRANGE-2,j,k);
         VOF(IRANGE-1,j,k) = VOF(IRANGE-2,j,k);
       }
 
@@ -822,17 +806,14 @@ int vof_boundaries(struct solver_data *solver) {
           break;
         case zero_gradient:
               /* zero gradient means that velocity at boundary is equal to interior velocity */
-          if(solver->p_flag == 0) {
-            U(i,0,k) = U(i,1,k);  
-            V(i,0,k) = V(i,1,k);  
-            W(i,0,k) = W(i,1,k);  
-          }
+          U(i,0,k) = U(i,1,k);  
+          V(i,0,k) = V(i,1,k);  
+          W(i,0,k) = W(i,1,k);  
           break;       
         }
       }
-      if(solver->p_flag == 0) {
-        P(i,0,k) = P(i,1,k);
-      }
+
+      P(i,0,k) = P(i,1,k);
       VOF(i,0,k) = VOF(i,1,k);
          
       /* north boundary */
@@ -855,19 +836,15 @@ int vof_boundaries(struct solver_data *solver) {
           break;
         case zero_gradient:
               /* zero gradient means that velocity at boundary is equal to interior velocity */
-          if(solver->p_flag == 0) {
-            U(i,JMAX-1,k) = U(i,JMAX-2,k);
-            V(i,JMAX-1,k) = V(i,JMAX-3,k);
-            V(i,JMAX-2,k) = V(i,JMAX-1,k);
-            W(i,JMAX-1,k) = W(i,JMAX-2,k);
-          }
+          U(i,JMAX-1,k) = U(i,JMAX-2,k);
+          V(i,JMAX-1,k) = V(i,JMAX-3,k);
+          V(i,JMAX-2,k) = V(i,JMAX-1,k);
+          W(i,JMAX-1,k) = W(i,JMAX-2,k);
           break;       
         }
       }   
       
-      if(solver->p_flag == 0) {
-        P(i,JMAX-1,k) = P(i,JMAX-2,k);
-      }
+      P(i,JMAX-1,k) = P(i,JMAX-2,k);
       VOF(i,JMAX-1,k) = VOF(i,JMAX-2,k);
       
     } 
@@ -896,17 +873,14 @@ int vof_boundaries(struct solver_data *solver) {
           break;
         case zero_gradient:
               /* zero gradient means that velocity at boundary is equal to interior velocity */
-          if(solver->p_flag == 0) {
-            U(i,j,0) = U(i,j,1);  
-            V(i,j,0) = V(i,j,1);  
-            W(i,j,0) = W(i,j,1);  
-          }
+          U(i,j,0) = U(i,j,1);  
+          V(i,j,0) = V(i,j,1);  
+          W(i,j,0) = W(i,j,1);  
           break;       
         }
       }
-      if(solver->p_flag == 0) {
-        P(i,j,0) = P(i,j,1);
-      }
+
+      P(i,j,0) = P(i,j,1);
       VOF(i,j,0) = VOF(i,j,1);
       
       /* top boundary */
@@ -929,26 +903,21 @@ int vof_boundaries(struct solver_data *solver) {
           break;
         case zero_gradient:
               /* zero gradient means that velocity at boundary is equal to interior velocity */
-          if(solver->p_flag == 0) {
-            U(i,j,KMAX-1) = U(i,j,KMAX-2);
-            V(i,j,KMAX-1) = V(i,j,KMAX-2);
-            W(i,j,KMAX-1) = W(i,j,KMAX-3);
-            W(i,j,KMAX-2) = W(i,j,KMAX-1);
-          }
+          U(i,j,KMAX-1) = U(i,j,KMAX-2);
+          V(i,j,KMAX-1) = V(i,j,KMAX-2);
+          W(i,j,KMAX-1) = W(i,j,KMAX-3);
+          W(i,j,KMAX-2) = W(i,j,KMAX-1);
           break;       
         }
       }     
       
-      if(solver->p_flag == 0) {
-        P(i,j,KMAX-1) = P(i,j,KMAX-2);
-      }
+      P(i,j,KMAX-1) = P(i,j,KMAX-2);
       VOF(i,j,KMAX-1) = VOF(i,j,KMAX-2);
       
     } 
   }
   
   vof_baffles(solver);
-  if(solver->p_flag != 0) return 0;      
         
   /* Free surface and sloped boundary conditions */
 
@@ -1133,7 +1102,7 @@ int vof_boundaries(struct solver_data *solver) {
 
 #define emf solver->emf
    /* # set velocities in empty cells adjacent to partial fluid cells */
-          if(solver->p_flag==0 && solver->iter==0) {
+          if(solver->iter==0) {
         
             if(VOF(i+1,j,k) < emf) {
               if(VOF(i+1,j+1,k) < emf && AN(i+1,j,k) > emf)

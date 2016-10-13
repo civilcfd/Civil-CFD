@@ -37,9 +37,6 @@ struct solver_data {
 
   double emf; 
   double emf_c;
-
-  double csq;
-  double rdtexp;
   
   double min_vof;
   double max_vof;
@@ -53,7 +50,6 @@ struct solver_data {
   long int iter;
   long int niter;
   int vof_flag; /* flag to indicate excessive VOF advection */
-  int p_flag;
   
   double con;
 
@@ -69,12 +65,11 @@ struct solver_data {
   
   double umax, vmax, wmax;
 
-  double epsi; /* pressure iteration convergence criteria */
-  double dzro; /* scaling factor for pressure convergence test */
-  double omg;  /* over-relaxation factor for pressure iteration */
-  double omg_init; /* starting omg factor */
-  double omg_final; /* omg factor at end of pressure iterations */
-  double alpha; /* donor cell fluxing (0 means central differencing */
+  double abstol; /* pressure iteration convergence criteria */
+  double reltol;
+
+  int conv_reason;
+  char conv_reason_str[256];
   
   double vof_height; /* initial fluid level */
   double vof_delay;  /* delay to reach this height */

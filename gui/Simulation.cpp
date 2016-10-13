@@ -128,7 +128,7 @@ int Simulation::load() {
   stlFilename = in.readLine();
   file.close();
 
-	vof_mpi_setup_solver(solver);
+	vof_mpi_setup_solver(solver); 
 
   read_mesh_xml(solver->mesh, "solver.xml");
   read_solver_xml(solver, "solver.xml");

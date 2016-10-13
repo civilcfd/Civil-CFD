@@ -17,7 +17,6 @@ int vof_mpi_loop(struct solver_data *solver);
 int vof_boundaries(struct solver_data *solver);
 int vof_special_boundaries(struct solver_data *solver);
 int vof_mpi_pressure(struct solver_data *solver);
-int vof_mpi_velocity(struct solver_data *solver);
 int vof_mpi_velocity_upwind(struct solver_data *solver);
 int vof_mpi_convect(struct solver_data *solver);
 int vof_mpi_hydrostatic(struct solver_data *solver);
@@ -33,6 +32,6 @@ int vof_mpi_pressure_init(struct solver_data *solver);
 int vof_mpi_vorticity(struct solver_data *solver);
 int vof_mpi_pressure_sor(struct solver_data *solver, long int i, long int j, long int k);
 int vof_mpi_pressure_mp(struct solver_data *solver);
-int vof_pressure_gmres(struct solver_data *solver);
 int vof_pressure_gmres_mpi(struct solver_data *solver);
+int vof_vorticity(struct solver_data *solver);
 #endif

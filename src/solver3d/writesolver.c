@@ -28,7 +28,6 @@ int write_solver_xml(struct solver_data *solver, char *filename) {
   xmlTextWriterPtr writer;
   xmlDocPtr doc;
   xmlNodePtr node;
-  char buf[256];
   
   if(filename == NULL || solver == NULL) {
     printf("error: passed null arguments to write_solver\n");
@@ -81,11 +80,7 @@ int write_solver_xml(struct solver_data *solver, char *filename) {
 
 
   xmlTextWriterStartElement(writer, BAD_CAST "Methods");
-
-	if(solver->pressure == vof_pressure_gmres) sprintf(buf,"gmres");
-	else if(solver->pressure == vof_pressure_gmres_mpi) sprintf(buf,"gmres_mpi");
-
-  rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "implicit", "%s", buf);
+ 
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "nu", "%e", solver->nu);
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "rho", "%e", solver->rho);
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "t", "%e", solver->t);
@@ -181,9 +176,6 @@ int write_solver(struct solver_data *solver, char *filename) {
     printf("error: cannot open %s in write_solver\n",filename);
     return(1);
   }
-
-	if(solver->pressure == vof_pressure_gmres) fprintf(fp,"gmres 1\n");
-	else if(solver->pressure == vof_pressure_gmres_mpi) fprintf(fp,"gmres_mpi 1\n");
 
   fprintf(fp,"gravity %e %e %e\n",solver->gx, solver->gy, solver->gz);
   fprintf(fp,"nu %e\n",solver->nu);

@@ -37,7 +37,6 @@ struct solver_data *solver_init_empty() {
   solver->emf   = 0.00001;
   solver->emf_c = 0.99999;
   
-  solver->csq   = 1000; /* testing this for stability */
 
   solver->min_vof = 0.0001;
   solver->max_vof = 0.9999;
@@ -57,9 +56,10 @@ struct solver_data *solver_init_empty() {
   solver->nu   = 1.004e-6;
   solver->rho  = 1000;
 
-  solver->epsi = 2.5e-3;
+  solver->abstol = 10;
+  solver->reltol = 1.0e-4;
+
   solver->con = 0.35;
-  solver->dzro = 1.0*solver->rho;
 
   solver->gx   = 0;
   solver->gy   = 0;
@@ -69,17 +69,11 @@ struct solver_data *solver_init_empty() {
   solver->vmax = 0;
   solver->wmax = 0;
 
-  solver->omg  = 1.7;
-  solver->omg_init = 1.7;
-  solver->omg_final = 1.7;
-  solver->alpha= 1.0;
-
   solver->t    = 0.0;
 
   solver->iter = 0;
   solver->niter= 150;
   solver->vof_flag = 0;
-  solver->p_flag = 0;
 
   solver->loop = NULL;
   solver->boundaries = NULL;
@@ -414,12 +408,6 @@ int solver_set_value(struct solver_data *solver, char *param, int dims,
     return(1);
   }
 
-	if(strcmp(param, "gmres")==0) {
-		solver->pressure = vof_pressure_gmres;
-	}
-	else if(strcmp(param, "gmres_mpi")==0) {
-		solver->pressure = vof_pressure_gmres_mpi;
-	}
   else if(strcmp(param, "gravity")==0) {
     if(dims != 3) {
       printf("error in source file: gravity requires 3 arguments\n");

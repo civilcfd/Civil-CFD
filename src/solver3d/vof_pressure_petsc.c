@@ -521,7 +521,7 @@ int vof_pressure_gmres_assemble(struct solver_data *solver, Mat A, Vec b) {
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
                  FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {  */
-             	rhs += min(solver->epsi * solver->rho, 
+             	rhs += min(solver->rho / 1000, 
                                     0.1 * (1.0 - VOF(i,j,k)) / solver->delt) / 10;
             /* } */
           }
@@ -677,7 +677,7 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
                  FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {  */
-             	rhs += min(solver->epsi * solver->rho, 
+             	rhs += min(solver->rho / 1000, 
                                     0.1 * (1.0 - VOF(i,j,k)) / solver->delt) / 10;
             /* } */
           }
@@ -700,7 +700,7 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
             if(!(FV(i+1,j,k) < emf || FV(i-1,j,k) < emf ||
                  FV(i,j+1,k) < emf || FV(i,j-1,k) < emf ||
                  FV(i,j,k+1) < emf || FV(i,j,k-1) < emf)) {  */
-             	rhs += min(solver->epsi * solver->rho, 
+             	rhs += min(solver->rho / 1000, 
                                     0.1 * (1.0 - VOF(i,j,k)) / solver->delt) / 10;
             /* } */
           }
@@ -720,111 +720,6 @@ int vof_pressure_gmres_update(struct solver_data *solver, Mat A, Vec b) {
   return 0;
 }
 
-int vof_pressure_gmres(struct solver_data *solver) {
-	PetscInt i,j,k,n,size;
-	PetscInt	iter;
-	PetscErrorCode ierr;
-	PetscScalar delp;
-	static Vec x, b;
-	static Mat A;
-  static KSP  ksp;         /* linear solver context */
-  static PC  pc;           /* preconditioner context */
-  static int initialize = 0;
-  
-	size = IMAX * JMAX * KMAX;
-	
-	if(!initialize) {
-		PetscInitialize(NULL, NULL, NULL, NULL);	
-    
-    ierr = MatCreateSeqAIJ(PETSC_COMM_WORLD,size,size,7,NULL,&A); 
-    ierr = VecCreate(PETSC_COMM_WORLD,&x);CHKERRQ(ierr);
-    ierr = PetscObjectSetName((PetscObject) x, "Solution");CHKERRQ(ierr);
-    ierr = VecSetSizes(x,PETSC_DECIDE,size);CHKERRQ(ierr);
-    ierr = VecSetFromOptions(x);CHKERRQ(ierr);
-    ierr = VecDuplicate(x,&b);CHKERRQ(ierr);
-    
-    ierr = KSPCreate(PETSC_COMM_WORLD,&ksp);CHKERRQ(ierr);
-    ierr = KSPGetPC(ksp,&pc);CHKERRQ(ierr);
-    ierr = PCSetType(pc,PCJACOBI);CHKERRQ(ierr);
-    ierr = KSPSetType(ksp,KSPGMRES); CHKERRQ(ierr);
-    
-    vof_pressure_gmres_assemble(solver, A, b);
-		initialize = 1;
-	}
-  else {
-    vof_pressure_gmres_update(solver, A, b);  
-  }
-  
-  vof_pressure_gmres_boundary(solver, A, b); 
-  
-  ierr = MatAssemblyBegin(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-  ierr = MatAssemblyEnd(A,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-
-  /* vof_pressure_gmres_write(A,solver->t); */
-  
-  ierr = VecAssemblyBegin(b);CHKERRQ(ierr);
-  ierr = VecAssemblyEnd(b);CHKERRQ(ierr);
-  
-  
-  /*
-     Solve linear system
-  */
-  ierr = KSPSetOperators(ksp,A,A);CHKERRQ(ierr);
-  ierr = KSPSetTolerances(ksp,1e-3,solver->epsi/(solver->rho * solver->delt),PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
-  //ierr = KSPSetTolerances(ksp,1e-3,PETSC_DEFAULT,PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
-	/* ierr = KSPMonitorSet(ksp, KSPMonitorDefault, NULL, NULL); Uncomment for verbose residuals */
-  ierr = KSPSolve(ksp,b,x);CHKERRQ(ierr);
-  ierr = KSPGetResidualNorm(ksp, &solver->resimax);CHKERRQ(ierr);
-  ierr = KSPGetIterationNumber(ksp, &iter);CHKERRQ(ierr);
-  solver->iter = iter;
-
-  /*
-     View solver info; we could instead use the option -ksp_view to
-     print this info to the screen at the conclusion of KSPSolve().
-  */
-  /* ierr = KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr); */
-  
-  for(i=1; i<IMAX-1; i++) {
-    for(j=1; j<JMAX-1; j++) {
-      for(k=1; k<KMAX-1; k++) {      
-      
-        
-        if(FV(i,j,k)<emf) continue;
-
-        if(VOF(i,j,k) < emf) continue;
-        
-        n = mesh_index(solver->mesh,i,j,k);
-        ierr = VecGetValues(x,1,&n,&delp); CHKERRQ(ierr);
-        
-        P(i,j,k) += delp;
-
-        if(AE(i,j,k) > emf && i < IMAX-1)
-          U(i,j,k)=U(i,j,k) + solver->delt* RDX * delp / (solver->rho /* AE(i,j,k) */);
-        if(AE(i-1,j,k) > emf && i > 0)
-          U(i-1,j,k)=U(i-1,j,k) - solver->delt* RDX * delp / (solver->rho /* AE(i-1,j,k) */);
-        if(AN(i,j,k) > emf && j < JMAX-1)
-          V(i,j,k)=V(i,j,k) + solver->delt * RDY * delp / (solver->rho /* AN(i,j,k) */);
-        if(AN(i,j-1,k) > emf && j > 0)
-          V(i,j-1,k)=V(i,j-1,k) - solver->delt * RDY * delp / (solver->rho /* AN(i,j-1,k) */);
-        if(AT(i,j,k) > emf && k < KMAX-1)
-          W(i,j,k)=W(i,j,k) + solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k) */);
-        if(AT(i,j,k-1) > emf && k > 0)
-          W(i,j,k-1)=W(i,j,k-1) - solver->delt * RDZ * delp / (solver->rho /* AT(i,j,k-1) */);        
-               
-        
-  		}
-  	}
-  }
-  
-  /* ierr = VecDestroy(&x);CHKERRQ(ierr); 
-  ierr = VecDestroy(&b);CHKERRQ(ierr); ierr = MatDestroy(&A);CHKERRQ(ierr);
-  ierr = KSPDestroy(&ksp);CHKERRQ(ierr);  */
-  
-  solver->p_flag = 0;
-  return 0;
-
-}
-
 int vof_pressure_gmres_mpi(struct solver_data *solver) {
 	PetscInt i,j,k,size;
 	PetscInt	iter;
@@ -836,6 +731,7 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   static PC  pc;           /* preconditioner context */
   KSP *subksp;
   PC subpc;
+  KSPConvergedReason reason;
   static int initialize = 0;
   int offset = 1;
   int range;
@@ -899,14 +795,15 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
     ierr = KSPSetUp(ksp); CHKERRQ(ierr);
     //ierr = KSPSetType(ksp,KSPGMRES); CHKERRQ(ierr);
 
-    ierr = KSPSetTolerances(ksp,.001,solver->epsi/(solver->rho * solver->delt),PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
+    ierr = KSPSetTolerances(ksp,solver->reltol,solver->abstol,PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
     //ierr = PCASMGetSubKSP(pc,&nlocal,&first,&subksp);CHKERRQ(ierr);
     ierr = PCBJacobiGetSubKSP(pc,&nlocal,&first,&subksp);CHKERRQ(ierr);
     for (i=0; i<nlocal; i++) {
       ierr = KSPGetPC(subksp[i],&subpc);CHKERRQ(ierr);
       ierr = PCSetType(subpc,PCSOR);CHKERRQ(ierr);
+      ierr = PCSORSetOmega(subpc, 1.0);
       ierr = KSPSetType(subksp[i],KSPPREONLY);CHKERRQ(ierr);
-      ierr = KSPSetTolerances(subksp[i],.001,solver->epsi/(solver->rho * solver->delt),PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
+      ierr = KSPSetTolerances(subksp[i],solver->reltol,solver->abstol,PETSC_DEFAULT,solver->niter);CHKERRQ(ierr);
     }
 
     printf("Built matrix with range: %d to %d on proc %d\n",Istart, Iend, solver->rank);
@@ -937,6 +834,10 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
   ierr = KSPGetIterationNumber(ksp, &iter);CHKERRQ(ierr);
   solver->iter = iter;
   
+  KSPGetConvergedReason(ksp,&reason);
+  solver->conv_reason = reason;
+  sprintf(solver->conv_reason_str, "%s", KSPConvergedReasons[reason]);
+
   if(!solver->rank) offset = 0;
   VecGetArray(x,&results);
   for(i=1; i<IRANGE-1; i++) {
@@ -1010,7 +911,6 @@ int vof_pressure_gmres_mpi(struct solver_data *solver) {
     }
   }
   
-  solver->p_flag = 0;
   return 0;
 
 }

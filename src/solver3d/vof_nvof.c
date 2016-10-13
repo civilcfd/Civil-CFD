@@ -207,7 +207,7 @@ int vof_mpi_nvof(struct solver_data *solver) {
               }
             }
 
-            if(score[x] > top_score && VOF(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf) {
+            if(score[x] > top_score && lvof[x] > emf) { 
               if(FV(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf || g[x] > emf) {
                 N_VOF(i,j,k) = x+1;
                 top_score = score[x];
@@ -221,7 +221,7 @@ int vof_mpi_nvof(struct solver_data *solver) {
               }
             }
 
-            if(score[x] > top_score && VOF(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf) {
+            if(score[x] > top_score && lvof[x] > emf) { 
               if(FV(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf || g[x] > emf) {
                 N_VOF(i,j,k) = x+1;
                 top_score = score[x];
@@ -234,7 +234,7 @@ int vof_mpi_nvof(struct solver_data *solver) {
                 score[x] += VOF(l+i,m+j,n+k)  * mult[l+1][m+1];
               }
             }
-            if(score[x] > top_score && VOF(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf) {
+            if(score[x] > top_score && lvof[x] > emf) { 
               if(FV(i+norm[x][0], j+norm[x][1], k+norm[x][2]) > emf || g[x] > emf) {
                 N_VOF(i,j,k) = x+1;
                 top_score = score[x];

@@ -122,16 +122,14 @@ int vof_mpi_loop(struct solver_data *solver) {
     solver_sendrecv_edge(solver, solver->mesh->v);
     solver_sendrecv_edge(solver, solver->mesh->w);
 
-    while(solver->iter < solver->niter) {
-    
-      if(solver->pressure(solver) == 0) break;
 
-      solver->boundaries(solver);
-      if(solver->special_boundaries != NULL)
-        solver->special_boundaries(solver);
-    
-      solver->iter++;
-    }
+    solver->pressure(solver);
+    if(solver->iter < 1) solver->iter = 1;
+
+    solver->boundaries(solver);
+    if(solver->special_boundaries != NULL)
+      solver->special_boundaries(solver);
+  
     
     t_n = solver->t;
     solver->t += solver->delt;
@@ -188,9 +186,7 @@ int vof_mpi_output(struct solver_data *solver) {
   else {
     printf("timestep: %lf | delt %lf | convergence in %ld iterations.\n", solver->t, solver->delt, solver->iter);
   }
-  printf("Max residual %lf | epsi %lf", solver->resimax, solver->epsi);
-  /* if(solver->pressure == vof_mpi_pressure)
-    printf(" | omega %lf", solver->omg_final); */
+  printf("Max residual %lf | Convergence reason: %s", solver->resimax, solver->conv_reason_str);
   printf("\n");
   
   if(solver->vchgt > solver->emf) {
@@ -340,12 +336,13 @@ int vof_mpi_deltcal(struct solver_data *solver) {
 
         if(AT(i,j,k) > solver->emf && !isnan(dt_U))
           delt_conv = min(delt_conv, dt_U);					
-          
+ #ifdef DEBUG         
         if(delt_conv < 0.0001) {
 
           printf("");
 
         }
+  #endif
       }
     }
   }
@@ -374,11 +371,8 @@ int vof_mpi_deltcal(struct solver_data *solver) {
   /* solver->epsi = 0.0001 / solver->delt; */
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
-  solver->epsi = 1 * solver->rho * mindx / (solver->delt * solver->dzro);
-                /* (solver->dzro * 0.01 * max(pow(solver->delt * 100, 1.2),0.001)); */
   
   delt_conv = delt_conv * 0.5 / solver->con;
-  solver->omg = solver->omg_init * delt / delt_conv + (1 - delt / delt_conv);
   
   return ret;
 }
