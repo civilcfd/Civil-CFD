@@ -366,9 +366,6 @@ int vof_mpi_deltcal(struct solver_data *solver) {
     }
   }
   
-  /* adjust epsi */
-  /* solver->epsi = solver->epsi * solver->delt / solver->delt_n; */
-  /* solver->epsi = 0.0001 / solver->delt; */
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
   
