@@ -310,11 +310,35 @@ int solver_sendrecv_edge_int(struct solver_data *solver, int *data) {
 
 int solver_mpi_gather_int(struct solver_data *solver, int *data) {
   long int range;
+  int i;
+
+  static int initialized = 0;
+  static int *cnts, *displs;
+  int disp = 0;
+
   range = (IMAX + (solver->size - 1)) / solver->size;
-  range *= JMAX; 
+  range *= JMAX;
   range *= KMAX;
 
-  MPI_Gather(data, range, MPI_INT, data, range, MPI_INT, 0, MPI_COMM_WORLD);
+  if (!initialized) {
+    cnts = malloc(solver->size * sizeof(int));
+    displs = malloc(solver->size * sizeof(int));
+    for (i = 0; i < solver->size; i++)
+    {
+      cnts[i] = (i != 0) ? range : 0;
+      displs[i] = disp;
+      disp += range;
+    }
+  }
+
+  if (!solver->rank)
+    MPI_Gatherv(MPI_IN_PLACE, cnts[solver->rank], MPI_INT,
+    data, cnts, displs, MPI_INT,
+    0, MPI_COMM_WORLD);
+  else
+    MPI_Gatherv(data, cnts[solver->rank], MPI_INT,
+    data, cnts, displs, MPI_INT,
+    0, MPI_COMM_WORLD);
 
   return 0;
 }
@@ -322,7 +346,6 @@ int solver_mpi_gather_int(struct solver_data *solver, int *data) {
 int solver_mpi_gather(struct solver_data *solver, double *data) {
   long int range;
   int i;
-  int errcode;
 
   static int initialized = 0;
   static int *cnts, *displs;
@@ -331,9 +354,7 @@ int solver_mpi_gather(struct solver_data *solver, double *data) {
   range = (IMAX + (solver->size - 1)) / solver->size;
   range *= JMAX; 
   range *= KMAX;
-
-  MPI_Comm_set_errhandler(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
-
+  
   if (!initialized) {
 	  cnts = malloc(solver->size * sizeof(int));
 	  displs = malloc(solver->size * sizeof(int));
@@ -346,22 +367,14 @@ int solver_mpi_gather(struct solver_data *solver, double *data) {
   }
   
   if (!solver->rank)
-	  errcode = MPI_Gatherv(MPI_IN_PLACE, cnts[solver->rank], MPI_DOUBLE,
+	  MPI_Gatherv(MPI_IN_PLACE, cnts[solver->rank], MPI_DOUBLE,
 	  data, cnts, displs, MPI_DOUBLE,
 	  0, MPI_COMM_WORLD);
   else
-    errcode = MPI_Gatherv(data, cnts[solver->rank], MPI_DOUBLE,
+    MPI_Gatherv(data, cnts[solver->rank], MPI_DOUBLE,
 	  data, cnts, displs, MPI_DOUBLE,
 	  0, MPI_COMM_WORLD);
   
-  if (errcode != MPI_SUCCESS) {
-	  char error_string[BUFSIZ];
-	  int length_of_error_string;
-
-	  MPI_Error_string(errcode, error_string, &length_of_error_string);
-	  printf( "%3d: %s\n", solver->rank, error_string);
-  }
-
   return 0;
 }
 
