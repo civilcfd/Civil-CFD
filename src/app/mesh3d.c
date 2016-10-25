@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   mesh = mesh_init_empty();
 
 
-  if(read_mesh(mesh, argv[1])==1) return 1;
+  if(read_mesh_xml(mesh, argv[1])==1) return 1;
 
   if(mesh_init_complete(mesh) == 1) {
     printf("error: failed to initialize mesh in main()\n");

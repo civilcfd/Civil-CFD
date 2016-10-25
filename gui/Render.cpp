@@ -42,7 +42,7 @@ RenderDialog::RenderDialog(Simulation &sim, QString appPath) {
     ui.Return->setEnabled(true);
   }
   else {
-    cmd = cmd + " meshfile " + sim.getStlFilename(); 
+    cmd = cmd + " solver.xml " + sim.getStlFilename(); 
 
     process->start(cmd);
   }

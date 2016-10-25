@@ -91,11 +91,6 @@ int Simulation::save() {
   out << stlFile.filePath() << "\n";
   file.close();
 
-  if(write_solver(solver, "solverfile")) {
-    qDebug() << "could not write solverfile";
-    ready=0;
-    return false;
-  }
   // TESTING
   write_solver_xml(solver, "solver.xml");
 
