@@ -66,18 +66,21 @@ void BoundaryDisplay::drawRectangle(double a_1, double a_2, double a_3,
  
   switch(normal) {
   case 2: // z-normal
+    a_3 -= dz/2;
     set_vector(p0, a_1, a_2, a_3);
     set_vector(p1, b_1, a_2, a_3);
     set_vector(p2, b_1, b_2, a_3);
     set_vector(p3, a_1, b_2, a_3);
     break;
   case 1: // y-normal
+    a_2 -= dy/2;
     set_vector(p0, a_1, a_2, a_3);
     set_vector(p1, b_1, a_2, a_3);
     set_vector(p2, b_1, a_2, b_3);
     set_vector(p3, a_1, a_2, b_3);
     break;
   case 0: // x-normal
+    a_1 -= dx/2;
     set_vector(p0, a_1, a_2, a_3);
     set_vector(p1, a_1, b_2, a_3);
     set_vector(p2, a_1, b_2, b_3);

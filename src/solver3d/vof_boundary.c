@@ -167,7 +167,7 @@ int boundary_hgl(struct solver_data *solver,
     for(j=jmin; j <= jmax; j++) {
       for(k = kmax-1; k > kmin-1; k--) {
         
-        if(FV(i,j,k) < 0.000001) continue;
+        //if(FV(i,j,k) < 0.000001) continue;
       
         /* must set velocity to a Neumann boundary */
         
@@ -210,7 +210,7 @@ int boundary_hgl(struct solver_data *solver,
             VOF(i,j,k) = 0.0;
         }
         /* VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = (VOF(i,j,k) + VOF(i+2*coplanar[0],j+2*coplanar[1],k+2*coplanar[2]))/2; */
-        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = VOF(i,j,k); 
+        
              
         /* ADDED 01/10/2014 */
         if(mesh->vof[mesh_index(mesh,i,j,k)] == 1.0) {
@@ -227,7 +227,9 @@ int boundary_hgl(struct solver_data *solver,
         else if(mesh->vof[mesh_index(mesh,i,j,k)] <= 0.0) 
           mesh->P[mesh_index(mesh,i,j,k)] = 0.0;
           
+        if(FV(i,j,k) < 0.000001) continue;
         P(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = P(i,j,k); 
+        VOF(i+coplanar[0],j+coplanar[1],k+coplanar[2]) = VOF(i,j,k); 
 
 
      }

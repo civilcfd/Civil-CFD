@@ -60,35 +60,35 @@ int main(int argc, char *argv[])
 
   if(!stl_check(stl)) return 1;
   
-  printf("Marking cells with no intersections\n");
+  printf("\nMarking cells with no intersections\n");
   
   if(markcells_initialize(mesh,stl)==1) return 1;
   /* exit(0); */
 
-  printf("Calculating area fractions\n");
+  printf("\nCalculating area fractions\n");
 
   if(intersect_area_fractions(mesh, stl)==1) return 1; 
 
-  printf("Calculating volume fractions\n");
+  printf("\nCalculating volume fractions\n");
 
   if(volume_fractions(mesh, stl)==1) return 1;
 
-  printf("Filling mesh cells around obstacles\n");
+  printf("\nFilling mesh cells around obstacles\n");
 
   mesh_fill(mesh, stl);  
 
-  printf("Eliminating very small mesh cells\n");
+  printf("\nEliminating very small mesh cells\n");
 
   mesh_normalize(mesh);
 	/* */
-	printf("Checking area / velocity ratios\n");
+	printf("\nChecking area / velocity ratios\n");
 	
-	mesh_avratio(mesh, 3.0); /* */
-	mesh_avratio(mesh, 3.0); /* */
-	mesh_avratio(mesh, 3.0); /* */
+	mesh_avratio(mesh, 4.0); /* */
+	mesh_avratio(mesh, 4.0); /* */
+	mesh_avratio(mesh, 4.0); /* */
   mesh_normalize(mesh);
 
-  printf("Writing mesh to file\n");
+  printf("\nWriting mesh to file\n");
 
   if(vtk_write_fv(mesh, 0) == 1) return 1;
   if(csv_write_fv(mesh, 0) == 1) return 1;
