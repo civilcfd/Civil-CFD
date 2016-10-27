@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <petscksp.h>
 
 #include "solver_data.h"
 #include "solver.h"
@@ -48,6 +49,8 @@ int main(int argc, char *argv[])
     printf("%s %s %s %s %s\n", argv[0], argv[1], argv[2], argv[3], argv[4]);
   #endif
 
+	PetscInitialize(NULL, NULL, NULL, NULL);
+
   /* duplicate stdout and supress stdout */
   stdoutBackupFd = CROSS_DUP(STDOUT_FILENO);
   fflush(stdout);
@@ -64,7 +67,10 @@ int main(int argc, char *argv[])
   k = atol(argv[4]);
 
   solver = solver_init_empty();
-  if(solver == NULL) return 1;
+  if(solver == NULL) {
+    PetscEnd();
+    return 1;
+  }
 
   vof_mpi_setup_solver(solver);
   
@@ -79,6 +85,7 @@ int main(int argc, char *argv[])
 #endif
     printf("Error reading solver and mesh data.\n");
   
+    PetscEnd();
     return 1;
   }
 
@@ -93,6 +100,7 @@ int main(int argc, char *argv[])
 #endif
     printf("Error reading solver and mesh data.\n");
   
+    PetscEnd();
     return 1;
   }
 
@@ -112,16 +120,14 @@ int main(int argc, char *argv[])
 #endif
     printf("Error reading solver and mesh data.\n");
   
+    PetscEnd();
     return 1;
   }
   solver_initial_values(solver);
-  solver->nvof(solver);
 
-  csv_read_U(solver->mesh,timestep);
-  csv_read_P(solver->mesh,timestep);
-  csv_read_vof(solver->mesh,timestep);
-  csv_read_n_vof(solver->mesh,timestep);
   solver->t = timestep;
+  csv_read_U_p_vof(solver->mesh, timestep);
+  solver->nvof(solver);
 
   /* Restore stdout */
   fflush(stdout);
@@ -136,6 +142,7 @@ int main(int argc, char *argv[])
   if(i > solver->mesh->imax-1 || j > solver->mesh->jmax-1 || k > solver->mesh->kmax-1 ||
      i < 0 || j < 0 || k < 0) {
     printf("Cannot read cell - out of range\n");
+    PetscEnd();
     return 0;
   }
   
@@ -151,5 +158,6 @@ int main(int argc, char *argv[])
   printf("U(e/n/t) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i,j,k),V(i,j,k),W(i,j,k));
   printf("U(w/s/b) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i-1,j,k),V(i,j-1,k),W(i,j,k-1));  
 
+ PetscEnd();
   return(0);
 }
