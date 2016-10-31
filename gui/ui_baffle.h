@@ -155,7 +155,6 @@ public:
          << QApplication::translate("BaffleDialog", "barrier", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("BaffleDialog", "headloss", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("BaffleDialog", "swirl angle", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("BaffleDialog", "velocity deviation", 0, QApplication::UnicodeUTF8)
         );
         kfactor->setText(QApplication::translate("BaffleDialog", "K-factor", 0, QApplication::UnicodeUTF8));
         value->setPlainText(QApplication::translate("BaffleDialog", "0", 0, QApplication::UnicodeUTF8));

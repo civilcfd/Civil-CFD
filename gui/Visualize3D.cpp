@@ -198,7 +198,7 @@ void MainWindow::visualize3dRender() {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
       msgBox.setText(vtkFile);
-      msgBox.exec();
+      //msgBox.exec();
     }
     else {
       vtkFile_d = true;

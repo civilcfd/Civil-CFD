@@ -240,7 +240,7 @@ void MainWindow::visualizeRender() {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
       msgBox.setText(vtkFile);
-      msgBox.exec();
+      //msgBox.exec();
     }
     else {
       vtkFile_d = true;
@@ -252,7 +252,7 @@ void MainWindow::visualizeRender() {
       QMessageBox msgBox;
       vtkFile.prepend("Failed to open VTK file: ");
       msgBox.setText(vectFile);
-      msgBox.exec();
+      //msgBox.exec();
     }
     else {
       vectFile_d = true;

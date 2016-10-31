@@ -1704,8 +1704,8 @@
                <string>Add Special Boundary</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/list-add.svg</normaloff>:/icons/resources/list-add.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1885,8 +1885,8 @@
                <string>Add Baffle</string>
               </property>
               <property name="icon">
-               <iconset>
-                <normaloff>:/icons/resources/List-add.svg</normaloff>:/icons/resources/List-add.svg</iconset>
+               <iconset resource="gui.qrc">
+                <normaloff>:/icons/resources/list-add.svg</normaloff>:/icons/resources/list-add.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -2872,6 +2872,31 @@
               <string>4</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>6</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>8</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>16</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>32</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>64</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -3308,7 +3333,7 @@
           <item row="8" column="2" alignment="Qt::AlignHCenter">
            <widget class="QCheckBox" name="blockObstacles">
             <property name="text">
-             <string>Block Obstacles</string>
+             <string>Show Obstacles</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -3442,7 +3467,7 @@
           <item row="8" column="2" alignment="Qt::AlignHCenter">
            <widget class="QCheckBox" name="blockObstacles3d">
             <property name="text">
-             <string>Block Obstacles</string>
+             <string>Show Obstacles</string>
             </property>
             <property name="checked">
              <bool>true</bool>

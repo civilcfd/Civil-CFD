@@ -1017,7 +1017,7 @@ public:
         AddSpecialBoundary->setObjectName(QString::fromUtf8("AddSpecialBoundary"));
         AddSpecialBoundary->setMaximumSize(QSize(190, 16777215));
         QIcon icon16;
-        icon16.addFile(QString::fromUtf8(":/icons/resources/List-add.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        icon16.addFile(QString::fromUtf8(":/icons/resources/list-add.svg"), QSize(), QIcon::Normal, QIcon::Off);
         AddSpecialBoundary->setIcon(icon16);
         AddSpecialBoundary->setIconSize(QSize(22, 22));
 
@@ -2191,6 +2191,11 @@ public:
          << QApplication::translate("MainWindow", "2", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "3", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("MainWindow", "4", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("MainWindow", "6", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("MainWindow", "8", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("MainWindow", "16", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("MainWindow", "32", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("MainWindow", "64", 0, QApplication::UnicodeUTF8)
         );
         tabWidget->setTabText(tabWidget->indexOf(Simulate), QApplication::translate("MainWindow", "Simulate", 0, QApplication::UnicodeUTF8));
         updateRange->setText(QApplication::translate("MainWindow", "Rescale Range from:", 0, QApplication::UnicodeUTF8));
@@ -2213,7 +2218,7 @@ public:
         saveJPEG->setText(QApplication::translate("MainWindow", "Save Image", 0, QApplication::UnicodeUTF8));
         showMesh->setText(QApplication::translate("MainWindow", "Show Mesh", 0, QApplication::UnicodeUTF8));
         showVectors->setText(QApplication::translate("MainWindow", "Show Velocity Vectors", 0, QApplication::UnicodeUTF8));
-        blockObstacles->setText(QApplication::translate("MainWindow", "Block Obstacles", 0, QApplication::UnicodeUTF8));
+        blockObstacles->setText(QApplication::translate("MainWindow", "Show Obstacles", 0, QApplication::UnicodeUTF8));
         label_46->setText(QApplication::translate("MainWindow", "Results", 0, QApplication::UnicodeUTF8));
         label_40->setText(QApplication::translate("MainWindow", "Timestep", 0, QApplication::UnicodeUTF8));
         showAxis->setText(QApplication::translate("MainWindow", "Show Axis", 0, QApplication::UnicodeUTF8));
@@ -2223,7 +2228,7 @@ public:
         extent3dText->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
         origin3dText->setText(QApplication::translate("MainWindow", "0", 0, QApplication::UnicodeUTF8));
         label_54->setText(QApplication::translate("MainWindow", "Origin", 0, QApplication::UnicodeUTF8));
-        blockObstacles3d->setText(QApplication::translate("MainWindow", "Block Obstacles", 0, QApplication::UnicodeUTF8));
+        blockObstacles3d->setText(QApplication::translate("MainWindow", "Show Obstacles", 0, QApplication::UnicodeUTF8));
         showMesh3d->setText(QApplication::translate("MainWindow", "Show Mesh", 0, QApplication::UnicodeUTF8));
         saveJPEG3d->setText(QApplication::translate("MainWindow", "Save Image", 0, QApplication::UnicodeUTF8));
         yNormal3d->setText(QApplication::translate("MainWindow", "Y-Normal", 0, QApplication::UnicodeUTF8));

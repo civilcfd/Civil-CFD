@@ -158,7 +158,6 @@ public:
          << QApplication::translate("SBoundaryDialog", "fixed velocity", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SBoundaryDialog", "mass outflow", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SBoundaryDialog", "hydraulic grade", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("SBoundaryDialog", "virtual weir", 0, QApplication::UnicodeUTF8)
         );
         labelValue->setText(QApplication::translate("SBoundaryDialog", "Set Value", 0, QApplication::UnicodeUTF8));
         value->setPlainText(QApplication::translate("SBoundaryDialog", "0", 0, QApplication::UnicodeUTF8));

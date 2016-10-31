@@ -84,11 +84,6 @@
      <string>hydraulic grade</string>
     </property>
    </item>
-   <item>
-    <property name="text">
-     <string>virtual weir</string>
-    </property>
-   </item>
   </widget>
   <widget class="QLabel" name="labelValue">
    <property name="geometry">
