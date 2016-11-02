@@ -7,5 +7,5 @@ Includes:
 * Parallel solver using PetSc and MPI
 * Graphical interface for rapid case development
 
-Licensed under the GNU Lesser General Public License Version 3.0 
+Licensed under the GNU General Public License Version 3.0 
 
