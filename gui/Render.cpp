@@ -84,23 +84,23 @@ void RenderDialog::readyReadStandardOutput() {
     ui.progressBar->setValue(5);
     ui.status->setText("Marking cells with no intersections");
   }
-  else if(str.contains("area fractions")) {
+  if(str.contains("area fraction")) {
     ui.progressBar->setValue(30);
     ui.status->setText("Calculating area fractions");
   }
-  else if(str.contains("volume fractions")) {
+  if(str.contains("volume fractions")) {
     ui.progressBar->setValue(60);
     ui.status->setText("Calculating volume fractions");
   }
-  else if(str.contains("around obstacles")) {
+  if(str.contains("around obstacles")) {
     ui.progressBar->setValue(85);
     ui.status->setText("Filling mesh cells around obstacles");
   }
-  else if(str.contains("small mesh cells")) {
+  if(str.contains("small mesh cells")) {
     ui.progressBar->setValue(90);
     ui.status->setText("Eliminating very small mesh cells");
   }
-  else if(str.contains("mesh to file")) {
+  if(str.contains("mesh to file")) {
     ui.progressBar->setValue(95);
     ui.status->setText("Writing mesh to file");
   }

@@ -131,6 +131,8 @@ void VisualizeDisplay::showLegend() {
 
 void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
 	
+  if(!QFile::exists(vtkFile)) return;
+
 	reader = NULL;
  	reader = vtkSmartPointer<vtkStructuredPointsReader>::New();
   reader->SetFileName(vtkFile.toStdString().c_str());
@@ -200,6 +202,8 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
 }
 void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bool normalize) {
 	
+  if(!QFile::exists(vtkFile)) return;
+
 	reader = NULL;
  	reader = vtkSmartPointer<vtkStructuredPointsReader>::New();
   reader->SetFileName(vtkFile.toStdString().c_str());
@@ -286,6 +290,8 @@ void VisualizeDisplay::getRange(double &a) {
 }
 void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
 
+  if(!QFile::exists(vtkFile)) return;
+  
 	vectReader = NULL;
  	vectReader = vtkSmartPointer<vtkStructuredPointsReader>::New();
   vectReader->SetFileName(vtkFile.toStdString().c_str());

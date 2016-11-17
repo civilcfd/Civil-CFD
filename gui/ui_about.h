@@ -32,6 +32,17 @@ public:
         if (AboutDialog->objectName().isEmpty())
             AboutDialog->setObjectName(QString::fromUtf8("AboutDialog"));
         AboutDialog->resize(740, 673);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(AboutDialog->sizePolicy().hasHeightForWidth());
+        AboutDialog->setSizePolicy(sizePolicy);
+        AboutDialog->setMinimumSize(QSize(740, 673));
+        AboutDialog->setMaximumSize(QSize(740, 673));
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/icons/icon.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        AboutDialog->setWindowIcon(icon);
+        AboutDialog->setSizeGripEnabled(false);
         AboutDialog->setModal(true);
         label = new QLabel(AboutDialog);
         label->setObjectName(QString::fromUtf8("label"));

@@ -80,7 +80,7 @@ public:
         value->setLineWrapMode(QPlainTextEdit::NoWrap);
         label_4 = new QLabel(BaffleDialog);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(20, 20, 201, 16));
+        label_4->setGeometry(QRect(20, 20, 321, 16));
         A1 = new QLabel(BaffleDialog);
         A1->setObjectName(QString::fromUtf8("A1"));
         A1->setGeometry(QRect(30, 60, 51, 16));
@@ -121,7 +121,7 @@ public:
         A2->setGeometry(QRect(30, 110, 51, 16));
         label_pos = new QLabel(BaffleDialog);
         label_pos->setObjectName(QString::fromUtf8("label_pos"));
-        label_pos->setGeometry(QRect(70, 170, 121, 16));
+        label_pos->setGeometry(QRect(50, 170, 131, 16));
         pos = new QPlainTextEdit(BaffleDialog);
         pos->setObjectName(QString::fromUtf8("pos"));
         pos->setGeometry(QRect(200, 160, 81, 31));

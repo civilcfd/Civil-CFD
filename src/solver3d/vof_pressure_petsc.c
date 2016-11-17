@@ -188,13 +188,11 @@ int vof_pressure_gmres_boundary(struct solver_data *solver, Mat A, Vec b) {
             /* explicit zero out since this could change */
             ierr   = MatSetValue(A,nidx,nidx,1,INSERT_VALUES);CHKERRQ(ierr);
             ierr   = MatSetValue(A,nidx,nlmn,0,INSERT_VALUES);CHKERRQ(ierr);
-            //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-            vec[mesh_index(solver->mesh,IRANGE-1,j,k)] = 0;
+            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           } else {        	
             ierr   = MatSetValue(A,nidx,nidx,1/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
             ierr   = MatSetValue(A,nidx,nlmn,-1.0/(solver->rho * solver->delt),INSERT_VALUES);CHKERRQ(ierr);
-            //ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
-            vec[mesh_index(solver->mesh,IRANGE-1,j,k)] = 0;
+            ierr   = VecSetValue(b,nidx,0,INSERT_VALUES);CHKERRQ(ierr);
           }
         } else {
             nidx = mesh_index(solver->mesh,IMAX-1,j,k);

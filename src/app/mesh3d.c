@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   char filename[1024];
   int i;
 
-  printf("mesh3d: fractional area volume mesh generator\n");
+  printf("mesh3d: fractional area volume mesh generator\n");fflush(stdout);
 
   if (argc<3) {
     printf("usage: mesh3d <source file> <stl file>\n");
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
   }
 
 
-  printf("Mesh successfully initialized\n");
+  printf("Mesh successfully initialized\n");fflush(stdout);
 
   stl = stl_init_empty(); 
 
@@ -54,41 +54,41 @@ int main(int argc, char *argv[])
 		strncat(filename, argv[i], strlen(argv[i]));
 		if(i+1<argc) strncat(filename, " ", 1);
 	}
-	printf("Reading geometry from stl file: %s\n",filename); 
+	printf("Reading geometry from stl file: %s\n",filename);fflush(stdout); 
 	
   if(read_stl(stl, filename, limits)==1) return 1;  
 
   if(!stl_check(stl)) return 1;
   
-  printf("\nMarking cells with no intersections\n");
+  printf("\nMarking cells with no intersections\n");fflush(stdout);
   
   if(markcells_initialize(mesh,stl)==1) return 1;
   /* exit(0); */
 
-  printf("\nCalculating area fractions\n");
+  printf("\nCalculating area fractions\n");fflush(stdout);
 
   if(intersect_area_fractions(mesh, stl)==1) return 1; 
 
-  printf("\nCalculating volume fractions\n");
+  printf("\nCalculating volume fractions\n");fflush(stdout);
 
   if(volume_fractions(mesh, stl)==1) return 1;
 
-  printf("\nFilling mesh cells around obstacles\n");
+  printf("\nFilling mesh cells around obstacles\n");fflush(stdout);
 
   mesh_fill(mesh, stl);  
 
-  printf("\nEliminating very small mesh cells\n");
+  printf("\nEliminating very small mesh cells\n");fflush(stdout);
 
   mesh_normalize(mesh);
 	/* */
-	printf("\nChecking area / velocity ratios\n");
+	printf("\nChecking area / velocity ratios\n");fflush(stdout);
 	
 	mesh_avratio(mesh, 4.0); /* */
 	mesh_avratio(mesh, 4.0); /* */
 	mesh_avratio(mesh, 4.0); /* */
   mesh_normalize(mesh);
 
-  printf("\nWriting mesh to file\n");
+  printf("\nWriting mesh to file\n");fflush(stdout);
 
   if(vtk_write_fv(mesh, 0) == 1) return 1;
   if(csv_write_fv(mesh, 0) == 1) return 1;
