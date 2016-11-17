@@ -4,9 +4,10 @@
  * for intersections with the stl file
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <omp.h>
-
+ 
 
 #include "intersections.h"
 #include "stl.h"
@@ -42,7 +43,7 @@ int markcells_initialize(struct mesh_data *mesh,
 	marked_cells = malloc(sizeof(int) * size);
 	
 	if(marked_cells == NULL) {
-    printf("error: memory could not be allocated for P in mesh_init_complete\n");
+    printf("error: memory could not be allocated for marked_cells in markcells_intialize\n");
     return (1);	
 	}
 	

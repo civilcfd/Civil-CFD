@@ -116,8 +116,6 @@ void RenderDialog::error(QProcess::ProcessError error) {
     ui.status->setText("Error: mesh3d has crashed");
   }
 
-  stopped = false;
-
   ui.Return->setEnabled(true);
 }
 
@@ -137,7 +135,6 @@ void RenderDialog::finished(int exitCode, QProcess::ExitStatus status) {
   }
 
   ui.Return->setEnabled(true);
-  stopped = false;
 }
 
 void RenderDialog::stateChanged(QProcess::ProcessState state) {
