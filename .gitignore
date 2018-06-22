@@ -260,3 +260,7 @@ pip-log.txt
 *.o
 
 *.o
+lib/libmesh3d.a
+lib/libsolver3d.a
+bin/solver3d
+bin/mesh3d
