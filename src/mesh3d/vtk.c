@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "vtk.h"
+#include "vtk_xml.h"
 #include "kE.h"
 
 #define CELL_INDEX(i,j,k) ((k) + nk * ((j) + (i) * nj))
@@ -17,21 +18,15 @@ int vtk_write_fv(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
 
-  sprintf(filename, "vtk/fv_%d.vtk", timestep);
+  sprintf(filename, "vtk/fv_%d.vti", timestep);
 
-  // not compressing fv because it's opened so often in the gui
-  /* if(mesh->compress) return vtk_compressed_write_scalar_grid(filename, "fv", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, mesh->fv);
-  else */ 
-  return vtk_write_scalar_grid(filename, "fv", 
+  return vtk_xml_write_scalar_grid(filename, "fv", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, mesh->fv);
 
 }
-
+/*
 int vtk_write_n_vof(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
@@ -47,20 +42,15 @@ int vtk_write_n_vof(struct mesh_data *mesh, int timestep)
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, mesh->n_vof);
 
-}
+}*/
 
 int vtk_write_U(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
   
-  sprintf(filename, "vtk/U_%d.vtk", timestep);
+  sprintf(filename, "vtk/U_%d.vti", timestep);
 
-  if(mesh->compress) return vtk_compressed_write_vector_grid(filename, "U", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, 
-                        mesh->u, mesh->v, mesh->w);
-  else return vtk_write_vector_grid(filename, "U", 
+  return vtk_xml_write_vector_grid(filename, "U", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, 
@@ -72,13 +62,9 @@ int vtk_write_P(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
 
-  sprintf(filename, "vtk/P_%d.vtk", timestep);
+  sprintf(filename, "vtk/P_%d.vti", timestep);
 
-  if(mesh->compress) return vtk_compressed_write_scalar_grid(filename, "P", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, mesh->P);
-  else return vtk_write_scalar_grid(filename, "P", 
+  return vtk_xml_write_scalar_grid(filename, "P", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, mesh->P);
@@ -89,26 +75,9 @@ int vtk_write_vorticity(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
   
-  /* only writes z-vorticity because why would you want to visualize any other vorticity */
-  /* the csv has all vorticities written */
+ sprintf(filename, "vtk/vorticity_%d.vti", timestep);
  
- /*
-  sprintf(filename, "vtk/z_vorticity_%d.vtk", timestep);
-
-  return vtk_write_scalar_magnitude_grid(filename, "z_vorticity", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, mesh->w_omega); */
-
- /* changed my mind */
- sprintf(filename, "vtk/vorticity_%d.vtk", timestep);
- 
- if(mesh->compress)  return vtk_compressed_write_vector_grid(filename, "vorticity", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, 
-                        mesh->u_omega, mesh->v_omega, mesh->w_omega);
- else return vtk_write_vector_grid(filename, "vorticity", 
+ return vtk_xml_write_vector_grid(filename, "vorticity", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, 
@@ -120,13 +89,9 @@ int vtk_write_vof(struct mesh_data *mesh, int timestep)
 {
   char filename[256];
 
-  sprintf(filename, "vtk/vof_%d.vtk", timestep);
+  sprintf(filename, "vtk/vof_%d.vti", timestep);
 
-  if(mesh->compress) return vtk_compressed_write_scalar_grid(filename, "vof", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, mesh->vof);
-  else return vtk_write_scalar_grid(filename, "vof", 
+  return vtk_xml_write_scalar_grid(filename, "vof", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, mesh->vof);
@@ -140,13 +105,9 @@ int vtk_write_k(struct mesh_data *mesh, int timestep)
   
   turb = mesh->turbulence_model;
 
-  sprintf(filename, "vtk/k_%d.vtk", timestep);
+  sprintf(filename, "vtk/k_%d.vti", timestep);
 
-  if(mesh->compress) return vtk_compressed_write_scalar_grid(filename, "k", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, turb->k); 
-  else return vtk_write_scalar_grid(filename, "k", 
+  return vtk_xml_write_scalar_grid(filename, "k", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, turb->k);
@@ -160,13 +121,9 @@ int vtk_write_E(struct mesh_data *mesh, int timestep)
   
   turb = mesh->turbulence_model;
 
-  sprintf(filename, "vtk/E_%d.vtk", timestep);
+  sprintf(filename, "vtk/E_%d.vti", timestep);
 
-  if(mesh->compress)  return vtk_compressed_write_scalar_grid(filename, "E", 
-                        mesh->imax, mesh->jmax, mesh->kmax,
-                        mesh->origin[0], mesh->origin[1], mesh->origin[2],
-                        mesh->delx, mesh->dely, mesh->delz, turb->E);
-  else return vtk_write_scalar_grid(filename, "E", 
+  return vtk_xml_write_scalar_grid(filename, "E", 
                         mesh->imax, mesh->jmax, mesh->kmax,
                         mesh->origin[0], mesh->origin[1], mesh->origin[2],
                         mesh->delx, mesh->dely, mesh->delz, turb->E);

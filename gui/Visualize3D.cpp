@@ -184,26 +184,13 @@ void MainWindow::visualize3dRender() {
     QListWidgetItem *item = ui.timesteps3d->currentItem();
 
     QString vtkFile;
-    vtkFile = QString("vtk/vof_" + sim.getTrackN(item->text()) + ".vtk");
+    vtkFile = QString("vtk/vof_" + sim.getTrackN(item->text()) + ".vti");
     
   
-    QString volFile;
-    bool vtkFile_d = false;    
+    QString volFile; 
 
-    volFile = "vtk/fv_0.vtk";
+    volFile = "vtk/fv_0.vti";
 
-  if(!QFile::exists(vtkFile)) {
-    decompressFile(vtkFile + ".gz", vtkFile);
-    if(!QFile::exists(vtkFile)) {
-      QMessageBox msgBox;
-      vtkFile.prepend("Failed to open VTK file: ");
-      msgBox.setText(vtkFile);
-      //msgBox.exec();
-    }
-    else {
-      vtkFile_d = true;
-    }
-  }
 
   origin = ui.origin3dText->text().toDouble();
 
@@ -239,5 +226,4 @@ void MainWindow::visualize3dRender() {
   
   ui.vis3d->update();
   
-  if(vtkFile_d) QFile::remove(vtkFile);
 }

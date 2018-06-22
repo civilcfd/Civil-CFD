@@ -17,7 +17,7 @@ void BoundaryDisplay::update(double delx, double dely, double delz,
 
   MeshDisplay::update(delx, dely, delz, imax, jmax, kmax, o_x, o_y, o_z);
 }
-              
+/*              
 BoundaryDisplay::BoundaryDisplay(long int imax, long int jmax, long int kmax, double delx, double dely, double delz, double o_x, double o_y, double o_z) : 
   RenderDisplay(imax,jmax,kmax,delx,dely,delz,o_x,o_y,o_z) {
 
@@ -26,7 +26,7 @@ BoundaryDisplay::BoundaryDisplay(long int imax, long int jmax, long int kmax, do
   dz = delz;
   
 
-}
+} */
 
 BoundaryDisplay::BoundaryDisplay(long int imax, long int jmax, long int kmax) : 
   RenderDisplay(imax,jmax,kmax) {
@@ -41,6 +41,8 @@ void BoundaryDisplay::clearRectangle() {
   hexGrid = NULL;
   dataSetMapper = NULL;
   rectangleActor = NULL;
+
+  getRenderWindow()->Render();
 }
 
 #define set_vector(a,b,c,d) { a[0] = b; a[1] = c; a[2] = d; }
@@ -131,7 +133,7 @@ void BoundaryDisplay::drawRectangle(double a_1, double a_2, double a_3,
   hexGrid->SetPoints(hexPoints);  
  
   dataSetMapper = vtkSmartPointer<vtkDataSetMapper>::New();
-  dataSetMapper->SetInput(hexGrid); 
+  dataSetMapper->SetInputData(hexGrid); 
  
 //  polyLine = vtkSmartPointer<vtkPolyLine>::New();
 //  polyLine->GetPointIds()->SetNumberOfIds(5);
@@ -166,4 +168,5 @@ void BoundaryDisplay::drawRectangle(double a_1, double a_2, double a_3,
  
   AddActor(rectangleActor);
  
+  getRenderWindow()->Render();
 }

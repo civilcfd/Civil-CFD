@@ -49,11 +49,17 @@ public:
   bool getAutot();
   QString getDelt();
 
+  QString getAbstol();
+  QString getReltol();
+
   bool setT(QString str);
   bool setEndt(QString str);
   bool setWritet(QString str);
   bool setDelt(QString str);
   void setAutot(bool autot);
+
+  bool setAbstol(QString str);
+  bool setReltol(QString str);
 
   QString getGx();
   QString getGy();

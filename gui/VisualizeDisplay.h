@@ -10,7 +10,7 @@
 #define VISUALIZE_DISPLAY_H
 
 #include <vtkDataReader.h>
-#include <vtkStructuredPointsReader.h>
+#include <vtkXMLImageDataReader.h>
 #include <vtkStructuredPoints.h>
 #include <vtkCutter.h>
 #include <vtkPolyDataMapper.h>
@@ -39,10 +39,10 @@ class VisualizeDisplay : public MeshDisplay //GeometryDisplay
 {
 public:
 
-  VisualizeDisplay(long int imax, long int jmax,
-                  long int kmax, double delx,
-                  double dely, double delz, 
-                  double ox, double oy, double oz); 
+  //VisualizeDisplay(long int imax, long int jmax,
+  //                long int kmax, double delx,
+  //                double dely, double delz, 
+  //                double ox, double oy, double oz); 
   VisualizeDisplay(long int imax, long int jmax,
                   long int kmax); 
 
@@ -60,15 +60,15 @@ public:
   void clear();
 
 protected:
-  vtkSmartPointer<vtkStructuredPointsReader> reader;
+  vtkSmartPointer<vtkXMLImageDataReader> reader;
   vtkSmartPointer<vtkPolyDataMapper> VTKmapper;
   vtkSmartPointer<vtkActor> VTKactor;
-  vtkSmartPointer<vtkStructuredPointsReader> vectReader;
+  vtkSmartPointer<vtkXMLImageDataReader> vectReader;
   vtkSmartPointer<vtkGeometryFilter> geometryFilter;
   vtkSmartPointer<vtkGeometryFilter> vectGeometryFilter;
   vtkSmartPointer<vtkPolyDataMapper> vectMapper;
   vtkSmartPointer<vtkActor> vectActor;
-  vtkSmartPointer<vtkStructuredPointsReader> volReader;
+  vtkSmartPointer<vtkXMLImageDataReader> volReader;
   vtkSmartPointer<vtkGeometryFilter> volGeometryFilter;
 	vtkSmartPointer<vtkScalarBarActor> legend;
 //  vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper;

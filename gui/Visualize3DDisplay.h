@@ -10,7 +10,7 @@
 #define VISUALIZE3D_DISPLAY_H
 
 #include <vtkDataReader.h>
-#include <vtkStructuredPointsReader.h>
+#include <vtkXMLImageDataReader.h>
 #include <vtkStructuredPoints.h>
 #include <vtkCutter.h>
 #include <vtkPolyDataMapper.h>
@@ -40,10 +40,10 @@ class Visualize3DDisplay : public VisualizeDisplay //GeometryDisplay
 {
 public:
 
-  Visualize3DDisplay(long int imax, long int jmax,
-                  long int kmax, double delx,
-                  double dely, double delz, 
-                  double ox, double oy, double oz); 
+  //Visualize3DDisplay(long int imax, long int jmax,
+  //                long int kmax, double delx,
+  //                double dely, double delz, 
+  //                double ox, double oy, double oz); 
   Visualize3DDisplay(long int imax, long int jmax,
                   long int kmax); 
                   
@@ -54,9 +54,9 @@ public:
 private:
 
   vtkSmartPointer<vtkVolume> volume3d;
-  vtkSmartPointer<vtkStructuredPointsReader> vol3dReader;
+  vtkSmartPointer<vtkXMLImageDataReader> vol3dReader;
   vtkSmartPointer<vtkSmartVolumeMapper> vol3dMapper;
-  vtkSmartPointer<vtkStructuredPointsReader> iso3dReader;
+  vtkSmartPointer<vtkXMLImageDataReader> iso3dReader;
   vtkSmartPointer<vtkContourFilter> iso3dFilter;
   vtkSmartPointer<vtkPolyDataMapper> iso3dMapper;
   vtkSmartPointer<vtkActor> iso3dActor;

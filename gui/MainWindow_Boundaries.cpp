@@ -62,7 +62,7 @@ void MainWindow::on_hideBoundaryMesh_toggled() {
 }
 
 void MainWindow::on_hideBoundaryDomain_toggled() {
-  if(!ui.hideBoundaryDomain->isChecked())  boundaryDisplay->connectVTK("vtk/fv_0.vtk");
+  if(!ui.hideBoundaryDomain->isChecked())  boundaryDisplay->connectVTK("vtk/fv_0.vti");
 	else boundaryDisplay->connectVTK("");
 	
 	ui.VTKBoundaries->update();
@@ -78,12 +78,13 @@ void MainWindow::boundariesUpdate() {
                       sim.getOrigin(0).toDouble(), sim.getOrigin(1).toDouble(), sim.getOrigin(2).toDouble());
   
 
-  if(!ui.hideBoundaryDomain->isChecked())  boundaryDisplay->connectVTK("vtk/fv_0.vtk");
+  if(!ui.hideBoundaryDomain->isChecked())  boundaryDisplay->connectVTK("vtk/fv_0.vti");
 	else boundaryDisplay->connectVTK("");  
   if(ui.hideBoundaryMesh->isChecked()) boundaryDisplay->HideMesh();
   else boundaryDisplay->ShowMesh();  
   
   ui.VTKBoundaries->update();
+  //ui.VTKBoundaries->GetRenderWindow()->GetInteractor()->Render();
   
   boundaryDisplay->clearRectangle();
  

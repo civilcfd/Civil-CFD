@@ -13,7 +13,7 @@ void MeshDisplay::update(double delx, double dely, double delz,
  
   //structuredGrid->SetDimensions(imax * delx,jmax * dely,kmax * delz);  
   structuredGrid->SetDimensions(imax,jmax,kmax);
-  structuredGrid->SetUpdateExtent(0,imax-1,0,jmax-1,0,kmax-1);
+  //structuredGrid->SetUpdateExtent(0,imax-1,0,jmax-1,0,kmax-1);
 
   points = NULL;
   points = vtkSmartPointer<vtkPoints>::New();
@@ -36,7 +36,7 @@ void MeshDisplay::update(double delx, double dely, double delz,
 
 
   structuredGrid->SetPoints(points);
-  structuredGrid->Update();
+  //structuredGrid->Update();
   // Create a mapper and actor
   /* mapper = vtkSmartPointer<vtkDataSetMapper>::New();
   mapper->SetInputConnection(structuredGrid->GetProducerPort());
@@ -58,13 +58,14 @@ void MeshDisplay::update(double delx, double dely, double delz,
 
 void MeshDisplay::reset() {
   renderer->ResetCamera();
+  getRenderWindow()->Render();
 }
 
-vtkSmartPointer<vtkRenderWindow> MeshDisplay::getRenderWindow() {
+vtkSmartPointer<vtkGenericOpenGLRenderWindow> MeshDisplay::getRenderWindow() {
   return renderWindow;
 }
 
-vtkSmartPointer<vtkRenderWindowInteractor> MeshDisplay::getRenderWindowInteractor() {
+vtkSmartPointer<QVTKInteractor> MeshDisplay::getRenderWindowInteractor() {
   return renderWindowInteractor;
 }
 
@@ -85,22 +86,26 @@ void MeshDisplay::RemoveActor(vtkSmartPointer<vtkActor> &new_actor) {
 }
 
 void MeshDisplay::AddVolume(vtkSmartPointer<vtkVolume> &new_volume) {
-  renderer->AddVolume(new_volume);
+  renderer->AddViewProp(new_volume);
 }
 
 void MeshDisplay::HideMesh() {
   RemoveActor(actor);
+  getRenderWindow()->Render();
 }
 
 void MeshDisplay::ShowMesh() {
   AddActor(actor);
+  getRenderWindow()->Render();
 }
 void MeshDisplay::HideAxis() {
   renderer->RemoveActor(axes);
+  getRenderWindow()->Render();
 }
 
 void MeshDisplay::ShowAxis() {
   renderer->AddActor(axes);
+  getRenderWindow()->Render();
 }
 void MeshDisplay::RemoveVolume(vtkSmartPointer<vtkVolume> &new_volume) {
   renderer->RemoveVolume(new_volume);
@@ -131,16 +136,13 @@ MeshDisplay::MeshDisplay(long int numi, long int numj, long int numk) {
   structuredGrid->SetDimensions(numi, numj, numk);
   structuredGrid->SetPoints(points);
  
-  std::cout << "There are " << structuredGrid->GetNumberOfPoints() << " points." << std::endl;
-  std::cout << "There are " << structuredGrid->GetNumberOfCells() << " cells." << std::endl;
- 
   outlineFilter = vtkSmartPointer<vtkStructuredGridGeometryFilter>::New();
-  outlineFilter->SetInputConnection(structuredGrid->GetProducerPort());
+  outlineFilter->SetInputData(structuredGrid);
   outlineFilter->Update();
  
   // Create a mapper and actor
   mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-  mapper->SetInputConnection(structuredGrid->GetProducerPort());
+  mapper->SetInputData(structuredGrid);
   actor = vtkSmartPointer<vtkActor>::New();
   actor->SetMapper(mapper);
   actor->GetProperty()->SetRepresentationToWireframe();
@@ -164,10 +166,15 @@ MeshDisplay::MeshDisplay(long int numi, long int numj, long int numk) {
   // axes->SetXAxisLabelText("test");
 
   // Visualize
+  renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+
+}
+
+void MeshDisplay::completeSetup() {
   renderer = vtkSmartPointer<vtkRenderer>::New();
-  renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+
   renderWindow->AddRenderer(renderer);
-  renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  renderWindowInteractor = vtkSmartPointer<QVTKInteractor>::New();
   //renderWindowInteractor->SetRenderWindow(renderWindow); 
   renderer->AddActor(actor);
   renderer->AddActor(axes);
@@ -177,9 +184,16 @@ MeshDisplay::MeshDisplay(long int numi, long int numj, long int numk) {
   renderer->GetActiveCamera()->SetViewUp(0,0,1);
   renderer->ResetCamera();
 
- renderer->SetBackground(0.4,0.4,0.4); 
+ renderer->SetBackground(0.4,0.4,0.4);  
+}  
 
-  //renderWindow->Render();
+void MeshDisplay::completeSetup(double delx, double dely, double delz, 
+                     double imax, double jmax, double kmax, 
+                     double o_x,  double o_y,  double o_z) {
+  
+  completeSetup();
+  update(delx,dely,delz,imax,jmax,kmax,o_x,o_y,o_z);
+
 }
 
 void MeshDisplay::normalizeCamera(int x, double y, double z) {
@@ -204,4 +218,5 @@ void MeshDisplay::normalizeCamera(int x, double y, double z) {
 	}
 	
 	renderer->ResetCamera();
+  getRenderWindow()->Render();
 }

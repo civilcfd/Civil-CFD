@@ -53,7 +53,7 @@ void MainWindow::on_hideBaffleMesh_toggled() {
 }
 
 void MainWindow::on_hideBaffleDomain_toggled() {
-  if(!ui.hideBaffleDomain->isChecked())  baffleDisplay->connectVTK("vtk/fv_0.vtk");
+  if(!ui.hideBaffleDomain->isChecked())  baffleDisplay->connectVTK("vtk/fv_0.vti");
 	else baffleDisplay->connectVTK("");
 	
 	ui.VTKBaffles->update();
@@ -74,7 +74,7 @@ void MainWindow::bafflesUpdate() {
   if(ui.hideBaffleMesh->isChecked()) baffleDisplay->HideMesh();
   else baffleDisplay->ShowMesh();
     
-  if(!ui.hideBaffleDomain->isChecked())  baffleDisplay->connectVTK("vtk/fv_0.vtk");
+  if(!ui.hideBaffleDomain->isChecked())  baffleDisplay->connectVTK("vtk/fv_0.vti");
 	else baffleDisplay->connectVTK("");
 
   ui.VTKBaffles->update();

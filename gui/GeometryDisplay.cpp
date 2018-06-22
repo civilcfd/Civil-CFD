@@ -38,7 +38,7 @@ void GeometryDisplay::drawPoint(double x, double y, double z) {
   // Visualize
   vtkSmartPointer<vtkPolyDataMapper> mapper =
     vtkSmartPointer<vtkPolyDataMapper>::New();
-  mapper->SetInput(point);
+  mapper->SetInputData(point);
  
   pointActor =
     vtkSmartPointer<vtkActor>::New();
@@ -53,6 +53,7 @@ void GeometryDisplay::drawPoint(double x, double y, double z) {
 
 void GeometryDisplay::clearPoint() {
   RemoveActor(pointActor);
+  getRenderWindow()->Render();
 }
 
 void GeometryDisplay::connectSTL(QString stlFile) {

@@ -694,7 +694,7 @@ int kE_wall_shear(struct solver_data *solver) {
    * and then tau from u*.  Wall stress = 1/rho * tau/dy 
    * unfortunately, this is cell centered and so will need to be averaged for cells i and i+1 */
   long int i,j,k;
-  double ws_u, ws_d, tau_u, tau_d, delv;
+  double ws_u, ws_d, tau_u, tau_d, delv, ave_fv;
    
   for(i=1; i<IRANGE-1; i++) {
     for(j=1; j<JMAX-1; j++) {
@@ -704,6 +704,8 @@ int kE_wall_shear(struct solver_data *solver) {
         tau_d = tau_x(i+1,j,k);
         
         if(fabs(tau_u) + fabs(tau_d) > solver->emf) {
+          ave_fv = FV(i,j,k) + FV(i+1,j,k); // added 03/27/18 and testing
+          ave_fv /= 2;
           
           ws_u  = tau_u  / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
           ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
@@ -711,7 +713,7 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d  = tau_d / (solver->rho * DELY) * fabs((1-AN(i+1,j,k)) - (1-AN(i+1,j-1,k)));
           ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i+1,j,k)) - (1-AT(i+1,j,k-1)));
         
-          delv = 0.5 * (ws_u + ws_d) * solver->delt;
+          delv = 0.5 * (ws_u + ws_d) * solver->delt / ave_fv;
           if(!isnan(delv)) U(i,j,k) += delv;
         }
 
@@ -719,6 +721,8 @@ int kE_wall_shear(struct solver_data *solver) {
         tau_d = tau_y(i,j+1,k);
         
         if(fabs(tau_u) + fabs(tau_d) > solver->emf) {
+          ave_fv = FV(i,j,k) + FV(i,j+1,k); // added 03/27/18 and testing
+          ave_fv /= 2;
           
           ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
           ws_u += tau_u / (solver->rho * DELZ) * fabs((1-AT(i,j,k)) - (1-AT(i,j,k-1)));
@@ -726,7 +730,7 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d  = tau_d / (solver->rho * DELX) * fabs((1-AE(i,j+1,k)) - (1-AE(i-1,j+1,k)));
           ws_d += tau_d / (solver->rho * DELZ) * fabs((1-AT(i,j+1,k)) - (1-AT(i,j+1,k-1)));
         
-          delv = 0.5 * (ws_u + ws_d) * solver->delt;
+          delv = 0.5 * (ws_u + ws_d) * solver->delt / ave_fv;
           if(!isnan(delv)) V(i,j,k) += delv;
         }
 
@@ -734,6 +738,8 @@ int kE_wall_shear(struct solver_data *solver) {
         tau_d = tau_z(i,j,k+1);
         
         if(fabs(tau_u) + fabs(tau_d) > solver->emf) {
+          ave_fv = FV(i,j,k) + FV(i,j,k+1); // added 03/27/18 and testing
+          ave_fv /= 2;
           
           ws_u  = tau_u / (solver->rho * DELX) * fabs((1-AE(i,j,k)) - (1-AE(i-1,j,k)));
           ws_u += tau_u / (solver->rho * DELY) * fabs((1-AN(i,j,k)) - (1-AN(i,j-1,k)));
@@ -741,7 +747,7 @@ int kE_wall_shear(struct solver_data *solver) {
           ws_d  = tau_d / (solver->rho * DELX) * fabs((1-AE(i,j,k+1)) - (1-AE(i-1,j,k+1)));
           ws_d += tau_d / (solver->rho * DELY) * fabs((1-AN(i,j,k+1)) - (1-AN(i,j-1,k+1)));
         
-          delv = 0.5 * (ws_u + ws_d) * solver->delt;
+          delv = 0.5 * (ws_u + ws_d) * solver->delt / ave_fv;
           if(!isnan(delv)) W(i,j,k) += delv;
         } 
 

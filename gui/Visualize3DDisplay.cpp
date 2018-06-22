@@ -5,7 +5,7 @@
  *
  */
 #include "Visualize3DDisplay.h"
-
+/*
 Visualize3DDisplay::Visualize3DDisplay(long int imax, long int jmax, long int kmax, double delx, double dely, double delz, double ox, double oy, double oz) : 
   VisualizeDisplay (imax,jmax,kmax,delx,dely,delz,ox,oy,oz) {
 
@@ -14,7 +14,7 @@ Visualize3DDisplay::Visualize3DDisplay(long int imax, long int jmax, long int km
   //VTKmapper = NULL;
   //VTKactor = NULL;
   iso3dActor = NULL;
-}
+}*/
 
 Visualize3DDisplay::Visualize3DDisplay(long int imax, long int jmax, long int kmax) : 
   VisualizeDisplay(imax,jmax,kmax) {
@@ -30,7 +30,7 @@ void Visualize3DDisplay::block(QString vtkFile, int normal, double origin, doubl
   if(!QFile::exists(vtkFile)) return;
 
 	volReader = NULL;
-  volReader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+  volReader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   volReader->SetFileName(vtkFile.toStdString().c_str());
   volReader->Update();
 
@@ -86,6 +86,7 @@ void Visualize3DDisplay::block(QString vtkFile, int normal, double origin, doubl
   volMapper->SetInputConnection(volReader->GetOutputPort());
   volMapper->AddClippingPlane(planePos);
   volMapper->AddClippingPlane(planeNeg);
+  //volMapper->SetRequestedRenderModeToRayCastAndTexture();
 //  volumeMapper->SetBlendModeToComposite();
   volume->SetMapper(volMapper);
   volume->Update();
@@ -106,7 +107,7 @@ void Visualize3DDisplay::contour3d(QString vtkFile, int normal, double origin, d
   if(!QFile::exists(vtkFile)) return;
 
 	iso3dReader = NULL;
-  iso3dReader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+  iso3dReader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   iso3dReader->SetFileName(vtkFile.toStdString().c_str());
   iso3dReader->Update();
 

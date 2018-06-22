@@ -6,7 +6,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
-
 #include <cmath>
 
 #include "MainWindow.h"
@@ -20,23 +19,31 @@ MainWindow::MainWindow() : QMainWindow() {
   visualize3dDisplay = new Visualize3DDisplay(10,10,10);
 
   appPath = QCoreApplication::applicationDirPath();
-
+ 
   ui.setupUi( this );
 
   ui.VTKMesh->SetRenderWindow(meshDisplay->getRenderWindow());
-  //ui.VTKMesh->GetRenderWindow()->SetInteractor(meshDisplay->getRenderWindowInteractor());
-  //ui.VTKMesh->GetRenderWindow()->GetInteractor()->Start();
-
+ 
   ui.VTKGeometry->SetRenderWindow(geometryDisplay->getRenderWindow());
 
   ui.VTKBoundaries->SetRenderWindow(boundaryDisplay->getRenderWindow());  
+  //boundaryDisplay->renderWindow = ui.VTKBoundaries->GetRenderWindow();
+  //boundaryDisplay->renderWindow->AddRenderer(boundaryDisplay->renderer);
   
   ui.VTKBaffles->SetRenderWindow(baffleDisplay->getRenderWindow());  
+  //baffleDisplay->renderWindow = ui.VTKBaffles->GetRenderWindow();
+  //baffleDisplay->renderWindow->AddRenderer(baffleDisplay->renderer);
 
   ui.vis->SetRenderWindow(visualizeDisplay->getRenderWindow());
   
   ui.vis3d->SetRenderWindow(visualize3dDisplay->getRenderWindow());
   
+  meshDisplay->completeSetup(); 
+  geometryDisplay->completeSetup(); 
+  boundaryDisplay->completeSetup(); 
+  baffleDisplay->completeSetup(); 
+  visualizeDisplay->completeSetup(); 
+  visualize3dDisplay->completeSetup(); 
 }
 
 bool MainWindow::saveNotify() {
@@ -463,7 +470,8 @@ void MainWindow::update() {
   ui.writet->setPlainText(sim.getWritet());
   ui.delt->setPlainText(sim.getDelt());
   ui.autot->setChecked(sim.getAutot());
-
+  ui.abstol->setPlainText(sim.getAbstol());
+  ui.reltol->setPlainText(sim.getReltol());
 
   visualizeUpdate();
   visualize3dUpdate();
@@ -531,6 +539,8 @@ void MainWindow::write() {
   sim.setWritet(ui.writet->toPlainText());
   sim.setDelt(ui.delt->toPlainText());
   sim.setAutot(ui.autot->isChecked());
+  sim.setAbstol(ui.abstol->toPlainText());
+  sim.setReltol(ui.reltol->toPlainText());
 
 }
 

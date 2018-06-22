@@ -52,7 +52,7 @@ int markcells_initialize(struct mesh_data *mesh,
 	}
 	
 #pragma omp parallel for shared (marked_cells, count) private(i, j, k, n, v_1, v_2, v_3, \
-							 dotp, norm, p, dist, v, s, x) collapse(3) schedule(static)
+							 dotp, norm, p, dist, v, s, x) schedule(static)
   for(i=0; i < mesh->imax; i++) {
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {

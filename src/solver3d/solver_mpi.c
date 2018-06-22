@@ -351,7 +351,7 @@ int solver_mpi_gather(struct solver_data *solver, double *data) {
   static int *cnts, *displs;
   int disp = 0;
 
-  range = (IMAX + (solver->size - 1)) / solver->size;
+  range = (IMAX + (solver->size - 1)) / solver->size - 1;
   range *= JMAX; 
   range *= KMAX;
   
@@ -363,6 +363,7 @@ int solver_mpi_gather(struct solver_data *solver, double *data) {
 		  cnts[i] = (i != 0) ? range : 0;
 		  displs[i] = disp;
 		  disp += range;
+      if(i == 0) range += JMAX * KMAX;
 	  }
   }
   
@@ -518,6 +519,8 @@ int solver_broadcast_all(struct solver_data *solver) {
   MPI_Bcast(&solver->endt, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(&solver->writet, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(&solver->delt, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&solver->abstol, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&solver->reltol, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   
   if(!rank) {
     if(kE_check(solver)) turb = 1;

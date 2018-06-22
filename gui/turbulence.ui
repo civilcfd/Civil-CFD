@@ -80,6 +80,9 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="tabChangesFocus">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPlainTextEdit" name="length">
    <property name="geometry">
@@ -90,8 +93,15 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="tabChangesFocus">
+    <bool>true</bool>
+   </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>length</tabstop>
+  <tabstop>velocity</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

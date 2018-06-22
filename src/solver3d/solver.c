@@ -56,10 +56,10 @@ struct solver_data *solver_init_empty() {
   solver->nu   = 1.004e-6;
   solver->rho  = 1000;
 
-  solver->abstol = 10;
-  solver->reltol = 1.0e-4;
+  solver->abstol = 50;
+  solver->reltol = 1.0e-3;
 
-  solver->con = 0.35;
+  solver->con = 0.45;
 
   solver->gx   = 0;
   solver->gy   = 0;
@@ -389,7 +389,7 @@ int solver_set_initial(struct solver_data *solver, char *param, int dims,
       return(1);
     }
     if(!kE_check(solver)) {
-      printf("error in source file: kE_k called but turbulence model is not k-Epsilon\n");
+      printf("solver_set_initial: kE_k ignored as turbulence model is not k-Epsilon\n");
       return(1);
     }
     
@@ -407,7 +407,22 @@ int solver_set_value(struct solver_data *solver, char *param, int dims,
     printf("error: null values passed to solver_set_value\n");
     return(1);
   }
+  else if(strcmp(param, "abstol")==0) {
+    if(dims != 1) {
+      printf("error in source file: abstol requires 1 argument\n");
+      return(1);
+    }
 
+    solver->abstol = vector[0];
+  }
+  else if(strcmp(param, "reltol")==0) {
+    if(dims != 1) {
+      printf("error in source file: reltol requires 1 argument\n");
+      return(1);
+    }
+
+    solver->reltol = vector[0];
+  }
   else if(strcmp(param, "gravity")==0) {
     if(dims != 3) {
       printf("error in source file: gravity requires 3 arguments\n");

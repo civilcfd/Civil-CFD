@@ -26,6 +26,8 @@
 
 struct mesh_data *mesh_n; /* describes mesh at previous timestep for explicit calcs */
 
+//#define TRACKCELL 132, 84, 13
+
 #ifdef DEBUG
 float u(struct solver_data *solver, long int i,long int j,long int k) { return U(i,j,k); }
 float v(struct solver_data *solver, long int i,long int j,long int k) { return V(i,j,k); }
@@ -41,12 +43,22 @@ float an(struct solver_data *solver, long int i,long int j,long int k) { return 
 float at(struct solver_data *solver, long int i,long int j,long int k) { return AT(i,j,k); }
 float fv(struct solver_data *solver, long int i,long int j,long int k) { return FV(i,j,k); }
 
-void track_cell(struct solver_data *solver, long int i,long int j,long int k) {
-  printf("U(e/n/t) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i,j,k),V(i,j,k),W(i,j,k));
-  printf("U(w/s/b) %ld %ld %ld: %lf %lf %lf\n",i,j,k,U(i-1,j,k),V(i,j-1,k),W(i,j,k-1));  
-  printf("P: %lf    VOF: %lf    N_VOF: %d\n",P(i,j,k),VOF(i,j,k),N_VOF(i,j,k));
-}
 #endif
+
+void track_cell(struct solver_data *solver, long int i,long int j,long int k) {
+
+  if(i < ISTART || i > ISTART + IRANGE) return;
+  i -= ISTART;
+
+  printf("FV: %lf\n",FV(i,j,k));
+  printf("P: %lf      VOF: %lf     N_VOF: %d\n",P(i,j,k),VOF(i,j,k),N_VOF(i,j,k));
+ 
+  printf("A(e/n/t) %ld %ld %ld: %lf %lf %lf\n",i + ISTART,j,k,AE(i,j,k),AN(i,j,k),AT(i,j,k));
+  printf("A(w/s/b) %ld %ld %ld: %lf %lf %lf\n\n",i + ISTART,j,k,AE(i-1,j,k),AN(i,j-1,k),AT(i,j,k-1));  
+  printf("U(e/n/t) %ld %ld %ld: %lf %lf %lf\n",i + ISTART,j,k,U(i,j,k),V(i,j,k),W(i,j,k));
+  printf("U(w/s/b) %ld %ld %ld: %lf %lf %lf\n",i + ISTART,j,k,U(i-1,j,k),V(i,j-1,k),W(i,j,k-1));  
+  printf("P: %lf    VOF: %lf    N_VOF: %d\n\n",P(i,j,k),VOF(i,j,k),N_VOF(i,j,k));
+}
 
 int vof_mpi_setup_solver(struct solver_data *solver) {
   
@@ -109,12 +121,32 @@ int vof_mpi_loop(struct solver_data *solver) {
     solver->delt_n = solver->delt;
     solver->vchgt  = 0;
 
+#ifdef TRACKCELL
+    printf("Begin;\n");
+    track_cell(solver, TRACKCELL);
+#endif
+
     solver->velocity(solver);
     
+#ifdef TRACKCELL
+    printf("solver->velocity(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif
+
     solver->wall_shear(solver); 
+
+#ifdef TRACKCELL
+    printf("solver->wall_shear(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif
 
     solver->boundaries(solver);
     
+#ifdef TRACKCELL
+    printf("solver->boundaries(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif
+
     if(solver->special_boundaries != NULL)
       solver->special_boundaries(solver);
 
@@ -122,9 +154,18 @@ int vof_mpi_loop(struct solver_data *solver) {
     solver_sendrecv_edge(solver, solver->mesh->v);
     solver_sendrecv_edge(solver, solver->mesh->w);
 
+#ifdef TRACKCELL
+    printf("solver->special_boundaries(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif
 
     solver->pressure(solver);
     if(solver->iter < 1) solver->iter = 1;
+
+#ifdef TRACKCELL
+    printf("solver->pressure(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif 
 
     solver->boundaries(solver);
     if(solver->special_boundaries != NULL)
@@ -143,7 +184,17 @@ int vof_mpi_loop(struct solver_data *solver) {
     solver_sendrecv_edge(solver, solver->mesh->w); 
     solver_sendrecv_edge(solver, solver->mesh->P);
 
+#ifdef TRACKCELL
+    printf("solver->boundaries(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif
+
     solver->turbulence_loop(solver);
+
+#ifdef TRACKCELL
+    printf("solver->turbulence_loop(solver);\n");
+    track_cell(solver, TRACKCELL);
+#endif
 
     solver->convect(solver);
     
@@ -237,7 +288,7 @@ int vof_mpi_deltcal(struct solver_data *solver) {
       for(k=1; k<KMAX-1; k++) {        
         if(isnan(U(i,j,k)) || isnan(V(i,j,k)) || isnan(W(i,j,k))) {
           nan_flag = 1;
-          if(!solver->rank) printf("divide by zero error in cell %ld %ld %ld | ",i,j,k);
+          if(!solver->rank) printf("divide by zero error in cell %ld %ld %ld | ",i + ISTART,j,k);
           if(isnan(U(i,j,k))) printf("east");
           if(isnan(V(i,j,k))) printf("north");
           if(isnan(W(i,j,k))) printf("top");
@@ -264,9 +315,9 @@ int vof_mpi_deltcal(struct solver_data *solver) {
   }
 
 #ifdef DEBUG
-  printf("Max u: %lf in cell %ld %ld %ld\n", solver->umax, umax_cell[0], umax_cell[1], umax_cell[2]);
-  printf("Max v: %lf in cell %ld %ld %ld\n", solver->vmax, vmax_cell[0], vmax_cell[1], vmax_cell[2]);
-  printf("Max w: %lf in cell %ld %ld %ld\n", solver->wmax, wmax_cell[0], wmax_cell[1], wmax_cell[2]);  
+  printf("Max u: %lf in cell %ld %ld %ld\n", solver->umax, umax_cell[0] + ISTART, umax_cell[1], umax_cell[2]);
+  printf("Max v: %lf in cell %ld %ld %ld\n", solver->vmax, vmax_cell[0] + ISTART, vmax_cell[1], vmax_cell[2]);
+  printf("Max w: %lf in cell %ld %ld %ld\n", solver->wmax, wmax_cell[0] + ISTART, wmax_cell[1], wmax_cell[2]);  
 #endif
 
   solver->umax = solver_mpi_max(solver,solver->umax);
@@ -279,12 +330,12 @@ int vof_mpi_deltcal(struct solver_data *solver) {
     ret = 1;
     solver->con *= 0.975;
  
-    for(i=1; i<IRANGE-1; i++) {
-      for(j=1; j<JMAX-1; j++) {
-        for(k=1; k<KMAX-1; k++) {
-          U(i,j,k) = 0;
-          V(i,j,k) = 0;
-          W(i,j,k) = 0;
+    for(i=0; i<IRANGE; i++) {
+      for(j=0; j<JMAX; j++) {
+        for(k=0; k<KMAX; k++) {
+          U(i,j,k) = UN(i,j,k);
+          V(i,j,k) = VN(i,j,k);
+          W(i,j,k) = WN(i,j,k);
           P(i,j,k) = PN(i,j,k);
           VOF(i,j,k) = VOF_N(i,j,k);
           N_VOF(i,j,k) = N_VOF_N(i,j,k);
@@ -322,17 +373,20 @@ int vof_mpi_deltcal(struct solver_data *solver) {
   for(i=0; i<IRANGE; i++) {
     for(j=0; j<JMAX; j++) {
       for(k=0; k<KMAX; k++) {  
-        dt_U = solver->con * min(1, min(FV(i,j,k),FV(min(IRANGE-1,i+1),j,k)) / AE(i,j,k)) * DELX/(fabs(dv + U(i,j,k)));
+        //dt_U = solver->con * min(1, min(FV(i,j,k),FV(min(IRANGE-1,i+1),j,k)) / AE(i,j,k)) * DELX/(fabs(dv + U(i,j,k)));
+        dt_U = solver->con * 0.5 * (FV(i,j,k) + FV(min(IRANGE-1,i+1),j,k)) / AE(i,j,k) * DELX/(fabs(dv + U(i,j,k)));
 
         if(AE(i,j,k) > solver->emf && !isnan(dt_U))
           delt_conv = min(delt_conv, dt_U);
               
-        dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k)) * DELY/(fabs(dv + V(i,j,k)));
+        //dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k)) * DELY/(fabs(dv + V(i,j,k)));
+        dt_U = solver->con * 0.5 * (FV(i,j,k) + FV(i,min(JMAX-1,j+1),k)) / AN(i,j,k) * DELY/(fabs(dv + V(i,j,k)));
 
         if(AN(i,j,k) > solver->emf && !isnan(dt_U))
           delt_conv = min(delt_conv, dt_U);
 
-        dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
+        //dt_U = solver->con * min(1, min(FV(i,j,k),FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k)) * DELZ/(fabs(dv + W(i,j,k)));
+        dt_U = solver->con * 0.5 * (FV(i,j,k) + FV(i,j,min(KMAX-1,k+1))) / AT(i,j,k) * DELZ/(fabs(dv + W(i,j,k)));
 
         if(AT(i,j,k) > solver->emf && !isnan(dt_U))
           delt_conv = min(delt_conv, dt_U);					
@@ -347,10 +401,11 @@ int vof_mpi_deltcal(struct solver_data *solver) {
     }
   }
 
+  delt_conv = min(delt_conv, 0.8 * dtvis);
+  delt_conv = solver_mpi_min(solver, delt_conv);
   if(!solver->rank) printf("maximum timestep for convective stability: %lf\n",delt_conv);
   
   delt = min(delt, delt_conv);
-  delt = min(delt, 0.8 * dtvis);
 
   delt = solver_mpi_min(solver, delt);
    
@@ -365,12 +420,12 @@ int vof_mpi_deltcal(struct solver_data *solver) {
       vof_mpi_kill_solver(solver);
     }
   }
-  
+  /*
   mindx = min(DELX,DELY);
   mindx = min(DELY,DELZ);
   
   delt_conv = delt_conv * 0.5 / solver->con;
-  
+  */
   return ret;
 }
 
@@ -412,7 +467,6 @@ int vof_mpi_write_timestep(struct solver_data * solver) {
     vtk_write_P(solver->mesh,write_step);
     vtk_write_U(solver->mesh,write_step);
     vtk_write_vof(solver->mesh,write_step);
-    vtk_write_n_vof(solver->mesh,write_step);
     
     csv_write_P(solver->mesh,solver->t);
     csv_write_U(solver->mesh,solver->t);
@@ -429,7 +483,10 @@ int vof_mpi_write_timestep(struct solver_data * solver) {
 
   vof_baffles_write(solver);
   
-  vof_vorticity(solver);
+  vof_vorticity(solver);/*
+  solver_mpi_gather(solver, solver->mesh->u_omega);
+  solver_mpi_gather(solver, solver->mesh->v_omega);
+  solver_mpi_gather(solver, solver->mesh->w_omega);*/
   
   if(!solver->rank) {
     vtk_write_vorticity(solver->mesh,write_step);

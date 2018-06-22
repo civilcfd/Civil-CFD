@@ -26,6 +26,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkHexahedron.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 
 
 #include <QString>
@@ -36,11 +37,11 @@
 class BoundaryDisplay : public RenderDisplay
 {
 public:
-
+/*
   BoundaryDisplay(long int imax, long int jmax,
                   long int kmax, double delx,
                   double dely, double delz,
-                  double o_x, double o_y, double o_z); 
+                  double o_x, double o_y, double o_z); */
   BoundaryDisplay(long int imax, long int jmax,
                   long int kmax); 
 

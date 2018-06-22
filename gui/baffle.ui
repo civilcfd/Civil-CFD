@@ -353,6 +353,15 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>extentA1</tabstop>
+  <tabstop>extentB1</tabstop>
+  <tabstop>extentA2</tabstop>
+  <tabstop>extentB2</tabstop>
+  <tabstop>pos</tabstop>
+  <tabstop>select</tabstop>
+  <tabstop>value</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

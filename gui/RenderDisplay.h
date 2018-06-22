@@ -10,7 +10,7 @@
 #define RENDER_DISPLAY_H
 
 #include <vtkDataReader.h>
-#include <vtkStructuredPointsReader.h>
+#include <vtkXMLImageDataReader.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkGeometryFilter.h>
 #include <vtkVolume.h>
@@ -40,10 +40,8 @@ public:
 
 
 private:
-  vtkSmartPointer<vtkStructuredPointsReader> reader;
+  vtkSmartPointer<vtkXMLImageDataReader> reader;
   vtkSmartPointer<vtkPolyDataMapper> VTKmapper;
-  vtkSmartPointer<vtkActor> VTKactor;
-  vtkSmartPointer<vtkGeometryFilter> geometryFilter;
 
 //  vtkSmartPointer<vtkFixedPointVolumeRayCastMapper> volumeMapper;
   vtkSmartPointer<vtkSmartVolumeMapper> volumeMapper;

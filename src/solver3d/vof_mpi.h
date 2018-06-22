@@ -34,4 +34,7 @@ int vof_mpi_pressure_sor(struct solver_data *solver, long int i, long int j, lon
 int vof_mpi_pressure_mp(struct solver_data *solver);
 int vof_pressure_gmres_mpi(struct solver_data *solver);
 int vof_vorticity(struct solver_data *solver);
+
+
+void track_cell(struct solver_data *solver, long int i,long int j,long int k);
 #endif

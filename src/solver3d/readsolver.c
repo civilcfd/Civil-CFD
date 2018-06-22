@@ -18,7 +18,8 @@
 #include "readfile.h"
 
 /* list of one dimensional solver properties */
-const char *solver_properties_double[] = { "nu", "rho", "t", "delt", "writet", "endt", "autot", "end" };
+const char *solver_properties_double[] = { "nu", "rho", "t", "delt", "writet", "endt", 
+                                           "autot", "abstol", "reltol", "end" };
 
 int read_solver_xml(struct solver_data *solver, char *filename) {
   xmlXPathContext *xpathCtx;

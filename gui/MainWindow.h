@@ -21,7 +21,7 @@
 #include "SolverDialog.h"
 #include "About.h"
 
-bool decompressFile(QString zip_filename , QString filename);
+bool decompressFile(const QString& zip_filename , const QString& filename);
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -30,6 +30,7 @@ public:
   MainWindow();
 
 private slots:
+  void on_Paraview_clicked();
   void on_RunSimulation_clicked();
   void on_STLRender_clicked();
   void on_STLOpen_clicked();

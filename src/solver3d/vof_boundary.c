@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <omp.h>
 
 #include "vtk.h"
 #include "vof_mpi.h"
@@ -610,8 +609,6 @@ int boundary_fixed_velocity(struct solver_data *solver,
   
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
   
-  #pragma omp parallel for shared (solver, imin, jmin, kmin, imax, jmax, kmax, value, turbulence) \
-              private(i,j,k) collapse(3) schedule(static)
   for(i=imin; i <= imax; i++) {
     for(j=jmin; j <= jmax; j++) {
       for(k=kmin; k <= kmax; k++) {   

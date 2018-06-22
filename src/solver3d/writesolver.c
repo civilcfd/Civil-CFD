@@ -88,6 +88,9 @@ int write_solver_xml(struct solver_data *solver, char *filename) {
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "writet", "%e", solver->writet);
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "endt", "%e", solver->endt);
 
+  rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "abstol", "%e", solver->abstol);
+  rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "reltol", "%e", solver->reltol);
+
   rc = xmlTextWriterStartElement(writer, BAD_CAST "Gravity");
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "x", "%e", solver->gx);
   rc = xmlTextWriterWriteFormatElement(writer, BAD_CAST "y", "%e", solver->gy);

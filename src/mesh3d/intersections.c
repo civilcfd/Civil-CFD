@@ -69,11 +69,16 @@ int intersect_area_fractions(struct mesh_data *mesh,
   
 #pragma omp parallel for shared (mesh) private(i, j, k, n, x, a, s, facing, flg, pt_int, \
 								 origin, r_o, v_1, v_2, v_3, x_af, intersect, o_n, \
-								 sgn_n, i_n, f, f0, f1) collapse(3) schedule(dynamic, 100)
+								 sgn_n, i_n, f, f0, f1) schedule(dynamic, 100)
   /* iterate through the mesh
    * we double calculate each line segment.  this could be optimized out
    * in the future, but would require more storage. */
   for(i=0; i < mesh->imax; i++) {
+
+#ifndef DEBUG
+		printf(".");
+#endif
+
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {
       
@@ -383,7 +388,9 @@ int intersect_area_fractions(struct mesh_data *mesh,
 							if(x!=5) {
 								printf("warning: multiple intersections in cell: %ld %ld %ld\n", i,j,k);
 								for(x=0; x<flg; x++) {
+									#ifdef DEBUG
 									printf("intersect[%ld]=%d; x_af=%lf\n",x,intersect[x],x_af[s][intersect[x]]);
+									#endif
 								}
 								/* abort = 1;
 								#pragma omp flush (abort) */
@@ -396,8 +403,10 @@ int intersect_area_fractions(struct mesh_data *mesh,
 						/* this is the adjacent intersection case */
 						if((intersect[1] - intersect[0]) == 1 && flg==2) {
 							f = ((1- fabs(x_af[s][intersect[0]])) * fabs(x_af[s][intersect[1]]))/2;
+							#ifdef DEBUG
 							printf("%ld %ld %ld: f %lf intersect[0] %d intersect[1] %d\n", i, j, k, 
 											f, intersect[0], intersect[1]);
+							#endif
 							if(x_af[s][intersect[0]] <= emf && x_af[s][intersect[1]] > 0)
 								f = 1-f;
 							if(f > emf && f < 1-emf &&
@@ -434,8 +443,10 @@ int intersect_area_fractions(struct mesh_data *mesh,
 						 * 3 and side 0 */
 						else if((intersect[1] - intersect[0]) == 3 && flg==2) {
 							f = (fabs(x_af[s][intersect[0]]) * (1-fabs(x_af[s][intersect[1]])))/2;
+							#ifdef DEBUG
 							printf("%ld %ld %ld: f %lf intersect[0] %d intersect[1] %d\n", i, j, k, 
 											f, intersect[0], intersect[1]);
+							#endif
 							if(x_af[s][intersect[0]] > 0 && x_af[s][intersect[1]] <= emf) 
 								f = 1-f;
 							if(f > emf && f < 1-emf && 
@@ -480,6 +491,10 @@ int intersect_area_fractions(struct mesh_data *mesh,
 		}
 	}
 	
+	#ifndef DEBUG
+	printf("\n");
+	#endif
+
 	return(abort);
 
 }

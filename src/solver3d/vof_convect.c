@@ -62,7 +62,7 @@ double calc_dVOF(struct solver_data *solver, long int i, long int j, long int k,
   }
   v *= solver->delt;
 
-  if(fabs(v) > 0.5 * DELX) solver->vof_flag = 1;
+  //if(fabs(v) > 0.5 * del) solver->vof_flag = 1;
 
   if(v > 0) {
     acceptor[x] += 1;
@@ -139,8 +139,10 @@ double calc_dVOF(struct solver_data *solver, long int i, long int j, long int k,
   if(A < solver->emf) VOFdm = 1.0;
 
   if(rb > solver->emf && ra > solver->emf && rd > solver->emf) {
+    //CF = max((VOFdm-VOF_N(acceptor_d[0], acceptor_d[1], acceptor_d[2]))*fabs(v) - 
+    //         (VOFdm-VOF_N(donor[0],donor[1], donor[2]))*del, 0.0);
     CF = max((VOFdm-VOF_N(acceptor_d[0], acceptor_d[1], acceptor_d[2]))*fabs(v) - 
-             (VOFdm-VOF_N(donor[0],donor[1], donor[2]))*del, 0.0);
+             (VOFdm-VOF_N(donor[0],donor[1], donor[2]))*del*rd/rb, 0.0); // added *rd/rb 3/26/18
     dVOF  = VOF_N(acceptor_d[0], acceptor_d[1], acceptor_d[2])*fabs(v) + CF;                  
     
   /*  # check - you can't give more than you got
@@ -149,10 +151,21 @@ double calc_dVOF(struct solver_data *solver, long int i, long int j, long int k,
 
     if(v < 0) dVOF *= -1.0; /* adjust sign */
     
-    /* test stability */
-    if(fabs(v) / del * (rb/rd) * VOF_N(donor[0],donor[1], donor[2]) > 0.8 * ra) 
-      solver->vof_flag = 1;
+    /* test stability 
+    if(fabs(v) / del * (rb/rd) * VOF_N(donor[0],donor[1], donor[2]) > 0.9 * ra) */
     
+    if(fabs(v) > del * min(ra, rd) / rb )  { // changed 3/26/18
+      solver->vof_flag = 1;
+
+#ifdef DEBUG
+      printf("vof_flag\nacceptor_d:\n");
+      track_cell(solver, acceptor_d[0] + ISTART, acceptor_d[1], acceptor_d[2]);
+      printf("donor:\n");
+      track_cell(solver, donor[0] + ISTART, donor[1], donor[2]);
+      printf("\n");
+#endif
+    }
+
   }
   else dVOF = 0;
 

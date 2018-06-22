@@ -243,6 +243,7 @@ int vof_mpi_velocity_upwind(struct solver_data *solver) {
           solver->nu_max = max(nu, solver->nu_max);
                  
           Viscocity = nu * (vis[0]/pow(del[0],2) + vis[1]/pow(del[1],2) + vis[2]/pow(del[2],2));
+          Viscocity = Viscocity / (sum_fv / 2); // ADDED 03/27/18 and testing
 
           /* deleted from this code 6/18
            * sum_fv/2 * delp: this created discontinuity at pressure boundaries */

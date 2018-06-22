@@ -10,7 +10,7 @@ RenderDisplay::RenderDisplay(long int imax, long int jmax, long int kmax, double
   GeometryDisplay(imax,jmax,kmax) {
 
 
-  update(delx,dely,delz,imax,jmax,kmax,ox,oy,oz);
+  //update(delx,dely,delz,imax,jmax,kmax,ox,oy,oz);
 }
 
 RenderDisplay::RenderDisplay(long int imax, long int jmax, long int kmax) : 
@@ -22,35 +22,21 @@ void RenderDisplay::connectVTK(QString vtkFile) {
   
   RemoveVolume(volume);
   volume = NULL;
-  
-  if(!QFile::exists(vtkFile)) return;
+
+  if(!QFile::exists(vtkFile)) {
+    getRenderWindow()->Render();
+    return;
+  }
 
 	reader = NULL;
-  reader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+  reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   reader->SetFileName(vtkFile.toStdString().c_str());
   reader->Update();
 
-  geometryFilter =
-    vtkSmartPointer<vtkGeometryFilter>::New();
-  geometryFilter->SetInputConnection(reader->GetOutputPort());
-  geometryFilter->Update();
-
-  // Visualize
-
-  VTKmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-  VTKmapper->SetInputConnection(geometryFilter->GetOutputPort());
- 
-  VTKactor = vtkSmartPointer<vtkActor>::New();
-  VTKactor->SetMapper(VTKmapper);
- 
-//  AddActor(VTKactor);
-
-
   vtkSmartPointer<vtkVolumeProperty> volumeProperty = 
     vtkSmartPointer<vtkVolumeProperty>::New();
-//  volumeProperty->ShadeOff();
+  //volumeProperty->ShadeOff();
   volumeProperty->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
-
   vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity = 
     vtkSmartPointer<vtkPiecewiseFunction>::New();
   compositeOpacity->AddPoint(0.0,0.0);
@@ -71,11 +57,26 @@ void RenderDisplay::connectVTK(QString vtkFile) {
 //  volumeMapper = vtkSmartPointer<vtkFixedPointVolumeRayCastMapper>::New();
   volumeMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
   volumeMapper->SetInputConnection(reader->GetOutputPort());
-//  volumeMapper->SetBlendModeToComposite();
   volume->SetMapper(volumeMapper);
   volume->Update();
 
-  AddVolume(volume);
+/*
+  vtkSmartPointer<vtkOpenGLExtensionManager> extManager = vtkSmartPointer<vtkOpenGLExtensionManager>::New();
+*/
 
+  AddVolume(volume);
+/*
+  getRenderWindow()->Render();
+
+  volumeMapper->SetRequestedRenderModeToRayCastAndTexture();
+  getRenderWindow()->Render();
+*/
+  //volumeMapper->SetRequestedRenderModeToRayCast();
+/*
+  extManager->SetRenderWindow(getRenderWindow());
+  extManager->LoadExtension("GL_VERSION_4_0");
+  extManager->LoadExtension("GL_ARB_compatibility");
+  extManager->LoadExtension("GL_ARB_multitexture");
+  */
   reset();
 }

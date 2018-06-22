@@ -26,9 +26,9 @@ QMAKE_LINK = link.exe
 QMAKE_LINK_SHLIB = link.exe
 TARGET = ../../bin/gui
 }
-INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/qt4 /usr/include/vtk-5.8 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10 /usr/include/vtk-5.10 /usr/include/mpi /usr/include/petsc /usr/local/include /usr/include/libxml2 /usr/local/opt/libxml2/include/libxml2
+INCLUDEPATH += ../src/mesh3d ../src/solver3d . /usr/include/qt4 /usr/include/vtk-5.8  /usr/include/vtk-6.3 /opt/local/include/vtk-5.10 /usr/local/opt/vtk5/include/vtk-5.10 /usr/include/vtk-5.10 /usr/include/mpi /usr/include/petsc /usr/local/include /usr/include/libxml2 /usr/local/opt/libxml2/include/libxml2
 !win32 {
-LIBS += -L/usr/local/opt/libxml2/lib -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommon -lvtksys -lQVTK -lvtkViews -lvtkWidgets -lvtkInfovis -lvtkRendering -lvtkGraphics -lvtkImaging -lvtkIO -lvtkFiltering -lvtkDICOMParser -lvtkalglib -lvtkverdict -lvtkmetaio -lvtkexoIIc -lvtkftgl -lvtkHybrid -lvtkVolumeRendering -lz -lquazip -lpetsc -lmpi -lxml2
+LIBS += -L/usr/local/opt/libxml2/lib -L/usr/local/lib -L/opt/local/lib -L/opt/local/lib/vtk-5.10 -L/usr/lib/x86_64-linux-gnu -fopenmp -L/usr/local/opt/vtk5/lib/vtk-5.10 -L../lib -lsolver3d -lmesh3d -lm -lqhull -lvtkCommonCore-6.3 -lvtksys-6.3 -lvtkViewsCore-6.3 -lvtkRenderingCore-6.3 -lvtkImagingCore-6.3 -lvtkIOCore-6.3 -lvtkFiltersCore-6.3 -lvtkDICOMParser-6.3 -lvtkalglib-6.3 -lvtkverdict-6.3 -lvtkmetaio-6.3 -lvtkexoIIc-6.3 -lvtkftgl-6.3 -lvtkRenderingVolume-6.3 -lz -lquazip -lpetsc -lmpi -lxml2
 CONFIG += debug x86_64
 }
 win32 {

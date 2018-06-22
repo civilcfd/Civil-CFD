@@ -5,7 +5,7 @@
  *
  */
 #include "VisualizeDisplay.h"
-
+/*
 VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax, double delx, double dely, double delz, double ox, double oy, double oz) : 
   MeshDisplay (imax,jmax,kmax) {
 
@@ -13,7 +13,7 @@ VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax, 
   update(delx,dely,delz,imax,jmax,kmax,ox,oy,oz);
   VTKmapper = NULL;
   VTKactor = NULL;
-}
+}*/
 
 VisualizeDisplay::VisualizeDisplay(long int imax, long int jmax, long int kmax) : 
   MeshDisplay(imax,jmax,kmax) {
@@ -29,7 +29,7 @@ void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double 
   if(!QFile::exists(vtkFile)) return;
 
 	volReader = NULL;
-  volReader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+  volReader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   volReader->SetFileName(vtkFile.toStdString().c_str());
   volReader->Update();
 
@@ -90,11 +90,19 @@ void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double 
   volume->SetMapper(volMapper);
   volume->Update();
 
+
+  //volMapper->SetRequestedRenderModeToRayCastAndTexture();
+  //getRenderWindow()->Render();
+
+  //volMapper->SetRequestedRenderModeToRayCast();
+  //getRenderWindow()->Render();
+
 //  vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
 //  cutter->SetInputConnection(volReader->GetOutputPort());
 //  cutter->SetCutFunction(plane);
  
   AddVolume(volume);
+  getRenderWindow()->Render();
 
 
 	/*vtkSmartPointer<vtkContourFilter> edgeLine = vtkSmartPointer<vtkContourFilter>::New();
@@ -120,13 +128,16 @@ void VisualizeDisplay::block(QString vtkFile, int normal, double origin, double 
 
 void VisualizeDisplay::hideBlock() {
   RemoveVolume(volume);
+  getRenderWindow()->Render();
 //  RemoveActor(edgeLineActor);
 }
 void VisualizeDisplay::hideLegend() {
   	RemoveScalarBar(legend);
+  getRenderWindow()->Render();
 }
 void VisualizeDisplay::showLegend() {
   	AddScalarBar(legend);
+  getRenderWindow()->Render();
 }
 
 void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
@@ -134,7 +145,7 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
   if(!QFile::exists(vtkFile)) return;
 
 	reader = NULL;
- 	reader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+ 	reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   reader->SetFileName(vtkFile.toStdString().c_str());
   reader->Update();
 
@@ -198,6 +209,7 @@ void VisualizeDisplay::clip(QString vtkFile, int normal, double origin) {
 	legend->SetWidth(0.07);
 	legend->GetLabelTextProperty()->SetFontSize(9);
 	AddScalarBar(legend);
+  getRenderWindow()->Render();
 
 }
 void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bool normalize) {
@@ -205,7 +217,7 @@ void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bo
   if(!QFile::exists(vtkFile)) return;
 
 	reader = NULL;
- 	reader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+ 	reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   reader->SetFileName(vtkFile.toStdString().c_str());
   reader->Update();
 
@@ -233,11 +245,12 @@ void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bo
 
   vtkSmartPointer<vtkVectorNorm> vecScalar = vtkSmartPointer<vtkVectorNorm>::New();
   vecScalar->SetInputConnection(reader->GetOutputPort());
-  if(!normalize) vecScalar->NormalizeOff();
+  /* if(!normalize) vecScalar->NormalizeOff();
   else {
     vecScalar->NormalizeOn();
     vecScalar->SetNormalize(normal);
-  }
+  } don't want to do this **TODO FIND A WAY TO GET DOT PRODUCT */
+  vecScalar->NormalizeOff();
 
   vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
   cutter->SetInputConnection(vecScalar->GetOutputPort());
@@ -277,13 +290,16 @@ void VisualizeDisplay::clipVector(QString vtkFile, int normal, double origin, bo
 	legend->SetWidth(0.1);
 	legend->GetLabelTextProperty()->SetFontSize(9);
 	AddScalarBar(legend);
+  getRenderWindow()->Render();
 
 }
 void VisualizeDisplay::clear() {
   if(VTKactor != NULL)    RemoveActor(VTKactor);
+  getRenderWindow()->Render();
 }
 void VisualizeDisplay::setRange(double a, double b) {
   if (VTKmapper != NULL) VTKmapper->SetScalarRange(a,b);
+  getRenderWindow()->Render();
 }
 void VisualizeDisplay::getRange(double &a) {
   VTKmapper->GetScalarRange(&a);
@@ -293,7 +309,7 @@ void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
   if(!QFile::exists(vtkFile)) return;
   
 	vectReader = NULL;
- 	vectReader = vtkSmartPointer<vtkStructuredPointsReader>::New();
+ 	vectReader = vtkSmartPointer<vtkXMLImageDataReader>::New();
   vectReader->SetFileName(vtkFile.toStdString().c_str());
   vectReader->Update();
 
@@ -347,7 +363,7 @@ void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
   vectMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   vectActor = vtkSmartPointer<vtkActor>::New();
  
-  vectMapper->SetInput(glyph->GetOutput());
+  vectMapper->SetInputConnection(glyph->GetOutputPort());
   //VTKmapper->SetLookupTable(lut);
   vectMapper->ScalarVisibilityOn();
   vectMapper->SetScalarRange(vectReader->GetOutput()->GetScalarRange());
@@ -355,10 +371,12 @@ void VisualizeDisplay::vector(QString vtkFile, int normal, double origin) {
   vectActor->SetMapper(vectMapper);
 
   AddActor(vectActor);
+  getRenderWindow()->Render();
 
 }
 
 void VisualizeDisplay::hideVector() {
 
   RemoveActor(vectActor);
+  getRenderWindow()->Render();
 }

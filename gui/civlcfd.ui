@@ -76,8 +76,8 @@
           <property name="topMargin">
            <number>0</number>
           </property>
-          <item row="6" column="2">
-           <widget class="QPlainTextEdit" name="ElementNumber">
+          <item row="1" column="2">
+           <widget class="QPlainTextEdit" name="Path">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -87,74 +87,82 @@
               <height>28</height>
              </size>
             </property>
-            <property name="readOnly">
+            <property name="tabChangesFocus">
              <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QPlainTextEdit" name="Dims">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>28</height>
-             </size>
             </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Simulation Path</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="2" rowspan="6">
-           <widget class="QListWidget" name="ResultList">
-            <property name="selectionMode">
-             <enum>QAbstractItemView::ExtendedSelection</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="4">
-           <widget class="Line" name="line">
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-           </widget>
-          </item>
-          <item row="5" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Mesh Element Size</string>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QPushButton" name="New">
-            <property name="text">
-             <string>New</string>
-            </property>
-            <property name="icon">
-             <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/document-new.svg</normaloff>:/icons/resources/document-new.svg</iconset>
-            </property>
-            <property name="iconSize">
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>22</width>
-              <height>22</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
+           </spacer>
+          </item>
+          <item row="15" column="3">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="6" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Number of Elements</string>
+            </property>
            </widget>
           </item>
-          <item row="5" column="2">
-           <widget class="QPlainTextEdit" name="ElementSize">
+          <item row="4" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Mesh Dimensions</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Simulation Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="2">
+           <widget class="QPlainTextEdit" name="STLFile">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -163,101 +171,29 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="13" column="3">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="8" column="0">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="Save">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
+          <item row="10" column="3">
+           <widget class="QPushButton" name="SelectAll">
             <property name="text">
-             <string>Save</string>
+             <string>Select All</string>
             </property>
             <property name="icon">
              <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/document-save.svg</normaloff>:/icons/resources/document-save.svg</iconset>
+              <normaloff>:/icons/resources/edit-select-all.svg</normaloff>:/icons/resources/edit-select-all.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
               <width>22</width>
               <height>22</height>
              </size>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="3">
-           <widget class="QPushButton" name="Clear">
-            <property name="text">
-             <string>Clear Selection</string>
-            </property>
-            <property name="icon">
-             <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/edit-clear.svg</normaloff>:/icons/resources/edit-clear.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>22</width>
-              <height>22</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPlainTextEdit" name="Name">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>28</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0" colspan="2">
-           <widget class="QLabel" name="label_9">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>28</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Results&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -295,14 +231,34 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="3">
-           <widget class="QPushButton" name="SelectAll">
+          <item row="10" column="1">
+           <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Select All</string>
+             <string>Timesteps Saved</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPlainTextEdit" name="Name">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="3">
+           <widget class="QPushButton" name="Clear">
+            <property name="text">
+             <string>Clear Selection</string>
             </property>
             <property name="icon">
              <iconset resource="gui.qrc">
-              <normaloff>:/icons/resources/edit-select-all.svg</normaloff>:/icons/resources/edit-select-all.svg</iconset>
+              <normaloff>:/icons/resources/edit-clear.svg</normaloff>:/icons/resources/edit-clear.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -312,118 +268,125 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="1">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Timesteps Saved</string>
+          <item row="8" column="0">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="4">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="16" column="2">
+          <item row="5" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Mesh Element Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" alignment="Qt::AlignRight">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Simulation Path</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="New">
+            <property name="text">
+             <string>New</string>
+            </property>
+            <property name="icon">
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/document-new.svg</normaloff>:/icons/resources/document-new.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="Save">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Save</string>
+            </property>
+            <property name="icon">
+             <iconset resource="gui.qrc">
+              <normaloff>:/icons/resources/document-save.svg</normaloff>:/icons/resources/document-save.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>22</width>
+              <height>22</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QPlainTextEdit" name="ElementNumber">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QPlainTextEdit" name="ElementSize">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="17" column="2">
            <spacer name="verticalSpacer_4">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
              <enum>QSizePolicy::Preferred</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Simulation Name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="2">
-           <widget class="QPlainTextEdit" name="STLFile">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>28</height>
-             </size>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Mesh Dimensions</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="1" alignment="Qt::AlignRight">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Number of Elements</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPlainTextEdit" name="Path">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>28</height>
-             </size>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="15" column="3">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -453,6 +416,71 @@
             </property>
            </widget>
           </item>
+          <item row="13" column="3">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="2">
+           <widget class="QPlainTextEdit" name="Dims">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0" colspan="2">
+           <widget class="QLabel" name="label_9">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Results&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="16" column="3">
+           <widget class="QPushButton" name="Paraview">
+            <property name="text">
+             <string>Open in Paraview</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="2" rowspan="7">
+           <widget class="QListWidget" name="ResultList">
+            <property name="tabKeyNavigation">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::ExtendedSelection</enum>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -475,6 +503,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="11" column="12">
@@ -495,6 +526,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -528,6 +562,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -611,6 +648,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -755,6 +795,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="3" column="3">
@@ -764,6 +807,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -797,6 +843,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
             <property name="plainText">
              <string>0.00161</string>
@@ -837,6 +886,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -881,7 +933,16 @@
              </size>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item row="0" column="1" alignment="Qt::AlignLeft">
@@ -908,7 +969,7 @@
               </widget>
              </item>
              <item row="1" column="1" colspan="4">
-              <widget class="QVTKWidget" name="VTKMesh">
+              <widget class="QVTKOpenGLWidget" name="VTKMesh" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -1151,13 +1212,16 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="3" column="1" colspan="9">
-           <widget class="QVTKWidget" name="VTKGeometry"/>
+           <widget class="QVTKOpenGLWidget" name="VTKGeometry" native="true"/>
           </item>
           <item row="1" column="6" alignment="Qt::AlignRight">
            <widget class="QLabel" name="label_25">
@@ -1218,6 +1282,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="0" column="1" alignment="Qt::AlignRight">
@@ -1235,6 +1302,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="1" column="5">
@@ -1244,6 +1314,9 @@
               <width>100</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -1741,7 +1814,7 @@
            </layout>
           </item>
           <item row="3" column="1">
-           <widget class="QVTKWidget" name="VTKBoundaries">
+           <widget class="QVTKOpenGLWidget" name="VTKBoundaries" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -1922,7 +1995,7 @@
            </layout>
           </item>
           <item row="7" column="0">
-           <widget class="QVTKWidget" name="VTKBaffles">
+           <widget class="QVTKOpenGLWidget" name="VTKBaffles" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -2245,6 +2318,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
             <property name="plainText">
              <string>0</string>
             </property>
@@ -2274,6 +2350,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
             <property name="plainText">
              <string>0</string>
             </property>
@@ -2299,6 +2378,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -2352,6 +2434,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
             <property name="plainText">
              <string>0</string>
@@ -2441,6 +2526,9 @@
               <width>16777215</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
             <property name="plainText">
              <string>0.001</string>
@@ -2567,7 +2655,7 @@
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>60</width>
               <height>20</height>
              </size>
             </property>
@@ -2649,7 +2737,7 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="1">
+          <item row="14" column="1">
            <spacer name="verticalSpacer_14">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2662,7 +2750,7 @@
             </property>
            </spacer>
           </item>
-          <item row="9" column="2">
+          <item row="11" column="2">
            <spacer name="verticalSpacer_29">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2678,24 +2766,14 @@
             </property>
            </spacer>
           </item>
-          <item row="10" column="0" colspan="7">
+          <item row="12" column="0" colspan="7">
            <widget class="Line" name="line_6">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="QCheckBox" name="autot">
-            <property name="text">
-             <string>Automatic timestep adjustment</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1">
+          <item row="13" column="1">
            <spacer name="verticalSpacer_17">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -2719,12 +2797,15 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
             <property name="plainText">
              <string>1.0</string>
             </property>
            </widget>
           </item>
-          <item row="12" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
+          <item row="14" column="5" colspan="2" alignment="Qt::AlignRight|Qt::AlignTop">
            <widget class="QPushButton" name="RunSimulation">
             <property name="minimumSize">
              <size>
@@ -2760,6 +2841,9 @@
               <width>200</width>
               <height>28</height>
              </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
             </property>
             <property name="plainText">
              <string>0.001</string>
@@ -2823,6 +2907,9 @@
               <height>28</height>
              </size>
             </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
             <property name="plainText">
              <string>100</string>
             </property>
@@ -2853,10 +2940,25 @@
             <property name="text">
              <string>Processes</string>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
            </widget>
           </item>
           <item row="8" column="2">
            <widget class="QComboBox" name="processes">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
             <item>
              <property name="text">
               <string>2</string>
@@ -2897,6 +2999,78 @@
               <string>64</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="QLabel" name="label_50">
+            <property name="text">
+             <string>Absolute residual</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="2">
+           <spacer name="verticalSpacer_30">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="10" column="4">
+           <widget class="QLabel" name="label_57">
+            <property name="text">
+             <string>Relative tolerance</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="2">
+           <widget class="QPlainTextEdit" name="abstol">
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" colspan="3">
+           <widget class="QCheckBox" name="autot">
+            <property name="text">
+             <string>Automatic timestep adjustment</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="5">
+           <widget class="QPlainTextEdit" name="reltol">
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -2949,6 +3123,9 @@
                 <height>28</height>
                </size>
               </property>
+              <property name="tabChangesFocus">
+               <bool>true</bool>
+              </property>
               <property name="plainText">
                <string>0</string>
               </property>
@@ -2980,6 +3157,9 @@
                 <width>100</width>
                 <height>28</height>
                </size>
+              </property>
+              <property name="tabChangesFocus">
+               <bool>true</bool>
               </property>
               <property name="plainText">
                <string>1</string>
@@ -3255,7 +3435,7 @@
            </widget>
           </item>
           <item row="13" column="1" rowspan="2" colspan="4">
-           <widget class="QVTKWidget" name="vis"/>
+           <widget class="QVTKOpenGLWidget" name="vis" native="true"/>
           </item>
           <item row="5" column="3" alignment="Qt::AlignHCenter">
            <widget class="QRadioButton" name="contourK">
@@ -3436,7 +3616,7 @@
            </widget>
           </item>
           <item row="13" column="1" rowspan="2" colspan="4">
-           <widget class="QVTKWidget" name="vis3d"/>
+           <widget class="QVTKOpenGLWidget" name="vis3d" native="true"/>
           </item>
           <item row="4" column="2">
            <widget class="QLabel" name="origin3dText">
@@ -3802,7 +3982,7 @@
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -3863,11 +4043,108 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QVTKWidget</class>
+   <class>QVTKOpenGLWidget</class>
    <extends>QWidget</extends>
-   <header>QVTKWidget.h</header>
+   <header>QVTKOpenGLWidget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>Name</tabstop>
+  <tabstop>Path</tabstop>
+  <tabstop>Dims</tabstop>
+  <tabstop>ElementSize</tabstop>
+  <tabstop>ElementNumber</tabstop>
+  <tabstop>STLFile</tabstop>
+  <tabstop>ResultList</tabstop>
+  <tabstop>New</tabstop>
+  <tabstop>Save</tabstop>
+  <tabstop>SelectAll</tabstop>
+  <tabstop>Clear</tabstop>
+  <tabstop>InspectCell</tabstop>
+  <tabstop>Delete</tabstop>
+  <tabstop>gx</tabstop>
+  <tabstop>gy</tabstop>
+  <tabstop>gz</tabstop>
+  <tabstop>nu</tabstop>
+  <tabstop>rho</tabstop>
+  <tabstop>Laminar</tabstop>
+  <tabstop>kEpsilon</tabstop>
+  <tabstop>length</tabstop>
+  <tabstop>length_scale</tabstop>
+  <tabstop>rough</tabstop>
+  <tabstop>earthGravity</tabstop>
+  <tabstop>water20C</tabstop>
+  <tabstop>domainLength</tabstop>
+  <tabstop>defaultLength</tabstop>
+  <tabstop>calcRough</tabstop>
+  <tabstop>MeshParameters</tabstop>
+  <tabstop>MeshUndo</tabstop>
+  <tabstop>MeshUpdate</tabstop>
+  <tabstop>STLFile_2</tabstop>
+  <tabstop>inside_x</tabstop>
+  <tabstop>inside_y</tabstop>
+  <tabstop>inside_z</tabstop>
+  <tabstop>STLOpen</tabstop>
+  <tabstop>STLRender</tabstop>
+  <tabstop>EditBoundary</tabstop>
+  <tabstop>AddSpecialBoundary</tabstop>
+  <tabstop>RemoveSpecialBoundary</tabstop>
+  <tabstop>BoundaryTree</tabstop>
+  <tabstop>hideBoundaryMesh</tabstop>
+  <tabstop>hideBoundaryDomain</tabstop>
+  <tabstop>EditBaffle</tabstop>
+  <tabstop>AddBaffle</tabstop>
+  <tabstop>RemoveBaffle</tabstop>
+  <tabstop>BaffleTree</tabstop>
+  <tabstop>hideBaffleMesh</tabstop>
+  <tabstop>hideBaffleDomain</tabstop>
+  <tabstop>initialU</tabstop>
+  <tabstop>initialV</tabstop>
+  <tabstop>initialW</tabstop>
+  <tabstop>height</tabstop>
+  <tabstop>fillPoints</tabstop>
+  <tabstop>hydrostatic</tabstop>
+  <tabstop>initialk</tabstop>
+  <tabstop>t</tabstop>
+  <tabstop>endt</tabstop>
+  <tabstop>delt</tabstop>
+  <tabstop>writet</tabstop>
+  <tabstop>autot</tabstop>
+  <tabstop>processes</tabstop>
+  <tabstop>abstol</tabstop>
+  <tabstop>reltol</tabstop>
+  <tabstop>RunSimulation</tabstop>
+  <tabstop>xNormal</tabstop>
+  <tabstop>yNormal</tabstop>
+  <tabstop>zNormal</tabstop>
+  <tabstop>origin</tabstop>
+  <tabstop>contourVOF</tabstop>
+  <tabstop>contourP</tabstop>
+  <tabstop>contourK</tabstop>
+  <tabstop>contourVorticity</tabstop>
+  <tabstop>contourVelocity</tabstop>
+  <tabstop>showAxis</tabstop>
+  <tabstop>showVectors</tabstop>
+  <tabstop>blockObstacles</tabstop>
+  <tabstop>showMesh</tabstop>
+  <tabstop>showLegend</tabstop>
+  <tabstop>saveJPEG</tabstop>
+  <tabstop>timesteps</tabstop>
+  <tabstop>updateRange</tabstop>
+  <tabstop>from</tabstop>
+  <tabstop>to</tabstop>
+  <tabstop>xNormal3d</tabstop>
+  <tabstop>yNormal3d</tabstop>
+  <tabstop>zNormal3d</tabstop>
+  <tabstop>origin3d</tabstop>
+  <tabstop>extent3d</tabstop>
+  <tabstop>showAxis3d</tabstop>
+  <tabstop>blockObstacles3d</tabstop>
+  <tabstop>showMesh3d</tabstop>
+  <tabstop>saveJPEG3d</tabstop>
+  <tabstop>timesteps3d</tabstop>
+ </tabstops>
  <resources>
   <include location="gui.qrc"/>
  </resources>

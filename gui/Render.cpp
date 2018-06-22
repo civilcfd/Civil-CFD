@@ -58,6 +58,17 @@ RenderDialog::RenderDialog(Simulation &sim, QString appPath) {
                                     sim.getOrigin(2).toDouble());
 
   ui.VTKRender->SetRenderWindow(renderDisplay->getRenderWindow());
+  renderDisplay->completeSetup( sim.getDelx().toDouble(),
+                                    sim.getDely().toDouble(),
+                                    sim.getDelz().toDouble(),
+                                    
+                                    sim.getImax().toLong(), 
+                                    sim.getJmax().toLong(),
+                                    sim.getKmax().toLong(),
+                                   
+                                    sim.getOrigin(0).toDouble(),
+                                    sim.getOrigin(1).toDouble(),
+                                    sim.getOrigin(2).toDouble());
 }
 
 void RenderDialog::on_Return_clicked() {
@@ -126,7 +137,7 @@ void RenderDialog::finished(int exitCode, QProcess::ExitStatus status) {
     if(stopped == false) ui.status->setText("Finished successfully");
     else ui.status->setText("Stopped by user");
 
-    renderDisplay->connectVTK("vtk/fv_0.vtk");
+    renderDisplay->connectVTK("vtk/fv_0.vti");
     ui.VTKRender->update();
   }
   

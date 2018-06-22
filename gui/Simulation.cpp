@@ -818,6 +818,28 @@ bool Simulation::setDelt(QString str) {
   return ok;
 }
 
+QString Simulation::getReltol() {
+  return QString::number(solver->reltol);
+}
+
+QString Simulation::getAbstol() {
+  return QString::number(solver->abstol);
+}
+
+bool Simulation::setReltol(QString str) {
+  bool ok;
+  double conv = str.toDouble(&ok);
+  if(ok) solver->reltol = conv;
+  return ok;
+}
+
+bool Simulation::setAbstol(QString str) {
+  bool ok;
+  double conv = str.toDouble(&ok);
+  if(ok) solver->abstol = conv;
+  return ok;
+}
+
 void Simulation::setAutot(bool autot) {
 
   if(autot) solver->deltcal = vof_mpi_deltcal;

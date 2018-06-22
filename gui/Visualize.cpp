@@ -11,7 +11,7 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkStructuredPoints.h>
-#include <vtkStructuredPointsReader.h>
+#include <vtkXMLImageDataReader.h>
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPlane.h>
@@ -23,8 +23,6 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkOBJReader.h>
 #include <vtkLookupTable.h>
-
-#include <quazip/quagzipfile.h>
 
 #include "MainWindow.h"
 
@@ -208,14 +206,8 @@ void MainWindow::visualizeRender() {
   QListWidgetItem *item = ui.timesteps->currentItem();
   if(item == NULL) return;
 
-  QString vtkFile = QString(sim.getTrackN(item->text()) + ".vtk");
+  QString vtkFile = QString(sim.getTrackN(item->text()) + ".vti");
   QString vectFile, volFile;
-  
-  // Flag whether these files needed to be decompressed
-  bool vtkFile_d, vectFile_d;
-  vtkFile_d = false;
-  vectFile_d = false;
-  
 
   vectFile = vtkFile;
 
@@ -231,33 +223,8 @@ void MainWindow::visualizeRender() {
     vtkFile.prepend("U_");
   }
   vectFile.prepend("vtk/U_");
-  volFile = "vtk/fv_0.vtk";
+  volFile = "vtk/fv_0.vti";
   vtkFile.prepend("vtk/");
-
-  if(!QFile::exists(vtkFile)) {
-    decompressFile(vtkFile + ".gz", vtkFile);
-    if(!QFile::exists(vtkFile)) {
-      QMessageBox msgBox;
-      vtkFile.prepend("Failed to open VTK file: ");
-      msgBox.setText(vtkFile);
-      //msgBox.exec();
-    }
-    else {
-      vtkFile_d = true;
-    }
-  }
-  if(!QFile::exists(vectFile)) {
-    decompressFile(vectFile + ".gz", vectFile);
-    if(!QFile::exists(vectFile)) {
-      QMessageBox msgBox;
-      vtkFile.prepend("Failed to open VTK file: ");
-      msgBox.setText(vectFile);
-      //msgBox.exec();
-    }
-    else {
-      vectFile_d = true;
-    }
-  }
 
   origin = ui.originText->text().toDouble();
 
@@ -314,25 +281,5 @@ void MainWindow::visualizeRender() {
   
   ui.vis->update();
   
-  if(vtkFile_d) QFile::remove(vtkFile);
-  if(vectFile_d) QFile::remove(vectFile);
-}
-
-bool decompressFile(QString zip_filename , QString filename)
-{
-  QFile outfile(filename);
-  
-  QuaGzipFile gzip(zip_filename);
-  
-  if(!gzip.open(QIODevice::ReadOnly)) {
-	return false;  
-  } 
-  QByteArray uncompressed_data = gzip.readAll();
- 
-  if(!outfile.open(QIODevice::WriteOnly)) return false;
-  outfile.write(uncompressed_data);
-  outfile.close();
-  gzip.close();
-  return true;
-   
+  visualizeDisplay->getRenderWindow()->Render();
 }
