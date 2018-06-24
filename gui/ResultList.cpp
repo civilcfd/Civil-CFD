@@ -254,7 +254,7 @@ void MainWindow::on_Paraview_clicked() {
 
   #ifdef _WIN32
 
-  QSettings settings("Paraview.ini", QSettings::IniFormat);
+  QSettings settings(appPath + "/Paraview.ini", QSettings::IniFormat);
   cmd = settings.value("paraview_path", "paraview.exe").toString();
 
   if(!QFile::exists(cmd)) {

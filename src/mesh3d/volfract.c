@@ -56,11 +56,6 @@ int volume_fractions(struct mesh_data *mesh,
    * code on 2012 gamer hardware */
 #pragma omp parallel for shared (mesh) private(i,j,k,flg) schedule(dynamic, 25)
 	for(i=0; i < mesh->imax; i++) {
-
-#ifndef DEBUG
-		printf(".");
-#endif
-
 		for(j=0; j < mesh->jmax; j++) {
 			for(k=0; k < mesh->kmax; k++) {
 			
@@ -96,10 +91,6 @@ int volume_fractions(struct mesh_data *mesh,
 		}
 	}
 
-	#ifndef DEBUG
-	printf("\n");
-	#endif
-  
   return 0;
 }
 

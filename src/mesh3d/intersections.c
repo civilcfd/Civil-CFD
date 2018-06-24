@@ -74,11 +74,6 @@ int intersect_area_fractions(struct mesh_data *mesh,
    * we double calculate each line segment.  this could be optimized out
    * in the future, but would require more storage. */
   for(i=0; i < mesh->imax; i++) {
-
-#ifndef DEBUG
-		printf(".");
-#endif
-
     for(j=0; j< mesh->jmax; j++) {
       for(k=0; k < mesh->kmax; k++) {
       
@@ -491,9 +486,6 @@ int intersect_area_fractions(struct mesh_data *mesh,
 		}
 	}
 	
-	#ifndef DEBUG
-	printf("\n");
-	#endif
 
 	return(abort);
 

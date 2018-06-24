@@ -132,7 +132,9 @@ int vtk_xml_write_scalar_grid(char *filename, char *dataset_name,
     printf("Could not deflate all data.  Deflated %d from %ld\n",have,ni*nj*nk*8);
   }
   else {
+  #ifdef DEBUG
     printf("Deflated %d from %ld\n",have,ni*nj*nk*8);
+  #endif
   }
   deflateEnd(&strm);
 
@@ -291,7 +293,9 @@ int vtk_xml_write_vector_grid(char *filename, char *dataset_name,
     printf("Could not deflate all data.  Deflated %d from %ld\n",have,(ni-1) * (nj-1) * (nk-1)*8*3);
   }
   else {
+  #ifdef DEBUG
     printf("Deflated %d from %ld\n",have,(ni-1) * (nj-1) * (nk-1)*8*3);
+  #endif
   }
   deflateEnd(&strm);
 
