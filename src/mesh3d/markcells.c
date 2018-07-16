@@ -93,7 +93,7 @@ int markcells_initialize(struct mesh_data *mesh,
 	return 0;
 }
 
-int markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
+double markcells_dist_tri_point(double *p, double *v1, double *v2, double *v3) {
 	double a, b, c, d, e, f, det, s, t, sqrDistance, tmp0, tmp1, numer, denom, invDet;
 	double BB[3], E0[3], E1[3], DD[3];
 
