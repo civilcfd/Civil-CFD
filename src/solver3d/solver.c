@@ -353,7 +353,8 @@ int solver_set_initial(struct solver_data *solver, char *param, int dims,
       return(1);
     }
     
-    solver->vof_height = vector[0];
+    /* Modified to be relative to origin 07/27/2018 */
+    solver->vof_height = vector[0] - mesh->origin[2];
     solver->vof_delay = vector[1];
     
     if(fmod(solver->vof_height,solver->mesh->delz) < solver->emf) solver->vof_height -= solver->min_vof * 100;

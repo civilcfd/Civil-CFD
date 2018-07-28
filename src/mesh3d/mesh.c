@@ -811,7 +811,9 @@ int mesh_fill_vof(struct mesh_data *mesh, double *vector) {
 
   struct point_data *stack = NULL, *p;
 
-  stack = stack_push(stack, vector[0]/mesh->delx, vector[1]/mesh->dely, vector[2]/mesh->delz);
+  /* Modified to be relative to origin 07/27/2018 */
+  stack = stack_push(stack, (vector[0]-mesh->origin[0])/mesh->delx, (vector[1]-mesh->origin[1])/mesh->dely, 
+                            (vector[2]-mesh->origin[2])/mesh->delz);
 
   while((p = stack_pop(stack)) != NULL) {
     

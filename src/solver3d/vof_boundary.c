@@ -131,7 +131,7 @@ int boundary_hgl(struct solver_data *solver,
   sboundary_setup(solver, x, &imin, &jmin, &kmin, &imax, &jmax, &kmax, min_1, min_2, max_1, max_2);
     
   /* value += mesh->delz; uncomment and everything is off-set by 1 cell vertically */
-
+  value -= mesh->origin[2]; /* ADDED 7/27/2018 */
 
   switch(x) {
   case 0: /* west */
@@ -298,6 +298,9 @@ double calc_flow(struct solver_data *solver, int x, long int imin, long int imax
     }
   }
   *area_ref = area;
+
+  flow = solver_mpi_sum(solver, flow);
+
   return flow;
 }
 
@@ -478,7 +481,10 @@ int boundary_mass_outflow(struct solver_data *solver,
     }
   }
 
-  
+  /* ADDED 7/27/18 */
+  flow = solver_mpi_sum(solver, flow);
+  area = solver_mpi_sum(solver, area);
+
   if(fabs(flow) < 0.1 * fabs(value) || flow * value < 0) { 
     /* in the case of no flow or reverse flow, we set a fixed velocity to start the solution */
     boundary_fixed_velocity(solver, x, min_1, min_2, max_1, max_2, value/area, turbulence);
