@@ -10,6 +10,7 @@
 #include "vtk.h"
 #include "vof_mpi.h"
 #include "solver.h"
+#include "solver_mpi.h"
 #include "mesh.h"
 #include "csv.h"
 #include "kE.h"
