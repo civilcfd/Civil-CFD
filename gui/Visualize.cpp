@@ -125,20 +125,24 @@ void MainWindow::on_showMesh_toggled() {
 
 void MainWindow::updateSlider() {
   
-  double extent, position;
+  double extent, position, mesh_origin;
   bool ok;
 
   if(ui.xNormal->isChecked()) {
     extent = sim.getDelx().toDouble(&ok) * sim.getImax().toDouble(&ok);
+    mesh_origin = sim.getOrigin(0).toDouble(&ok);
   } else if(ui.yNormal->isChecked()) {
     extent = sim.getDely().toDouble(&ok) * sim.getJmax().toDouble(&ok); 
+    mesh_origin = sim.getOrigin(1).toDouble(&ok);
   } else {
     extent = sim.getDelz().toDouble(&ok) * sim.getKmax().toDouble(&ok);
+    mesh_origin = sim.getOrigin(2).toDouble(&ok);
   }
 
   position = (double) ui.origin->sliderPosition();
   position /= 99;
   position *= extent;
+  position += mesh_origin;
 
   ui.originText->setText(QString::number(position, 'f', 2));
   

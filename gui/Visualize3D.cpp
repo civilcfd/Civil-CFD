@@ -109,15 +109,18 @@ void MainWindow::on_extent3d_valueChanged() {
 
 void MainWindow::updateSlider3d() {
   
-  double extent, maxExtent, position, extentPos;
+  double extent, maxExtent, position, extentPos, mesh_origin;
   bool ok;
 
   if(ui.xNormal3d->isChecked()) {
     maxExtent = sim.getDelx().toDouble(&ok) * sim.getImax().toDouble(&ok);
+    mesh_origin = sim.getOrigin(0).toDouble(&ok);
   } else if(ui.yNormal3d->isChecked()) {
     maxExtent = sim.getDely().toDouble(&ok) * sim.getJmax().toDouble(&ok); 
+    mesh_origin = sim.getOrigin(1).toDouble(&ok);
   } else {
     maxExtent = sim.getDelz().toDouble(&ok) * sim.getKmax().toDouble(&ok);
+    mesh_origin = sim.getOrigin(2).toDouble(&ok);
   }
 
   position = (double) ui.origin3d->sliderPosition();
@@ -126,6 +129,8 @@ void MainWindow::updateSlider3d() {
   
   extentPos = (double) ui.extent3d->sliderPosition();
   extent = (extentPos / 99) * (maxExtent - position);
+
+  position += mesh_origin;
 
   ui.origin3dText->setText(QString::number(position, 'f', 2));
   
