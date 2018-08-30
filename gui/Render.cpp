@@ -42,6 +42,8 @@ RenderDialog::RenderDialog(Simulation &sim, QString appPath) {
     ui.Return->setEnabled(true);
   }
   else {
+    cmd = "\"" + cmd + "\"";
+
     cmd = cmd + " solver.xml " + sim.getStlFilename(); 
 
     process->start(cmd);
@@ -131,6 +133,9 @@ void RenderDialog::error(QProcess::ProcessError error) {
 }
 
 void RenderDialog::finished(int exitCode, QProcess::ExitStatus status) {
+  QString str = process->readAllStandardOutput(); 
+  ui.output->appendPlainText(str);
+  
   ui.progressBar->setValue(100);
 
   if(exitCode == 0) {

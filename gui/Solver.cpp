@@ -52,6 +52,8 @@ SolverDialog::SolverDialog(Simulation &sim, QString appPath, QString t, QString 
     ui.Return->setEnabled(true);
   }
   else {
+    cmd = "\"" + cmd + "\"";
+
     if(t != "") {
       cmd = cmd + " " + t;
       mint = t.toDouble();
@@ -235,6 +237,10 @@ void SolverDialog::error(QProcess::ProcessError error) {
 }
 
 void SolverDialog::finished(int exitCode, QProcess::ExitStatus status) {
+
+  QString str = process->readAllStandardOutput(); 
+  ui.output->appendPlainText(str);
+
   ui.progressBar->setValue(100);
 
   if(exitCode == 0) {
